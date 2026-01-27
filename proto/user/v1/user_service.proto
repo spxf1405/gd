@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto"; 
+import "user/v1/user.proto"; 
+
+option go_package = "backend/internal/gen/user/v1;userpb";
+
+package user.v1;
+
+message GetUserByIDRequest {
+    google.protobuf.Int32Value id = 1;
+}
+
+message GetUserByIDResponse {
+    User user = 1;
+}
+
+message GetUserByNameRequest {
+    google.protobuf.StringValue name = 1;
+}
+
+message GetUserByNameResponse {
+    User user = 1;
+}
+
+service UserService {
+    rpc GetUserByID(GetUserByIDRequest) returns (GetUserByIDResponse);
+    rpc GetUserByName(GetUserByNameRequest) returns (GetUserByNameResponse);
+}
+

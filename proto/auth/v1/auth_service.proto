@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option go_package = "backend/internal/gen/auth/v1;authpb";
+
+package auth.v1;
+
+message LoginRequest {
+    string user = 1;
+}
+
+message LoginResponse {
+    string csrf_token = 1;
+}
+
+service AuthService {
+    rpc Login(LoginRequest) returns (LoginResponse);
+}

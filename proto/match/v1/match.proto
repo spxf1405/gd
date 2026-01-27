@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package match.v1;
+
+option go_package = "backend/internal/gen/match/v1;matchpb";
+
+enum Bracket {
+  BRACKET_UNKNOWN = 0;
+  BRACKET_WINNER  = 1;
+  BRACKET_LOSER   = 2;
+}
+
+enum Status {
+  STATUS_UNKNOWN = 0;
+  STATUS_PENDING = 1;
+  STATUS_FINISHED = 2;
+}
+
+message PlayerInfo {
+  string id = 1;
+  string name = 2;
+}
+
+message Player {
+  PlayerInfo info = 1;
+  int32 score = 2;
+}
+
+message Position {
+  int32 x = 1;
+  int32 y = 2;
+}
+
+message Meta {
+  string scheduledAt = 1;
+  string referee = 2;
+  string streamUrl = 3;
+}
+
+message Match {
+  int32 id = 1;
+  Bracket bracket = 2;
+  string nextWin = 3;
+  string nextLose = 4;
+  Status status = 5;
+  Player player1 = 6;
+  Player player2 = 7;
+  Position position = 8;
+  Meta meta = 9;
+}

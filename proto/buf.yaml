@@ -1,0 +1,13 @@
+version: v2
+modules:
+  - path: .                              # Where your protos are
+deps:
+  - buf.build/bufbuild/protovalidate     # External proto dependencies
+lint:
+  use:
+    - DEFAULT                            # Linting standards
+  except:
+    - PACKAGE_VERSION_SUFFIX
+breaking:
+  use:
+    - FILE  

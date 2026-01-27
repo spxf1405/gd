@@ -1,0 +1,19 @@
+{
+  "name": "@gd/proto",
+  "type": "module",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "exports": {
+    "./*": {
+      "development": "./src/*.ts",
+      "import": "./dist/*.js",
+      "types": "./dist/*.d.ts"
+    }
+  },
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.6.3",
+    "protobuf": "link:@bufbuild/protobuf"
+  }
+}

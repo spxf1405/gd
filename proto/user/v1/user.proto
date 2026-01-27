@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto"; 
+
+package user.v1;
+
+option go_package = "backend/internal/gen/user/v1;userpb";
+
+message User {
+    google.protobuf.StringValue id = 1;
+    google.protobuf.StringValue name = 2;
+    google.protobuf.Timestamp created_at = 3;
+    google.protobuf.StringValue secret_key = 4;
+}

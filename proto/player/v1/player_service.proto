@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package player.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+import "player/v1/player.proto";
+
+option go_package = "backend/internal/gen/player/v1;playerpb";
+
+message GetPlayerResponse {
+    repeated Player players = 1;
+}
+
+service PlayerService {
+    rpc GetPlayer(google.protobuf.Empty) returns (GetPlayerResponse);
+}

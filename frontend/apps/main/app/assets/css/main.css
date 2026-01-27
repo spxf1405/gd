@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+@theme {
+  /* custom colors */
+  --color-dark-bg: #0a0e1a;
+  --color-darker-blue: #0f1729;
+  --color-dark-blue: #1a1f3a;
+  --color-medium-blue: #252d4a;
+  --color-light-blue: #2d3748;
+  --color-accent-blue: #4299e1;
+  --color-cyber-green: #00ff88;
+  --color-cyber-purple: #7c3aed;
+  --color-dark-surface: #1e2139;
+  --color-darker-surface: #151829;
+
+  /* background images */
+  --bg-hero-gradient: linear-gradient(
+    135deg,
+    #0a0e1a 0%,
+    #1a1f3a 50%,
+    #252d4a 100%
+  );
+  --bg-card-gradient: linear-gradient(
+    135deg,
+    rgba(26, 31, 58, 0.9) 0%,
+    rgba(37, 45, 74, 0.8) 100%
+  );
+  --bg-sidebar-gradient: linear-gradient(180deg, #0f1729 0%, #1a1f3a 100%);
+}
+
+@layer utilities {
+  .bg-hero-gradient {
+    background-image: linear-gradient(
+      135deg,
+      #0a0e1a 0%,
+      #1a1f3a 50%,
+      #252d4a 100%
+    );
+  }
+
+  .bg-card-gradient {
+    background-image: linear-gradient(
+      135deg,
+      rgba(26, 31, 58, 0.9) 0%,
+      rgba(37, 45, 74, 0.8) 100%
+    );
+  }
+
+  .bg-sidebar-gradient {
+    background-image: linear-gradient(180deg, #0f1729 0%, #1a1f3a 100%);
+  }
+}
+
+* {
+  font-family:
+    "IBM Plex Sans",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial;
+}
+
+.ag-center-cols-viewport {
+    min-height: unset !important;
+}
+
+.ag-root,
+.ag-root * {
+  scrollbar-width: auto !important;
+  scrollbar-color: auto !important;
+}
+
+:root {
+  --scrollbar-track: #0b0e14;
+  --scrollbar-thumb: #2a2f3a;
+  --scrollbar-thumb-hover: #3a4152;
+  --scrollbar-thumb-active: #5562ff;
+}
+
+/* 1. Dành cho Chrome, Edge, Safari và các trình duyệt dựa trên Webkit */
+/* Thay vì .thin-scroll, ta dùng selector gốc để áp dụng toàn hệ thống */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px; /* Cho scrollbar ngang */
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+  border: 2px solid var(--scrollbar-track); /* Tạo khoảng trống giữa thumb và track */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--scrollbar-thumb-active);
+}
+
+/* 2. Dành cho Firefox (Sử dụng cho toàn bộ các phần tử có scroll) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}

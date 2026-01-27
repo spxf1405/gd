@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+import "match/v1/match.proto";
+
+package match.v1;
+
+option go_package = "backend/internal/gen/match/v1;matchpb";
+
+message GetMatchByIDRequest {
+  google.protobuf.Int64Value id = 1;
+} 
+
+message GetMatchByIDResponse {
+  Match match = 1;
+} 
+
+message GenerateMatchesRequest {
+  int32 tournament_id = 1;
+  repeated string player_ids = 2;
+} 
+
+message GenerateMatchesResponse {
+  repeated Match matches = 1;
+} 
+
+service MatchService {
+  rpc GetMatchByID(GetMatchByIDRequest) returns (GetMatchByIDResponse);
+  rpc GenerateMatches(GenerateMatchesRequest) returns (GenerateMatchesResponse);
+}
+

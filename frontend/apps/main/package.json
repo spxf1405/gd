@@ -1,0 +1,31 @@
+{
+  "name": "main",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@gd/proto": "workspace:*",
+    "@iconify/vue": "^5.0.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/vue-query": "^5.92.5",
+    "@vueuse/core": "^14.1.0",
+    "ag-grid-vue3": "^35.0.0",
+    "nuxt": "^4.2.2",
+    "radix-vue": "^1.9.17",
+    "tailwindcss": "^4.1.18",
+    "vue": "^3.5.26",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.14.0"
+  },
+  "peerDependencies": {
+    "ag-grid-community": "^35.0.0"
+  }
+}

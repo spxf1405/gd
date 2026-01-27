@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+import "buf/validate/validate.proto";
+
+package player.v1;
+
+option go_package = "backend/internal/gen/player/v1;playerpb";
+
+
+message Player {
+    google.protobuf.Int64Value id = 1 [(buf.validate.field).required = true];
+    google.protobuf.StringValue name = 2 [(buf.validate.field).required = true];
+    google.protobuf.StringValue country = 3;
+    google.protobuf.StringValue phone = 4[(buf.validate.field).required = true];
+    google.protobuf.StringValue pid = 5[(buf.validate.field).required = true];
+    google.protobuf.StringValue create_at = 6;
+}
+    
