@@ -1,4 +1,7 @@
 <script setup lang="tsx">
+import { create } from "@bufbuild/protobuf";
+import { GenerateMatchesRequestSchema } from "@gd/proto/match/v1/match_service_pb";
+import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 import { Icon } from "@iconify/vue";
 import {
   AllCommunityModule,
@@ -13,10 +16,12 @@ import {
 } from "ag-grid-community";
 import { AgGridVue } from "ag-grid-vue3";
 import { ref } from "vue";
+import CreateTournamentButton from "~/components/features/tournaments/create-tournament-button.vue";
+import DeleteTournament from "~/components/features/tournaments/delete-tournament.vue";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-interface Tournament {
+interface Tournament1 {
   id: string;
   name: string;
   type: string;
@@ -33,7 +38,7 @@ interface Tournament {
   organizer: string;
 }
 
-const tournaments = ref<Tournament[]>([
+const tournaments = ref<Tournament1[]>([
   {
     id: "T001",
     name: "Giải Vô Địch 8-Ball Hà Nội 2026",
@@ -266,7 +271,7 @@ const tournaments = ref<Tournament[]>([
 const StatusCell = defineComponent({
   props: {
     params: {
-      type: Object as PropType<ICellRendererParams<Tournament>>,
+      type: Object as PropType<ICellRendererParams<Tournament1>>,
       required: true,
     },
   },
@@ -291,7 +296,7 @@ const StatusCell = defineComponent({
 const PrizeCell = defineComponent({
   props: {
     params: {
-      type: Object as PropType<ICellRendererParams<Tournament>>,
+      type: Object as PropType<ICellRendererParams<Tournament1>>,
       required: true,
     },
   },
@@ -308,7 +313,7 @@ const PrizeCell = defineComponent({
 const PlayersCell = defineComponent({
   props: {
     params: {
-      type: Object as PropType<ICellRendererParams<Tournament>>,
+      type: Object as PropType<ICellRendererParams<Tournament1>>,
       required: true,
     },
   },
@@ -336,7 +341,7 @@ const PlayersCell = defineComponent({
 const ActionCell = defineComponent({
   props: {
     params: {
-      type: Object as PropType<ICellRendererParams<Tournament>>,
+      type: Object as PropType<ICellRendererParams<Tournament1>>,
       required: true,
     },
   },
@@ -399,17 +404,11 @@ const columnDefs = ref<ColDef<Tournament>[]>([
     filter: false,
   },
   {
-    field: "id",
-    headerName: "Mã",
-    width: 120,
-    pinned: "left",
-  },
-  {
     field: "name",
     headerName: "Tên giải đấu",
-    flex: 2,
-    minWidth: 250,
-    filter: "agTextColumnFilter",
+    flex: 4,
+    minWidth: 400,
+    pinned: "left",
   },
   {
     field: "type",
@@ -452,6 +451,15 @@ const columnDefs = ref<ColDef<Tournament>[]>([
     cellRenderer: PlayersCell,
     autoHeight: true,
   },
+    {
+    field: "createdAt",
+    headerName: "Ngày tạo",
+    width: 130,
+    valueFormatter: (params) => {
+      if (!params.value) return "";
+      return new Date(params.value).toLocaleDateString("vi-VN");
+    },
+  },
   {
     field: "totalPrize",
     headerName: "Tổng giải thưởng",
@@ -482,14 +490,12 @@ const myTheme = themeQuartz.withPart(colorSchemeDarkBlue).withParams({
 });
 
 definePageMeta({
-  title: "Elite Gamer - Tournament",
-  ssr: false,
-  layout: false,
+  title: "Elite Gamer - Tournament List",
 });
 
 const domLayout = ref<DomLayoutType>("normal");
 
-const onGridReady = (params: GridReadyEvent<Tournament>) => {
+const onGridReady = (params: GridReadyEvent<Tournament1>) => {
   params.api.autoSizeColumns(["actions"]);
   if (tournaments.value.length > 10) {
     domLayout.value = "normal";
@@ -513,18 +519,74 @@ const localeText = {
   pageSize: "Số bản ghi một trang",
 };
 
-function onRowClick(event: RowClickedEvent<Tournament>) {
+function onRowClick(event: RowClickedEvent<Tournament1>) {
   navigateTo(`tournament/${event.data?.id}`);
 }
+
+const tournaments1 = ref<Tournament[]>([]);
+
+async function getTournaments() {
+  try {
+    const res = await tournamentClient.getTournaments({
+      request: {
+        case: "empty",
+        value: {},
+      },
+    });
+
+    return res.tournaments;
+  } catch (error) {
+    console.log("res", error);
+  }
+}
+
+const { data: tournamentData } = await useAsyncData(
+  "tournaments",
+  getTournaments,
+);
+
+watchEffect(() => {
+  if (tournamentData.value) {
+    tournaments1.value = tournamentData.value;
+  }
+});
+
+const handleSubmitCreateTournament = async (name: string) => {
+  const id = await tournamentClient.createTournament({ name });
+  if (id) {
+    console.log("id", id);
+  }
+};
+
+function onFilterChange(event) {
+  // event contains the grid state
+  console.log('Filter changed:', event);
+
+  // If you want the current filter model:
+  const filterModel = event.api.getFilterModel();
+  console.log('Current filter model:', filterModel);
+
+}
+
+
+onMounted(() => {
+  getTournaments();
+});
+
 </script>
 
 <template>
   <NuxtLayout name="admin">
-    <!-- <CreateTournamentButton /> -->
-    <ClientOnly>
+    <div class="p-6">
+      <div class="pb-4 flex justify-between w-full">
+        <div class="flex gap-2">
+          <DeleteTournament />
+          <CreateTournamentButton @submit="handleSubmitCreateTournament" />
+        </div>
+      </div>
       <AgGridVue
-        class="w-full h-[calc(100dvh-161px)] p-6"
-        :rowData="tournaments"
+        class="w-full h-[calc(100dvh-273px)]"
+        :rowData="tournaments1"
         :columnDefs="columnDefs"
         :defaultColDef="{ filter: true, floatingFilter: true }"
         :theme="myTheme"
@@ -536,7 +598,8 @@ function onRowClick(event: RowClickedEvent<Tournament>) {
         :row-selection="'multiple'"
         @grid-ready="onGridReady"
         @rowClicked="onRowClick"
+        @filter-changed="onFilterChange"
       />
-    </ClientOnly>
+    </div>
   </NuxtLayout>
 </template>

@@ -10,6 +10,10 @@ type BaseRepository[T any] struct {
 	DB *db.DB
 }
 
+func NewTestRepository[T any]() *BaseRepository[T] {
+	return &BaseRepository[T]{}
+}
+
 func NewBaseRepository[T any](db *db.DB) *BaseRepository[T] {
 	return &BaseRepository[T]{DB: db}
 }

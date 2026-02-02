@@ -17,6 +17,7 @@ func (h *PlayerServiceHandler) GetPlayer(
 	ctx context.Context,
 	req *connect.Request[emptypb.Empty],
 ) (*connect.Response[playerpb.GetPlayerResponse], error) {
+	fmt.Print("=========================123")
 	players, err := h.service.getPlayers(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed")

@@ -1,277 +1,222 @@
-<template>
-  <div class="min-h-screen bg-[#0B0E1A] text-white">
-    <!-- Fixed Header -->
-    <header
-      class="fixed top-0 left-0 right-0 h-16 bg-[#0B1224]/95 backdrop-blur-md border-b border-cyan-500/20 z-50 px-4"
-    >
-      <div class="h-full flex items-center justify-between max-w-full">
-        <!-- Logo -->
-        <div class="flex items-center gap-3">
-          <button
-            @click="toggleSidebar"
-            class="lg:hidden p-2 hover:bg-cyan-500/10 rounded-lg transition-colors"
-          >
-            <Icon icon="lucide:menu" class="w-5 h-5 text-cyan-400" />
-          </button>
-          <div
-            class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/50"
-          >
-            <Icon icon="lucide:trophy" class="w-5 h-5 text-white" />
-          </div>
-          <div class="hidden sm:block">
-            <div
-              class="text-lg font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent"
-            >
-              Elite Gamer
-            </div>
-            <div class="text-[10px] text-gray-400 uppercase tracking-wider">
-              Tournament Platform
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Actions -->
-        <div class="flex items-center gap-2">
-          <button
-            class="relative p-2 hover:bg-cyan-500/10 rounded-lg transition-colors hidden md:flex"
-          >
-            <Icon icon="lucide:bell" class="w-5 h-5 text-gray-300" />
-            <span
-              v-if="notificationCount > 0"
-              class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"
-            ></span>
-          </button>
-          <button
-            class="p-2 hover:bg-cyan-500/10 rounded-lg transition-colors hidden md:flex"
-          >
-            <Icon icon="lucide:star" class="w-5 h-5 text-gray-300" />
-          </button>
-          <div
-            class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center"
-          >
-            <Icon icon="lucide:user" class="w-4 h-4 text-white" />
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <!-- Sidebar Desktop -->
-    <aside
-      class="hidden lg:block fixed left-0 top-16 bottom-0 w-64 bg-[#0B1224]/50 border-r border-cyan-500/10 z-40"
-    >
-      <nav class="p-4 space-y-2">
-        <NuxtLink
-          v-for="item in menuItems"
-          :key="item.path"
-          :to="item.path"
-          class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all group"
-          :class="
-            $route.path === item.path
-              ? 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-white border border-cyan-500/30'
-              : 'text-gray-400 hover:bg-cyan-500/10 hover:text-white'
-          "
-        >
-          <Icon
-            :icon="item.icon"
-            class="w-5 h-5 transition-colors"
-            :class="
-              $route.path === item.path ? 'text-cyan-400' : 'text-gray-400'
-            "
-          />
-          <span class="text-sm font-medium">{{ item.label }}</span>
-        </NuxtLink>
-      </nav>
-    </aside>
-
-    <!-- Mobile Drawer -->
-    <DialogRoot v-model:open="sidebarOpen">
-      <DialogPortal>
-        <DialogOverlay
-          class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 lg:hidden"
-        />
-        <DialogContent
-          class="fixed left-0 top-0 bottom-0 w-80 bg-[#0B1224] border-r border-cyan-500/20 z-50 lg:hidden pt-20 overflow-y-auto"
-        >
-          <div class="p-4">
-            <!-- User Info -->
-            <div class="flex items-center gap-3 mb-6 p-4 bg-cyan-500/5 rounded-lg border border-cyan-500/10">
-              <div
-                class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center"
-              >
-                <Icon icon="lucide:user" class="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <div class="text-white font-semibold">{{ user.name }}</div>
-                <div class="text-gray-400 text-sm">{{ user.title }}</div>
-              </div>
-            </div>
-
-            <!-- Mobile Navigation -->
-            <nav class="space-y-2">
-              <NuxtLink
-                v-for="item in menuItems"
-                :key="item.path"
-                :to="item.path"
-                @click="sidebarOpen = false"
-                class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all"
-                :class="
-                  $route.path === item.path
-                    ? 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-white border border-cyan-500/30'
-                    : 'text-gray-400 hover:bg-cyan-500/10 hover:text-white'
-                "
-              >
-                <Icon
-                  :icon="item.icon"
-                  class="w-5 h-5"
-                  :class="
-                    $route.path === item.path ? 'text-cyan-400' : 'text-gray-400'
-                  "
-                />
-                <span class="text-sm font-medium">{{ item.label }}</span>
-              </NuxtLink>
-            </nav>
-
-            <!-- Mobile Actions -->
-            <div class="mt-6 space-y-2">
-              <button
-                class="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-400 hover:bg-cyan-500/10 hover:text-white transition-all"
-              >
-                <Icon icon="lucide:bell" class="w-5 h-5" />
-                <span class="text-sm">Notifications</span>
-                <span
-                  v-if="notificationCount > 0"
-                  class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full"
-                >
-                  {{ notificationCount }}
-                </span>
-              </button>
-              <button
-                class="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-400 hover:bg-cyan-500/10 hover:text-white transition-all"
-              >
-                <Icon icon="lucide:star" class="w-5 h-5" />
-                <span class="text-sm">Favorites</span>
-              </button>
-            </div>
-          </div>
-        </DialogContent>
-      </DialogPortal>
-    </DialogRoot>
-
-    <!-- Main Content -->
-    <main class="lg:ml-64 pt-16 min-h-screen">
-      <div class="p-6">
-        <!-- Page Title -->
-        <div class="mb-6">
-          <div class="flex items-center gap-4 mb-2">
-            <div
-              class="w-1.5 h-12 bg-gradient-to-b from-cyan-500 to-purple-600 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.5)]"
-            ></div>
-            <div>
-              <h1
-                class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-white via-cyan-400 to-purple-400 bg-clip-text text-transparent"
-              >
-                Quản lý giải đấu
-              </h1>
-              <p
-                class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold mt-1 opacity-70"
-              >
-                Tournament Management / Live Statistics
-              </p>
-            </div>
-          </div>
-          <div
-            class="h-px bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-transparent"
-          ></div>
-        </div>
-
-        <!-- Content Slot -->
-        <slot />
-      </div>
-    </main>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
+import { ref } from "vue";
 import {
   DialogRoot,
   DialogPortal,
   DialogOverlay,
   DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+  DialogTrigger,
 } from "radix-vue";
+import { Icon } from "@iconify/vue";
 
-// Reactive state
-const sidebarOpen = ref(false);
-const notificationCount = ref(3);
+const emit = defineEmits<{
+  (e: "submit", tournamentName: string): void;
+}>();
 
-const user = ref({
-  name: "Elite Gamer",
-  title: "Pro Player",
-});
+const open = ref(false);
+const tournamentName = ref("");
+const showError = ref(false);
 
-const menuItems = [
-  {
-    path: "/admin/tournaments",
-    label: "Giải đấu",
-    icon: "lucide:trophy",
-  },
-  {
-    path: "/admin/ladder",
-    label: "Bảng xếp hạng",
-    icon: "lucide:layout-dashboard",
-  },
-  {
-    path: "/admin/brackets",
-    label: "Nhánh đấu",
-    icon: "lucide:layers",
-  },
-  {
-    path: "/admin/players",
-    label: "Cơ thủ",
-    icon: "lucide:users",
-  },
-  {
-    path: "/admin/archive",
-    label: "Lưu trữ",
-    icon: "lucide:archive",
-  },
-  {
-    path: "/admin/settings",
-    label: "Cài đặt",
-    icon: "lucide:settings",
-  },
-];
+const handleSubmit = async () => {
+  if (!tournamentName.value.trim()) {
+    showError.value = true;
+    return;
+  }
 
-const toggleSidebar = () => {
-  sidebarOpen.value = !sidebarOpen.value;
+  emit("submit", tournamentName.value);
+  closeDialog();
 };
 
-// Close sidebar on route change
-const route = useRoute();
-watch(
-  () => route.path,
-  () => {
-    sidebarOpen.value = false;
+const closeDialog = () => {
+  open.value = false;
+  tournamentName.value = "";
+  showError.value = false;
+};
+
+const handleInput = () => {
+  if (showError.value && tournamentName.value.trim()) {
+    showError.value = false;
   }
-);
+};
 </script>
 
+<template>
+  <DialogRoot v-model:open="open">
+    <!-- Trigger Button -->
+    <DialogTrigger
+      class="bg-gradient-to-r from-[#00FFB3] to-[#00D4FF] hover:from-[#00FFB3]/80 hover:to-[#00D4FF]/80 px-6 py-3 rounded-lg font-bold text-black transition-all duration-200 shadow-lg hover:shadow-[#00FFB3]/20 inline-flex items-center w-fit h-12"
+    >
+      <Icon icon="lucide:plus" class="w-5 h-5 mr-2" />
+      Tạo giải đấu nhanh
+    </DialogTrigger>
+
+    <DialogPortal>
+      <DialogOverlay
+        className="fixed inset-0 z-50 
+             data-[state=open]:animate-in 
+             data-[state=closed]:animate-out 
+             data-[state=closed]:fade-out-0 
+             data-[state=open]:fade-in-0 
+             bg-black/75"
+      />
+
+      <DialogContent
+        class="fixed left-[50%] top-[50%] z-50 w-full max-w-xl translate-x-[-50%] translate-y-[-50%] bg-gradient-to-br from-[#0A1628] to-[#0D1624] border border-[#00D4FF]/30 rounded-2xl shadow-2xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 overflow-hidden"
+      >
+        <!-- Header -->
+        <div class="px-6 py-5 border-b border-[#00D4FF]/20">
+          <DialogTitle class="text-2xl font-bold text-white mb-2">
+            Tạo giải đấu nhanh
+          </DialogTitle>
+          <DialogDescription class="text-sm text-gray-400">
+            Tạo giải đấu mới chỉ trong vài giây
+          </DialogDescription>
+        </div>
+
+        <!-- Content -->
+        <div class="px-6 py-6">
+          <!-- Info Hint -->
+          <div
+            class="bg-[#00D4FF]/10 border border-[#00D4FF]/30 rounded-lg p-4 mb-6"
+          >
+            <div class="flex items-start space-x-3">
+              <Icon
+                icon="lucide:info"
+                class="w-4 h-4 text-[#00D4FF] mt-0.5 flex-shrink-0"
+              />
+              <div class="text-xs text-gray-300 leading-relaxed">
+                <span class="font-semibold text-white">Lưu ý:</span> Bạn có thể
+                chỉnh sửa mọi thông tin chi tiết của giải đấu sau trong phần
+                <span class="text-[#00D4FF] font-medium">Cài đặt</span>.
+              </div>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <form @submit.prevent="handleSubmit" class="space-y-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2">
+                Tên giải đấu <span class="text-red-400">*</span>
+              </label>
+              <input
+                v-model="tournamentName"
+                @input="handleInput"
+                type="text"
+                placeholder="Nhập tên giải đấu của bạn"
+                class="w-full bg-[#0A1628] border rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none transition-all duration-200"
+                :class="
+                  showError
+                    ? 'border-red-500/50 focus:border-red-500'
+                    : 'border-[#00D4FF]/20 focus:border-[#00D4FF]/40'
+                "
+              />
+              <transition
+                enter-active-class="transition-all duration-200"
+                enter-from-class="opacity-0 transform -translate-y-1"
+                enter-to-class="opacity-100 transform translate-y-0"
+                leave-active-class="transition-all duration-150"
+                leave-from-class="opacity-100 transform translate-y-0"
+                leave-to-class="opacity-0 transform -translate-y-1"
+              >
+                <p
+                  v-if="showError"
+                  class="text-red-400 text-xs mt-2 flex items-center"
+                >
+                  <Icon icon="lucide:alert-circle" class="w-3.5 h-3.5 mr-1.5" />
+                  Vui lòng nhập tên giải đấu
+                </p>
+              </transition>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="flex gap-3 pt-2">
+              <DialogClose
+                class="flex-1 bg-white/10 hover:bg-white/20 border border-white/20 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 text-white"
+              >
+                Hủy
+              </DialogClose>
+
+              <button
+                type="submit"
+                class="flex-1 bg-gradient-to-r from-[#00FFB3] to-[#00D4FF] hover:from-[#00FFB3]/80 hover:to-[#00D4FF]/80 px-4 py-3 rounded-lg text-sm font-bold text-black transition-all duration-200 shadow-lg hover:shadow-[#00FFB3]/20 flex items-center justify-center"
+              >
+                <Icon icon="lucide:plus" class="w-4 h-4 mr-2" />
+                Tạo giải đấu
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Close Button -->
+        <DialogClose
+          class="absolute right-4 top-4 rounded-lg p-2 hover:bg-white/10 transition-colors"
+        >
+          <Icon icon="lucide:x" class="w-4 h-4 text-gray-400" />
+        </DialogClose>
+      </DialogContent>
+    </DialogPortal>
+  </DialogRoot>
+</template>
+
 <style scoped>
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+/* Beautiful backdrop with gradient overlay */
+.backdrop-overlay {
+  background:
+    radial-gradient(
+      circle at 20% 50%,
+      rgba(0, 212, 255, 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(0, 255, 179, 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 20%,
+      rgba(138, 43, 226, 0.1) 0%,
+      transparent 50%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(6, 19, 34, 0.95) 0%,
+      rgba(13, 22, 36, 0.95) 100%
+    );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-::-webkit-scrollbar-track {
-  background: rgba(6, 182, 212, 0.05);
+/* Custom animations */
+@keyframes animate-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(6, 182, 212, 0.6), rgba(139, 92, 246, 0.6));
-  border-radius: 4px;
+@keyframes animate-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(6, 182, 212, 0.8), rgba(139, 92, 246, 0.8));
+.data-\[state\=open\]\:animate-in[data-state="open"] {
+  animation: animate-in 0.2s ease-out;
+}
+
+.data-\[state\=closed\]\:animate-out[data-state="closed"] {
+  animation: animate-out 0.15s ease-in;
 }
 </style>

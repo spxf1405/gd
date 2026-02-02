@@ -2,10 +2,11 @@ package main
 
 import (
 	"backend/internal/db"
-	"backend/internal/match"
 	"backend/internal/player"
+	"backend/internal/tournament"
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -23,6 +24,7 @@ func main() {
 
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"http://localhost:3000"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -30,6 +32,12 @@ func main() {
 			"Accept",
 			"Authorization",
 			"Content-Type",
+			"Origin",
+			"User-Agent",
+			"Referer",
+			"Accept-Encoding",
+			"Cache-Control",
+			"Pragma",
 			"Connect-Protocol-Version",
 			"Connect-Timeout-Ms",
 			"Connect-Accept-Encoding",
@@ -37,16 +45,39 @@ func main() {
 			"Grpc-Timeout",
 			"X-Grpc-Web",
 			"X-User-Agent",
+			"Grpc-Accept-Encoding",
+			"Grpc-Encoding",
 		},
-		ExposedHeaders:   []string{"Link"},
+		ExposedHeaders: []string{
+			"Link",
+			"Content-Type",
+			"Content-Length",
+			"Date",
+			"Server",
+			"Vary",
+			"Content-Encoding",
+			"Trailer",
+			"Connect-Protocol-Version",
+			"Connect-Content-Encoding",
+			"Connect-Accept-Encoding",
+			"Grpc-Status",
+			"Grpc-Message",
+			"Grpc-Status-Details-Bin",
+		},
 		AllowCredentials: true,
 		MaxAge:           300,
 	}))
 
-	db, _ := db.NewDB(ctx)
+	db, err := db.NewDB(ctx)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	player.MountPlayerRouter(r, player.NewService(player.NewRepository(db)))
-	match.MountMatchRouter(r, match.NewMatchService(match.NewMatchRepository(db)))
+	// match.MountMatchRouter(r, match.NewMatchService(match.NewMatchRepository(db)))
+
+	tournament.MountTournamentRouter(r, tournament.NewService(tournament.NewRepository(db)))
 
 	addr := ":5000"
 	fmt.Fprintln(os.Stdout, prefix, "Starting server on", addr)

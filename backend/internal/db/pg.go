@@ -36,11 +36,11 @@ func NewDB(ctx context.Context) (*DB, error) {
 	DB_HOST := "aws-1-ap-southeast-1.pooler.supabase.com"
 	DB_PORT := 5432
 	DB_NAME := "postgres"
-	DB_USER := url.QueryEscape("postgres.jhpfzmeqjavyyrtwckkf")
-	DB_PASSWORD := url.QueryEscape("ELuvnpQYIgQjUT6r")
+	DB_USER := url.QueryEscape("postgres.xjsdfdyieufpzmncwoir")
+	DB_PASSWORD := url.QueryEscape("SyBNTWrJJQBBD4Qb")
 
 	connStr := fmt.Sprintf(
-		"postgres://%s:%s@%s:%d/%s?sslmode=%s",
+		"postgresql://%s:%s@%s:%d/%s?sslmode=%s",
 		DB_USER,
 		DB_PASSWORD,
 		DB_HOST,
@@ -67,7 +67,7 @@ func NewDB(ctx context.Context) (*DB, error) {
 		fmt.Println("Parse error:", err)
 		return nil, fmt.Errorf("unable to create connection pool: %w", err)
 	}
-	fmt.Println("Creating DB!")
+	fmt.Println("DB Created!")
 	if err := pool.Ping(ctx); err != nil {
 		pool.Close()
 		return nil, fmt.Errorf("unable to ping database: %w", err)

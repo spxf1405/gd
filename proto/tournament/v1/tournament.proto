@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package tournament.v1;
+
+option go_package = "backend/internal/gen/tournament/v1;tournamentpb";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+// Trạng thái giải đấu
+enum TournamentStatus {
+  TOURNAMENT_STATUS_UNSPECIFIED = 0;
+  TOURNAMENT_STATUS_REGISTERING = 1; 
+  TOURNAMENT_STATUS_RUNNING     = 2; 
+  TOURNAMENT_STATUS_FINISHED    = 3;
+}
+
+// Thông tin giải đấu
+message Tournament {
+  string                        id                 = 1;
+  string                        name               = 2;
+  google.protobuf.StringValue   type               = 3;
+  google.protobuf.StringValue   format             = 4;
+  google.protobuf.StringValue   start_date         = 5;
+  google.protobuf.StringValue   end_date           = 6;
+  google.protobuf.StringValue   location           = 7;
+  google.protobuf.Int32Value    tables             = 8;
+  google.protobuf.StringValue   total_prize        = 9;
+  google.protobuf.StringValue   entry_fee          = 10;
+  google.protobuf.Int32Value    max_players        = 11;
+  google.protobuf.Int32Value    registered_players = 12;
+  TournamentStatus              status             = 13;
+  google.protobuf.StringValue   organizer          = 14;
+  string     created_at         = 15;
+  string     update_at          = 16;
+}

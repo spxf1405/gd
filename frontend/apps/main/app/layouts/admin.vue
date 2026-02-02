@@ -175,7 +175,7 @@
               Quản lý giải đấu
             </h1>
             <p
-              class="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-bold mt-1 opacity-70"
+              class="text-[10px] text-gray-500 uppercase text-white tracking-[0.3em] font-bold mt-1 opacity-70"
             >
               Tournament Management / Live Statistics
             </p>

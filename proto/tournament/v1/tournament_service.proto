@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package tournament.v1;
+
+import "tournament/v1/tournament.proto";
+import "google/protobuf/empty.proto";
+import "buf/validate/validate.proto";
+
+option go_package = "backend/internal/gen/tournament/v1;tournamentpb";
+
+// Request for listing tournaments with pagination, filtering, and sorting.
+message GetTournamentsRequest {
+  int32  page              = 1 [(buf.validate.field).int32.gt = 0]; // Page number (1-based)
+  int32  limit             = 2 [(buf.validate.field).int32.gt = 0]; // Page size
+  string filter            = 3 [ (buf.validate.field).cel = { id: "filter_requires_filter_by", expression: "has(this.filter_by) ? this.filter.size() > 0 : true" } ]; // Filter value
+  string filter_by         = 4; // Field name to filter on
+  string filter_match_type = 5; // Match type (contains, equals, etc.)
+  string sort_by           = 6; // Field name to sort by
+  string sort_order        = 7; // Sort order (asc or desc)
+}
+
+// Response containing a list of tournaments.
+message GetTournamentsResponse {
+  repeated Tournament tournaments = 1; // Tournament list
+}
+
+// Wrapper allowing empty request or filtered request.
+message GetTournamentsRequestWrapper {
+  oneof request {
+    google.protobuf.Empty empty  = 1; // Fetch all tournaments with defaults
+    GetTournamentsRequest filter = 2; // Fetch tournaments with filters
+  }
+}
+
+// Request for creating a new tournament.
+message CreateTournamentRequest {
+  string name = 1; // Tournament name
+}
+
+// Response after creating a tournament.
+message CreateTournamentResponse {
+  string id = 1; // Created tournament ID
+}
+
+// Tournament service definition.
+service TournamentService {
+  // Returns a paginated list of tournaments.
+  rpc GetTournaments(GetTournamentsRequestWrapper) returns (GetTournamentsResponse);
+  // Creates a new tournament.
+  rpc CreateTournament(CreateTournamentRequest) returns (CreateTournamentResponse);
+}

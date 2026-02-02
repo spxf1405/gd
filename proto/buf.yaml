@@ -2,7 +2,7 @@ version: v2
 modules:
   - path: .                              # Where your protos are
 deps:
-  - buf.build/bufbuild/protovalidate     # External proto dependencies
+  - buf.build/bufbuild/protovalidate
 lint:
   use:
     - DEFAULT                            # Linting standards
