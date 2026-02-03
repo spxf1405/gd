@@ -8,15 +8,60 @@ import "buf/validate/validate.proto";
 
 option go_package = "backend/internal/gen/tournament/v1;tournamentpb";
 
+enum TournamentFilterBy {
+  TOURNAMENT_FILTER_BY_UNSPECIFIED = 0;
+
+  TOURNAMENT_FILTER_BY_NAME        = 1; // name
+  TOURNAMENT_FILTER_BY_TYPE        = 2; // type
+  TOURNAMENT_FILTER_BY_FORMAT      = 3; // format
+  TOURNAMENT_FILTER_BY_LOCATION    = 4; // location
+  TOURNAMENT_FILTER_BY_START_DATE  = 5; // startDate
+  TOURNAMENT_FILTER_BY_TOTAL_PRIZE = 6; // totalPrize
+  TOURNAMENT_FILTER_BY_STATUS      = 7; // status
+}
+
+enum TournamentSortBy {
+  TOURNAMENT_SORT_BY_UNSPECIFIED = 0;
+
+  TOURNAMENT_SORT_BY_CREATED_AT  = 1; // createdAt (default)
+  TOURNAMENT_SORT_BY_START_DATE  = 2; // startDate
+  TOURNAMENT_SORT_BY_END_DATE    = 3; // endDate
+  TOURNAMENT_SORT_BY_TOTAL_PRIZE = 4; // totalPrize
+  TOURNAMENT_SORT_BY_NAME        = 5; // name
+}
+
+enum SortOrder {
+  SORT_ORDER_UNSPECIFIED = 0;
+  SORT_ORDER_ASC         = 1;
+  SORT_ORDER_DESC        = 2;
+}
+
+enum FilterMatchType {
+  FILTER_MATCH_TYPE_UNSPECIFIED = 0;
+  EQ                            = 1;
+  NEQ                           = 2;
+  CONTAINS                      = 3;
+  NOT_CONTAINS                  = 4;
+  STARTS_WITH                   = 5;
+  ENDS_WITH                     = 6;
+  GT                            = 7;
+  GTE                           = 8;
+  LT                            = 9;
+  LTE                           = 10;
+  BETWEEN                       = 11;
+  IS_NULL                       = 12;
+  IS_NOT_NULL                   = 13;
+}
+
 // Request for listing tournaments with pagination, filtering, and sorting.
 message GetTournamentsRequest {
-  int32  page              = 1 [(buf.validate.field).int32.gt = 0]; // Page number (1-based)
-  int32  limit             = 2 [(buf.validate.field).int32.gt = 0]; // Page size
-  string filter            = 3 [ (buf.validate.field).cel = { id: "filter_requires_filter_by", expression: "has(this.filter_by) ? this.filter.size() > 0 : true" } ]; // Filter value
-  string filter_by         = 4; // Field name to filter on
-  string filter_match_type = 5; // Match type (contains, equals, etc.)
-  string sort_by           = 6; // Field name to sort by
-  string sort_order        = 7; // Sort order (asc or desc)
+  int32              page         = 1 [(buf.validate.field).int32.gt = 0]; // Page number (1-based)
+  int32              limit        = 2 [(buf.validate.field).int32.gt = 0]; // Page size
+  string             filter       = 3 [ (buf.validate.field).cel = { id: "filter_requires_filter_by", expression: "has(this.filter_by) ? this.filter.size() > 0 : true" } ]; // Filter value
+  TournamentFilterBy filter_by    = 4; // Field name to filter on
+  FilterMatchType    filter_model = 5; // Match type (contains, equals, etc.)
+  TournamentSortBy   sort_by      = 6; // Field name to sort by
+  SortOrder          sort_order   = 7; // Sort order (asc or desc)
 }
 
 // Response containing a list of tournaments.

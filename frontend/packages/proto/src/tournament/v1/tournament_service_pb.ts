@@ -2,8 +2,8 @@
 // @generated from file tournament/v1/tournament_service.proto (package tournament.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 import type { Tournament } from "./tournament_pb";
 import { file_tournament_v1_tournament } from "./tournament_pb";
 import type { Empty } from "@bufbuild/protobuf/wkt";
@@ -15,7 +15,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file tournament/v1/tournament_service.proto.
  */
 export const file_tournament_v1_tournament_service: GenFile = /*@__PURE__*/
-  fileDesc("CiZ0b3VybmFtZW50L3YxL3RvdXJuYW1lbnRfc2VydmljZS5wcm90bxINdG91cm5hbWVudC52MSKBAgoVR2V0VG91cm5hbWVudHNSZXF1ZXN0EhUKBHBhZ2UYASABKAVCB7pIBBoCIAASFgoFbGltaXQYAiABKAVCB7pIBBoCIAASZgoGZmlsdGVyGAMgASgJQla6SFO6AVAKGWZpbHRlcl9yZXF1aXJlc19maWx0ZXJfYnkaM2hhcyh0aGlzLmZpbHRlcl9ieSkgPyB0aGlzLmZpbHRlci5zaXplKCkgPiAwIDogdHJ1ZRIRCglmaWx0ZXJfYnkYBCABKAkSGQoRZmlsdGVyX21hdGNoX3R5cGUYBSABKAkSDwoHc29ydF9ieRgGIAEoCRISCgpzb3J0X29yZGVyGAcgASgJIkgKFkdldFRvdXJuYW1lbnRzUmVzcG9uc2USLgoLdG91cm5hbWVudHMYASADKAsyGS50b3VybmFtZW50LnYxLlRvdXJuYW1lbnQiigEKHEdldFRvdXJuYW1lbnRzUmVxdWVzdFdyYXBwZXISJwoFZW1wdHkYASABKAsyFi5nb29nbGUucHJvdG9idWYuRW1wdHlIABI2CgZmaWx0ZXIYAiABKAsyJC50b3VybmFtZW50LnYxLkdldFRvdXJuYW1lbnRzUmVxdWVzdEgAQgkKB3JlcXVlc3QiJwoXQ3JlYXRlVG91cm5hbWVudFJlcXVlc3QSDAoEbmFtZRgBIAEoCSImChhDcmVhdGVUb3VybmFtZW50UmVzcG9uc2USCgoCaWQYASABKAky3gEKEVRvdXJuYW1lbnRTZXJ2aWNlEmQKDkdldFRvdXJuYW1lbnRzEisudG91cm5hbWVudC52MS5HZXRUb3VybmFtZW50c1JlcXVlc3RXcmFwcGVyGiUudG91cm5hbWVudC52MS5HZXRUb3VybmFtZW50c1Jlc3BvbnNlEmMKEENyZWF0ZVRvdXJuYW1lbnQSJi50b3VybmFtZW50LnYxLkNyZWF0ZVRvdXJuYW1lbnRSZXF1ZXN0GicudG91cm5hbWVudC52MS5DcmVhdGVUb3VybmFtZW50UmVzcG9uc2VCMVovYmFja2VuZC9pbnRlcm5hbC9nZW4vdG91cm5hbWVudC92MTt0b3VybmFtZW50cGJiBnByb3RvMw", [file_tournament_v1_tournament, file_google_protobuf_empty, file_buf_validate_validate]);
+  fileDesc("CiZ0b3VybmFtZW50L3YxL3RvdXJuYW1lbnRfc2VydmljZS5wcm90bxINdG91cm5hbWVudC52MSL6AgoVR2V0VG91cm5hbWVudHNSZXF1ZXN0EhUKBHBhZ2UYASABKAVCB7pIBBoCIAASFgoFbGltaXQYAiABKAVCB7pIBBoCIAASZgoGZmlsdGVyGAMgASgJQla6SFO6AVAKGWZpbHRlcl9yZXF1aXJlc19maWx0ZXJfYnkaM2hhcyh0aGlzLmZpbHRlcl9ieSkgPyB0aGlzLmZpbHRlci5zaXplKCkgPiAwIDogdHJ1ZRI0CglmaWx0ZXJfYnkYBCABKA4yIS50b3VybmFtZW50LnYxLlRvdXJuYW1lbnRGaWx0ZXJCeRI0CgxmaWx0ZXJfbW9kZWwYBSABKA4yHi50b3VybmFtZW50LnYxLkZpbHRlck1hdGNoVHlwZRIwCgdzb3J0X2J5GAYgASgOMh8udG91cm5hbWVudC52MS5Ub3VybmFtZW50U29ydEJ5EiwKCnNvcnRfb3JkZXIYByABKA4yGC50b3VybmFtZW50LnYxLlNvcnRPcmRlciJIChZHZXRUb3VybmFtZW50c1Jlc3BvbnNlEi4KC3RvdXJuYW1lbnRzGAEgAygLMhkudG91cm5hbWVudC52MS5Ub3VybmFtZW50IooBChxHZXRUb3VybmFtZW50c1JlcXVlc3RXcmFwcGVyEicKBWVtcHR5GAEgASgLMhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5SAASNgoGZmlsdGVyGAIgASgLMiQudG91cm5hbWVudC52MS5HZXRUb3VybmFtZW50c1JlcXVlc3RIAEIJCgdyZXF1ZXN0IicKF0NyZWF0ZVRvdXJuYW1lbnRSZXF1ZXN0EgwKBG5hbWUYASABKAkiJgoYQ3JlYXRlVG91cm5hbWVudFJlc3BvbnNlEgoKAmlkGAEgASgJKqgCChJUb3VybmFtZW50RmlsdGVyQnkSJAogVE9VUk5BTUVOVF9GSUxURVJfQllfVU5TUEVDSUZJRUQQABIdChlUT1VSTkFNRU5UX0ZJTFRFUl9CWV9OQU1FEAESHQoZVE9VUk5BTUVOVF9GSUxURVJfQllfVFlQRRACEh8KG1RPVVJOQU1FTlRfRklMVEVSX0JZX0ZPUk1BVBADEiEKHVRPVVJOQU1FTlRfRklMVEVSX0JZX0xPQ0FUSU9OEAQSIwofVE9VUk5BTUVOVF9GSUxURVJfQllfU1RBUlRfREFURRAFEiQKIFRPVVJOQU1FTlRfRklMVEVSX0JZX1RPVEFMX1BSSVpFEAYSHwobVE9VUk5BTUVOVF9GSUxURVJfQllfU1RBVFVTEAcq3gEKEFRvdXJuYW1lbnRTb3J0QnkSIgoeVE9VUk5BTUVOVF9TT1JUX0JZX1VOU1BFQ0lGSUVEEAASIQodVE9VUk5BTUVOVF9TT1JUX0JZX0NSRUFURURfQVQQARIhCh1UT1VSTkFNRU5UX1NPUlRfQllfU1RBUlRfREFURRACEh8KG1RPVVJOQU1FTlRfU09SVF9CWV9FTkRfREFURRADEiIKHlRPVVJOQU1FTlRfU09SVF9CWV9UT1RBTF9QUklaRRAEEhsKF1RPVVJOQU1FTlRfU09SVF9CWV9OQU1FEAUqUAoJU29ydE9yZGVyEhoKFlNPUlRfT1JERVJfVU5TUEVDSUZJRUQQABISCg5TT1JUX09SREVSX0FTQxABEhMKD1NPUlRfT1JERVJfREVTQxACKtIBCg9GaWx0ZXJNYXRjaFR5cGUSIQodRklMVEVSX01BVENIX1RZUEVfVU5TUEVDSUZJRUQQABIGCgJFURABEgcKA05FURACEgwKCENPTlRBSU5TEAMSEAoMTk9UX0NPTlRBSU5TEAQSDwoLU1RBUlRTX1dJVEgQBRINCglFTkRTX1dJVEgQBhIGCgJHVBAHEgcKA0dURRAIEgYKAkxUEAkSBwoDTFRFEAoSCwoHQkVUV0VFThALEgsKB0lTX05VTEwQDBIPCgtJU19OT1RfTlVMTBANMt4BChFUb3VybmFtZW50U2VydmljZRJkCg5HZXRUb3VybmFtZW50cxIrLnRvdXJuYW1lbnQudjEuR2V0VG91cm5hbWVudHNSZXF1ZXN0V3JhcHBlcholLnRvdXJuYW1lbnQudjEuR2V0VG91cm5hbWVudHNSZXNwb25zZRJjChBDcmVhdGVUb3VybmFtZW50EiYudG91cm5hbWVudC52MS5DcmVhdGVUb3VybmFtZW50UmVxdWVzdBonLnRvdXJuYW1lbnQudjEuQ3JlYXRlVG91cm5hbWVudFJlc3BvbnNlQjFaL2JhY2tlbmQvaW50ZXJuYWwvZ2VuL3RvdXJuYW1lbnQvdjE7dG91cm5hbWVudHBiYgZwcm90bzM", [file_tournament_v1_tournament, file_google_protobuf_empty, file_buf_validate_validate]);
 
 /**
  * Request for listing tournaments with pagination, filtering, and sorting.
@@ -47,30 +47,30 @@ export type GetTournamentsRequest = Message<"tournament.v1.GetTournamentsRequest
   /**
    * Field name to filter on
    *
-   * @generated from field: string filter_by = 4;
+   * @generated from field: tournament.v1.TournamentFilterBy filter_by = 4;
    */
-  filterBy: string;
+  filterBy: TournamentFilterBy;
 
   /**
    * Match type (contains, equals, etc.)
    *
-   * @generated from field: string filter_match_type = 5;
+   * @generated from field: tournament.v1.FilterMatchType filter_model = 5;
    */
-  filterMatchType: string;
+  filterModel: FilterMatchType;
 
   /**
    * Field name to sort by
    *
-   * @generated from field: string sort_by = 6;
+   * @generated from field: tournament.v1.TournamentSortBy sort_by = 6;
    */
-  sortBy: string;
+  sortBy: TournamentSortBy;
 
   /**
    * Sort order (asc or desc)
    *
-   * @generated from field: string sort_order = 7;
+   * @generated from field: tournament.v1.SortOrder sort_order = 7;
    */
-  sortOrder: string;
+  sortOrder: SortOrder;
 };
 
 /**
@@ -177,6 +177,229 @@ export type CreateTournamentResponse = Message<"tournament.v1.CreateTournamentRe
  */
 export const CreateTournamentResponseSchema: GenMessage<CreateTournamentResponse> = /*@__PURE__*/
   messageDesc(file_tournament_v1_tournament_service, 4);
+
+/**
+ * @generated from enum tournament.v1.TournamentFilterBy
+ */
+export enum TournamentFilterBy {
+  /**
+   * @generated from enum value: TOURNAMENT_FILTER_BY_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * name
+   *
+   * @generated from enum value: TOURNAMENT_FILTER_BY_NAME = 1;
+   */
+  NAME = 1,
+
+  /**
+   * type
+   *
+   * @generated from enum value: TOURNAMENT_FILTER_BY_TYPE = 2;
+   */
+  TYPE = 2,
+
+  /**
+   * format
+   *
+   * @generated from enum value: TOURNAMENT_FILTER_BY_FORMAT = 3;
+   */
+  FORMAT = 3,
+
+  /**
+   * location
+   *
+   * @generated from enum value: TOURNAMENT_FILTER_BY_LOCATION = 4;
+   */
+  LOCATION = 4,
+
+  /**
+   * startDate
+   *
+   * @generated from enum value: TOURNAMENT_FILTER_BY_START_DATE = 5;
+   */
+  START_DATE = 5,
+
+  /**
+   * totalPrize
+   *
+   * @generated from enum value: TOURNAMENT_FILTER_BY_TOTAL_PRIZE = 6;
+   */
+  TOTAL_PRIZE = 6,
+
+  /**
+   * status
+   *
+   * @generated from enum value: TOURNAMENT_FILTER_BY_STATUS = 7;
+   */
+  STATUS = 7,
+}
+
+/**
+ * Describes the enum tournament.v1.TournamentFilterBy.
+ */
+export const TournamentFilterBySchema: GenEnum<TournamentFilterBy> = /*@__PURE__*/
+  enumDesc(file_tournament_v1_tournament_service, 0);
+
+/**
+ * @generated from enum tournament.v1.TournamentSortBy
+ */
+export enum TournamentSortBy {
+  /**
+   * @generated from enum value: TOURNAMENT_SORT_BY_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * createdAt (default)
+   *
+   * @generated from enum value: TOURNAMENT_SORT_BY_CREATED_AT = 1;
+   */
+  CREATED_AT = 1,
+
+  /**
+   * startDate
+   *
+   * @generated from enum value: TOURNAMENT_SORT_BY_START_DATE = 2;
+   */
+  START_DATE = 2,
+
+  /**
+   * endDate
+   *
+   * @generated from enum value: TOURNAMENT_SORT_BY_END_DATE = 3;
+   */
+  END_DATE = 3,
+
+  /**
+   * totalPrize
+   *
+   * @generated from enum value: TOURNAMENT_SORT_BY_TOTAL_PRIZE = 4;
+   */
+  TOTAL_PRIZE = 4,
+
+  /**
+   * name
+   *
+   * @generated from enum value: TOURNAMENT_SORT_BY_NAME = 5;
+   */
+  NAME = 5,
+}
+
+/**
+ * Describes the enum tournament.v1.TournamentSortBy.
+ */
+export const TournamentSortBySchema: GenEnum<TournamentSortBy> = /*@__PURE__*/
+  enumDesc(file_tournament_v1_tournament_service, 1);
+
+/**
+ * @generated from enum tournament.v1.SortOrder
+ */
+export enum SortOrder {
+  /**
+   * @generated from enum value: SORT_ORDER_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: SORT_ORDER_ASC = 1;
+   */
+  ASC = 1,
+
+  /**
+   * @generated from enum value: SORT_ORDER_DESC = 2;
+   */
+  DESC = 2,
+}
+
+/**
+ * Describes the enum tournament.v1.SortOrder.
+ */
+export const SortOrderSchema: GenEnum<SortOrder> = /*@__PURE__*/
+  enumDesc(file_tournament_v1_tournament_service, 2);
+
+/**
+ * @generated from enum tournament.v1.FilterMatchType
+ */
+export enum FilterMatchType {
+  /**
+   * @generated from enum value: FILTER_MATCH_TYPE_UNSPECIFIED = 0;
+   */
+  FILTER_MATCH_TYPE_UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: EQ = 1;
+   */
+  EQ = 1,
+
+  /**
+   * @generated from enum value: NEQ = 2;
+   */
+  NEQ = 2,
+
+  /**
+   * @generated from enum value: CONTAINS = 3;
+   */
+  CONTAINS = 3,
+
+  /**
+   * @generated from enum value: NOT_CONTAINS = 4;
+   */
+  NOT_CONTAINS = 4,
+
+  /**
+   * @generated from enum value: STARTS_WITH = 5;
+   */
+  STARTS_WITH = 5,
+
+  /**
+   * @generated from enum value: ENDS_WITH = 6;
+   */
+  ENDS_WITH = 6,
+
+  /**
+   * @generated from enum value: GT = 7;
+   */
+  GT = 7,
+
+  /**
+   * @generated from enum value: GTE = 8;
+   */
+  GTE = 8,
+
+  /**
+   * @generated from enum value: LT = 9;
+   */
+  LT = 9,
+
+  /**
+   * @generated from enum value: LTE = 10;
+   */
+  LTE = 10,
+
+  /**
+   * @generated from enum value: BETWEEN = 11;
+   */
+  BETWEEN = 11,
+
+  /**
+   * @generated from enum value: IS_NULL = 12;
+   */
+  IS_NULL = 12,
+
+  /**
+   * @generated from enum value: IS_NOT_NULL = 13;
+   */
+  IS_NOT_NULL = 13,
+}
+
+/**
+ * Describes the enum tournament.v1.FilterMatchType.
+ */
+export const FilterMatchTypeSchema: GenEnum<FilterMatchType> = /*@__PURE__*/
+  enumDesc(file_tournament_v1_tournament_service, 3);
 
 /**
  * Tournament service definition.

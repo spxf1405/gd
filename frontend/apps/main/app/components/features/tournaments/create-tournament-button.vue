@@ -41,6 +41,8 @@ const handleInput = () => {
     showError.value = false;
   }
 };
+
+const toastRef = ref<boolean>(false);
 </script>
 
 <template>

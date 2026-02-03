@@ -1,7 +1,8 @@
 <script setup lang="tsx">
-import { create } from "@bufbuild/protobuf";
-import { GenerateMatchesRequestSchema } from "@gd/proto/match/v1/match_service_pb";
 import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
+import { TournamentSortBy } from "@gd/proto/tournament/v1/tournament_service_pb";
+import { SortOrder } from "@gd/proto/tournament/v1/tournament_service_pb";
+import { TournamentFilterBy } from "@gd/proto/tournament/v1/tournament_service_pb";
 import { Icon } from "@iconify/vue";
 import {
   AllCommunityModule,
@@ -409,40 +410,45 @@ const columnDefs = ref<ColDef<Tournament>[]>([
     flex: 4,
     minWidth: 400,
     pinned: "left",
+    sortable: false,
   },
   {
     field: "type",
     headerName: "Loại hình",
     width: 130,
+    sortable: false,
   },
   {
     field: "format",
     headerName: "Thể thức",
     width: 100,
-  },
-  {
-    field: "startDate",
-    headerName: "Ngày bắt đầu",
-    width: 130,
-    valueFormatter: (params) => {
-      if (!params.value) return "";
-      return new Date(params.value).toLocaleDateString("vi-VN");
-    },
-  },
-  {
-    field: "endDate",
-    headerName: "Ngày kết thúc",
-    width: 130,
-    valueFormatter: (params) => {
-      if (!params.value) return "";
-      return new Date(params.value).toLocaleDateString("vi-VN");
-    },
+    sortable: false,
   },
   {
     field: "location",
     headerName: "Địa điểm",
     flex: 1,
     minWidth: 200,
+    sortable: false,
+  },
+  {
+    field: "createdAt",
+    headerName: "Ngày tạo",
+    filter: false,
+    width: 130,
+    valueFormatter: (params) => {
+      if (!params.value) return "";
+      return new Date(params.value).toLocaleDateString("vi-VN");
+    },
+  },
+  {
+    field: "startDate",
+    headerName: "Ngày khởi tranh",
+    width: 130,
+    valueFormatter: (params) => {
+      if (!params.value) return "";
+      return new Date(params.value).toLocaleDateString("vi-VN");
+    },
   },
   {
     field: "registeredPlayers",
@@ -450,32 +456,39 @@ const columnDefs = ref<ColDef<Tournament>[]>([
     width: 150,
     cellRenderer: PlayersCell,
     autoHeight: true,
+    filter: false,
+    sortable: false,
   },
-    {
-    field: "createdAt",
-    headerName: "Ngày tạo",
-    width: 130,
-    valueFormatter: (params) => {
-      if (!params.value) return "";
-      return new Date(params.value).toLocaleDateString("vi-VN");
-    },
-  },
+
   {
     field: "totalPrize",
     headerName: "Tổng giải thưởng",
     width: 150,
     cellRenderer: PrizeCell,
+    filter: false,
   },
   {
     field: "status",
     headerName: "Trạng thái",
     width: 140,
     cellRenderer: StatusCell,
+    sortable: false,
+  },
+  {
+    field: "endDate",
+    headerName: "Ngày kết thúc",
+    width: 130,
+    filter: false,
+    valueFormatter: (params) => {
+      if (!params.value) return "";
+      return new Date(params.value).toLocaleDateString("vi-VN");
+    },
   },
   {
     colId: "actions",
     headerName: "Thao tác",
     cellRenderer: ActionCell,
+    filter: false,
     width: 280,
     resizable: false,
     suppressMovable: true,
@@ -527,12 +540,29 @@ const tournaments1 = ref<Tournament[]>([]);
 
 async function getTournaments() {
   try {
+    // const res = await tournamentClient.getTournaments({
+    //   request: {
+    //     case: "empty",
+    //     value: {},
+    //   },
+    // });
+
     const res = await tournamentClient.getTournaments({
       request: {
-        case: "empty",
-        value: {},
+        case: "filter",
+        value: {
+          page: 1,
+          limit: 10,
+          filterBy: TournamentFilterBy.NAME,
+          filter: "Ha Noi",
+          sortBy: TournamentSortBy.NAME,
+          sortOrder: SortOrder.ASC
+        },
       },
     });
+
+    
+    console.log("res1", res)
 
     return res.tournaments;
   } catch (error) {
@@ -555,24 +585,24 @@ const handleSubmitCreateTournament = async (name: string) => {
   const id = await tournamentClient.createTournament({ name });
   if (id) {
     console.log("id", id);
+    toastRef.value = true;
   }
 };
 
 function onFilterChange(event) {
   // event contains the grid state
-  console.log('Filter changed:', event);
+  console.log("Filter changed:", event);
 
   // If you want the current filter model:
   const filterModel = event.api.getFilterModel();
-  console.log('Current filter model:', filterModel);
-
+  console.log("Current filter model:", filterModel);
 }
 
+const toastRef = ref(false);
 
 onMounted(() => {
   getTournaments();
 });
-
 </script>
 
 <template>
@@ -600,6 +630,33 @@ onMounted(() => {
         @rowClicked="onRowClick"
         @filter-changed="onFilterChange"
       />
+      <ToastProvider>
+        <ToastRoot
+          v-model:open="toastRef"
+          class="bg-white rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] p-[15px] grid [grid-template-areas:_'title_action'_'description_action'] grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut"
+        >
+          <ToastTitle
+            class="[grid-area:_title] mb-[5px] font-medium text-slate12 text-[15px]"
+          >
+            Scheduled: Catch up
+          </ToastTitle>
+          <ToastDescription as-child> Test </ToastDescription>
+          <ToastAction
+            class="[grid-area:_action]"
+            as-child
+            alt-text="Goto schedule to undo"
+          >
+            <button
+              class="inline-flex items-center justify-center rounded font-medium text-xs px-[10px] leading-[25px] h-[25px] bg-green2 text-green11 shadow-[inset_0_0_0_1px] shadow-green7 hover:shadow-[inset_0_0_0_1px] hover:shadow-green8 focus:shadow-[0_0_0_2px] focus:shadow-green8"
+            >
+              Undo
+            </button>
+          </ToastAction>
+        </ToastRoot>
+        <ToastViewport
+          class="[--viewport-padding:_25px] fixed bottom-0 right-0 flex flex-col p-[var(--viewport-padding)] gap-[10px] w-[390px] max-w-[100vw] m-0 list-none z-[2147483647] outline-none"
+        />
+      </ToastProvider>
     </div>
   </NuxtLayout>
 </template>

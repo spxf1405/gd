@@ -22,6 +22,8 @@ func (h *tournamentServiceHandler) GetTournaments(
 	if ok {
 		fmt.Print(params)
 	}
+	fmt.Println("=========================")
+	fmt.Println(params)
 
 	tournaments, err := h.service.getTournaments(ctx, req)
 	if err != nil {

@@ -23,18 +23,271 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type TournamentFilterBy int32
+
+const (
+	TournamentFilterBy_TOURNAMENT_FILTER_BY_UNSPECIFIED TournamentFilterBy = 0
+	TournamentFilterBy_TOURNAMENT_FILTER_BY_NAME        TournamentFilterBy = 1 // name
+	TournamentFilterBy_TOURNAMENT_FILTER_BY_TYPE        TournamentFilterBy = 2 // type
+	TournamentFilterBy_TOURNAMENT_FILTER_BY_FORMAT      TournamentFilterBy = 3 // format
+	TournamentFilterBy_TOURNAMENT_FILTER_BY_LOCATION    TournamentFilterBy = 4 // location
+	TournamentFilterBy_TOURNAMENT_FILTER_BY_START_DATE  TournamentFilterBy = 5 // startDate
+	TournamentFilterBy_TOURNAMENT_FILTER_BY_TOTAL_PRIZE TournamentFilterBy = 6 // totalPrize
+	TournamentFilterBy_TOURNAMENT_FILTER_BY_STATUS      TournamentFilterBy = 7 // status
+)
+
+// Enum value maps for TournamentFilterBy.
+var (
+	TournamentFilterBy_name = map[int32]string{
+		0: "TOURNAMENT_FILTER_BY_UNSPECIFIED",
+		1: "TOURNAMENT_FILTER_BY_NAME",
+		2: "TOURNAMENT_FILTER_BY_TYPE",
+		3: "TOURNAMENT_FILTER_BY_FORMAT",
+		4: "TOURNAMENT_FILTER_BY_LOCATION",
+		5: "TOURNAMENT_FILTER_BY_START_DATE",
+		6: "TOURNAMENT_FILTER_BY_TOTAL_PRIZE",
+		7: "TOURNAMENT_FILTER_BY_STATUS",
+	}
+	TournamentFilterBy_value = map[string]int32{
+		"TOURNAMENT_FILTER_BY_UNSPECIFIED": 0,
+		"TOURNAMENT_FILTER_BY_NAME":        1,
+		"TOURNAMENT_FILTER_BY_TYPE":        2,
+		"TOURNAMENT_FILTER_BY_FORMAT":      3,
+		"TOURNAMENT_FILTER_BY_LOCATION":    4,
+		"TOURNAMENT_FILTER_BY_START_DATE":  5,
+		"TOURNAMENT_FILTER_BY_TOTAL_PRIZE": 6,
+		"TOURNAMENT_FILTER_BY_STATUS":      7,
+	}
+)
+
+func (x TournamentFilterBy) Enum() *TournamentFilterBy {
+	p := new(TournamentFilterBy)
+	*p = x
+	return p
+}
+
+func (x TournamentFilterBy) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (TournamentFilterBy) Descriptor() protoreflect.EnumDescriptor {
+	return file_tournament_v1_tournament_service_proto_enumTypes[0].Descriptor()
+}
+
+func (TournamentFilterBy) Type() protoreflect.EnumType {
+	return &file_tournament_v1_tournament_service_proto_enumTypes[0]
+}
+
+func (x TournamentFilterBy) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use TournamentFilterBy.Descriptor instead.
+func (TournamentFilterBy) EnumDescriptor() ([]byte, []int) {
+	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{0}
+}
+
+type TournamentSortBy int32
+
+const (
+	TournamentSortBy_TOURNAMENT_SORT_BY_UNSPECIFIED TournamentSortBy = 0
+	TournamentSortBy_TOURNAMENT_SORT_BY_CREATED_AT  TournamentSortBy = 1 // createdAt (default)
+	TournamentSortBy_TOURNAMENT_SORT_BY_START_DATE  TournamentSortBy = 2 // startDate
+	TournamentSortBy_TOURNAMENT_SORT_BY_END_DATE    TournamentSortBy = 3 // endDate
+	TournamentSortBy_TOURNAMENT_SORT_BY_TOTAL_PRIZE TournamentSortBy = 4 // totalPrize
+	TournamentSortBy_TOURNAMENT_SORT_BY_NAME        TournamentSortBy = 5 // name
+)
+
+// Enum value maps for TournamentSortBy.
+var (
+	TournamentSortBy_name = map[int32]string{
+		0: "TOURNAMENT_SORT_BY_UNSPECIFIED",
+		1: "TOURNAMENT_SORT_BY_CREATED_AT",
+		2: "TOURNAMENT_SORT_BY_START_DATE",
+		3: "TOURNAMENT_SORT_BY_END_DATE",
+		4: "TOURNAMENT_SORT_BY_TOTAL_PRIZE",
+		5: "TOURNAMENT_SORT_BY_NAME",
+	}
+	TournamentSortBy_value = map[string]int32{
+		"TOURNAMENT_SORT_BY_UNSPECIFIED": 0,
+		"TOURNAMENT_SORT_BY_CREATED_AT":  1,
+		"TOURNAMENT_SORT_BY_START_DATE":  2,
+		"TOURNAMENT_SORT_BY_END_DATE":    3,
+		"TOURNAMENT_SORT_BY_TOTAL_PRIZE": 4,
+		"TOURNAMENT_SORT_BY_NAME":        5,
+	}
+)
+
+func (x TournamentSortBy) Enum() *TournamentSortBy {
+	p := new(TournamentSortBy)
+	*p = x
+	return p
+}
+
+func (x TournamentSortBy) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (TournamentSortBy) Descriptor() protoreflect.EnumDescriptor {
+	return file_tournament_v1_tournament_service_proto_enumTypes[1].Descriptor()
+}
+
+func (TournamentSortBy) Type() protoreflect.EnumType {
+	return &file_tournament_v1_tournament_service_proto_enumTypes[1]
+}
+
+func (x TournamentSortBy) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use TournamentSortBy.Descriptor instead.
+func (TournamentSortBy) EnumDescriptor() ([]byte, []int) {
+	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{1}
+}
+
+type SortOrder int32
+
+const (
+	SortOrder_SORT_ORDER_UNSPECIFIED SortOrder = 0
+	SortOrder_SORT_ORDER_ASC         SortOrder = 1
+	SortOrder_SORT_ORDER_DESC        SortOrder = 2
+)
+
+// Enum value maps for SortOrder.
+var (
+	SortOrder_name = map[int32]string{
+		0: "SORT_ORDER_UNSPECIFIED",
+		1: "SORT_ORDER_ASC",
+		2: "SORT_ORDER_DESC",
+	}
+	SortOrder_value = map[string]int32{
+		"SORT_ORDER_UNSPECIFIED": 0,
+		"SORT_ORDER_ASC":         1,
+		"SORT_ORDER_DESC":        2,
+	}
+)
+
+func (x SortOrder) Enum() *SortOrder {
+	p := new(SortOrder)
+	*p = x
+	return p
+}
+
+func (x SortOrder) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (SortOrder) Descriptor() protoreflect.EnumDescriptor {
+	return file_tournament_v1_tournament_service_proto_enumTypes[2].Descriptor()
+}
+
+func (SortOrder) Type() protoreflect.EnumType {
+	return &file_tournament_v1_tournament_service_proto_enumTypes[2]
+}
+
+func (x SortOrder) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use SortOrder.Descriptor instead.
+func (SortOrder) EnumDescriptor() ([]byte, []int) {
+	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{2}
+}
+
+type FilterMatchType int32
+
+const (
+	FilterMatchType_FILTER_MATCH_TYPE_UNSPECIFIED FilterMatchType = 0
+	FilterMatchType_EQ                            FilterMatchType = 1
+	FilterMatchType_NEQ                           FilterMatchType = 2
+	FilterMatchType_CONTAINS                      FilterMatchType = 3
+	FilterMatchType_NOT_CONTAINS                  FilterMatchType = 4
+	FilterMatchType_STARTS_WITH                   FilterMatchType = 5
+	FilterMatchType_ENDS_WITH                     FilterMatchType = 6
+	FilterMatchType_GT                            FilterMatchType = 7
+	FilterMatchType_GTE                           FilterMatchType = 8
+	FilterMatchType_LT                            FilterMatchType = 9
+	FilterMatchType_LTE                           FilterMatchType = 10
+	FilterMatchType_BETWEEN                       FilterMatchType = 11
+	FilterMatchType_IS_NULL                       FilterMatchType = 12
+	FilterMatchType_IS_NOT_NULL                   FilterMatchType = 13
+)
+
+// Enum value maps for FilterMatchType.
+var (
+	FilterMatchType_name = map[int32]string{
+		0:  "FILTER_MATCH_TYPE_UNSPECIFIED",
+		1:  "EQ",
+		2:  "NEQ",
+		3:  "CONTAINS",
+		4:  "NOT_CONTAINS",
+		5:  "STARTS_WITH",
+		6:  "ENDS_WITH",
+		7:  "GT",
+		8:  "GTE",
+		9:  "LT",
+		10: "LTE",
+		11: "BETWEEN",
+		12: "IS_NULL",
+		13: "IS_NOT_NULL",
+	}
+	FilterMatchType_value = map[string]int32{
+		"FILTER_MATCH_TYPE_UNSPECIFIED": 0,
+		"EQ":                            1,
+		"NEQ":                           2,
+		"CONTAINS":                      3,
+		"NOT_CONTAINS":                  4,
+		"STARTS_WITH":                   5,
+		"ENDS_WITH":                     6,
+		"GT":                            7,
+		"GTE":                           8,
+		"LT":                            9,
+		"LTE":                           10,
+		"BETWEEN":                       11,
+		"IS_NULL":                       12,
+		"IS_NOT_NULL":                   13,
+	}
+)
+
+func (x FilterMatchType) Enum() *FilterMatchType {
+	p := new(FilterMatchType)
+	*p = x
+	return p
+}
+
+func (x FilterMatchType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (FilterMatchType) Descriptor() protoreflect.EnumDescriptor {
+	return file_tournament_v1_tournament_service_proto_enumTypes[3].Descriptor()
+}
+
+func (FilterMatchType) Type() protoreflect.EnumType {
+	return &file_tournament_v1_tournament_service_proto_enumTypes[3]
+}
+
+func (x FilterMatchType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use FilterMatchType.Descriptor instead.
+func (FilterMatchType) EnumDescriptor() ([]byte, []int) {
+	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{3}
+}
+
 // Request for listing tournaments with pagination, filtering, and sorting.
 type GetTournamentsRequest struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	Page            int32                  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`                                               // Page number (1-based)
-	Limit           int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`                                             // Page size
-	Filter          string                 `protobuf:"bytes,3,opt,name=filter,proto3" json:"filter,omitempty"`                                            // Filter value
-	FilterBy        string                 `protobuf:"bytes,4,opt,name=filter_by,json=filterBy,proto3" json:"filter_by,omitempty"`                        // Field name to filter on
-	FilterMatchType string                 `protobuf:"bytes,5,opt,name=filter_match_type,json=filterMatchType,proto3" json:"filter_match_type,omitempty"` // Match type (contains, equals, etc.)
-	SortBy          string                 `protobuf:"bytes,6,opt,name=sort_by,json=sortBy,proto3" json:"sort_by,omitempty"`                              // Field name to sort by
-	SortOrder       string                 `protobuf:"bytes,7,opt,name=sort_order,json=sortOrder,proto3" json:"sort_order,omitempty"`                     // Sort order (asc or desc)
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Page          int32                  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`                                                                     // Page number (1-based)
+	Limit         int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`                                                                   // Page size
+	Filter        string                 `protobuf:"bytes,3,opt,name=filter,proto3" json:"filter,omitempty"`                                                                  // Filter value
+	FilterBy      TournamentFilterBy     `protobuf:"varint,4,opt,name=filter_by,json=filterBy,proto3,enum=tournament.v1.TournamentFilterBy" json:"filter_by,omitempty"`       // Field name to filter on
+	FilterModel   FilterMatchType        `protobuf:"varint,5,opt,name=filter_model,json=filterModel,proto3,enum=tournament.v1.FilterMatchType" json:"filter_model,omitempty"` // Match type (contains, equals, etc.)
+	SortBy        TournamentSortBy       `protobuf:"varint,6,opt,name=sort_by,json=sortBy,proto3,enum=tournament.v1.TournamentSortBy" json:"sort_by,omitempty"`               // Field name to sort by
+	SortOrder     SortOrder              `protobuf:"varint,7,opt,name=sort_order,json=sortOrder,proto3,enum=tournament.v1.SortOrder" json:"sort_order,omitempty"`             // Sort order (asc or desc)
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GetTournamentsRequest) Reset() {
@@ -88,32 +341,32 @@ func (x *GetTournamentsRequest) GetFilter() string {
 	return ""
 }
 
-func (x *GetTournamentsRequest) GetFilterBy() string {
+func (x *GetTournamentsRequest) GetFilterBy() TournamentFilterBy {
 	if x != nil {
 		return x.FilterBy
 	}
-	return ""
+	return TournamentFilterBy_TOURNAMENT_FILTER_BY_UNSPECIFIED
 }
 
-func (x *GetTournamentsRequest) GetFilterMatchType() string {
+func (x *GetTournamentsRequest) GetFilterModel() FilterMatchType {
 	if x != nil {
-		return x.FilterMatchType
+		return x.FilterModel
 	}
-	return ""
+	return FilterMatchType_FILTER_MATCH_TYPE_UNSPECIFIED
 }
 
-func (x *GetTournamentsRequest) GetSortBy() string {
+func (x *GetTournamentsRequest) GetSortBy() TournamentSortBy {
 	if x != nil {
 		return x.SortBy
 	}
-	return ""
+	return TournamentSortBy_TOURNAMENT_SORT_BY_UNSPECIFIED
 }
 
-func (x *GetTournamentsRequest) GetSortOrder() string {
+func (x *GetTournamentsRequest) GetSortOrder() SortOrder {
 	if x != nil {
 		return x.SortOrder
 	}
-	return ""
+	return SortOrder_SORT_ORDER_UNSPECIFIED
 }
 
 // Response containing a list of tournaments.
@@ -338,17 +591,17 @@ var File_tournament_v1_tournament_service_proto protoreflect.FileDescriptor
 
 const file_tournament_v1_tournament_service_proto_rawDesc = "" +
 	"\n" +
-	"&tournament/v1/tournament_service.proto\x12\rtournament.v1\x1a\x1etournament/v1/tournament.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1bbuf/validate/validate.proto\"\xc4\x02\n" +
+	"&tournament/v1/tournament_service.proto\x12\rtournament.v1\x1a\x1etournament/v1/tournament.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1bbuf/validate/validate.proto\"\xb9\x03\n" +
 	"\x15GetTournamentsRequest\x12\x1b\n" +
 	"\x04page\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x04page\x12\x1d\n" +
 	"\x05limit\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x05limit\x12n\n" +
 	"\x06filter\x18\x03 \x01(\tBV\xbaHS\xba\x01P\n" +
-	"\x19filter_requires_filter_by\x1a3has(this.filter_by) ? this.filter.size() > 0 : trueR\x06filter\x12\x1b\n" +
-	"\tfilter_by\x18\x04 \x01(\tR\bfilterBy\x12*\n" +
-	"\x11filter_match_type\x18\x05 \x01(\tR\x0ffilterMatchType\x12\x17\n" +
-	"\asort_by\x18\x06 \x01(\tR\x06sortBy\x12\x1d\n" +
+	"\x19filter_requires_filter_by\x1a3has(this.filter_by) ? this.filter.size() > 0 : trueR\x06filter\x12>\n" +
+	"\tfilter_by\x18\x04 \x01(\x0e2!.tournament.v1.TournamentFilterByR\bfilterBy\x12A\n" +
+	"\ffilter_model\x18\x05 \x01(\x0e2\x1e.tournament.v1.FilterMatchTypeR\vfilterModel\x128\n" +
+	"\asort_by\x18\x06 \x01(\x0e2\x1f.tournament.v1.TournamentSortByR\x06sortBy\x127\n" +
 	"\n" +
-	"sort_order\x18\a \x01(\tR\tsortOrder\"U\n" +
+	"sort_order\x18\a \x01(\x0e2\x18.tournament.v1.SortOrderR\tsortOrder\"U\n" +
 	"\x16GetTournamentsResponse\x12;\n" +
 	"\vtournaments\x18\x01 \x03(\v2\x19.tournament.v1.TournamentR\vtournaments\"\x99\x01\n" +
 	"\x1cGetTournamentsRequestWrapper\x12.\n" +
@@ -358,7 +611,43 @@ const file_tournament_v1_tournament_service_proto_rawDesc = "" +
 	"\x17CreateTournamentRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\"*\n" +
 	"\x18CreateTournamentResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id2\xde\x01\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id*\xa8\x02\n" +
+	"\x12TournamentFilterBy\x12$\n" +
+	" TOURNAMENT_FILTER_BY_UNSPECIFIED\x10\x00\x12\x1d\n" +
+	"\x19TOURNAMENT_FILTER_BY_NAME\x10\x01\x12\x1d\n" +
+	"\x19TOURNAMENT_FILTER_BY_TYPE\x10\x02\x12\x1f\n" +
+	"\x1bTOURNAMENT_FILTER_BY_FORMAT\x10\x03\x12!\n" +
+	"\x1dTOURNAMENT_FILTER_BY_LOCATION\x10\x04\x12#\n" +
+	"\x1fTOURNAMENT_FILTER_BY_START_DATE\x10\x05\x12$\n" +
+	" TOURNAMENT_FILTER_BY_TOTAL_PRIZE\x10\x06\x12\x1f\n" +
+	"\x1bTOURNAMENT_FILTER_BY_STATUS\x10\a*\xde\x01\n" +
+	"\x10TournamentSortBy\x12\"\n" +
+	"\x1eTOURNAMENT_SORT_BY_UNSPECIFIED\x10\x00\x12!\n" +
+	"\x1dTOURNAMENT_SORT_BY_CREATED_AT\x10\x01\x12!\n" +
+	"\x1dTOURNAMENT_SORT_BY_START_DATE\x10\x02\x12\x1f\n" +
+	"\x1bTOURNAMENT_SORT_BY_END_DATE\x10\x03\x12\"\n" +
+	"\x1eTOURNAMENT_SORT_BY_TOTAL_PRIZE\x10\x04\x12\x1b\n" +
+	"\x17TOURNAMENT_SORT_BY_NAME\x10\x05*P\n" +
+	"\tSortOrder\x12\x1a\n" +
+	"\x16SORT_ORDER_UNSPECIFIED\x10\x00\x12\x12\n" +
+	"\x0eSORT_ORDER_ASC\x10\x01\x12\x13\n" +
+	"\x0fSORT_ORDER_DESC\x10\x02*\xd2\x01\n" +
+	"\x0fFilterMatchType\x12!\n" +
+	"\x1dFILTER_MATCH_TYPE_UNSPECIFIED\x10\x00\x12\x06\n" +
+	"\x02EQ\x10\x01\x12\a\n" +
+	"\x03NEQ\x10\x02\x12\f\n" +
+	"\bCONTAINS\x10\x03\x12\x10\n" +
+	"\fNOT_CONTAINS\x10\x04\x12\x0f\n" +
+	"\vSTARTS_WITH\x10\x05\x12\r\n" +
+	"\tENDS_WITH\x10\x06\x12\x06\n" +
+	"\x02GT\x10\a\x12\a\n" +
+	"\x03GTE\x10\b\x12\x06\n" +
+	"\x02LT\x10\t\x12\a\n" +
+	"\x03LTE\x10\n" +
+	"\x12\v\n" +
+	"\aBETWEEN\x10\v\x12\v\n" +
+	"\aIS_NULL\x10\f\x12\x0f\n" +
+	"\vIS_NOT_NULL\x10\r2\xde\x01\n" +
 	"\x11TournamentService\x12d\n" +
 	"\x0eGetTournaments\x12+.tournament.v1.GetTournamentsRequestWrapper\x1a%.tournament.v1.GetTournamentsResponse\x12c\n" +
 	"\x10CreateTournament\x12&.tournament.v1.CreateTournamentRequest\x1a'.tournament.v1.CreateTournamentResponseB1Z/backend/internal/gen/tournament/v1;tournamentpbb\x06proto3"
@@ -375,29 +664,38 @@ func file_tournament_v1_tournament_service_proto_rawDescGZIP() []byte {
 	return file_tournament_v1_tournament_service_proto_rawDescData
 }
 
+var file_tournament_v1_tournament_service_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
 var file_tournament_v1_tournament_service_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_tournament_v1_tournament_service_proto_goTypes = []any{
-	(*GetTournamentsRequest)(nil),        // 0: tournament.v1.GetTournamentsRequest
-	(*GetTournamentsResponse)(nil),       // 1: tournament.v1.GetTournamentsResponse
-	(*GetTournamentsRequestWrapper)(nil), // 2: tournament.v1.GetTournamentsRequestWrapper
-	(*CreateTournamentRequest)(nil),      // 3: tournament.v1.CreateTournamentRequest
-	(*CreateTournamentResponse)(nil),     // 4: tournament.v1.CreateTournamentResponse
-	(*Tournament)(nil),                   // 5: tournament.v1.Tournament
-	(*emptypb.Empty)(nil),                // 6: google.protobuf.Empty
+	(TournamentFilterBy)(0),              // 0: tournament.v1.TournamentFilterBy
+	(TournamentSortBy)(0),                // 1: tournament.v1.TournamentSortBy
+	(SortOrder)(0),                       // 2: tournament.v1.SortOrder
+	(FilterMatchType)(0),                 // 3: tournament.v1.FilterMatchType
+	(*GetTournamentsRequest)(nil),        // 4: tournament.v1.GetTournamentsRequest
+	(*GetTournamentsResponse)(nil),       // 5: tournament.v1.GetTournamentsResponse
+	(*GetTournamentsRequestWrapper)(nil), // 6: tournament.v1.GetTournamentsRequestWrapper
+	(*CreateTournamentRequest)(nil),      // 7: tournament.v1.CreateTournamentRequest
+	(*CreateTournamentResponse)(nil),     // 8: tournament.v1.CreateTournamentResponse
+	(*Tournament)(nil),                   // 9: tournament.v1.Tournament
+	(*emptypb.Empty)(nil),                // 10: google.protobuf.Empty
 }
 var file_tournament_v1_tournament_service_proto_depIdxs = []int32{
-	5, // 0: tournament.v1.GetTournamentsResponse.tournaments:type_name -> tournament.v1.Tournament
-	6, // 1: tournament.v1.GetTournamentsRequestWrapper.empty:type_name -> google.protobuf.Empty
-	0, // 2: tournament.v1.GetTournamentsRequestWrapper.filter:type_name -> tournament.v1.GetTournamentsRequest
-	2, // 3: tournament.v1.TournamentService.GetTournaments:input_type -> tournament.v1.GetTournamentsRequestWrapper
-	3, // 4: tournament.v1.TournamentService.CreateTournament:input_type -> tournament.v1.CreateTournamentRequest
-	1, // 5: tournament.v1.TournamentService.GetTournaments:output_type -> tournament.v1.GetTournamentsResponse
-	4, // 6: tournament.v1.TournamentService.CreateTournament:output_type -> tournament.v1.CreateTournamentResponse
-	5, // [5:7] is the sub-list for method output_type
-	3, // [3:5] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	0,  // 0: tournament.v1.GetTournamentsRequest.filter_by:type_name -> tournament.v1.TournamentFilterBy
+	3,  // 1: tournament.v1.GetTournamentsRequest.filter_model:type_name -> tournament.v1.FilterMatchType
+	1,  // 2: tournament.v1.GetTournamentsRequest.sort_by:type_name -> tournament.v1.TournamentSortBy
+	2,  // 3: tournament.v1.GetTournamentsRequest.sort_order:type_name -> tournament.v1.SortOrder
+	9,  // 4: tournament.v1.GetTournamentsResponse.tournaments:type_name -> tournament.v1.Tournament
+	10, // 5: tournament.v1.GetTournamentsRequestWrapper.empty:type_name -> google.protobuf.Empty
+	4,  // 6: tournament.v1.GetTournamentsRequestWrapper.filter:type_name -> tournament.v1.GetTournamentsRequest
+	6,  // 7: tournament.v1.TournamentService.GetTournaments:input_type -> tournament.v1.GetTournamentsRequestWrapper
+	7,  // 8: tournament.v1.TournamentService.CreateTournament:input_type -> tournament.v1.CreateTournamentRequest
+	5,  // 9: tournament.v1.TournamentService.GetTournaments:output_type -> tournament.v1.GetTournamentsResponse
+	8,  // 10: tournament.v1.TournamentService.CreateTournament:output_type -> tournament.v1.CreateTournamentResponse
+	9,  // [9:11] is the sub-list for method output_type
+	7,  // [7:9] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_tournament_v1_tournament_service_proto_init() }
@@ -415,13 +713,14 @@ func file_tournament_v1_tournament_service_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tournament_v1_tournament_service_proto_rawDesc), len(file_tournament_v1_tournament_service_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      4,
 			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_tournament_v1_tournament_service_proto_goTypes,
 		DependencyIndexes: file_tournament_v1_tournament_service_proto_depIdxs,
+		EnumInfos:         file_tournament_v1_tournament_service_proto_enumTypes,
 		MessageInfos:      file_tournament_v1_tournament_service_proto_msgTypes,
 	}.Build()
 	File_tournament_v1_tournament_service_proto = out.File
