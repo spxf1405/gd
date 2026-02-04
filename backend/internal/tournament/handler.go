@@ -5,27 +5,48 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 
+	"buf.build/go/protovalidate"
 	"connectrpc.com/connect"
 )
 
-type tournamentServiceHandler struct {
-	service *Service
+type Hanlder struct {
+	service   *Service
+	validator protovalidate.Validator
 }
 
-func (h *tournamentServiceHandler) GetTournaments(
+func NewHandler(service *Service, validator protovalidate.Validator) *Hanlder {
+	return &Hanlder{
+		service:   service,
+		validator: validator,
+	}
+}
+
+func (h *Hanlder) GetTournaments(
 	ctx context.Context,
 	req *connect.Request[tournamentpb.GetTournamentsRequestWrapper],
 ) (*connect.Response[tournamentpb.GetTournamentsResponse], error) {
-	var query = ""
 	params, ok := req.Msg.Request.(*tournamentpb.GetTournamentsRequestWrapper_Filter)
-	if ok {
-		fmt.Print(params)
+	if !ok {
+		return nil, connect.NewError(
+			connect.CodeInvalidArgument,
+			errors.New("Test1"),
+		)
 	}
-	fmt.Println("=========================")
-	fmt.Println(params)
 
-	tournaments, err := h.service.getTournaments(ctx, req)
+	fmt.Println("params", params)
+
+	if err := h.validator.Validate(req.Msg); err != nil {
+		log.Println("get tournaments failed:", err)
+
+		return nil, connect.NewError(
+			connect.CodeInvalidArgument,
+			errors.New(""),
+		)
+	}
+
+	tournaments, err := h.service.getTournaments(ctx, params)
 	if err != nil {
 		return nil, connect.NewError(
 			connect.CodeInternal,
@@ -40,7 +61,7 @@ func (h *tournamentServiceHandler) GetTournaments(
 	return res, nil
 }
 
-func (h *tournamentServiceHandler) CreateTournament(
+func (h *Hanlder) CreateTournament(
 	ctx context.Context,
 	req *connect.Request[tournamentpb.CreateTournamentRequest],
 ) (*connect.Response[tournamentpb.CreateTournamentResponse], error) {

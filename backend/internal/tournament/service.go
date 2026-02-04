@@ -15,8 +15,8 @@ func NewService(repo *TournamentRepository) *Service {
 	return &Service{repo: repo}
 }
 
-func (s *Service) getTournaments(ctx context.Context) ([]*tournamentpb.Tournament, error) {
-	tournaments, err := s.repo.getTournaments(ctx)
+func (s *Service) getTournaments(ctx context.Context, params *tournamentpb.GetTournamentsRequestWrapper_Filter) ([]*tournamentpb.Tournament, error) {
+	tournaments, err := s.repo.getTournaments(ctx, params)
 	if err != nil {
 		return nil, err
 	}

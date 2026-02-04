@@ -1,4 +1,5 @@
 <script setup lang="tsx">
+import { ConnectError } from "@connectrpc/connect";
 import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 import { TournamentSortBy } from "@gd/proto/tournament/v1/tournament_service_pb";
 import { SortOrder } from "@gd/proto/tournament/v1/tournament_service_pb";
@@ -39,7 +40,7 @@ interface Tournament1 {
   organizer: string;
 }
 
-const tournaments = ref<Tournament1[]>([
+const tournaments1 = ref<Tournament1[]>([
   {
     id: "T001",
     name: "Giải Vô Địch 8-Ball Hà Nội 2026",
@@ -536,17 +537,12 @@ function onRowClick(event: RowClickedEvent<Tournament1>) {
   navigateTo(`tournament/${event.data?.id}`);
 }
 
-const tournaments1 = ref<Tournament[]>([]);
+const tournaments = ref<Tournament[]>([]);
+
+const toast = useToast();
 
 async function getTournaments() {
   try {
-    // const res = await tournamentClient.getTournaments({
-    //   request: {
-    //     case: "empty",
-    //     value: {},
-    //   },
-    // });
-
     const res = await tournamentClient.getTournaments({
       request: {
         case: "filter",
@@ -556,17 +552,14 @@ async function getTournaments() {
           filterBy: TournamentFilterBy.NAME,
           filter: "Ha Noi",
           sortBy: TournamentSortBy.NAME,
-          sortOrder: SortOrder.ASC
+          sortOrder: SortOrder.ASC,
         },
       },
     });
 
-    
-    console.log("res1", res)
-
     return res.tournaments;
   } catch (error) {
-    console.log("res", error);
+    toast.error(mapRpcErrorMessage(error))
   }
 }
 
@@ -577,7 +570,8 @@ const { data: tournamentData } = await useAsyncData(
 
 watchEffect(() => {
   if (tournamentData.value) {
-    tournaments1.value = tournamentData.value;
+    toast.success("Tải dữ liệu thành công!");
+    tournaments.value = tournamentData.value;
   }
 });
 
@@ -599,10 +593,6 @@ function onFilterChange(event) {
 }
 
 const toastRef = ref(false);
-
-onMounted(() => {
-  getTournaments();
-});
 </script>
 
 <template>
@@ -616,7 +606,7 @@ onMounted(() => {
       </div>
       <AgGridVue
         class="w-full h-[calc(100dvh-273px)]"
-        :rowData="tournaments1"
+        :rowData="tournaments"
         :columnDefs="columnDefs"
         :defaultColDef="{ filter: true, floatingFilter: true }"
         :theme="myTheme"
@@ -630,33 +620,6 @@ onMounted(() => {
         @rowClicked="onRowClick"
         @filter-changed="onFilterChange"
       />
-      <ToastProvider>
-        <ToastRoot
-          v-model:open="toastRef"
-          class="bg-white rounded-md shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] p-[15px] grid [grid-template-areas:_'title_action'_'description_action'] grid-cols-[auto_max-content] gap-x-[15px] items-center data-[state=open]:animate-slideIn data-[state=closed]:animate-hide data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut"
-        >
-          <ToastTitle
-            class="[grid-area:_title] mb-[5px] font-medium text-slate12 text-[15px]"
-          >
-            Scheduled: Catch up
-          </ToastTitle>
-          <ToastDescription as-child> Test </ToastDescription>
-          <ToastAction
-            class="[grid-area:_action]"
-            as-child
-            alt-text="Goto schedule to undo"
-          >
-            <button
-              class="inline-flex items-center justify-center rounded font-medium text-xs px-[10px] leading-[25px] h-[25px] bg-green2 text-green11 shadow-[inset_0_0_0_1px] shadow-green7 hover:shadow-[inset_0_0_0_1px] hover:shadow-green8 focus:shadow-[0_0_0_2px] focus:shadow-green8"
-            >
-              Undo
-            </button>
-          </ToastAction>
-        </ToastRoot>
-        <ToastViewport
-          class="[--viewport-padding:_25px] fixed bottom-0 right-0 flex flex-col p-[var(--viewport-padding)] gap-[10px] w-[390px] max-w-[100vw] m-0 list-none z-[2147483647] outline-none"
-        />
-      </ToastProvider>
     </div>
   </NuxtLayout>
 </template>

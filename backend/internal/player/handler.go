@@ -5,12 +5,14 @@ import (
 	"context"
 	"fmt"
 
+	"buf.build/go/protovalidate"
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type PlayerServiceHandler struct {
-	service *Service
+	service   *Service
+	validator *protovalidate.Validator
 }
 
 func (h *PlayerServiceHandler) GetPlayer(

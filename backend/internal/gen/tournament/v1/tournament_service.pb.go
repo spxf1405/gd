@@ -591,12 +591,11 @@ var File_tournament_v1_tournament_service_proto protoreflect.FileDescriptor
 
 const file_tournament_v1_tournament_service_proto_rawDesc = "" +
 	"\n" +
-	"&tournament/v1/tournament_service.proto\x12\rtournament.v1\x1a\x1etournament/v1/tournament.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1bbuf/validate/validate.proto\"\xb9\x03\n" +
+	"&tournament/v1/tournament_service.proto\x12\rtournament.v1\x1a\x1etournament/v1/tournament.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1bbuf/validate/validate.proto\"\xe1\x02\n" +
 	"\x15GetTournamentsRequest\x12\x1b\n" +
 	"\x04page\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x04page\x12\x1d\n" +
-	"\x05limit\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x05limit\x12n\n" +
-	"\x06filter\x18\x03 \x01(\tBV\xbaHS\xba\x01P\n" +
-	"\x19filter_requires_filter_by\x1a3has(this.filter_by) ? this.filter.size() > 0 : trueR\x06filter\x12>\n" +
+	"\x05limit\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x05limit\x12\x16\n" +
+	"\x06filter\x18\x03 \x01(\tR\x06filter\x12>\n" +
 	"\tfilter_by\x18\x04 \x01(\x0e2!.tournament.v1.TournamentFilterByR\bfilterBy\x12A\n" +
 	"\ffilter_model\x18\x05 \x01(\x0e2\x1e.tournament.v1.FilterMatchTypeR\vfilterModel\x128\n" +
 	"\asort_by\x18\x06 \x01(\x0e2\x1f.tournament.v1.TournamentSortByR\x06sortBy\x127\n" +

@@ -1,12 +1,10 @@
 package main
 
 import (
-	"backend/internal/db"
-	"backend/internal/player"
+	"backend/internal/app"
 	"backend/internal/tournament"
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 
@@ -68,16 +66,9 @@ func main() {
 		MaxAge:           300,
 	}))
 
-	db, err := db.NewDB(ctx)
+	infra := app.NewInfra(ctx)
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	player.MountPlayerRouter(r, player.NewService(player.NewRepository(db)))
-	// match.MountMatchRouter(r, match.NewMatchService(match.NewMatchRepository(db)))
-
-	tournament.MountTournamentRouter(r, tournament.NewService(tournament.NewRepository(db)))
+	tournament.Mount(r, infra)
 
 	addr := ":5000"
 	fmt.Fprintln(os.Stdout, prefix, "Starting server on", addr)
