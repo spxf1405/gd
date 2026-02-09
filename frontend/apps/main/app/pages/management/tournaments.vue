@@ -1,10 +1,12 @@
 <script setup lang="tsx">
-import { ConnectError } from "@connectrpc/connect";
 import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
-import { TournamentSortBy } from "@gd/proto/tournament/v1/tournament_service_pb";
-import { SortOrder } from "@gd/proto/tournament/v1/tournament_service_pb";
-import { TournamentFilterBy } from "@gd/proto/tournament/v1/tournament_service_pb";
+import {
+  SortOrder,
+  TournamentFilterBy,
+  TournamentSortBy,
+} from "@gd/proto/tournament/v1/tournament_service_pb";
 import { Icon } from "@iconify/vue";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import {
   AllCommunityModule,
   colorSchemeDarkBlue,
@@ -12,9 +14,10 @@ import {
   themeQuartz,
   type ColDef,
   type DomLayoutType,
+  type FilterModel,
   type GridReadyEvent,
   type ICellRendererParams,
-  type RowClickedEvent,
+  type RowClickedEvent
 } from "ag-grid-community";
 import { AgGridVue } from "ag-grid-vue3";
 import { ref } from "vue";
@@ -56,217 +59,6 @@ const tournaments1 = ref<Tournament1[]>([
     registeredPlayers: 45,
     status: "Đang đăng ký",
     organizer: "CLB Billard Golden",
-  },
-  {
-    id: "T002",
-    name: "Giải 9-Ball Open Sài Gòn",
-    type: "9-Ball",
-    format: "Đơn",
-    startDate: "2026-03-01",
-    endDate: "2026-03-05",
-    location: "Arena Billard, TP.HCM",
-    tables: 16,
-    totalPrize: 100000000,
-    entryFee: 800000,
-    maxPlayers: 128,
-    registeredPlayers: 128,
-    status: "Đang diễn ra",
-    organizer: "Arena Billard Club",
-  },
-  {
-    id: "T003",
-    name: "Giải Carom 3 băng miền Bắc",
-    type: "Carom 3-băng",
-    format: "Đơn",
-    startDate: "2026-01-10",
-    endDate: "2026-01-15",
-    location: "Trung tâm Billard Việt Nam",
-    tables: 8,
-    totalPrize: 30000000,
-    entryFee: 300000,
-    maxPlayers: 32,
-    registeredPlayers: 32,
-    status: "Đã kết thúc",
-    organizer: "Liên đoàn Billard VN",
-  },
-  {
-    id: "T004",
-    name: "Giải 10-Ball Challenge Cup",
-    type: "10-Ball",
-    format: "Đơn",
-    startDate: "2026-04-10",
-    endDate: "2026-04-14",
-    location: "Premium Billard, Đà Nẵng",
-    tables: 10,
-    totalPrize: 75000000,
-    entryFee: 600000,
-    maxPlayers: 64,
-    registeredPlayers: 28,
-    status: "Đang đăng ký",
-    organizer: "Premium Billard Club",
-  },
-  {
-    id: "T005",
-    name: "Giải Đồng đội 8-Ball",
-    type: "8-Ball",
-    format: "Đồng đội",
-    startDate: "2026-05-01",
-    endDate: "2026-05-07",
-    location: "Mega Billard Center, Hà Nội",
-    tables: 20,
-    totalPrize: 120000000,
-    entryFee: 2000000,
-    maxPlayers: 16,
-    registeredPlayers: 12,
-    status: "Đang đăng ký",
-    organizer: "Mega Billard Center",
-  },
-  {
-    id: "T006",
-    name: "Giải Snooker Quốc gia",
-    type: "Snooker",
-    format: "Đơn",
-    startDate: "2026-06-15",
-    endDate: "2026-06-25",
-    location: "Nhà thi đấu Quốc gia, Hà Nội",
-    tables: 12,
-    totalPrize: 200000000,
-    entryFee: 1000000,
-    maxPlayers: 32,
-    registeredPlayers: 18,
-    status: "Đang đăng ký",
-    organizer: "Liên đoàn Billard VN",
-  },
-  {
-    id: "T007",
-    name: "Giải 9-Ball Cúp Mùa Xuân",
-    type: "9-Ball",
-    format: "Đơn",
-    startDate: "2026-02-01",
-    endDate: "2026-02-03",
-    location: "Star Billard, Hải Phòng",
-    tables: 8,
-    totalPrize: 25000000,
-    entryFee: 250000,
-    maxPlayers: 32,
-    registeredPlayers: 32,
-    status: "Đã kết thúc",
-    organizer: "Star Billard Club",
-  },
-  {
-    id: "T008",
-    name: "Giải 8-Ball Nữ Việt Nam",
-    type: "8-Ball",
-    format: "Đơn",
-    startDate: "2026-03-20",
-    endDate: "2026-03-23",
-    location: "Lady Billard, TP.HCM",
-    tables: 6,
-    totalPrize: 40000000,
-    entryFee: 400000,
-    maxPlayers: 32,
-    registeredPlayers: 24,
-    status: "Đang diễn ra",
-    organizer: "Lady Billard Club",
-  },
-
-  // ===== thêm data =====
-
-  {
-    id: "T009",
-    name: "Giải 10-Ball Open Miền Trung",
-    type: "10-Ball",
-    format: "Đơn",
-    startDate: "2026-07-05",
-    endDate: "2026-07-09",
-    location: "Central Billard, Huế",
-    tables: 8,
-    totalPrize: 45000000,
-    entryFee: 450000,
-    maxPlayers: 48,
-    registeredPlayers: 30,
-    status: "Đang đăng ký",
-    organizer: "Central Billard Club",
-  },
-  {
-    id: "T010",
-    name: "Giải Carom 3-Băng TP.HCM Mở Rộng",
-    type: "Carom 3-băng",
-    format: "Đơn",
-    startDate: "2026-08-01",
-    endDate: "2026-08-06",
-    location: "Saigon Carom Arena",
-    tables: 10,
-    totalPrize: 90000000,
-    entryFee: 700000,
-    maxPlayers: 64,
-    registeredPlayers: 41,
-    status: "Đang đăng ký",
-    organizer: "Saigon Carom Club",
-  },
-  {
-    id: "T011",
-    name: "Giải 8-Ball Sinh Viên Toàn Quốc",
-    type: "8-Ball",
-    format: "Đơn",
-    startDate: "2026-09-10",
-    endDate: "2026-09-15",
-    location: "ĐH Thể Dục Thể Thao Bắc Ninh",
-    tables: 14,
-    totalPrize: 20000000,
-    entryFee: 200000,
-    maxPlayers: 128,
-    registeredPlayers: 86,
-    status: "Đang đăng ký",
-    organizer: "Hội Sinh Viên VN",
-  },
-  {
-    id: "T012",
-    name: "Giải 9-Ball Doanh Nghiệp Hà Nội",
-    type: "9-Ball",
-    format: "Đồng đội",
-    startDate: "2026-10-02",
-    endDate: "2026-10-06",
-    location: "Business Billard Club, Hà Nội",
-    tables: 12,
-    totalPrize: 60000000,
-    entryFee: 3000000,
-    maxPlayers: 16,
-    registeredPlayers: 10,
-    status: "Đang đăng ký",
-    organizer: "Business Billard Association",
-  },
-  {
-    id: "T013",
-    name: "Giải Snooker Trẻ Quốc Gia",
-    type: "Snooker",
-    format: "Đơn",
-    startDate: "2026-11-01",
-    endDate: "2026-11-07",
-    location: "Học viện Billard VN",
-    tables: 6,
-    totalPrize: 35000000,
-    entryFee: 300000,
-    maxPlayers: 24,
-    registeredPlayers: 19,
-    status: "Đang đăng ký",
-    organizer: "Liên đoàn Billard VN",
-  },
-  {
-    id: "T014",
-    name: "Giải 8-Ball Masters Invitational",
-    type: "8-Ball",
-    format: "Đơn",
-    startDate: "2026-12-05",
-    endDate: "2026-12-08",
-    location: "Elite Billard Lounge, TP.HCM",
-    tables: 6,
-    totalPrize: 150000000,
-    entryFee: 1500000,
-    maxPlayers: 16,
-    registeredPlayers: 16,
-    status: "Đang diễn ra",
-    organizer: "Elite Billard Group",
   },
 ]);
 
@@ -412,6 +204,10 @@ const columnDefs = ref<ColDef<Tournament>[]>([
     minWidth: 400,
     pinned: "left",
     sortable: false,
+    filterParams: {
+      maxNumConditions: 1,
+      suppressAndOrCondition: true,
+    },
   },
   {
     field: "type",
@@ -511,9 +307,6 @@ const domLayout = ref<DomLayoutType>("normal");
 
 const onGridReady = (params: GridReadyEvent<Tournament1>) => {
   params.api.autoSizeColumns(["actions"]);
-  if (tournaments.value.length > 10) {
-    domLayout.value = "normal";
-  }
 };
 
 const localeText = {
@@ -534,14 +327,16 @@ const localeText = {
 };
 
 function onRowClick(event: RowClickedEvent<Tournament1>) {
-  navigateTo(`tournament/${event.data?.id}`);
+  // navigateTo(`tournament/${event.data?.id}`);
 }
-
-const tournaments = ref<Tournament[]>([]);
 
 const toast = useToast();
 
+const filter = ref<FilterModel>({});
+
 async function getTournaments() {
+  console.log("filter.value.name?.filterType", filter.value.name?.filterType);
+
   try {
     const res = await tournamentClient.getTournaments({
       request: {
@@ -550,49 +345,56 @@ async function getTournaments() {
           page: 1,
           limit: 10,
           filterBy: TournamentFilterBy.NAME,
-          filter: "Ha Noi",
-          sortBy: TournamentSortBy.NAME,
+          filter: filter.value.name?.filter ?? "",
+          filterOperator: toFilterOperator(filter.value.name?.type),
+          sortBy: TournamentSortBy.CREATED_AT,
           sortOrder: SortOrder.ASC,
         },
       },
     });
 
+    console.log("res", res);
+
+    toast.success("Tải dữ liệu thành công!");
     return res.tournaments;
   } catch (error) {
-    toast.error(mapRpcErrorMessage(error))
+    toast.error(mapRpcErrorMessage(error));
   }
 }
 
-const { data: tournamentData } = await useAsyncData(
-  "tournaments",
-  getTournaments,
-);
+const tournamentsQueryKey = computed(() => {
+  console.log("filterModel", filter.value.name);
+  return [
+    "tournaments",
+    filter.value.name?.filter ?? "",
+    filter.value.name?.type ?? "",
+  ];
+});
 
-watchEffect(() => {
-  if (tournamentData.value) {
-    toast.success("Tải dữ liệu thành công!");
-    tournaments.value = tournamentData.value;
-  }
+const queryClient = useQueryClient();
+
+await queryClient.prefetchQuery({
+  queryKey: tournamentsQueryKey,
+  queryFn: getTournaments,
+});
+
+const { data: tournaments, isFetching } = useQuery({
+  queryKey: tournamentsQueryKey,
+  queryFn: getTournaments,
 });
 
 const handleSubmitCreateTournament = async (name: string) => {
   const id = await tournamentClient.createTournament({ name });
   if (id) {
-    console.log("id", id);
-    toastRef.value = true;
+    queryClient.invalidateQueries({ queryKey: ["tournaments"] });
   }
 };
 
 function onFilterChange(event) {
-  // event contains the grid state
-  console.log("Filter changed:", event);
-
-  // If you want the current filter model:
   const filterModel = event.api.getFilterModel();
-  console.log("Current filter model:", filterModel);
+  filter.value = filterModel;
 }
 
-const toastRef = ref(false);
 </script>
 
 <template>
@@ -608,7 +410,15 @@ const toastRef = ref(false);
         class="w-full h-[calc(100dvh-273px)]"
         :rowData="tournaments"
         :columnDefs="columnDefs"
-        :defaultColDef="{ filter: true, floatingFilter: true }"
+        :defaultColDef="{
+          filter: true,
+          floatingFilter: true,
+          filterParams: {
+            maxNumConditions: 1,
+            suppressAndOrCondition: true,
+            debounceMs: 500,
+          },
+        }"
         :theme="myTheme"
         :col-resize-default="'shift'"
         :dom-layout="domLayout"
@@ -616,6 +426,7 @@ const toastRef = ref(false);
         :pagination="true"
         :paginationPageSize="100"
         :row-selection="'multiple'"
+        :loading="isFetching"
         @grid-ready="onGridReady"
         @rowClicked="onRowClick"
         @filter-changed="onFilterChange"

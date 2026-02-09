@@ -5,11 +5,13 @@ import (
 	tournamentpb "backend/internal/gen/tournament/v1"
 	"backend/internal/repository"
 	"context"
+	"database/sql"
 	"fmt"
 	"log"
 	"time"
 
 	"github.com/google/uuid"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 type TournamentRepository struct {
@@ -74,18 +76,80 @@ func sortOrderToSQL(o tournamentpb.SortOrder) string {
 	}
 }
 
-func (r *TournamentRepository) getTournaments(ctx context.Context, params *tournamentpb.GetTournamentsRequestWrapper_Filter) ([]*tournamentpb.Tournament, error) {
-	query := fmt.Sprintf(`SELECT * FROM tournament WHERE %s = $1 ORDER BY %s %s`, filterByToColumn(params.Filter.FilterBy), sortByToColumn(params.Filter.SortBy), sortOrderToSQL(params.Filter.SortOrder))
-	fmt.Println("query1", query)
+func buildExpr(
+	col string,
+	op tournamentpb.FilterOperator,
+	val string,
+) (string, []any) {
 
-	// query := `SELECT * FROM tournament ORDER BY created_at DESC`
+	switch op {
+
+	case tournamentpb.FilterOperator_EQ:
+		return fmt.Sprintf("%s = $1", col), []any{val}
+
+	case tournamentpb.FilterOperator_NEQ:
+		return fmt.Sprintf("%s != $1", col), []any{val}
+
+	case tournamentpb.FilterOperator_CONTAINS:
+		return fmt.Sprintf("%s ILIKE '%%' || $1 || '%%'", col), []any{val}
+
+	case tournamentpb.FilterOperator_NOT_CONTAINS:
+		return fmt.Sprintf("%s NOT ILIKE '%%' || $1 || '%%'", col), []any{val}
+
+	case tournamentpb.FilterOperator_STARTS_WITH:
+		return fmt.Sprintf("%s ILIKE $1 || '%%'", col), []any{val}
+
+	case tournamentpb.FilterOperator_ENDS_WITH:
+		return fmt.Sprintf("%s ILIKE '%%' || $1", col), []any{val}
+
+	case tournamentpb.FilterOperator_GT:
+		return fmt.Sprintf("%s > $1", col), []any{val}
+
+	case tournamentpb.FilterOperator_GTE:
+		return fmt.Sprintf("%s >= $1", col), []any{val}
+
+	case tournamentpb.FilterOperator_LT:
+		return fmt.Sprintf("%s < $1", col), []any{val}
+
+	case tournamentpb.FilterOperator_LTE:
+		return fmt.Sprintf("%s <= $1", col), []any{val}
+
+	case tournamentpb.FilterOperator_IS_NULL:
+		return fmt.Sprintf("%s IS NULL", col), nil
+
+	case tournamentpb.FilterOperator_IS_NOT_NULL:
+		return fmt.Sprintf("%s IS NOT NULL", col), nil
+
+	default:
+		return fmt.Sprintf("%s ILIKE '%%' || $1 || '%%'", col), []any{val}
+	}
+}
+
+func (r *TournamentRepository) getTournaments(ctx context.Context, params *tournamentpb.GetTournamentsRequestWrapper_Filter) ([]*tournamentpb.Tournament, error) {
+	expr, args := buildExpr(
+		filterByToColumn(params.Filter.FilterBy),
+		params.Filter.FilterOperator,
+		params.Filter.Filter,
+	)
+
+	query := fmt.Sprintf(
+		`SELECT * FROM tournament WHERE %s ORDER BY %s %s`,
+		expr,
+		sortByToColumn(params.Filter.SortBy),
+		sortOrderToSQL(params.Filter.SortOrder),
+	)
+
+	fmt.Println("====================")
+	fmt.Println(query)
 
 	if r.DB == nil || r.DB.Pool == nil {
 		panic("DB pool is nil")
 	}
 
-	rows, err := r.DB.Pool.Query(ctx, query, params.Filter.Filter)
+	rows, err := r.DB.Pool.Query(ctx, query, args...)
+
 	if err != nil {
+		fmt.Println("err", err)
 		return nil, err
 	}
 
@@ -96,6 +160,7 @@ func (r *TournamentRepository) getTournaments(ctx context.Context, params *tourn
 	for rows.Next() {
 		var tournament = &tournamentpb.Tournament{}
 
+		var location sql.NullString
 		var createdAt, updateAt time.Time
 
 		err := rows.Scan(
@@ -105,7 +170,7 @@ func (r *TournamentRepository) getTournaments(ctx context.Context, params *tourn
 			&tournament.Format,
 			&tournament.StartDate,
 			&tournament.EndDate,
-			&tournament.Location,
+			&location,
 			&tournament.TotalPrize,
 			&tournament.EntryFee,
 			&tournament.MaxPlayers,
@@ -119,6 +184,10 @@ func (r *TournamentRepository) getTournaments(ctx context.Context, params *tourn
 		if err != nil {
 			log.Fatal(err)
 			return nil, err
+		}
+
+		if location.Valid {
+			tournament.Location = wrapperspb.String(location.String)
 		}
 
 		tournament.CreatedAt = createdAt.Format(time.RFC3339)

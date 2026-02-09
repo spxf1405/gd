@@ -36,7 +36,7 @@ enum SortOrder {
   SORT_ORDER_DESC        = 2;
 }
 
-enum FilterMatchType {
+enum FilterOperator {
   FILTER_MATCH_TYPE_UNSPECIFIED = 0;
   EQ                            = 1;
   NEQ                           = 2;
@@ -55,13 +55,13 @@ enum FilterMatchType {
 
 // Request for listing tournaments with pagination, filtering, and sorting.
 message GetTournamentsRequest {
-  int32              page         = 1 [(buf.validate.field).int32.gt = 0]; // Page number (1-based)
-  int32              limit        = 2 [(buf.validate.field).int32.gt = 0]; // Page size
-  string             filter       = 3; // Filter value
-  TournamentFilterBy filter_by    = 4; // Field name to filter on
-  FilterMatchType    filter_model = 5; // Match type (contains, equals, etc.)
-  TournamentSortBy   sort_by      = 6; // Field name to sort by
-  SortOrder          sort_order   = 7; // Sort order (asc or desc)
+  int32              page            = 1 [(buf.validate.field).int32.gt = 0]; // Page number (1-based)
+  int32              limit           = 2 [(buf.validate.field).int32.gt = 0]; // Page size
+  string             filter          = 3; // Filter value
+  TournamentFilterBy filter_by       = 4; // Field name to filter on
+  FilterOperator     filter_operator = 5; // Match type (contains, equals, etc.)
+  TournamentSortBy   sort_by         = 6; // Field name to sort by
+  SortOrder          sort_order      = 7; // Sort order (asc or desc)
 }
 
 // Response containing a list of tournaments.

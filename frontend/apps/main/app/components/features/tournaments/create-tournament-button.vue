@@ -1,15 +1,5 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import {
-  DialogRoot,
-  DialogPortal,
-  DialogOverlay,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-  DialogClose,
-  DialogTrigger,
-} from "radix-vue";
 import { Icon } from "@iconify/vue";
 
 const emit = defineEmits<{
