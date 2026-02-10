@@ -1,9 +1,14 @@
 <script setup lang="tsx">
+import { create } from "@bufbuild/protobuf";
 import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 import {
+  FilterOperator,
+  FilterSchema,
+  GetTournamentsRequestSchema,
   SortOrder,
   TournamentFilterBy,
   TournamentSortBy,
+  type Filter,
 } from "@gd/proto/tournament/v1/tournament_service_pb";
 import { Icon } from "@iconify/vue";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
@@ -11,18 +16,20 @@ import {
   AllCommunityModule,
   colorSchemeDarkBlue,
   ModuleRegistry,
+  SortDef,
   themeQuartz,
   type ColDef,
   type DomLayoutType,
   type FilterModel,
   type GridReadyEvent,
   type ICellRendererParams,
-  type RowClickedEvent
+  type RowClickedEvent,
 } from "ag-grid-community";
 import { AgGridVue } from "ag-grid-vue3";
 import { ref } from "vue";
 import CreateTournamentButton from "~/components/features/tournaments/create-tournament-button.vue";
 import DeleteTournament from "~/components/features/tournaments/delete-tournament.vue";
+import Table from "~/components/reuseables/Table.vue";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -233,6 +240,7 @@ const columnDefs = ref<ColDef<Tournament>[]>([
     headerName: "Ngày tạo",
     filter: false,
     width: 130,
+    sort: "desc",
     valueFormatter: (params) => {
       if (!params.value) return "";
       return new Date(params.value).toLocaleDateString("vi-VN");
@@ -330,26 +338,144 @@ function onRowClick(event: RowClickedEvent<Tournament1>) {
   // navigateTo(`tournament/${event.data?.id}`);
 }
 
+function mapFieldToSort(field: string): TournamentFilterBy {
+  switch (field) {
+    case "name":
+      return TournamentFilterBy.NAME;
+
+    case "type":
+      return TournamentFilterBy.TYPE;
+
+    case "format":
+      return TournamentFilterBy.FORMAT;
+
+    case "location":
+      return TournamentFilterBy.LOCATION;
+
+    case "startDate":
+      return TournamentFilterBy.START_DATE;
+
+    case "status":
+      return TournamentFilterBy.STATUS;
+
+    default:
+      return TournamentFilterBy.UNSPECIFIED;
+  }
+}
+
+function mapFieldToTournamentFilterBy(field: string): TournamentFilterBy {
+  switch (field) {
+    case "name":
+      return TournamentFilterBy.NAME;
+
+    case "type":
+      return TournamentFilterBy.TYPE;
+
+    case "format":
+      return TournamentFilterBy.FORMAT;
+
+    case "location":
+      return TournamentFilterBy.LOCATION;
+
+    case "startDate":
+      return TournamentFilterBy.START_DATE;
+
+    case "status":
+      return TournamentFilterBy.STATUS;
+
+    default:
+      return TournamentFilterBy.UNSPECIFIED;
+  }
+}
+
+function mapAgGridOperatorToFilterOperator(type: string): FilterOperator {
+  switch (type) {
+    case "equals":
+      return FilterOperator.EQ;
+
+    case "notEqual":
+      return FilterOperator.NEQ;
+
+    case "contains":
+      return FilterOperator.CONTAINS;
+
+    case "notContains":
+      return FilterOperator.NOT_CONTAINS;
+
+    case "startsWith":
+      return FilterOperator.STARTS_WITH;
+
+    case "endsWith":
+      return FilterOperator.ENDS_WITH;
+
+    case "greaterThan":
+      return FilterOperator.GT;
+
+    case "greaterThanOrEqual":
+      return FilterOperator.GTE;
+
+    case "lessThan":
+      return FilterOperator.LT;
+
+    case "lessThanOrEqual":
+      return FilterOperator.LTE;
+
+    case "inRange":
+      return FilterOperator.BETWEEN;
+
+    case "blank":
+      return FilterOperator.IS_NULL;
+
+    case "notBlank":
+      return FilterOperator.IS_NOT_NULL;
+
+    default:
+      return FilterOperator.FILTER_MATCH_TYPE_UNSPECIFIED;
+  }
+}
+
+function mapAgGridFilterModelToProtoFilters(
+  filterModel: FilterModel,
+): Filter[] {
+  if (!filterModel) return [];
+
+  return Object.entries(filterModel)
+    .map(([field, model]) => {
+      const filterBy = mapFieldToTournamentFilterBy(field);
+      const operator = mapAgGridOperatorToFilterOperator(model.type);
+
+      return create(FilterSchema, {
+        filter: String(model.filter ?? ""),
+        filterBy,
+        filterOperator: operator,
+      });
+    })
+    .filter(Boolean);
+}
+
 const toast = useToast();
 
 const filter = ref<FilterModel>({});
 
+const sort = ref({
+  type: TournamentSortBy.CREATED_AT,
+  direction: SortOrder.DESC,
+});
+
 async function getTournaments() {
-  console.log("filter.value.name?.filterType", filter.value.name?.filterType);
+  const req = create(GetTournamentsRequestSchema, {
+    page: 1,
+    limit: 10,
+    filters: mapAgGridFilterModelToProtoFilters(filter.value),
+    sortBy: sort.value.type,
+    sortOrder: sort.value.direction,
+  });
 
   try {
     const res = await tournamentClient.getTournaments({
       request: {
-        case: "filter",
-        value: {
-          page: 1,
-          limit: 10,
-          filterBy: TournamentFilterBy.NAME,
-          filter: filter.value.name?.filter ?? "",
-          filterOperator: toFilterOperator(filter.value.name?.type),
-          sortBy: TournamentSortBy.CREATED_AT,
-          sortOrder: SortOrder.ASC,
-        },
+        case: "query",
+        value: req,
       },
     });
 
@@ -362,14 +488,11 @@ async function getTournaments() {
   }
 }
 
-const tournamentsQueryKey = computed(() => {
-  console.log("filterModel", filter.value.name);
-  return [
-    "tournaments",
-    filter.value.name?.filter ?? "",
-    filter.value.name?.type ?? "",
-  ];
-});
+const tournamentsQueryKey = computed(() => [
+  "tournaments",
+  filter.value,
+  sort.value,
+]);
 
 const queryClient = useQueryClient();
 
@@ -392,9 +515,33 @@ const handleSubmitCreateTournament = async (name: string) => {
 
 function onFilterChange(event) {
   const filterModel = event.api.getFilterModel();
+
+  console.log("filterModel", filterModel);
   filter.value = filterModel;
 }
 
+function onSortChange(event) {
+  // const sortModel = event.api.getColumnState();
+  const sortInfo = event.api.getColumnState().find((e) => e.sort !== null);
+  console.log("sortInfo", sortInfo);
+
+  if (!sortInfo) {
+    sort.value = {
+      type: TournamentSortBy.CREATED_AT,
+      direction: SortOrder.DESC,
+    };
+    return;
+  }
+
+  // sort.value = {
+  //   type: TournamentSortBy.CREATED_AT,
+  //   direction: SortOrder.DESC,
+  // };
+}
+
+watchEffect(() => {
+  console.log("tournaments", tournaments);
+});
 </script>
 
 <template>
@@ -430,6 +577,7 @@ function onFilterChange(event) {
         @grid-ready="onGridReady"
         @rowClicked="onRowClick"
         @filter-changed="onFilterChange"
+        @sort-changed="onSortChange"
       />
     </div>
   </NuxtLayout>

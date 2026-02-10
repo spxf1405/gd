@@ -4,7 +4,6 @@ import (
 	tournamentpb "backend/internal/gen/tournament/v1"
 	"context"
 	"errors"
-	"fmt"
 	"log"
 
 	"buf.build/go/protovalidate"
@@ -27,15 +26,13 @@ func (h *Hanlder) GetTournaments(
 	ctx context.Context,
 	req *connect.Request[tournamentpb.GetTournamentsRequestWrapper],
 ) (*connect.Response[tournamentpb.GetTournamentsResponse], error) {
-	params, ok := req.Msg.Request.(*tournamentpb.GetTournamentsRequestWrapper_Filter)
+	params, ok := req.Msg.Request.(*tournamentpb.GetTournamentsRequestWrapper_Query)
 	if !ok {
 		return nil, connect.NewError(
 			connect.CodeInvalidArgument,
 			errors.New("Test1"),
 		)
 	}
-
-	fmt.Println("params", params)
 
 	if err := h.validator.Validate(req.Msg); err != nil {
 		log.Println("get tournaments failed:", err)

@@ -15,60 +15,61 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file tournament/v1/tournament_service.proto.
  */
 export const file_tournament_v1_tournament_service: GenFile = /*@__PURE__*/
-  fileDesc("CiZ0b3VybmFtZW50L3YxL3RvdXJuYW1lbnRfc2VydmljZS5wcm90bxINdG91cm5hbWVudC52MSKkAgoVR2V0VG91cm5hbWVudHNSZXF1ZXN0EhUKBHBhZ2UYASABKAVCB7pIBBoCIAASFgoFbGltaXQYAiABKAVCB7pIBBoCIAASDgoGZmlsdGVyGAMgASgJEjQKCWZpbHRlcl9ieRgEIAEoDjIhLnRvdXJuYW1lbnQudjEuVG91cm5hbWVudEZpbHRlckJ5EjYKD2ZpbHRlcl9vcGVyYXRvchgFIAEoDjIdLnRvdXJuYW1lbnQudjEuRmlsdGVyT3BlcmF0b3ISMAoHc29ydF9ieRgGIAEoDjIfLnRvdXJuYW1lbnQudjEuVG91cm5hbWVudFNvcnRCeRIsCgpzb3J0X29yZGVyGAcgASgOMhgudG91cm5hbWVudC52MS5Tb3J0T3JkZXIiSAoWR2V0VG91cm5hbWVudHNSZXNwb25zZRIuCgt0b3VybmFtZW50cxgBIAMoCzIZLnRvdXJuYW1lbnQudjEuVG91cm5hbWVudCKKAQocR2V0VG91cm5hbWVudHNSZXF1ZXN0V3JhcHBlchInCgVlbXB0eRgBIAEoCzIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eUgAEjYKBmZpbHRlchgCIAEoCzIkLnRvdXJuYW1lbnQudjEuR2V0VG91cm5hbWVudHNSZXF1ZXN0SABCCQoHcmVxdWVzdCInChdDcmVhdGVUb3VybmFtZW50UmVxdWVzdBIMCgRuYW1lGAEgASgJIiYKGENyZWF0ZVRvdXJuYW1lbnRSZXNwb25zZRIKCgJpZBgBIAEoCSqoAgoSVG91cm5hbWVudEZpbHRlckJ5EiQKIFRPVVJOQU1FTlRfRklMVEVSX0JZX1VOU1BFQ0lGSUVEEAASHQoZVE9VUk5BTUVOVF9GSUxURVJfQllfTkFNRRABEh0KGVRPVVJOQU1FTlRfRklMVEVSX0JZX1RZUEUQAhIfChtUT1VSTkFNRU5UX0ZJTFRFUl9CWV9GT1JNQVQQAxIhCh1UT1VSTkFNRU5UX0ZJTFRFUl9CWV9MT0NBVElPThAEEiMKH1RPVVJOQU1FTlRfRklMVEVSX0JZX1NUQVJUX0RBVEUQBRIkCiBUT1VSTkFNRU5UX0ZJTFRFUl9CWV9UT1RBTF9QUklaRRAGEh8KG1RPVVJOQU1FTlRfRklMVEVSX0JZX1NUQVRVUxAHKt4BChBUb3VybmFtZW50U29ydEJ5EiIKHlRPVVJOQU1FTlRfU09SVF9CWV9VTlNQRUNJRklFRBAAEiEKHVRPVVJOQU1FTlRfU09SVF9CWV9DUkVBVEVEX0FUEAESIQodVE9VUk5BTUVOVF9TT1JUX0JZX1NUQVJUX0RBVEUQAhIfChtUT1VSTkFNRU5UX1NPUlRfQllfRU5EX0RBVEUQAxIiCh5UT1VSTkFNRU5UX1NPUlRfQllfVE9UQUxfUFJJWkUQBBIbChdUT1VSTkFNRU5UX1NPUlRfQllfTkFNRRAFKlAKCVNvcnRPcmRlchIaChZTT1JUX09SREVSX1VOU1BFQ0lGSUVEEAASEgoOU09SVF9PUkRFUl9BU0MQARITCg9TT1JUX09SREVSX0RFU0MQAirRAQoORmlsdGVyT3BlcmF0b3ISIQodRklMVEVSX01BVENIX1RZUEVfVU5TUEVDSUZJRUQQABIGCgJFURABEgcKA05FURACEgwKCENPTlRBSU5TEAMSEAoMTk9UX0NPTlRBSU5TEAQSDwoLU1RBUlRTX1dJVEgQBRINCglFTkRTX1dJVEgQBhIGCgJHVBAHEgcKA0dURRAIEgYKAkxUEAkSBwoDTFRFEAoSCwoHQkVUV0VFThALEgsKB0lTX05VTEwQDBIPCgtJU19OT1RfTlVMTBANMt4BChFUb3VybmFtZW50U2VydmljZRJkCg5HZXRUb3VybmFtZW50cxIrLnRvdXJuYW1lbnQudjEuR2V0VG91cm5hbWVudHNSZXF1ZXN0V3JhcHBlcholLnRvdXJuYW1lbnQudjEuR2V0VG91cm5hbWVudHNSZXNwb25zZRJjChBDcmVhdGVUb3VybmFtZW50EiYudG91cm5hbWVudC52MS5DcmVhdGVUb3VybmFtZW50UmVxdWVzdBonLnRvdXJuYW1lbnQudjEuQ3JlYXRlVG91cm5hbWVudFJlc3BvbnNlQjFaL2JhY2tlbmQvaW50ZXJuYWwvZ2VuL3RvdXJuYW1lbnQvdjE7dG91cm5hbWVudHBiYgZwcm90bzM", [file_tournament_v1_tournament, file_google_protobuf_empty, file_buf_validate_validate]);
+  fileDesc("CiZ0b3VybmFtZW50L3YxL3RvdXJuYW1lbnRfc2VydmljZS5wcm90bxINdG91cm5hbWVudC52MSKGAQoGRmlsdGVyEg4KBmZpbHRlchgBIAEoCRI0CglmaWx0ZXJfYnkYAiABKA4yIS50b3VybmFtZW50LnYxLlRvdXJuYW1lbnRGaWx0ZXJCeRI2Cg9maWx0ZXJfb3BlcmF0b3IYAyABKA4yHS50b3VybmFtZW50LnYxLkZpbHRlck9wZXJhdG9yIs4BChVHZXRUb3VybmFtZW50c1JlcXVlc3QSFQoEcGFnZRgBIAEoBUIHukgEGgIgABIWCgVsaW1pdBgCIAEoBUIHukgEGgIgABImCgdmaWx0ZXJzGAMgAygLMhUudG91cm5hbWVudC52MS5GaWx0ZXISMAoHc29ydF9ieRgEIAEoDjIfLnRvdXJuYW1lbnQudjEuVG91cm5hbWVudFNvcnRCeRIsCgpzb3J0X29yZGVyGAUgASgOMhgudG91cm5hbWVudC52MS5Tb3J0T3JkZXIiSAoWR2V0VG91cm5hbWVudHNSZXNwb25zZRIuCgt0b3VybmFtZW50cxgBIAMoCzIZLnRvdXJuYW1lbnQudjEuVG91cm5hbWVudCKJAQocR2V0VG91cm5hbWVudHNSZXF1ZXN0V3JhcHBlchInCgVlbXB0eRgBIAEoCzIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eUgAEjUKBXF1ZXJ5GAIgASgLMiQudG91cm5hbWVudC52MS5HZXRUb3VybmFtZW50c1JlcXVlc3RIAEIJCgdyZXF1ZXN0IicKF0NyZWF0ZVRvdXJuYW1lbnRSZXF1ZXN0EgwKBG5hbWUYASABKAkiJgoYQ3JlYXRlVG91cm5hbWVudFJlc3BvbnNlEgoKAmlkGAEgASgJKoICChJUb3VybmFtZW50RmlsdGVyQnkSJAogVE9VUk5BTUVOVF9GSUxURVJfQllfVU5TUEVDSUZJRUQQABIdChlUT1VSTkFNRU5UX0ZJTFRFUl9CWV9OQU1FEAESHQoZVE9VUk5BTUVOVF9GSUxURVJfQllfVFlQRRACEh8KG1RPVVJOQU1FTlRfRklMVEVSX0JZX0ZPUk1BVBADEiEKHVRPVVJOQU1FTlRfRklMVEVSX0JZX0xPQ0FUSU9OEAQSIwofVE9VUk5BTUVOVF9GSUxURVJfQllfU1RBUlRfREFURRAFEh8KG1RPVVJOQU1FTlRfRklMVEVSX0JZX1NUQVRVUxAGKt4BChBUb3VybmFtZW50U29ydEJ5EiIKHlRPVVJOQU1FTlRfU09SVF9CWV9VTlNQRUNJRklFRBAAEiEKHVRPVVJOQU1FTlRfU09SVF9CWV9DUkVBVEVEX0FUEAESIQodVE9VUk5BTUVOVF9TT1JUX0JZX1NUQVJUX0RBVEUQAhIfChtUT1VSTkFNRU5UX1NPUlRfQllfRU5EX0RBVEUQAxIiCh5UT1VSTkFNRU5UX1NPUlRfQllfVE9UQUxfUFJJWkUQBBIbChdUT1VSTkFNRU5UX1NPUlRfQllfTkFNRRAFKlAKCVNvcnRPcmRlchIaChZTT1JUX09SREVSX1VOU1BFQ0lGSUVEEAASEgoOU09SVF9PUkRFUl9BU0MQARITCg9TT1JUX09SREVSX0RFU0MQAirRAQoORmlsdGVyT3BlcmF0b3ISIQodRklMVEVSX01BVENIX1RZUEVfVU5TUEVDSUZJRUQQABIGCgJFURABEgcKA05FURACEgwKCENPTlRBSU5TEAMSEAoMTk9UX0NPTlRBSU5TEAQSDwoLU1RBUlRTX1dJVEgQBRINCglFTkRTX1dJVEgQBhIGCgJHVBAHEgcKA0dURRAIEgYKAkxUEAkSBwoDTFRFEAoSCwoHQkVUV0VFThALEgsKB0lTX05VTEwQDBIPCgtJU19OT1RfTlVMTBANMt4BChFUb3VybmFtZW50U2VydmljZRJkCg5HZXRUb3VybmFtZW50cxIrLnRvdXJuYW1lbnQudjEuR2V0VG91cm5hbWVudHNSZXF1ZXN0V3JhcHBlcholLnRvdXJuYW1lbnQudjEuR2V0VG91cm5hbWVudHNSZXNwb25zZRJjChBDcmVhdGVUb3VybmFtZW50EiYudG91cm5hbWVudC52MS5DcmVhdGVUb3VybmFtZW50UmVxdWVzdBonLnRvdXJuYW1lbnQudjEuQ3JlYXRlVG91cm5hbWVudFJlc3BvbnNlQjFaL2JhY2tlbmQvaW50ZXJuYWwvZ2VuL3RvdXJuYW1lbnQvdjE7dG91cm5hbWVudHBiYgZwcm90bzM", [file_tournament_v1_tournament, file_google_protobuf_empty, file_buf_validate_validate]);
 
 /**
- * Request for listing tournaments with pagination, filtering, and sorting.
- *
+ * @generated from message tournament.v1.Filter
+ */
+export type Filter = Message<"tournament.v1.Filter"> & {
+  /**
+   * @generated from field: string filter = 1;
+   */
+  filter: string;
+
+  /**
+   * @generated from field: tournament.v1.TournamentFilterBy filter_by = 2;
+   */
+  filterBy: TournamentFilterBy;
+
+  /**
+   * @generated from field: tournament.v1.FilterOperator filter_operator = 3;
+   */
+  filterOperator: FilterOperator;
+};
+
+/**
+ * Describes the message tournament.v1.Filter.
+ * Use `create(FilterSchema)` to create a new message.
+ */
+export const FilterSchema: GenMessage<Filter> = /*@__PURE__*/
+  messageDesc(file_tournament_v1_tournament_service, 0);
+
+/**
  * @generated from message tournament.v1.GetTournamentsRequest
  */
 export type GetTournamentsRequest = Message<"tournament.v1.GetTournamentsRequest"> & {
   /**
-   * Page number (1-based)
-   *
    * @generated from field: int32 page = 1;
    */
   page: number;
 
   /**
-   * Page size
-   *
    * @generated from field: int32 limit = 2;
    */
   limit: number;
 
   /**
-   * Filter value
-   *
-   * @generated from field: string filter = 3;
+   * @generated from field: repeated tournament.v1.Filter filters = 3;
    */
-  filter: string;
+  filters: Filter[];
 
   /**
-   * Field name to filter on
-   *
-   * @generated from field: tournament.v1.TournamentFilterBy filter_by = 4;
-   */
-  filterBy: TournamentFilterBy;
-
-  /**
-   * Match type (contains, equals, etc.)
-   *
-   * @generated from field: tournament.v1.FilterOperator filter_operator = 5;
-   */
-  filterOperator: FilterOperator;
-
-  /**
-   * Field name to sort by
-   *
-   * @generated from field: tournament.v1.TournamentSortBy sort_by = 6;
+   * @generated from field: tournament.v1.TournamentSortBy sort_by = 4;
    */
   sortBy: TournamentSortBy;
 
   /**
-   * Sort order (asc or desc)
-   *
-   * @generated from field: tournament.v1.SortOrder sort_order = 7;
+   * @generated from field: tournament.v1.SortOrder sort_order = 5;
    */
   sortOrder: SortOrder;
 };
@@ -78,17 +79,13 @@ export type GetTournamentsRequest = Message<"tournament.v1.GetTournamentsRequest
  * Use `create(GetTournamentsRequestSchema)` to create a new message.
  */
 export const GetTournamentsRequestSchema: GenMessage<GetTournamentsRequest> = /*@__PURE__*/
-  messageDesc(file_tournament_v1_tournament_service, 0);
+  messageDesc(file_tournament_v1_tournament_service, 1);
 
 /**
- * Response containing a list of tournaments.
- *
  * @generated from message tournament.v1.GetTournamentsResponse
  */
 export type GetTournamentsResponse = Message<"tournament.v1.GetTournamentsResponse"> & {
   /**
-   * Tournament list
-   *
    * @generated from field: repeated tournament.v1.Tournament tournaments = 1;
    */
   tournaments: Tournament[];
@@ -99,11 +96,9 @@ export type GetTournamentsResponse = Message<"tournament.v1.GetTournamentsRespon
  * Use `create(GetTournamentsResponseSchema)` to create a new message.
  */
 export const GetTournamentsResponseSchema: GenMessage<GetTournamentsResponse> = /*@__PURE__*/
-  messageDesc(file_tournament_v1_tournament_service, 1);
+  messageDesc(file_tournament_v1_tournament_service, 2);
 
 /**
- * Wrapper allowing empty request or filtered request.
- *
  * @generated from message tournament.v1.GetTournamentsRequestWrapper
  */
 export type GetTournamentsRequestWrapper = Message<"tournament.v1.GetTournamentsRequestWrapper"> & {
@@ -112,20 +107,16 @@ export type GetTournamentsRequestWrapper = Message<"tournament.v1.GetTournaments
    */
   request: {
     /**
-     * Fetch all tournaments with defaults
-     *
      * @generated from field: google.protobuf.Empty empty = 1;
      */
     value: Empty;
     case: "empty";
   } | {
     /**
-     * Fetch tournaments with filters
-     *
-     * @generated from field: tournament.v1.GetTournamentsRequest filter = 2;
+     * @generated from field: tournament.v1.GetTournamentsRequest query = 2;
      */
     value: GetTournamentsRequest;
-    case: "filter";
+    case: "query";
   } | { case: undefined; value?: undefined };
 };
 
@@ -134,17 +125,13 @@ export type GetTournamentsRequestWrapper = Message<"tournament.v1.GetTournaments
  * Use `create(GetTournamentsRequestWrapperSchema)` to create a new message.
  */
 export const GetTournamentsRequestWrapperSchema: GenMessage<GetTournamentsRequestWrapper> = /*@__PURE__*/
-  messageDesc(file_tournament_v1_tournament_service, 2);
+  messageDesc(file_tournament_v1_tournament_service, 3);
 
 /**
- * Request for creating a new tournament.
- *
  * @generated from message tournament.v1.CreateTournamentRequest
  */
 export type CreateTournamentRequest = Message<"tournament.v1.CreateTournamentRequest"> & {
   /**
-   * Tournament name
-   *
    * @generated from field: string name = 1;
    */
   name: string;
@@ -155,17 +142,13 @@ export type CreateTournamentRequest = Message<"tournament.v1.CreateTournamentReq
  * Use `create(CreateTournamentRequestSchema)` to create a new message.
  */
 export const CreateTournamentRequestSchema: GenMessage<CreateTournamentRequest> = /*@__PURE__*/
-  messageDesc(file_tournament_v1_tournament_service, 3);
+  messageDesc(file_tournament_v1_tournament_service, 4);
 
 /**
- * Response after creating a tournament.
- *
  * @generated from message tournament.v1.CreateTournamentResponse
  */
 export type CreateTournamentResponse = Message<"tournament.v1.CreateTournamentResponse"> & {
   /**
-   * Created tournament ID
-   *
    * @generated from field: string id = 1;
    */
   id: string;
@@ -176,7 +159,7 @@ export type CreateTournamentResponse = Message<"tournament.v1.CreateTournamentRe
  * Use `create(CreateTournamentResponseSchema)` to create a new message.
  */
 export const CreateTournamentResponseSchema: GenMessage<CreateTournamentResponse> = /*@__PURE__*/
-  messageDesc(file_tournament_v1_tournament_service, 4);
+  messageDesc(file_tournament_v1_tournament_service, 5);
 
 /**
  * @generated from enum tournament.v1.TournamentFilterBy
@@ -188,53 +171,34 @@ export enum TournamentFilterBy {
   UNSPECIFIED = 0,
 
   /**
-   * name
-   *
    * @generated from enum value: TOURNAMENT_FILTER_BY_NAME = 1;
    */
   NAME = 1,
 
   /**
-   * type
-   *
    * @generated from enum value: TOURNAMENT_FILTER_BY_TYPE = 2;
    */
   TYPE = 2,
 
   /**
-   * format
-   *
    * @generated from enum value: TOURNAMENT_FILTER_BY_FORMAT = 3;
    */
   FORMAT = 3,
 
   /**
-   * location
-   *
    * @generated from enum value: TOURNAMENT_FILTER_BY_LOCATION = 4;
    */
   LOCATION = 4,
 
   /**
-   * startDate
-   *
    * @generated from enum value: TOURNAMENT_FILTER_BY_START_DATE = 5;
    */
   START_DATE = 5,
 
   /**
-   * totalPrize
-   *
-   * @generated from enum value: TOURNAMENT_FILTER_BY_TOTAL_PRIZE = 6;
+   * @generated from enum value: TOURNAMENT_FILTER_BY_STATUS = 6;
    */
-  TOTAL_PRIZE = 6,
-
-  /**
-   * status
-   *
-   * @generated from enum value: TOURNAMENT_FILTER_BY_STATUS = 7;
-   */
-  STATUS = 7,
+  STATUS = 6,
 }
 
 /**
@@ -253,36 +217,26 @@ export enum TournamentSortBy {
   UNSPECIFIED = 0,
 
   /**
-   * createdAt (default)
-   *
    * @generated from enum value: TOURNAMENT_SORT_BY_CREATED_AT = 1;
    */
   CREATED_AT = 1,
 
   /**
-   * startDate
-   *
    * @generated from enum value: TOURNAMENT_SORT_BY_START_DATE = 2;
    */
   START_DATE = 2,
 
   /**
-   * endDate
-   *
    * @generated from enum value: TOURNAMENT_SORT_BY_END_DATE = 3;
    */
   END_DATE = 3,
 
   /**
-   * totalPrize
-   *
    * @generated from enum value: TOURNAMENT_SORT_BY_TOTAL_PRIZE = 4;
    */
   TOTAL_PRIZE = 4,
 
   /**
-   * name
-   *
    * @generated from enum value: TOURNAMENT_SORT_BY_NAME = 5;
    */
   NAME = 5,
@@ -402,14 +356,10 @@ export const FilterOperatorSchema: GenEnum<FilterOperator> = /*@__PURE__*/
   enumDesc(file_tournament_v1_tournament_service, 3);
 
 /**
- * Tournament service definition.
- *
  * @generated from service tournament.v1.TournamentService
  */
 export const TournamentService: GenService<{
   /**
-   * Returns a paginated list of tournaments.
-   *
    * @generated from rpc tournament.v1.TournamentService.GetTournaments
    */
   getTournaments: {
@@ -418,8 +368,6 @@ export const TournamentService: GenService<{
     output: typeof GetTournamentsResponseSchema;
   },
   /**
-   * Creates a new tournament.
-   *
    * @generated from rpc tournament.v1.TournamentService.CreateTournament
    */
   createTournament: {

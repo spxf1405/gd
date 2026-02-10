@@ -43,9 +43,7 @@ const (
 
 // TournamentServiceClient is a client for the tournament.v1.TournamentService service.
 type TournamentServiceClient interface {
-	// Returns a paginated list of tournaments.
 	GetTournaments(context.Context, *connect.Request[v1.GetTournamentsRequestWrapper]) (*connect.Response[v1.GetTournamentsResponse], error)
-	// Creates a new tournament.
 	CreateTournament(context.Context, *connect.Request[v1.CreateTournamentRequest]) (*connect.Response[v1.CreateTournamentResponse], error)
 }
 
@@ -93,9 +91,7 @@ func (c *tournamentServiceClient) CreateTournament(ctx context.Context, req *con
 
 // TournamentServiceHandler is an implementation of the tournament.v1.TournamentService service.
 type TournamentServiceHandler interface {
-	// Returns a paginated list of tournaments.
 	GetTournaments(context.Context, *connect.Request[v1.GetTournamentsRequestWrapper]) (*connect.Response[v1.GetTournamentsResponse], error)
-	// Creates a new tournament.
 	CreateTournament(context.Context, *connect.Request[v1.CreateTournamentRequest]) (*connect.Response[v1.CreateTournamentResponse], error)
 }
 

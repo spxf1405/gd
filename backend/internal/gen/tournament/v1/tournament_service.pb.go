@@ -27,13 +27,12 @@ type TournamentFilterBy int32
 
 const (
 	TournamentFilterBy_TOURNAMENT_FILTER_BY_UNSPECIFIED TournamentFilterBy = 0
-	TournamentFilterBy_TOURNAMENT_FILTER_BY_NAME        TournamentFilterBy = 1 // name
-	TournamentFilterBy_TOURNAMENT_FILTER_BY_TYPE        TournamentFilterBy = 2 // type
-	TournamentFilterBy_TOURNAMENT_FILTER_BY_FORMAT      TournamentFilterBy = 3 // format
-	TournamentFilterBy_TOURNAMENT_FILTER_BY_LOCATION    TournamentFilterBy = 4 // location
-	TournamentFilterBy_TOURNAMENT_FILTER_BY_START_DATE  TournamentFilterBy = 5 // startDate
-	TournamentFilterBy_TOURNAMENT_FILTER_BY_TOTAL_PRIZE TournamentFilterBy = 6 // totalPrize
-	TournamentFilterBy_TOURNAMENT_FILTER_BY_STATUS      TournamentFilterBy = 7 // status
+	TournamentFilterBy_TOURNAMENT_FILTER_BY_NAME        TournamentFilterBy = 1
+	TournamentFilterBy_TOURNAMENT_FILTER_BY_TYPE        TournamentFilterBy = 2
+	TournamentFilterBy_TOURNAMENT_FILTER_BY_FORMAT      TournamentFilterBy = 3
+	TournamentFilterBy_TOURNAMENT_FILTER_BY_LOCATION    TournamentFilterBy = 4
+	TournamentFilterBy_TOURNAMENT_FILTER_BY_START_DATE  TournamentFilterBy = 5
+	TournamentFilterBy_TOURNAMENT_FILTER_BY_STATUS      TournamentFilterBy = 6
 )
 
 // Enum value maps for TournamentFilterBy.
@@ -45,8 +44,7 @@ var (
 		3: "TOURNAMENT_FILTER_BY_FORMAT",
 		4: "TOURNAMENT_FILTER_BY_LOCATION",
 		5: "TOURNAMENT_FILTER_BY_START_DATE",
-		6: "TOURNAMENT_FILTER_BY_TOTAL_PRIZE",
-		7: "TOURNAMENT_FILTER_BY_STATUS",
+		6: "TOURNAMENT_FILTER_BY_STATUS",
 	}
 	TournamentFilterBy_value = map[string]int32{
 		"TOURNAMENT_FILTER_BY_UNSPECIFIED": 0,
@@ -55,8 +53,7 @@ var (
 		"TOURNAMENT_FILTER_BY_FORMAT":      3,
 		"TOURNAMENT_FILTER_BY_LOCATION":    4,
 		"TOURNAMENT_FILTER_BY_START_DATE":  5,
-		"TOURNAMENT_FILTER_BY_TOTAL_PRIZE": 6,
-		"TOURNAMENT_FILTER_BY_STATUS":      7,
+		"TOURNAMENT_FILTER_BY_STATUS":      6,
 	}
 )
 
@@ -91,11 +88,11 @@ type TournamentSortBy int32
 
 const (
 	TournamentSortBy_TOURNAMENT_SORT_BY_UNSPECIFIED TournamentSortBy = 0
-	TournamentSortBy_TOURNAMENT_SORT_BY_CREATED_AT  TournamentSortBy = 1 // createdAt (default)
-	TournamentSortBy_TOURNAMENT_SORT_BY_START_DATE  TournamentSortBy = 2 // startDate
-	TournamentSortBy_TOURNAMENT_SORT_BY_END_DATE    TournamentSortBy = 3 // endDate
-	TournamentSortBy_TOURNAMENT_SORT_BY_TOTAL_PRIZE TournamentSortBy = 4 // totalPrize
-	TournamentSortBy_TOURNAMENT_SORT_BY_NAME        TournamentSortBy = 5 // name
+	TournamentSortBy_TOURNAMENT_SORT_BY_CREATED_AT  TournamentSortBy = 1
+	TournamentSortBy_TOURNAMENT_SORT_BY_START_DATE  TournamentSortBy = 2
+	TournamentSortBy_TOURNAMENT_SORT_BY_END_DATE    TournamentSortBy = 3
+	TournamentSortBy_TOURNAMENT_SORT_BY_TOTAL_PRIZE TournamentSortBy = 4
+	TournamentSortBy_TOURNAMENT_SORT_BY_NAME        TournamentSortBy = 5
 )
 
 // Enum value maps for TournamentSortBy.
@@ -276,23 +273,80 @@ func (FilterOperator) EnumDescriptor() ([]byte, []int) {
 	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{3}
 }
 
-// Request for listing tournaments with pagination, filtering, and sorting.
-type GetTournamentsRequest struct {
+type Filter struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
-	Page           int32                  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`                                                                             // Page number (1-based)
-	Limit          int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`                                                                           // Page size
-	Filter         string                 `protobuf:"bytes,3,opt,name=filter,proto3" json:"filter,omitempty"`                                                                          // Filter value
-	FilterBy       TournamentFilterBy     `protobuf:"varint,4,opt,name=filter_by,json=filterBy,proto3,enum=tournament.v1.TournamentFilterBy" json:"filter_by,omitempty"`               // Field name to filter on
-	FilterOperator FilterOperator         `protobuf:"varint,5,opt,name=filter_operator,json=filterOperator,proto3,enum=tournament.v1.FilterOperator" json:"filter_operator,omitempty"` // Match type (contains, equals, etc.)
-	SortBy         TournamentSortBy       `protobuf:"varint,6,opt,name=sort_by,json=sortBy,proto3,enum=tournament.v1.TournamentSortBy" json:"sort_by,omitempty"`                       // Field name to sort by
-	SortOrder      SortOrder              `protobuf:"varint,7,opt,name=sort_order,json=sortOrder,proto3,enum=tournament.v1.SortOrder" json:"sort_order,omitempty"`                     // Sort order (asc or desc)
+	Filter         string                 `protobuf:"bytes,1,opt,name=filter,proto3" json:"filter,omitempty"`
+	FilterBy       TournamentFilterBy     `protobuf:"varint,2,opt,name=filter_by,json=filterBy,proto3,enum=tournament.v1.TournamentFilterBy" json:"filter_by,omitempty"`
+	FilterOperator FilterOperator         `protobuf:"varint,3,opt,name=filter_operator,json=filterOperator,proto3,enum=tournament.v1.FilterOperator" json:"filter_operator,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
 
+func (x *Filter) Reset() {
+	*x = Filter{}
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Filter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Filter) ProtoMessage() {}
+
+func (x *Filter) ProtoReflect() protoreflect.Message {
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Filter.ProtoReflect.Descriptor instead.
+func (*Filter) Descriptor() ([]byte, []int) {
+	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *Filter) GetFilter() string {
+	if x != nil {
+		return x.Filter
+	}
+	return ""
+}
+
+func (x *Filter) GetFilterBy() TournamentFilterBy {
+	if x != nil {
+		return x.FilterBy
+	}
+	return TournamentFilterBy_TOURNAMENT_FILTER_BY_UNSPECIFIED
+}
+
+func (x *Filter) GetFilterOperator() FilterOperator {
+	if x != nil {
+		return x.FilterOperator
+	}
+	return FilterOperator_FILTER_MATCH_TYPE_UNSPECIFIED
+}
+
+type GetTournamentsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Page          int32                  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	Limit         int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+	Filters       []*Filter              `protobuf:"bytes,3,rep,name=filters,proto3" json:"filters,omitempty"`
+	SortBy        TournamentSortBy       `protobuf:"varint,4,opt,name=sort_by,json=sortBy,proto3,enum=tournament.v1.TournamentSortBy" json:"sort_by,omitempty"`
+	SortOrder     SortOrder              `protobuf:"varint,5,opt,name=sort_order,json=sortOrder,proto3,enum=tournament.v1.SortOrder" json:"sort_order,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
 func (x *GetTournamentsRequest) Reset() {
 	*x = GetTournamentsRequest{}
-	mi := &file_tournament_v1_tournament_service_proto_msgTypes[0]
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -304,7 +358,7 @@ func (x *GetTournamentsRequest) String() string {
 func (*GetTournamentsRequest) ProtoMessage() {}
 
 func (x *GetTournamentsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_tournament_v1_tournament_service_proto_msgTypes[0]
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -317,7 +371,7 @@ func (x *GetTournamentsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTournamentsRequest.ProtoReflect.Descriptor instead.
 func (*GetTournamentsRequest) Descriptor() ([]byte, []int) {
-	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{0}
+	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *GetTournamentsRequest) GetPage() int32 {
@@ -334,25 +388,11 @@ func (x *GetTournamentsRequest) GetLimit() int32 {
 	return 0
 }
 
-func (x *GetTournamentsRequest) GetFilter() string {
+func (x *GetTournamentsRequest) GetFilters() []*Filter {
 	if x != nil {
-		return x.Filter
+		return x.Filters
 	}
-	return ""
-}
-
-func (x *GetTournamentsRequest) GetFilterBy() TournamentFilterBy {
-	if x != nil {
-		return x.FilterBy
-	}
-	return TournamentFilterBy_TOURNAMENT_FILTER_BY_UNSPECIFIED
-}
-
-func (x *GetTournamentsRequest) GetFilterOperator() FilterOperator {
-	if x != nil {
-		return x.FilterOperator
-	}
-	return FilterOperator_FILTER_MATCH_TYPE_UNSPECIFIED
+	return nil
 }
 
 func (x *GetTournamentsRequest) GetSortBy() TournamentSortBy {
@@ -369,17 +409,16 @@ func (x *GetTournamentsRequest) GetSortOrder() SortOrder {
 	return SortOrder_SORT_ORDER_UNSPECIFIED
 }
 
-// Response containing a list of tournaments.
 type GetTournamentsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Tournaments   []*Tournament          `protobuf:"bytes,1,rep,name=tournaments,proto3" json:"tournaments,omitempty"` // Tournament list
+	Tournaments   []*Tournament          `protobuf:"bytes,1,rep,name=tournaments,proto3" json:"tournaments,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GetTournamentsResponse) Reset() {
 	*x = GetTournamentsResponse{}
-	mi := &file_tournament_v1_tournament_service_proto_msgTypes[1]
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -391,7 +430,7 @@ func (x *GetTournamentsResponse) String() string {
 func (*GetTournamentsResponse) ProtoMessage() {}
 
 func (x *GetTournamentsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_tournament_v1_tournament_service_proto_msgTypes[1]
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -404,7 +443,7 @@ func (x *GetTournamentsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTournamentsResponse.ProtoReflect.Descriptor instead.
 func (*GetTournamentsResponse) Descriptor() ([]byte, []int) {
-	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{1}
+	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *GetTournamentsResponse) GetTournaments() []*Tournament {
@@ -414,13 +453,12 @@ func (x *GetTournamentsResponse) GetTournaments() []*Tournament {
 	return nil
 }
 
-// Wrapper allowing empty request or filtered request.
 type GetTournamentsRequestWrapper struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to Request:
 	//
 	//	*GetTournamentsRequestWrapper_Empty
-	//	*GetTournamentsRequestWrapper_Filter
+	//	*GetTournamentsRequestWrapper_Query
 	Request       isGetTournamentsRequestWrapper_Request `protobuf_oneof:"request"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -428,7 +466,7 @@ type GetTournamentsRequestWrapper struct {
 
 func (x *GetTournamentsRequestWrapper) Reset() {
 	*x = GetTournamentsRequestWrapper{}
-	mi := &file_tournament_v1_tournament_service_proto_msgTypes[2]
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -440,7 +478,7 @@ func (x *GetTournamentsRequestWrapper) String() string {
 func (*GetTournamentsRequestWrapper) ProtoMessage() {}
 
 func (x *GetTournamentsRequestWrapper) ProtoReflect() protoreflect.Message {
-	mi := &file_tournament_v1_tournament_service_proto_msgTypes[2]
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -453,7 +491,7 @@ func (x *GetTournamentsRequestWrapper) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTournamentsRequestWrapper.ProtoReflect.Descriptor instead.
 func (*GetTournamentsRequestWrapper) Descriptor() ([]byte, []int) {
-	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{2}
+	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetTournamentsRequestWrapper) GetRequest() isGetTournamentsRequestWrapper_Request {
@@ -472,10 +510,10 @@ func (x *GetTournamentsRequestWrapper) GetEmpty() *emptypb.Empty {
 	return nil
 }
 
-func (x *GetTournamentsRequestWrapper) GetFilter() *GetTournamentsRequest {
+func (x *GetTournamentsRequestWrapper) GetQuery() *GetTournamentsRequest {
 	if x != nil {
-		if x, ok := x.Request.(*GetTournamentsRequestWrapper_Filter); ok {
-			return x.Filter
+		if x, ok := x.Request.(*GetTournamentsRequestWrapper_Query); ok {
+			return x.Query
 		}
 	}
 	return nil
@@ -486,28 +524,27 @@ type isGetTournamentsRequestWrapper_Request interface {
 }
 
 type GetTournamentsRequestWrapper_Empty struct {
-	Empty *emptypb.Empty `protobuf:"bytes,1,opt,name=empty,proto3,oneof"` // Fetch all tournaments with defaults
+	Empty *emptypb.Empty `protobuf:"bytes,1,opt,name=empty,proto3,oneof"`
 }
 
-type GetTournamentsRequestWrapper_Filter struct {
-	Filter *GetTournamentsRequest `protobuf:"bytes,2,opt,name=filter,proto3,oneof"` // Fetch tournaments with filters
+type GetTournamentsRequestWrapper_Query struct {
+	Query *GetTournamentsRequest `protobuf:"bytes,2,opt,name=query,proto3,oneof"`
 }
 
 func (*GetTournamentsRequestWrapper_Empty) isGetTournamentsRequestWrapper_Request() {}
 
-func (*GetTournamentsRequestWrapper_Filter) isGetTournamentsRequestWrapper_Request() {}
+func (*GetTournamentsRequestWrapper_Query) isGetTournamentsRequestWrapper_Request() {}
 
-// Request for creating a new tournament.
 type CreateTournamentRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"` // Tournament name
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreateTournamentRequest) Reset() {
 	*x = CreateTournamentRequest{}
-	mi := &file_tournament_v1_tournament_service_proto_msgTypes[3]
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -519,7 +556,7 @@ func (x *CreateTournamentRequest) String() string {
 func (*CreateTournamentRequest) ProtoMessage() {}
 
 func (x *CreateTournamentRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_tournament_v1_tournament_service_proto_msgTypes[3]
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -532,7 +569,7 @@ func (x *CreateTournamentRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTournamentRequest.ProtoReflect.Descriptor instead.
 func (*CreateTournamentRequest) Descriptor() ([]byte, []int) {
-	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{3}
+	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *CreateTournamentRequest) GetName() string {
@@ -542,17 +579,16 @@ func (x *CreateTournamentRequest) GetName() string {
 	return ""
 }
 
-// Response after creating a tournament.
 type CreateTournamentResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"` // Created tournament ID
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreateTournamentResponse) Reset() {
 	*x = CreateTournamentResponse{}
-	mi := &file_tournament_v1_tournament_service_proto_msgTypes[4]
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -564,7 +600,7 @@ func (x *CreateTournamentResponse) String() string {
 func (*CreateTournamentResponse) ProtoMessage() {}
 
 func (x *CreateTournamentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_tournament_v1_tournament_service_proto_msgTypes[4]
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -577,7 +613,7 @@ func (x *CreateTournamentResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTournamentResponse.ProtoReflect.Descriptor instead.
 func (*CreateTournamentResponse) Descriptor() ([]byte, []int) {
-	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{4}
+	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *CreateTournamentResponse) GetId() string {
@@ -591,35 +627,36 @@ var File_tournament_v1_tournament_service_proto protoreflect.FileDescriptor
 
 const file_tournament_v1_tournament_service_proto_rawDesc = "" +
 	"\n" +
-	"&tournament/v1/tournament_service.proto\x12\rtournament.v1\x1a\x1etournament/v1/tournament.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1bbuf/validate/validate.proto\"\xe6\x02\n" +
+	"&tournament/v1/tournament_service.proto\x12\rtournament.v1\x1a\x1etournament/v1/tournament.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1bbuf/validate/validate.proto\"\xa8\x01\n" +
+	"\x06Filter\x12\x16\n" +
+	"\x06filter\x18\x01 \x01(\tR\x06filter\x12>\n" +
+	"\tfilter_by\x18\x02 \x01(\x0e2!.tournament.v1.TournamentFilterByR\bfilterBy\x12F\n" +
+	"\x0ffilter_operator\x18\x03 \x01(\x0e2\x1d.tournament.v1.FilterOperatorR\x0efilterOperator\"\xf7\x01\n" +
 	"\x15GetTournamentsRequest\x12\x1b\n" +
 	"\x04page\x18\x01 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x04page\x12\x1d\n" +
-	"\x05limit\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x05limit\x12\x16\n" +
-	"\x06filter\x18\x03 \x01(\tR\x06filter\x12>\n" +
-	"\tfilter_by\x18\x04 \x01(\x0e2!.tournament.v1.TournamentFilterByR\bfilterBy\x12F\n" +
-	"\x0ffilter_operator\x18\x05 \x01(\x0e2\x1d.tournament.v1.FilterOperatorR\x0efilterOperator\x128\n" +
-	"\asort_by\x18\x06 \x01(\x0e2\x1f.tournament.v1.TournamentSortByR\x06sortBy\x127\n" +
+	"\x05limit\x18\x02 \x01(\x05B\a\xbaH\x04\x1a\x02 \x00R\x05limit\x12/\n" +
+	"\afilters\x18\x03 \x03(\v2\x15.tournament.v1.FilterR\afilters\x128\n" +
+	"\asort_by\x18\x04 \x01(\x0e2\x1f.tournament.v1.TournamentSortByR\x06sortBy\x127\n" +
 	"\n" +
-	"sort_order\x18\a \x01(\x0e2\x18.tournament.v1.SortOrderR\tsortOrder\"U\n" +
+	"sort_order\x18\x05 \x01(\x0e2\x18.tournament.v1.SortOrderR\tsortOrder\"U\n" +
 	"\x16GetTournamentsResponse\x12;\n" +
-	"\vtournaments\x18\x01 \x03(\v2\x19.tournament.v1.TournamentR\vtournaments\"\x99\x01\n" +
+	"\vtournaments\x18\x01 \x03(\v2\x19.tournament.v1.TournamentR\vtournaments\"\x97\x01\n" +
 	"\x1cGetTournamentsRequestWrapper\x12.\n" +
-	"\x05empty\x18\x01 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x05empty\x12>\n" +
-	"\x06filter\x18\x02 \x01(\v2$.tournament.v1.GetTournamentsRequestH\x00R\x06filterB\t\n" +
+	"\x05empty\x18\x01 \x01(\v2\x16.google.protobuf.EmptyH\x00R\x05empty\x12<\n" +
+	"\x05query\x18\x02 \x01(\v2$.tournament.v1.GetTournamentsRequestH\x00R\x05queryB\t\n" +
 	"\arequest\"-\n" +
 	"\x17CreateTournamentRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\"*\n" +
 	"\x18CreateTournamentResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id*\xa8\x02\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id*\x82\x02\n" +
 	"\x12TournamentFilterBy\x12$\n" +
 	" TOURNAMENT_FILTER_BY_UNSPECIFIED\x10\x00\x12\x1d\n" +
 	"\x19TOURNAMENT_FILTER_BY_NAME\x10\x01\x12\x1d\n" +
 	"\x19TOURNAMENT_FILTER_BY_TYPE\x10\x02\x12\x1f\n" +
 	"\x1bTOURNAMENT_FILTER_BY_FORMAT\x10\x03\x12!\n" +
 	"\x1dTOURNAMENT_FILTER_BY_LOCATION\x10\x04\x12#\n" +
-	"\x1fTOURNAMENT_FILTER_BY_START_DATE\x10\x05\x12$\n" +
-	" TOURNAMENT_FILTER_BY_TOTAL_PRIZE\x10\x06\x12\x1f\n" +
-	"\x1bTOURNAMENT_FILTER_BY_STATUS\x10\a*\xde\x01\n" +
+	"\x1fTOURNAMENT_FILTER_BY_START_DATE\x10\x05\x12\x1f\n" +
+	"\x1bTOURNAMENT_FILTER_BY_STATUS\x10\x06*\xde\x01\n" +
 	"\x10TournamentSortBy\x12\"\n" +
 	"\x1eTOURNAMENT_SORT_BY_UNSPECIFIED\x10\x00\x12!\n" +
 	"\x1dTOURNAMENT_SORT_BY_CREATED_AT\x10\x01\x12!\n" +
@@ -664,37 +701,39 @@ func file_tournament_v1_tournament_service_proto_rawDescGZIP() []byte {
 }
 
 var file_tournament_v1_tournament_service_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_tournament_v1_tournament_service_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_tournament_v1_tournament_service_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_tournament_v1_tournament_service_proto_goTypes = []any{
 	(TournamentFilterBy)(0),              // 0: tournament.v1.TournamentFilterBy
 	(TournamentSortBy)(0),                // 1: tournament.v1.TournamentSortBy
 	(SortOrder)(0),                       // 2: tournament.v1.SortOrder
 	(FilterOperator)(0),                  // 3: tournament.v1.FilterOperator
-	(*GetTournamentsRequest)(nil),        // 4: tournament.v1.GetTournamentsRequest
-	(*GetTournamentsResponse)(nil),       // 5: tournament.v1.GetTournamentsResponse
-	(*GetTournamentsRequestWrapper)(nil), // 6: tournament.v1.GetTournamentsRequestWrapper
-	(*CreateTournamentRequest)(nil),      // 7: tournament.v1.CreateTournamentRequest
-	(*CreateTournamentResponse)(nil),     // 8: tournament.v1.CreateTournamentResponse
-	(*Tournament)(nil),                   // 9: tournament.v1.Tournament
-	(*emptypb.Empty)(nil),                // 10: google.protobuf.Empty
+	(*Filter)(nil),                       // 4: tournament.v1.Filter
+	(*GetTournamentsRequest)(nil),        // 5: tournament.v1.GetTournamentsRequest
+	(*GetTournamentsResponse)(nil),       // 6: tournament.v1.GetTournamentsResponse
+	(*GetTournamentsRequestWrapper)(nil), // 7: tournament.v1.GetTournamentsRequestWrapper
+	(*CreateTournamentRequest)(nil),      // 8: tournament.v1.CreateTournamentRequest
+	(*CreateTournamentResponse)(nil),     // 9: tournament.v1.CreateTournamentResponse
+	(*Tournament)(nil),                   // 10: tournament.v1.Tournament
+	(*emptypb.Empty)(nil),                // 11: google.protobuf.Empty
 }
 var file_tournament_v1_tournament_service_proto_depIdxs = []int32{
-	0,  // 0: tournament.v1.GetTournamentsRequest.filter_by:type_name -> tournament.v1.TournamentFilterBy
-	3,  // 1: tournament.v1.GetTournamentsRequest.filter_operator:type_name -> tournament.v1.FilterOperator
-	1,  // 2: tournament.v1.GetTournamentsRequest.sort_by:type_name -> tournament.v1.TournamentSortBy
-	2,  // 3: tournament.v1.GetTournamentsRequest.sort_order:type_name -> tournament.v1.SortOrder
-	9,  // 4: tournament.v1.GetTournamentsResponse.tournaments:type_name -> tournament.v1.Tournament
-	10, // 5: tournament.v1.GetTournamentsRequestWrapper.empty:type_name -> google.protobuf.Empty
-	4,  // 6: tournament.v1.GetTournamentsRequestWrapper.filter:type_name -> tournament.v1.GetTournamentsRequest
-	6,  // 7: tournament.v1.TournamentService.GetTournaments:input_type -> tournament.v1.GetTournamentsRequestWrapper
-	7,  // 8: tournament.v1.TournamentService.CreateTournament:input_type -> tournament.v1.CreateTournamentRequest
-	5,  // 9: tournament.v1.TournamentService.GetTournaments:output_type -> tournament.v1.GetTournamentsResponse
-	8,  // 10: tournament.v1.TournamentService.CreateTournament:output_type -> tournament.v1.CreateTournamentResponse
-	9,  // [9:11] is the sub-list for method output_type
-	7,  // [7:9] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	0,  // 0: tournament.v1.Filter.filter_by:type_name -> tournament.v1.TournamentFilterBy
+	3,  // 1: tournament.v1.Filter.filter_operator:type_name -> tournament.v1.FilterOperator
+	4,  // 2: tournament.v1.GetTournamentsRequest.filters:type_name -> tournament.v1.Filter
+	1,  // 3: tournament.v1.GetTournamentsRequest.sort_by:type_name -> tournament.v1.TournamentSortBy
+	2,  // 4: tournament.v1.GetTournamentsRequest.sort_order:type_name -> tournament.v1.SortOrder
+	10, // 5: tournament.v1.GetTournamentsResponse.tournaments:type_name -> tournament.v1.Tournament
+	11, // 6: tournament.v1.GetTournamentsRequestWrapper.empty:type_name -> google.protobuf.Empty
+	5,  // 7: tournament.v1.GetTournamentsRequestWrapper.query:type_name -> tournament.v1.GetTournamentsRequest
+	7,  // 8: tournament.v1.TournamentService.GetTournaments:input_type -> tournament.v1.GetTournamentsRequestWrapper
+	8,  // 9: tournament.v1.TournamentService.CreateTournament:input_type -> tournament.v1.CreateTournamentRequest
+	6,  // 10: tournament.v1.TournamentService.GetTournaments:output_type -> tournament.v1.GetTournamentsResponse
+	9,  // 11: tournament.v1.TournamentService.CreateTournament:output_type -> tournament.v1.CreateTournamentResponse
+	10, // [10:12] is the sub-list for method output_type
+	8,  // [8:10] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_tournament_v1_tournament_service_proto_init() }
@@ -703,9 +742,9 @@ func file_tournament_v1_tournament_service_proto_init() {
 		return
 	}
 	file_tournament_v1_tournament_proto_init()
-	file_tournament_v1_tournament_service_proto_msgTypes[2].OneofWrappers = []any{
+	file_tournament_v1_tournament_service_proto_msgTypes[3].OneofWrappers = []any{
 		(*GetTournamentsRequestWrapper_Empty)(nil),
-		(*GetTournamentsRequestWrapper_Filter)(nil),
+		(*GetTournamentsRequestWrapper_Query)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -713,7 +752,7 @@ func file_tournament_v1_tournament_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tournament_v1_tournament_service_proto_rawDesc), len(file_tournament_v1_tournament_service_proto_rawDesc)),
 			NumEnums:      4,
-			NumMessages:   5,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
