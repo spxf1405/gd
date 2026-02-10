@@ -239,8 +239,7 @@ const columnDefs = ref<ColDef<Tournament>[]>([
     field: "createdAt",
     headerName: "Ngày tạo",
     filter: false,
-    width: 130,
-    sort: "desc",
+    width: 200,
     valueFormatter: (params) => {
       if (!params.value) return "";
       return new Date(params.value).toLocaleDateString("vi-VN");
@@ -249,7 +248,7 @@ const columnDefs = ref<ColDef<Tournament>[]>([
   {
     field: "startDate",
     headerName: "Ngày khởi tranh",
-    width: 130,
+    width: 200,
     valueFormatter: (params) => {
       if (!params.value) return "";
       return new Date(params.value).toLocaleDateString("vi-VN");
@@ -315,6 +314,12 @@ const domLayout = ref<DomLayoutType>("normal");
 
 const onGridReady = (params: GridReadyEvent<Tournament1>) => {
   params.api.autoSizeColumns(["actions"]);
+  params.api.applyColumnState({
+    state: [
+      { colId: "createdAt", sort: "desc" },
+    ],
+    defaultState: { sort: null },
+  });
 };
 
 const localeText = {
@@ -338,28 +343,25 @@ function onRowClick(event: RowClickedEvent<Tournament1>) {
   // navigateTo(`tournament/${event.data?.id}`);
 }
 
-function mapFieldToSort(field: string): TournamentFilterBy {
+function mapFieldToSort(field: string): TournamentSortBy {
   switch (field) {
     case "name":
-      return TournamentFilterBy.NAME;
+      return TournamentSortBy.NAME;
 
-    case "type":
-      return TournamentFilterBy.TYPE;
-
-    case "format":
-      return TournamentFilterBy.FORMAT;
-
-    case "location":
-      return TournamentFilterBy.LOCATION;
+    case "createdAt":
+      return TournamentSortBy.CREATED_AT;
 
     case "startDate":
-      return TournamentFilterBy.START_DATE;
+      return TournamentSortBy.START_DATE;
 
     case "status":
-      return TournamentFilterBy.STATUS;
+      return TournamentSortBy.END_DATE;
+
+    case "total_prize":
+      return TournamentSortBy.TOTAL_PRIZE;
 
     default:
-      return TournamentFilterBy.UNSPECIFIED;
+      return TournamentSortBy.UNSPECIFIED;
   }
 }
 
@@ -521,7 +523,6 @@ function onFilterChange(event) {
 }
 
 function onSortChange(event) {
-  // const sortModel = event.api.getColumnState();
   const sortInfo = event.api.getColumnState().find((e) => e.sort !== null);
   console.log("sortInfo", sortInfo);
 
@@ -533,14 +534,20 @@ function onSortChange(event) {
     return;
   }
 
-  // sort.value = {
-  //   type: TournamentSortBy.CREATED_AT,
-  //   direction: SortOrder.DESC,
-  // };
+  console.log(
+    "mapFieldToSort(sortInfo.colId)",
+    mapFieldToSort(sortInfo.colId),
+    sortInfo.sort,
+  );
+
+  sort.value = {
+    type: mapFieldToSort(sortInfo.colId),
+    direction: sortInfo.sort === "asc" ? SortOrder.ASC : SortOrder.DESC,
+  };
 }
 
 watchEffect(() => {
-  console.log("tournaments", tournaments);
+  console.log("tournaments", sort.value);
 });
 </script>
 
@@ -560,6 +567,8 @@ watchEffect(() => {
         :defaultColDef="{
           filter: true,
           floatingFilter: true,
+          autoHeaderHeight: true,
+          wrapHeaderText: true,
           filterParams: {
             maxNumConditions: 1,
             suppressAndOrCondition: true,
