@@ -19,6 +19,16 @@ GD helps manage:
 The system is built to ensure predictable data flow and strong separation of concerns.
 
 ---
+## Purpose
+
+GD is built for competitive environments where:
+
+- Match integrity matters  
+- Bracket progression must be accurate  
+- Tournament state must be reliable  
+- Operational workflow needs to remain simple
+
+---
 
 ## Architecture
 
@@ -70,18 +80,3 @@ docker-compose up --build
 - Clear separation between transport and business logic  
 - Predictable state and data flow  
 - Production-oriented structure  
-
----
-
-## Purpose
-
-GD is built for competitive environments where:
-
-- Match integrity matters  
-- Bracket progression must be accurate  
-- Tournament state must be reliable  
-- Operational workflow needs to remain simple  
-
----
-
-Private project.
