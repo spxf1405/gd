@@ -62,21 +62,28 @@
     Arial;
 }
 
-.ag-center-cols-viewport {
-    min-height: unset !important;
-}
-
-.ag-root,
-.ag-root * {
-  scrollbar-width: auto !important;
-  scrollbar-color: auto !important;
-}
 
 :root {
-  --scrollbar-track: #0b0e14;
-  --scrollbar-thumb: #2a2f3a;
-  --scrollbar-thumb-hover: #3a4152;
-  --scrollbar-thumb-active: #5562ff;
+  --scrollbar-size: 10px;
+
+  /* Light mode colors */
+  /* --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #c1c1c1;
+  --scrollbar-thumb-hover: #a8a8a8;
+  --scrollbar-thumb-active: #8e8e8e; */
+
+  --scrollbar-track: #1e1e1e;
+  --scrollbar-thumb: #555;
+  --scrollbar-thumb-hover: #777;
+  --scrollbar-thumb-active: #999;
+}
+
+/* Dark mode support */
+.dark {
+  --scrollbar-track: #1e1e1e;
+  --scrollbar-thumb: #555;
+  --scrollbar-thumb-hover: #777;
+  --scrollbar-thumb-active: #999;
 }
 
 /* 1. Dành cho Chrome, Edge, Safari và các trình duyệt dựa trên Webkit */
@@ -105,8 +112,16 @@
   background: var(--scrollbar-thumb-active);
 }
 
-/* 2. Dành cho Firefox (Sử dụng cho toàn bộ các phần tử có scroll) */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+.ag-root {
+  scrollbar-width: auto;
+}
+
+.ag-root::-webkit-scrollbar {
+  width: initial;
+  height: initial;
+}
+
+.ag-root::-webkit-scrollbar-thumb {
+  background: initial;
+  border: initial;
 }

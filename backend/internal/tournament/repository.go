@@ -25,24 +25,20 @@ func NewRepository(db *db.DB) *TournamentRepository {
 	}
 }
 
-/* =========================
-   Column mapping helpers
-   ========================= */
-
 func filterByToColumn(f tournamentpb.TournamentFilterBy) string {
 	switch f {
 	case tournamentpb.TournamentFilterBy_TOURNAMENT_FILTER_BY_NAME:
-		return "name"
+		return "t.name"
 	case tournamentpb.TournamentFilterBy_TOURNAMENT_FILTER_BY_TYPE:
-		return "type"
+		return "t.type"
 	case tournamentpb.TournamentFilterBy_TOURNAMENT_FILTER_BY_FORMAT:
-		return "format"
+		return "t.format"
 	case tournamentpb.TournamentFilterBy_TOURNAMENT_FILTER_BY_LOCATION:
-		return "location"
+		return "t.location"
 	case tournamentpb.TournamentFilterBy_TOURNAMENT_FILTER_BY_START_DATE:
-		return "start_date"
+		return "t.start_date"
 	case tournamentpb.TournamentFilterBy_TOURNAMENT_FILTER_BY_STATUS:
-		return "status"
+		return "t.status"
 	default:
 		return ""
 	}
@@ -51,17 +47,17 @@ func filterByToColumn(f tournamentpb.TournamentFilterBy) string {
 func sortByToColumn(f tournamentpb.TournamentSortBy) string {
 	switch f {
 	case tournamentpb.TournamentSortBy_TOURNAMENT_SORT_BY_CREATED_AT:
-		return "created_at"
+		return "t.created_at"
 	case tournamentpb.TournamentSortBy_TOURNAMENT_SORT_BY_START_DATE:
-		return "start_date"
+		return "t.start_date"
 	case tournamentpb.TournamentSortBy_TOURNAMENT_SORT_BY_END_DATE:
-		return "end_date"
+		return "t.end_date"
 	case tournamentpb.TournamentSortBy_TOURNAMENT_SORT_BY_TOTAL_PRIZE:
-		return "total_prize"
+		return "t.total_prize"
 	case tournamentpb.TournamentSortBy_TOURNAMENT_SORT_BY_NAME:
-		return "name"
+		return "t.name"
 	default:
-		return "created_at"
+		return "t.created_at"
 	}
 }
 
@@ -73,10 +69,6 @@ func sortOrderToSQL(o tournamentpb.SortOrder) string {
 		return "ASC"
 	}
 }
-
-/* =========================
-   Filter builder
-   ========================= */
 
 func buildExpr(
 	col string,
@@ -127,15 +119,10 @@ func buildExpr(
 	}
 }
 
-/* =========================
-   Query
-   ========================= */
-
 func (r *TournamentRepository) getTournaments(
 	ctx context.Context,
 	params *tournamentpb.GetTournamentsRequestWrapper_Query,
 ) ([]*tournamentpb.Tournament, error) {
-	fmt.Println("params", params)
 	if r.DB == nil || r.DB.Pool == nil {
 		panic("DB pool is nil")
 	}
@@ -144,23 +131,49 @@ func (r *TournamentRepository) getTournaments(
 
 	qb := psql.
 		Select(
-			"id",
-			"name",
-			"type",
-			"format",
-			"start_date",
-			"end_date",
-			"location",
-			"total_prize",
-			"entry_fee",
-			"max_players",
-			"registered_players",
-			"status",
-			"created_at",
-			"updated_at",
-			"organizer",
+			"t.id",
+			"t.name",
+			"t.type",
+			"t.format",
+			"t.start_date",
+			"t.end_date",
+			"t.location",
+			"t.total_prize",
+			"t.entry_fee",
+			"t.max_players",
+			"t.status",
+			"t.created_at",
+			"t.updated_at",
+			"t.organizer",
+			`COALESCE(
+				json_agg(
+					json_build_object(
+						'id', p.id,
+						'name', p.name
+					)
+				) FILTER (WHERE p.id IS NOT NULL),
+				'[]'
+			) AS registed_players`,
 		).
-		From("tournament")
+		From("tournaments t").
+		LeftJoin("registrations r ON r.tournament_id = t.id").
+		LeftJoin("players p ON p.id = r.player_id").
+		GroupBy(`
+			t.id,
+			t.name,
+			t.type,
+			t.format,
+			t.start_date,
+			t.end_date,
+			t.location,
+			t.total_prize,
+			t.entry_fee,
+			t.max_players,
+			t.status,
+			t.created_at,
+			t.updated_at,
+			t.organizer
+		`)
 
 	if params != nil {
 		for _, f := range params.Query.Filters {
@@ -194,7 +207,7 @@ func (r *TournamentRepository) getTournaments(
 	)
 
 	query, args, err := qb.ToSql()
-	fmt.Println("query", query)
+
 	if err != nil {
 		return nil, err
 	}
@@ -210,26 +223,27 @@ func (r *TournamentRepository) getTournaments(
 	for rows.Next() {
 		t := &tournamentpb.Tournament{}
 
-		var location sql.NullString
+		var typeT, location, format, totalPrize sql.NullString
 		var createdAt, updatedAt time.Time
 		var startDate sql.NullTime
+		var max_players sql.NullInt32
 
 		err := rows.Scan(
 			&t.Id,
 			&t.Name,
-			&t.Type,
-			&t.Format,
+			&typeT,
+			&format,
 			&startDate,
 			&t.EndDate,
 			&location,
-			&t.TotalPrize,
+			&totalPrize,
 			&t.EntryFee,
-			&t.MaxPlayers,
-			&t.RegisteredPlayers,
+			&max_players,
 			&t.Status,
 			&createdAt,
 			&updatedAt,
 			&t.Organizer,
+			&t.RegisteredPlayers,
 		)
 		if err != nil {
 			fmt.Println("err", err)
@@ -245,6 +259,22 @@ func (r *TournamentRepository) getTournaments(
 
 		if startDate.Valid {
 			t.StartDate = wrapperspb.String(startDate.Time.Format(time.RFC3339))
+		}
+
+		if typeT.Valid {
+			t.Type = wrapperspb.String(typeT.String)
+		}
+
+		if format.Valid {
+			t.Format = wrapperspb.String(format.String)
+		}
+
+		if totalPrize.Valid {
+			t.TotalPrize = wrapperspb.String(totalPrize.String)
+		}
+
+		if max_players.Valid {
+			t.MaxPlayers = wrapperspb.Int32(max_players.Int32)
 		}
 
 		tournaments = append(tournaments, t)

@@ -11,7 +11,29 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file tournament/v1/tournament.proto.
  */
 export const file_tournament_v1_tournament: GenFile = /*@__PURE__*/
-  fileDesc("Ch50b3VybmFtZW50L3YxL3RvdXJuYW1lbnQucHJvdG8SDXRvdXJuYW1lbnQudjEilwUKClRvdXJuYW1lbnQSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRIqCgR0eXBlGAMgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEiwKBmZvcm1hdBgEIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRIwCgpzdGFydF9kYXRlGAUgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEi4KCGVuZF9kYXRlGAYgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEi4KCGxvY2F0aW9uGAcgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEisKBnRhYmxlcxgIIAEoCzIbLmdvb2dsZS5wcm90b2J1Zi5JbnQzMlZhbHVlEjEKC3RvdGFsX3ByaXplGAkgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEi8KCWVudHJ5X2ZlZRgKIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRIwCgttYXhfcGxheWVycxgLIAEoCzIbLmdvb2dsZS5wcm90b2J1Zi5JbnQzMlZhbHVlEjcKEnJlZ2lzdGVyZWRfcGxheWVycxgMIAEoCzIbLmdvb2dsZS5wcm90b2J1Zi5JbnQzMlZhbHVlEi8KBnN0YXR1cxgNIAEoDjIfLnRvdXJuYW1lbnQudjEuVG91cm5hbWVudFN0YXR1cxIvCglvcmdhbml6ZXIYDiABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSEgoKY3JlYXRlZF9hdBgPIAEoCRIRCgl1cGRhdGVfYXQYECABKAkqlwEKEFRvdXJuYW1lbnRTdGF0dXMSIQodVE9VUk5BTUVOVF9TVEFUVVNfVU5TUEVDSUZJRUQQABIhCh1UT1VSTkFNRU5UX1NUQVRVU19SRUdJU1RFUklORxABEh0KGVRPVVJOQU1FTlRfU1RBVFVTX1JVTk5JTkcQAhIeChpUT1VSTkFNRU5UX1NUQVRVU19GSU5JU0hFRBADQjFaL2JhY2tlbmQvaW50ZXJuYWwvZ2VuL3RvdXJuYW1lbnQvdjE7dG91cm5hbWVudHBiYgZwcm90bzM", [file_google_protobuf_timestamp, file_google_protobuf_wrappers]);
+  fileDesc("Ch50b3VybmFtZW50L3YxL3RvdXJuYW1lbnQucHJvdG8SDXRvdXJuYW1lbnQudjEiIgoGUGxheWVyEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkikQUKClRvdXJuYW1lbnQSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRIqCgR0eXBlGAMgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEiwKBmZvcm1hdBgEIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRIwCgpzdGFydF9kYXRlGAUgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEi4KCGVuZF9kYXRlGAYgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEi4KCGxvY2F0aW9uGAcgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEisKBnRhYmxlcxgIIAEoCzIbLmdvb2dsZS5wcm90b2J1Zi5JbnQzMlZhbHVlEjEKC3RvdGFsX3ByaXplGAkgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEi8KCWVudHJ5X2ZlZRgKIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRIwCgttYXhfcGxheWVycxgLIAEoCzIbLmdvb2dsZS5wcm90b2J1Zi5JbnQzMlZhbHVlEi8KBnN0YXR1cxgMIAEoDjIfLnRvdXJuYW1lbnQudjEuVG91cm5hbWVudFN0YXR1cxIvCglvcmdhbml6ZXIYDSABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSEgoKY3JlYXRlZF9hdBgOIAEoCRIRCgl1cGRhdGVfYXQYDyABKAkSMQoScmVnaXN0ZXJlZF9wbGF5ZXJzGBAgAygLMhUudG91cm5hbWVudC52MS5QbGF5ZXIqlwEKEFRvdXJuYW1lbnRTdGF0dXMSIQodVE9VUk5BTUVOVF9TVEFUVVNfVU5TUEVDSUZJRUQQABIhCh1UT1VSTkFNRU5UX1NUQVRVU19SRUdJU1RFUklORxABEh0KGVRPVVJOQU1FTlRfU1RBVFVTX1JVTk5JTkcQAhIeChpUT1VSTkFNRU5UX1NUQVRVU19GSU5JU0hFRBADQjFaL2JhY2tlbmQvaW50ZXJuYWwvZ2VuL3RvdXJuYW1lbnQvdjE7dG91cm5hbWVudHBiYgZwcm90bzM", [file_google_protobuf_timestamp, file_google_protobuf_wrappers]);
+
+/**
+ * @generated from message tournament.v1.Player
+ */
+export type Player = Message<"tournament.v1.Player"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name: string;
+};
+
+/**
+ * Describes the message tournament.v1.Player.
+ * Use `create(PlayerSchema)` to create a new message.
+ */
+export const PlayerSchema: GenMessage<Player> = /*@__PURE__*/
+  messageDesc(file_tournament_v1_tournament, 0);
 
 /**
  * Thông tin giải đấu
@@ -75,29 +97,29 @@ export type Tournament = Message<"tournament.v1.Tournament"> & {
   maxPlayers?: number;
 
   /**
-   * @generated from field: google.protobuf.Int32Value registered_players = 12;
-   */
-  registeredPlayers?: number;
-
-  /**
-   * @generated from field: tournament.v1.TournamentStatus status = 13;
+   * @generated from field: tournament.v1.TournamentStatus status = 12;
    */
   status: TournamentStatus;
 
   /**
-   * @generated from field: google.protobuf.StringValue organizer = 14;
+   * @generated from field: google.protobuf.StringValue organizer = 13;
    */
   organizer?: string;
 
   /**
-   * @generated from field: string created_at = 15;
+   * @generated from field: string created_at = 14;
    */
   createdAt: string;
 
   /**
-   * @generated from field: string update_at = 16;
+   * @generated from field: string update_at = 15;
    */
   updateAt: string;
+
+  /**
+   * @generated from field: repeated tournament.v1.Player registered_players = 16;
+   */
+  registeredPlayers: Player[];
 };
 
 /**
@@ -105,7 +127,7 @@ export type Tournament = Message<"tournament.v1.Tournament"> & {
  * Use `create(TournamentSchema)` to create a new message.
  */
 export const TournamentSchema: GenMessage<Tournament> = /*@__PURE__*/
-  messageDesc(file_tournament_v1_tournament, 0);
+  messageDesc(file_tournament_v1_tournament, 1);
 
 /**
  * Trạng thái giải đấu

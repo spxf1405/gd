@@ -16,20 +16,22 @@ import {
   AllCommunityModule,
   colorSchemeDarkBlue,
   ModuleRegistry,
-  SortDef,
   themeQuartz,
   type ColDef,
   type DomLayoutType,
+  type FilterChangedEvent,
   type FilterModel,
   type GridReadyEvent,
   type ICellRendererParams,
+  type IFilterParams,
   type RowClickedEvent,
+  type SortChangedEvent,
 } from "ag-grid-community";
 import { AgGridVue } from "ag-grid-vue3";
+
 import { ref } from "vue";
 import CreateTournamentButton from "~/components/features/tournaments/create-tournament-button.vue";
 import DeleteTournament from "~/components/features/tournaments/delete-tournament.vue";
-import Table from "~/components/reuseables/Table.vue";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -69,30 +71,6 @@ const tournaments1 = ref<Tournament1[]>([
   },
 ]);
 
-const StatusCell = defineComponent({
-  props: {
-    params: {
-      type: Object as PropType<ICellRendererParams<Tournament1>>,
-      required: true,
-    },
-  },
-  render() {
-    const status = this.params.data?.status;
-    const colorMap = {
-      "Đang đăng ký": "bg-blue-100 text-blue-800",
-      "Đang diễn ra": "bg-green-100 text-green-800",
-      "Đã kết thúc": "bg-gray-100 text-gray-800",
-    };
-
-    return (
-      <span
-        class={`px-2 py-1 rounded-full text-xs font-semibold ${colorMap[status || "Đã kết thúc"]}`}
-      >
-        {status}
-      </span>
-    );
-  },
-});
 
 const PrizeCell = defineComponent({
   props: {
@@ -102,11 +80,254 @@ const PrizeCell = defineComponent({
     },
   },
   render() {
-    const prize = this.params.data?.totalPrize;
+    const rawPrize = this.params.data?.totalPrize?.toString() || "";
+    if (!rawPrize) return <div class="text-slate-300 text-end px-2">---</div>;
+
+    const isUSD = rawPrize.trim().endsWith("$");
+    const numericValue = parseFloat(rawPrize.replace(/[^-0-9.]/g, ""));
+
+    // Format số với dấu phẩy ngăn cách hàng nghìn
+    const formattedNumber = new Intl.NumberFormat("en-US").format(numericValue);
+
     return (
-      <span class="font-semibold text-green-600">
-        {prize?.toLocaleString("vi-VN")} đ
-      </span>
+      <div class="flex items-baseline justify-end w-full px-2 gap-1 select-all">
+        {isUSD && (
+          <span class="text-xs font-black text-white-950 opacity-60">$</span>
+        )}
+
+        <span class="text-base font-black text-white-950 tracking-tighter">
+          {formattedNumber}
+        </span>
+
+        {!isUSD && (
+          <span class="text-[10px] font-black text-white-950 opacity-60 uppercase tracking-widest">
+            VND
+          </span>
+        )}
+      </div>
+    );
+  },
+});
+
+const statusMap: Record<number, { label: string; color: string }> = {
+  0: {
+    label: "Chưa mở đăng ký",
+    color: "bg-gray-100 text-gray-700",
+  },
+  1: {
+    label: "Đang đăng ký",
+    color: "bg-blue-100 text-blue-700",
+  },
+  2: {
+    label: "Ngừng đăng ký",
+    color: "bg-amber-100 text-amber-700",
+  },
+  3: {
+    label: "Đã bắt đầu",
+    color: "bg-purple-100 text-purple-700",
+  },
+  4: {
+    label: "Đang diễn ra",
+    color: "bg-green-100 text-green-700",
+  },
+  5: {
+    label: "Đã kết thúc",
+    color: "bg-slate-200 text-slate-700",
+  },
+  6: {
+    label: "Đã huỷ",
+    color: "bg-red-100 text-red-700",
+  },
+};
+
+const defaultStatus = {
+  label: "Không xác định",
+  color: "bg-gray-100 text-gray-500",
+};
+
+const StatusSetFilter = defineComponent({
+  name: "StatusSetFilter",
+
+  props: {
+    params: {
+      type: Object as PropType<IFilterParams>,
+      required: true,
+    },
+  },
+
+  setup(props) {
+    const selected = ref<number[]>([]);
+
+    const options = Object.entries(statusMap).map(([key, value]) => ({
+      value: Number(key),
+      ...value,
+    }));
+
+    function isFilterActive() {
+      return selected.value.length > 0;
+    }
+
+    function doesFilterPass(node: any) {
+      const field = props.params.colDef.field as string;
+      const value = node.data?.[field];
+
+      if (!selected.value.length) return true;
+
+      return selected.value.includes(value);
+    }
+
+    function getModel() {
+      return selected.value.length
+        ? { values: [...selected.value] }
+        : null;
+    }
+
+    function setModel(model: any) {
+      selected.value = model?.values ?? [];
+    }
+
+    function toggleValue(value: number) {
+      if (selected.value.includes(value)) {
+        selected.value = selected.value.filter((v) => v !== value);
+      } else {
+        selected.value.push(value);
+      }
+
+      props.params.filterChangedCallback();
+    }
+
+    return {
+      selected,
+      options,
+      toggleValue,
+      isFilterActive,
+      doesFilterPass,
+      getModel,
+      setModel,
+    };
+  },
+
+  render() {
+    return (
+      <div class="p-3 space-y-2 min-w-[220px]">
+        {this.options.map((opt) => (
+          <label
+            key={opt.value}
+            class="flex items-center gap-3 cursor-pointer"
+          >
+            <input
+              type="checkbox"
+              checked={this.selected.includes(opt.value)}
+              onChange={() => this.toggleValue(opt.value)}
+              class="accent-blue-500"
+            />
+
+            <div
+              class={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${opt.color}`}
+            >
+              <span class="w-2 h-2 rounded-full bg-current opacity-70"></span>
+              <span>{opt.label}</span>
+            </div>
+          </label>
+        ))}
+      </div>
+    );
+  },
+});
+
+const StatusCell = defineComponent({
+  name: "StatusCell",
+  props: {
+    params: {
+      type: Object as PropType<ICellRendererParams<{ status?: number }>>,
+      required: true,
+    },
+  },
+
+  render() {
+    const status = this.params.data?.status;
+
+    const statusInfo =
+      typeof status === "number"
+        ? statusMap[status] ?? defaultStatus
+        : defaultStatus;
+
+    return (
+      <div
+        class={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${statusInfo.color}`}
+      >
+        <span class="w-2 h-2 rounded-full bg-current opacity-70" />
+        <span>{statusInfo.label}</span>
+      </div>
+    );
+  },
+});
+
+const TestFilter = defineComponent({
+  name: "CustomSetFilter",
+  props: {
+    params: {
+      type: Object as () => IFilterParams,
+      required: true,
+    },
+  },
+  setup(props) {
+    const selected = ref<string[]>([]);
+
+    function isFilterActive() {
+      return selected.value.length > 0;
+    }
+
+    function doesFilterPass(node) {
+      const field = props.params.colDef.field as string;
+      const value = node.data[field];
+      return selected.value.length > 0 ? selected.value.includes(value) : true;
+    }
+
+    function getModel() {
+      return selected.value.length > 0 ? { values: [...selected.value] } : null;
+    }
+
+    function setModel(model) {
+      selected.value = model?.values || [];
+    }
+
+    const toggleValue = (value: string) => {
+      if (selected.value.includes(value)) {
+        selected.value = selected.value.filter((v) => v !== value);
+      } else {
+        selected.value.push(value);
+      }
+      props.params.filterChangedCallback();
+    };
+
+    const options = ["Đơn", "Đôi", "Đôi nam nữ", "Đồng Đội"];
+
+    return {
+      selected,
+      isFilterActive,
+      doesFilterPass,
+      getModel,
+      setModel,
+      toggleValue,
+      options,
+    };
+  },
+  render() {
+    return (
+      <div class="p-2 space-y-2">
+        {this.options.map((opt) => (
+          <label class="flex items-center space-x-2 text-sm text-white cursor-pointer">
+            <input
+              type="checkbox"
+              checked={this.selected.includes(opt)}
+              onChange={() => this.toggleValue(opt)}
+              class="accent-accent-blue"
+            />
+            <span>{opt}</span>
+          </label>
+        ))}
+      </div>
     );
   },
 });
@@ -119,7 +340,8 @@ const PlayersCell = defineComponent({
     },
   },
   render() {
-    const registered = this.params.data?.registeredPlayers || 0;
+    const registered = this.params.data?.registeredPlayers.length || 0;
+
     const max = this.params.data?.maxPlayers || 0;
     const percentage = (registered / max) * 100;
 
@@ -207,8 +429,7 @@ const columnDefs = ref<ColDef<Tournament>[]>([
   {
     field: "name",
     headerName: "Tên giải đấu",
-    flex: 4,
-    minWidth: 400,
+    width: 400,
     pinned: "left",
     sortable: false,
     filterParams: {
@@ -221,25 +442,27 @@ const columnDefs = ref<ColDef<Tournament>[]>([
     headerName: "Loại hình",
     width: 130,
     sortable: false,
+    filter: TestFilter,
   },
   {
     field: "format",
     headerName: "Thể thức",
-    width: 100,
     sortable: false,
   },
   {
     field: "location",
     headerName: "Địa điểm",
-    flex: 1,
-    minWidth: 200,
+    width: 400,
     sortable: false,
   },
   {
     field: "createdAt",
     headerName: "Ngày tạo",
-    filter: false,
-    width: 200,
+    minWidth: 195,
+    filterParams: {
+      buttons: ["apply", "reset", "clear"],
+      closeOnApply: true,
+    },
     valueFormatter: (params) => {
       if (!params.value) return "";
       return new Date(params.value).toLocaleDateString("vi-VN");
@@ -248,7 +471,7 @@ const columnDefs = ref<ColDef<Tournament>[]>([
   {
     field: "startDate",
     headerName: "Ngày khởi tranh",
-    width: 200,
+    minWidth: 195,
     valueFormatter: (params) => {
       if (!params.value) return "";
       return new Date(params.value).toLocaleDateString("vi-VN");
@@ -274,8 +497,9 @@ const columnDefs = ref<ColDef<Tournament>[]>([
   {
     field: "status",
     headerName: "Trạng thái",
-    width: 140,
+    width: 150,
     cellRenderer: StatusCell,
+    filter: StatusSetFilter,
     sortable: false,
   },
   {
@@ -293,7 +517,8 @@ const columnDefs = ref<ColDef<Tournament>[]>([
     headerName: "Thao tác",
     cellRenderer: ActionCell,
     filter: false,
-    width: 280,
+    sortable: false,
+    width: 270,
     resizable: false,
     suppressMovable: true,
     autoHeight: true,
@@ -313,11 +538,12 @@ definePageMeta({
 const domLayout = ref<DomLayoutType>("normal");
 
 const onGridReady = (params: GridReadyEvent<Tournament1>) => {
-  params.api.autoSizeColumns(["actions"]);
+  // if (params.api.getDisplayedRowCount() > 0) {e
+  // params.columnApi.autoSizeAllColumns();
+  // }
+  params.api.autoSizeAllColumns();
   params.api.applyColumnState({
-    state: [
-      { colId: "createdAt", sort: "desc" },
-    ],
+    state: [{ colId: "createdAt", sort: "desc" }],
     defaultState: { sort: null },
   });
 };
@@ -457,6 +683,7 @@ function mapAgGridFilterModelToProtoFilters(
 
 const toast = useToast();
 
+
 const filter = ref<FilterModel>({});
 
 const sort = ref({
@@ -496,6 +723,7 @@ const tournamentsQueryKey = computed(() => [
   sort.value,
 ]);
 
+
 const queryClient = useQueryClient();
 
 await queryClient.prefetchQuery({
@@ -515,14 +743,13 @@ const handleSubmitCreateTournament = async (name: string) => {
   }
 };
 
-function onFilterChange(event) {
+function onFilterChange(event: FilterChangedEvent) {
   const filterModel = event.api.getFilterModel();
-
-  console.log("filterModel", filterModel);
+  console.log("filterModel", filterModel?.type?.values ?? []);
   filter.value = filterModel;
 }
 
-function onSortChange(event) {
+function onSortChange(event: SortChangedEvent) {
   const sortInfo = event.api.getColumnState().find((e) => e.sort !== null);
   console.log("sortInfo", sortInfo);
 
@@ -534,12 +761,6 @@ function onSortChange(event) {
     return;
   }
 
-  console.log(
-    "mapFieldToSort(sortInfo.colId)",
-    mapFieldToSort(sortInfo.colId),
-    sortInfo.sort,
-  );
-
   sort.value = {
     type: mapFieldToSort(sortInfo.colId),
     direction: sortInfo.sort === "asc" ? SortOrder.ASC : SortOrder.DESC,
@@ -547,7 +768,8 @@ function onSortChange(event) {
 }
 
 watchEffect(() => {
-  console.log("tournaments", sort.value);
+  console.log("tournaments", tournaments.value);
+  console.log("filter1", toRaw(filter.value));
 });
 </script>
 
@@ -560,6 +782,7 @@ watchEffect(() => {
           <CreateTournamentButton @submit="handleSubmitCreateTournament" />
         </div>
       </div>
+
       <AgGridVue
         class="w-full h-[calc(100dvh-273px)]"
         :rowData="tournaments"

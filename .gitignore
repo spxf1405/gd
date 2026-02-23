@@ -1,0 +1,71 @@
+# =================================
+# Nuxt dev/build outputs
+# =================================
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+dist-ssr
+
+# =================================
+# Node dependencies
+# =================================
+node_modules
+
+# =================================
+# Go build outputs
+# =================================
+bin/
+build/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.out
+cover.out
+
+# Go workspace (if using go.work)
+go.work.sum
+
+# =================================
+# Logs
+# =================================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# =================================
+# Environment files
+# =================================
+.env
+.env.*
+!.env.example
+*.local
+
+# =================================
+# Editor / IDE
+# =================================
+.vscode/*
+!.vscode/extensions.json
+.idea
+.fleet
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# =================================
+# OS
+# =================================
+.DS_Store
+Thumbs.db
