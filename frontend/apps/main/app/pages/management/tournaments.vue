@@ -373,7 +373,6 @@ const ActionCell = defineComponent({
     if (!data) return null;
 
     const viewDetails = () => {
-      // Navigate to tournament details
       navigateTo(`/tournaments/${data.id}`);
     };
 
@@ -538,9 +537,6 @@ definePageMeta({
 const domLayout = ref<DomLayoutType>("normal");
 
 const onGridReady = (params: GridReadyEvent<Tournament1>) => {
-  // if (params.api.getDisplayedRowCount() > 0) {e
-  // params.columnApi.autoSizeAllColumns();
-  // }
   params.api.autoSizeAllColumns();
   params.api.applyColumnState({
     state: [{ colId: "createdAt", sort: "desc" }],
@@ -666,6 +662,7 @@ function mapAgGridFilterModelToProtoFilters(
   filterModel: FilterModel,
 ): Filter[] {
   if (!filterModel) return [];
+  console.log("filterModel123", toRaw(filterModel))
 
   return Object.entries(filterModel)
     .map(([field, model]) => {
@@ -745,13 +742,14 @@ const handleSubmitCreateTournament = async (name: string) => {
 
 function onFilterChange(event: FilterChangedEvent) {
   const filterModel = event.api.getFilterModel();
-  console.log("filterModel", filterModel?.type?.values ?? []);
+
+  console.log("filterModel", filterModel);
+
   filter.value = filterModel;
 }
 
 function onSortChange(event: SortChangedEvent) {
   const sortInfo = event.api.getColumnState().find((e) => e.sort !== null);
-  console.log("sortInfo", sortInfo);
 
   if (!sortInfo) {
     sort.value = {

@@ -75,7 +75,8 @@ func buildExpr(
 	op tournamentpb.FilterOperator,
 	val string,
 ) sq.Sqlizer {
-
+	fmt.Println("op", op)
+	fmt.Println("val", val)
 	switch op {
 
 	case tournamentpb.FilterOperator_EQ:
@@ -170,6 +171,7 @@ func (r *TournamentRepository) getTournaments(
 			t.entry_fee,
 			t.max_players,
 			t.status,
+			t.type,
 			t.created_at,
 			t.updated_at,
 			t.organizer
@@ -214,6 +216,7 @@ func (r *TournamentRepository) getTournaments(
 
 	rows, err := r.DB.Pool.Query(ctx, query, args...)
 	if err != nil {
+		fmt.Println("query", query)
 		return nil, err
 	}
 	defer rows.Close()
