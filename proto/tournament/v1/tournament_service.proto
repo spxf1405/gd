@@ -48,12 +48,29 @@ enum FilterOperator {
   BETWEEN                       = 11;
   IS_NULL                       = 12;
   IS_NOT_NULL                   = 13;
+  SET                           = 14;
+}
+
+message StringList {
+  repeated string values = 1;
+}
+
+message Int32List {
+  repeated int32 values = 1;
+}
+
+message FilterValue {
+  oneof kind {
+    string     string_value = 1;
+    StringList string_list  = 2;
+    Int32List  int32_list   = 3;
+  }
 }
 
 message Filter {
-  string             filter          = 1;
-  TournamentFilterBy filter_by       = 2;
-  FilterOperator     filter_operator = 3;
+  TournamentFilterBy filter_by       = 1;
+  FilterOperator     filter_operator = 2;
+  FilterValue        value           = 3;
 }
 
 message GetTournamentsRequest {
@@ -70,7 +87,7 @@ message GetTournamentsResponse {
 
 message GetTournamentsRequestWrapper {
   oneof request {
-    google.protobuf.Empty empty  = 1;
+    google.protobuf.Empty empty = 1;
     GetTournamentsRequest query = 2;
   }
 }

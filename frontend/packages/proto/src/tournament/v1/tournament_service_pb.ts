@@ -15,26 +15,95 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file tournament/v1/tournament_service.proto.
  */
 export const file_tournament_v1_tournament_service: GenFile = /*@__PURE__*/
-  fileDesc("CiZ0b3VybmFtZW50L3YxL3RvdXJuYW1lbnRfc2VydmljZS5wcm90bxINdG91cm5hbWVudC52MSKGAQoGRmlsdGVyEg4KBmZpbHRlchgBIAEoCRI0CglmaWx0ZXJfYnkYAiABKA4yIS50b3VybmFtZW50LnYxLlRvdXJuYW1lbnRGaWx0ZXJCeRI2Cg9maWx0ZXJfb3BlcmF0b3IYAyABKA4yHS50b3VybmFtZW50LnYxLkZpbHRlck9wZXJhdG9yIs4BChVHZXRUb3VybmFtZW50c1JlcXVlc3QSFQoEcGFnZRgBIAEoBUIHukgEGgIgABIWCgVsaW1pdBgCIAEoBUIHukgEGgIgABImCgdmaWx0ZXJzGAMgAygLMhUudG91cm5hbWVudC52MS5GaWx0ZXISMAoHc29ydF9ieRgEIAEoDjIfLnRvdXJuYW1lbnQudjEuVG91cm5hbWVudFNvcnRCeRIsCgpzb3J0X29yZGVyGAUgASgOMhgudG91cm5hbWVudC52MS5Tb3J0T3JkZXIiSAoWR2V0VG91cm5hbWVudHNSZXNwb25zZRIuCgt0b3VybmFtZW50cxgBIAMoCzIZLnRvdXJuYW1lbnQudjEuVG91cm5hbWVudCKJAQocR2V0VG91cm5hbWVudHNSZXF1ZXN0V3JhcHBlchInCgVlbXB0eRgBIAEoCzIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eUgAEjUKBXF1ZXJ5GAIgASgLMiQudG91cm5hbWVudC52MS5HZXRUb3VybmFtZW50c1JlcXVlc3RIAEIJCgdyZXF1ZXN0IicKF0NyZWF0ZVRvdXJuYW1lbnRSZXF1ZXN0EgwKBG5hbWUYASABKAkiJgoYQ3JlYXRlVG91cm5hbWVudFJlc3BvbnNlEgoKAmlkGAEgASgJKoICChJUb3VybmFtZW50RmlsdGVyQnkSJAogVE9VUk5BTUVOVF9GSUxURVJfQllfVU5TUEVDSUZJRUQQABIdChlUT1VSTkFNRU5UX0ZJTFRFUl9CWV9OQU1FEAESHQoZVE9VUk5BTUVOVF9GSUxURVJfQllfVFlQRRACEh8KG1RPVVJOQU1FTlRfRklMVEVSX0JZX0ZPUk1BVBADEiEKHVRPVVJOQU1FTlRfRklMVEVSX0JZX0xPQ0FUSU9OEAQSIwofVE9VUk5BTUVOVF9GSUxURVJfQllfU1RBUlRfREFURRAFEh8KG1RPVVJOQU1FTlRfRklMVEVSX0JZX1NUQVRVUxAGKt4BChBUb3VybmFtZW50U29ydEJ5EiIKHlRPVVJOQU1FTlRfU09SVF9CWV9VTlNQRUNJRklFRBAAEiEKHVRPVVJOQU1FTlRfU09SVF9CWV9DUkVBVEVEX0FUEAESIQodVE9VUk5BTUVOVF9TT1JUX0JZX1NUQVJUX0RBVEUQAhIfChtUT1VSTkFNRU5UX1NPUlRfQllfRU5EX0RBVEUQAxIiCh5UT1VSTkFNRU5UX1NPUlRfQllfVE9UQUxfUFJJWkUQBBIbChdUT1VSTkFNRU5UX1NPUlRfQllfTkFNRRAFKlAKCVNvcnRPcmRlchIaChZTT1JUX09SREVSX1VOU1BFQ0lGSUVEEAASEgoOU09SVF9PUkRFUl9BU0MQARITCg9TT1JUX09SREVSX0RFU0MQAirRAQoORmlsdGVyT3BlcmF0b3ISIQodRklMVEVSX01BVENIX1RZUEVfVU5TUEVDSUZJRUQQABIGCgJFURABEgcKA05FURACEgwKCENPTlRBSU5TEAMSEAoMTk9UX0NPTlRBSU5TEAQSDwoLU1RBUlRTX1dJVEgQBRINCglFTkRTX1dJVEgQBhIGCgJHVBAHEgcKA0dURRAIEgYKAkxUEAkSBwoDTFRFEAoSCwoHQkVUV0VFThALEgsKB0lTX05VTEwQDBIPCgtJU19OT1RfTlVMTBANMt4BChFUb3VybmFtZW50U2VydmljZRJkCg5HZXRUb3VybmFtZW50cxIrLnRvdXJuYW1lbnQudjEuR2V0VG91cm5hbWVudHNSZXF1ZXN0V3JhcHBlcholLnRvdXJuYW1lbnQudjEuR2V0VG91cm5hbWVudHNSZXNwb25zZRJjChBDcmVhdGVUb3VybmFtZW50EiYudG91cm5hbWVudC52MS5DcmVhdGVUb3VybmFtZW50UmVxdWVzdBonLnRvdXJuYW1lbnQudjEuQ3JlYXRlVG91cm5hbWVudFJlc3BvbnNlQjFaL2JhY2tlbmQvaW50ZXJuYWwvZ2VuL3RvdXJuYW1lbnQvdjE7dG91cm5hbWVudHBiYgZwcm90bzM", [file_tournament_v1_tournament, file_google_protobuf_empty, file_buf_validate_validate]);
+  fileDesc("CiZ0b3VybmFtZW50L3YxL3RvdXJuYW1lbnRfc2VydmljZS5wcm90bxINdG91cm5hbWVudC52MSIcCgpTdHJpbmdMaXN0Eg4KBnZhbHVlcxgBIAMoCSIbCglJbnQzMkxpc3QSDgoGdmFsdWVzGAEgAygFIo8BCgtGaWx0ZXJWYWx1ZRIWCgxzdHJpbmdfdmFsdWUYASABKAlIABIwCgtzdHJpbmdfbGlzdBgCIAEoCzIZLnRvdXJuYW1lbnQudjEuU3RyaW5nTGlzdEgAEi4KCmludDMyX2xpc3QYAyABKAsyGC50b3VybmFtZW50LnYxLkludDMyTGlzdEgAQgYKBGtpbmQioQEKBkZpbHRlchI0CglmaWx0ZXJfYnkYASABKA4yIS50b3VybmFtZW50LnYxLlRvdXJuYW1lbnRGaWx0ZXJCeRI2Cg9maWx0ZXJfb3BlcmF0b3IYAiABKA4yHS50b3VybmFtZW50LnYxLkZpbHRlck9wZXJhdG9yEikKBXZhbHVlGAMgASgLMhoudG91cm5hbWVudC52MS5GaWx0ZXJWYWx1ZSLOAQoVR2V0VG91cm5hbWVudHNSZXF1ZXN0EhUKBHBhZ2UYASABKAVCB7pIBBoCIAASFgoFbGltaXQYAiABKAVCB7pIBBoCIAASJgoHZmlsdGVycxgDIAMoCzIVLnRvdXJuYW1lbnQudjEuRmlsdGVyEjAKB3NvcnRfYnkYBCABKA4yHy50b3VybmFtZW50LnYxLlRvdXJuYW1lbnRTb3J0QnkSLAoKc29ydF9vcmRlchgFIAEoDjIYLnRvdXJuYW1lbnQudjEuU29ydE9yZGVyIkgKFkdldFRvdXJuYW1lbnRzUmVzcG9uc2USLgoLdG91cm5hbWVudHMYASADKAsyGS50b3VybmFtZW50LnYxLlRvdXJuYW1lbnQiiQEKHEdldFRvdXJuYW1lbnRzUmVxdWVzdFdyYXBwZXISJwoFZW1wdHkYASABKAsyFi5nb29nbGUucHJvdG9idWYuRW1wdHlIABI1CgVxdWVyeRgCIAEoCzIkLnRvdXJuYW1lbnQudjEuR2V0VG91cm5hbWVudHNSZXF1ZXN0SABCCQoHcmVxdWVzdCInChdDcmVhdGVUb3VybmFtZW50UmVxdWVzdBIMCgRuYW1lGAEgASgJIiYKGENyZWF0ZVRvdXJuYW1lbnRSZXNwb25zZRIKCgJpZBgBIAEoCSqCAgoSVG91cm5hbWVudEZpbHRlckJ5EiQKIFRPVVJOQU1FTlRfRklMVEVSX0JZX1VOU1BFQ0lGSUVEEAASHQoZVE9VUk5BTUVOVF9GSUxURVJfQllfTkFNRRABEh0KGVRPVVJOQU1FTlRfRklMVEVSX0JZX1RZUEUQAhIfChtUT1VSTkFNRU5UX0ZJTFRFUl9CWV9GT1JNQVQQAxIhCh1UT1VSTkFNRU5UX0ZJTFRFUl9CWV9MT0NBVElPThAEEiMKH1RPVVJOQU1FTlRfRklMVEVSX0JZX1NUQVJUX0RBVEUQBRIfChtUT1VSTkFNRU5UX0ZJTFRFUl9CWV9TVEFUVVMQBireAQoQVG91cm5hbWVudFNvcnRCeRIiCh5UT1VSTkFNRU5UX1NPUlRfQllfVU5TUEVDSUZJRUQQABIhCh1UT1VSTkFNRU5UX1NPUlRfQllfQ1JFQVRFRF9BVBABEiEKHVRPVVJOQU1FTlRfU09SVF9CWV9TVEFSVF9EQVRFEAISHwobVE9VUk5BTUVOVF9TT1JUX0JZX0VORF9EQVRFEAMSIgoeVE9VUk5BTUVOVF9TT1JUX0JZX1RPVEFMX1BSSVpFEAQSGwoXVE9VUk5BTUVOVF9TT1JUX0JZX05BTUUQBSpQCglTb3J0T3JkZXISGgoWU09SVF9PUkRFUl9VTlNQRUNJRklFRBAAEhIKDlNPUlRfT1JERVJfQVNDEAESEwoPU09SVF9PUkRFUl9ERVNDEAIq2gEKDkZpbHRlck9wZXJhdG9yEiEKHUZJTFRFUl9NQVRDSF9UWVBFX1VOU1BFQ0lGSUVEEAASBgoCRVEQARIHCgNORVEQAhIMCghDT05UQUlOUxADEhAKDE5PVF9DT05UQUlOUxAEEg8KC1NUQVJUU19XSVRIEAUSDQoJRU5EU19XSVRIEAYSBgoCR1QQBxIHCgNHVEUQCBIGCgJMVBAJEgcKA0xURRAKEgsKB0JFVFdFRU4QCxILCgdJU19OVUxMEAwSDwoLSVNfTk9UX05VTEwQDRIHCgNTRVQQDjLeAQoRVG91cm5hbWVudFNlcnZpY2USZAoOR2V0VG91cm5hbWVudHMSKy50b3VybmFtZW50LnYxLkdldFRvdXJuYW1lbnRzUmVxdWVzdFdyYXBwZXIaJS50b3VybmFtZW50LnYxLkdldFRvdXJuYW1lbnRzUmVzcG9uc2USYwoQQ3JlYXRlVG91cm5hbWVudBImLnRvdXJuYW1lbnQudjEuQ3JlYXRlVG91cm5hbWVudFJlcXVlc3QaJy50b3VybmFtZW50LnYxLkNyZWF0ZVRvdXJuYW1lbnRSZXNwb25zZUIxWi9iYWNrZW5kL2ludGVybmFsL2dlbi90b3VybmFtZW50L3YxO3RvdXJuYW1lbnRwYmIGcHJvdG8z", [file_tournament_v1_tournament, file_google_protobuf_empty, file_buf_validate_validate]);
+
+/**
+ * @generated from message tournament.v1.StringList
+ */
+export type StringList = Message<"tournament.v1.StringList"> & {
+  /**
+   * @generated from field: repeated string values = 1;
+   */
+  values: string[];
+};
+
+/**
+ * Describes the message tournament.v1.StringList.
+ * Use `create(StringListSchema)` to create a new message.
+ */
+export const StringListSchema: GenMessage<StringList> = /*@__PURE__*/
+  messageDesc(file_tournament_v1_tournament_service, 0);
+
+/**
+ * @generated from message tournament.v1.Int32List
+ */
+export type Int32List = Message<"tournament.v1.Int32List"> & {
+  /**
+   * @generated from field: repeated int32 values = 1;
+   */
+  values: number[];
+};
+
+/**
+ * Describes the message tournament.v1.Int32List.
+ * Use `create(Int32ListSchema)` to create a new message.
+ */
+export const Int32ListSchema: GenMessage<Int32List> = /*@__PURE__*/
+  messageDesc(file_tournament_v1_tournament_service, 1);
+
+/**
+ * @generated from message tournament.v1.FilterValue
+ */
+export type FilterValue = Message<"tournament.v1.FilterValue"> & {
+  /**
+   * @generated from oneof tournament.v1.FilterValue.kind
+   */
+  kind: {
+    /**
+     * @generated from field: string string_value = 1;
+     */
+    value: string;
+    case: "stringValue";
+  } | {
+    /**
+     * @generated from field: tournament.v1.StringList string_list = 2;
+     */
+    value: StringList;
+    case: "stringList";
+  } | {
+    /**
+     * @generated from field: tournament.v1.Int32List int32_list = 3;
+     */
+    value: Int32List;
+    case: "int32List";
+  } | { case: undefined; value?: undefined };
+};
+
+/**
+ * Describes the message tournament.v1.FilterValue.
+ * Use `create(FilterValueSchema)` to create a new message.
+ */
+export const FilterValueSchema: GenMessage<FilterValue> = /*@__PURE__*/
+  messageDesc(file_tournament_v1_tournament_service, 2);
 
 /**
  * @generated from message tournament.v1.Filter
  */
 export type Filter = Message<"tournament.v1.Filter"> & {
   /**
-   * @generated from field: string filter = 1;
-   */
-  filter: string;
-
-  /**
-   * @generated from field: tournament.v1.TournamentFilterBy filter_by = 2;
+   * @generated from field: tournament.v1.TournamentFilterBy filter_by = 1;
    */
   filterBy: TournamentFilterBy;
 
   /**
-   * @generated from field: tournament.v1.FilterOperator filter_operator = 3;
+   * @generated from field: tournament.v1.FilterOperator filter_operator = 2;
    */
   filterOperator: FilterOperator;
+
+  /**
+   * @generated from field: tournament.v1.FilterValue value = 3;
+   */
+  value?: FilterValue;
 };
 
 /**
@@ -42,7 +111,7 @@ export type Filter = Message<"tournament.v1.Filter"> & {
  * Use `create(FilterSchema)` to create a new message.
  */
 export const FilterSchema: GenMessage<Filter> = /*@__PURE__*/
-  messageDesc(file_tournament_v1_tournament_service, 0);
+  messageDesc(file_tournament_v1_tournament_service, 3);
 
 /**
  * @generated from message tournament.v1.GetTournamentsRequest
@@ -79,7 +148,7 @@ export type GetTournamentsRequest = Message<"tournament.v1.GetTournamentsRequest
  * Use `create(GetTournamentsRequestSchema)` to create a new message.
  */
 export const GetTournamentsRequestSchema: GenMessage<GetTournamentsRequest> = /*@__PURE__*/
-  messageDesc(file_tournament_v1_tournament_service, 1);
+  messageDesc(file_tournament_v1_tournament_service, 4);
 
 /**
  * @generated from message tournament.v1.GetTournamentsResponse
@@ -96,7 +165,7 @@ export type GetTournamentsResponse = Message<"tournament.v1.GetTournamentsRespon
  * Use `create(GetTournamentsResponseSchema)` to create a new message.
  */
 export const GetTournamentsResponseSchema: GenMessage<GetTournamentsResponse> = /*@__PURE__*/
-  messageDesc(file_tournament_v1_tournament_service, 2);
+  messageDesc(file_tournament_v1_tournament_service, 5);
 
 /**
  * @generated from message tournament.v1.GetTournamentsRequestWrapper
@@ -125,7 +194,7 @@ export type GetTournamentsRequestWrapper = Message<"tournament.v1.GetTournaments
  * Use `create(GetTournamentsRequestWrapperSchema)` to create a new message.
  */
 export const GetTournamentsRequestWrapperSchema: GenMessage<GetTournamentsRequestWrapper> = /*@__PURE__*/
-  messageDesc(file_tournament_v1_tournament_service, 3);
+  messageDesc(file_tournament_v1_tournament_service, 6);
 
 /**
  * @generated from message tournament.v1.CreateTournamentRequest
@@ -142,7 +211,7 @@ export type CreateTournamentRequest = Message<"tournament.v1.CreateTournamentReq
  * Use `create(CreateTournamentRequestSchema)` to create a new message.
  */
 export const CreateTournamentRequestSchema: GenMessage<CreateTournamentRequest> = /*@__PURE__*/
-  messageDesc(file_tournament_v1_tournament_service, 4);
+  messageDesc(file_tournament_v1_tournament_service, 7);
 
 /**
  * @generated from message tournament.v1.CreateTournamentResponse
@@ -159,7 +228,7 @@ export type CreateTournamentResponse = Message<"tournament.v1.CreateTournamentRe
  * Use `create(CreateTournamentResponseSchema)` to create a new message.
  */
 export const CreateTournamentResponseSchema: GenMessage<CreateTournamentResponse> = /*@__PURE__*/
-  messageDesc(file_tournament_v1_tournament_service, 5);
+  messageDesc(file_tournament_v1_tournament_service, 8);
 
 /**
  * @generated from enum tournament.v1.TournamentFilterBy
@@ -347,6 +416,11 @@ export enum FilterOperator {
    * @generated from enum value: IS_NOT_NULL = 13;
    */
   IS_NOT_NULL = 13,
+
+  /**
+   * @generated from enum value: SET = 14;
+   */
+  SET = 14,
 }
 
 /**

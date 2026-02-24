@@ -27,10 +27,13 @@ const (
 type TournamentStatus int32
 
 const (
-	TournamentStatus_TOURNAMENT_STATUS_UNSPECIFIED TournamentStatus = 0
-	TournamentStatus_TOURNAMENT_STATUS_REGISTERING TournamentStatus = 1
-	TournamentStatus_TOURNAMENT_STATUS_RUNNING     TournamentStatus = 2
-	TournamentStatus_TOURNAMENT_STATUS_FINISHED    TournamentStatus = 3
+	TournamentStatus_TOURNAMENT_STATUS_UNSPECIFIED         TournamentStatus = 0
+	TournamentStatus_TOURNAMENT_STATUS_REGISTERING         TournamentStatus = 1
+	TournamentStatus_TOURNAMENT_STATUS_REGISTRATION_CLOSED TournamentStatus = 2
+	TournamentStatus_TOURNAMENT_STATUS_STARTED             TournamentStatus = 3
+	TournamentStatus_TOURNAMENT_STATUS_RUNNING             TournamentStatus = 4
+	TournamentStatus_TOURNAMENT_STATUS_FINISHED            TournamentStatus = 5
+	TournamentStatus_TOURNAMENT_STATUS_CANCELLED           TournamentStatus = 6
 )
 
 // Enum value maps for TournamentStatus.
@@ -38,14 +41,20 @@ var (
 	TournamentStatus_name = map[int32]string{
 		0: "TOURNAMENT_STATUS_UNSPECIFIED",
 		1: "TOURNAMENT_STATUS_REGISTERING",
-		2: "TOURNAMENT_STATUS_RUNNING",
-		3: "TOURNAMENT_STATUS_FINISHED",
+		2: "TOURNAMENT_STATUS_REGISTRATION_CLOSED",
+		3: "TOURNAMENT_STATUS_STARTED",
+		4: "TOURNAMENT_STATUS_RUNNING",
+		5: "TOURNAMENT_STATUS_FINISHED",
+		6: "TOURNAMENT_STATUS_CANCELLED",
 	}
 	TournamentStatus_value = map[string]int32{
-		"TOURNAMENT_STATUS_UNSPECIFIED": 0,
-		"TOURNAMENT_STATUS_REGISTERING": 1,
-		"TOURNAMENT_STATUS_RUNNING":     2,
-		"TOURNAMENT_STATUS_FINISHED":    3,
+		"TOURNAMENT_STATUS_UNSPECIFIED":         0,
+		"TOURNAMENT_STATUS_REGISTERING":         1,
+		"TOURNAMENT_STATUS_REGISTRATION_CLOSED": 2,
+		"TOURNAMENT_STATUS_STARTED":             3,
+		"TOURNAMENT_STATUS_RUNNING":             4,
+		"TOURNAMENT_STATUS_FINISHED":            5,
+		"TOURNAMENT_STATUS_CANCELLED":           6,
 	}
 )
 
@@ -323,12 +332,15 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x0e \x01(\tR\tcreatedAt\x12\x1b\n" +
 	"\tupdate_at\x18\x0f \x01(\tR\bupdateAt\x12D\n" +
-	"\x12registered_players\x18\x10 \x03(\v2\x15.tournament.v1.PlayerR\x11registeredPlayers*\x97\x01\n" +
+	"\x12registered_players\x18\x10 \x03(\v2\x15.tournament.v1.PlayerR\x11registeredPlayers*\x82\x02\n" +
 	"\x10TournamentStatus\x12!\n" +
 	"\x1dTOURNAMENT_STATUS_UNSPECIFIED\x10\x00\x12!\n" +
-	"\x1dTOURNAMENT_STATUS_REGISTERING\x10\x01\x12\x1d\n" +
-	"\x19TOURNAMENT_STATUS_RUNNING\x10\x02\x12\x1e\n" +
-	"\x1aTOURNAMENT_STATUS_FINISHED\x10\x03B1Z/backend/internal/gen/tournament/v1;tournamentpbb\x06proto3"
+	"\x1dTOURNAMENT_STATUS_REGISTERING\x10\x01\x12)\n" +
+	"%TOURNAMENT_STATUS_REGISTRATION_CLOSED\x10\x02\x12\x1d\n" +
+	"\x19TOURNAMENT_STATUS_STARTED\x10\x03\x12\x1d\n" +
+	"\x19TOURNAMENT_STATUS_RUNNING\x10\x04\x12\x1e\n" +
+	"\x1aTOURNAMENT_STATUS_FINISHED\x10\x05\x12\x1f\n" +
+	"\x1bTOURNAMENT_STATUS_CANCELLED\x10\x06B1Z/backend/internal/gen/tournament/v1;tournamentpbb\x06proto3"
 
 var (
 	file_tournament_v1_tournament_proto_rawDescOnce sync.Once

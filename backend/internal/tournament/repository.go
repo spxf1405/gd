@@ -73,41 +73,40 @@ func sortOrderToSQL(o tournamentpb.SortOrder) string {
 func buildExpr(
 	col string,
 	op tournamentpb.FilterOperator,
-	val string,
+	val *tournamentpb.FilterValue,
 ) sq.Sqlizer {
-	fmt.Println("op", op)
-	fmt.Println("val", val)
+
 	switch op {
 
 	case tournamentpb.FilterOperator_EQ:
-		return sq.Eq{col: val}
+		return sq.Eq{col: val.GetStringValue()}
 
 	case tournamentpb.FilterOperator_NEQ:
-		return sq.NotEq{col: val}
+		return sq.NotEq{col: val.GetStringValue()}
 
 	case tournamentpb.FilterOperator_CONTAINS:
-		return sq.Expr(col+" ILIKE ?", "%"+val+"%")
+		return sq.Expr(col+" ILIKE ?", "%"+val.GetStringValue()+"%")
 
 	case tournamentpb.FilterOperator_NOT_CONTAINS:
-		return sq.Expr(col+" NOT ILIKE ?", "%"+val+"%")
+		return sq.Expr(col+" NOT ILIKE ?", "%"+val.GetStringValue()+"%")
 
 	case tournamentpb.FilterOperator_STARTS_WITH:
-		return sq.Expr(col+" ILIKE ?", val+"%")
+		return sq.Expr(col+" ILIKE ?", val.GetStringValue()+"%")
 
 	case tournamentpb.FilterOperator_ENDS_WITH:
-		return sq.Expr(col+" ILIKE ?", "%"+val)
+		return sq.Expr(col+" ILIKE ?", "%"+val.GetStringValue())
 
 	case tournamentpb.FilterOperator_GT:
-		return sq.Gt{col: val}
+		return sq.Gt{col: val.GetStringValue()}
 
 	case tournamentpb.FilterOperator_GTE:
-		return sq.GtOrEq{col: val}
+		return sq.GtOrEq{col: val.GetStringValue()}
 
 	case tournamentpb.FilterOperator_LT:
-		return sq.Lt{col: val}
+		return sq.Lt{col: val.GetStringValue()}
 
 	case tournamentpb.FilterOperator_LTE:
-		return sq.LtOrEq{col: val}
+		return sq.LtOrEq{col: val.GetStringValue()}
 
 	case tournamentpb.FilterOperator_IS_NULL:
 		return sq.Expr(col + " IS NULL")
@@ -115,8 +114,24 @@ func buildExpr(
 	case tournamentpb.FilterOperator_IS_NOT_NULL:
 		return sq.Expr(col + " IS NOT NULL")
 
+	case tournamentpb.FilterOperator_SET:
+		switch val.Kind.(type) {
+
+		case *tournamentpb.FilterValue_Int32List:
+			values := val.GetInt32List().Values
+			return sq.Eq{col: values}
+
+		case *tournamentpb.FilterValue_StringList:
+			values := val.GetStringList().Values
+			return sq.Eq{col: values}
+		}
+
+		// Just default return
+		return sq.Expr(col+" ILIKE ?", "%"+val.GetStringValue()+"%")
+
+	// Just default return
 	default:
-		return sq.Expr(col+" ILIKE ?", "%"+val+"%")
+		return sq.Expr(col+" ILIKE ?", "%"+val.GetStringValue()+"%")
 	}
 }
 
@@ -187,7 +202,7 @@ func (r *TournamentRepository) getTournaments(
 			qb = qb.Where(buildExpr(
 				col,
 				f.FilterOperator,
-				f.Filter,
+				f.Value,
 			))
 		}
 	}
@@ -215,6 +230,7 @@ func (r *TournamentRepository) getTournaments(
 	}
 
 	rows, err := r.DB.Pool.Query(ctx, query, args...)
+	fmt.Println("query", query)
 	if err != nil {
 		fmt.Println("query", query)
 		return nil, err
@@ -285,10 +301,6 @@ func (r *TournamentRepository) getTournaments(
 
 	return tournaments, nil
 }
-
-/* =========================
-   Create
-   ========================= */
 
 func (r *TournamentRepository) createTournament(
 	ctx context.Context,

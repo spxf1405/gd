@@ -1,6 +1,7 @@
 <script setup lang="tsx">
 import { create } from "@bufbuild/protobuf";
 import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
+import { TournamentStatus } from "@gd/proto/tournament/v1/tournament_pb";
 import {
   FilterOperator,
   FilterSchema,
@@ -71,7 +72,6 @@ const tournaments1 = ref<Tournament1[]>([
   },
 ]);
 
-
 const PrizeCell = defineComponent({
   props: {
     params: {
@@ -109,32 +109,34 @@ const PrizeCell = defineComponent({
   },
 });
 
-const statusMap: Record<number, { label: string; color: string }> = {
-  0: {
+const statusMap: Partial<
+  Record<TournamentStatus, { label: string; color: string }>
+> = {
+  [TournamentStatus.UNSPECIFIED]: {
     label: "Chưa mở đăng ký",
     color: "bg-gray-100 text-gray-700",
   },
-  1: {
+  [TournamentStatus.REGISTERING]: {
     label: "Đang đăng ký",
     color: "bg-blue-100 text-blue-700",
   },
-  2: {
+  [TournamentStatus.REGISTRATION_CLOSED]: {
     label: "Ngừng đăng ký",
     color: "bg-amber-100 text-amber-700",
   },
-  3: {
+  [TournamentStatus.STARTED]: {
     label: "Đã bắt đầu",
     color: "bg-purple-100 text-purple-700",
   },
-  4: {
+  [TournamentStatus.RUNNING]: {
     label: "Đang diễn ra",
     color: "bg-green-100 text-green-700",
   },
-  5: {
+  [TournamentStatus.FINISHED]: {
     label: "Đã kết thúc",
     color: "bg-slate-200 text-slate-700",
   },
-  6: {
+  [TournamentStatus.CANCELLED]: {
     label: "Đã huỷ",
     color: "bg-red-100 text-red-700",
   },
@@ -177,9 +179,7 @@ const StatusSetFilter = defineComponent({
     }
 
     function getModel() {
-      return selected.value.length
-        ? { values: [...selected.value] }
-        : null;
+      return selected.value.length ? { values: [...selected.value] } : null;
     }
 
     function setModel(model: any) {
@@ -211,10 +211,7 @@ const StatusSetFilter = defineComponent({
     return (
       <div class="p-3 space-y-2 min-w-[220px]">
         {this.options.map((opt) => (
-          <label
-            key={opt.value}
-            class="flex items-center gap-3 cursor-pointer"
-          >
+          <label key={opt.value} class="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"
               checked={this.selected.includes(opt.value)}
@@ -249,7 +246,7 @@ const StatusCell = defineComponent({
 
     const statusInfo =
       typeof status === "number"
-        ? statusMap[status] ?? defaultStatus
+        ? (statusMap[status] ?? defaultStatus)
         : defaultStatus;
 
     return (
@@ -437,6 +434,14 @@ const columnDefs = ref<ColDef<Tournament>[]>([
     },
   },
   {
+    field: "status",
+    headerName: "Trạng thái",
+    width: 150,
+    cellRenderer: StatusCell,
+    filter: StatusSetFilter,
+    sortable: false,
+  },
+  {
     field: "type",
     headerName: "Loại hình",
     width: 130,
@@ -493,14 +498,7 @@ const columnDefs = ref<ColDef<Tournament>[]>([
     cellRenderer: PrizeCell,
     filter: false,
   },
-  {
-    field: "status",
-    headerName: "Trạng thái",
-    width: 150,
-    cellRenderer: StatusCell,
-    filter: StatusSetFilter,
-    sortable: false,
-  },
+
   {
     field: "endDate",
     headerName: "Ngày kết thúc",
@@ -653,6 +651,9 @@ function mapAgGridOperatorToFilterOperator(type: string): FilterOperator {
     case "notBlank":
       return FilterOperator.IS_NOT_NULL;
 
+    case "set":
+      return FilterOperator.SET;
+
     default:
       return FilterOperator.FILTER_MATCH_TYPE_UNSPECIFIED;
   }
@@ -662,15 +663,52 @@ function mapAgGridFilterModelToProtoFilters(
   filterModel: FilterModel,
 ): Filter[] {
   if (!filterModel) return [];
-  console.log("filterModel123", toRaw(filterModel))
+
+  console.log("filterModel", toRaw(filterModel));
 
   return Object.entries(filterModel)
     .map(([field, model]) => {
       const filterBy = mapFieldToTournamentFilterBy(field);
       const operator = mapAgGridOperatorToFilterOperator(model.type);
 
+      if (model.values instanceof Array) {
+        console.log("model.values", model.values);
+        if (filterBy === TournamentFilterBy.STATUS) {
+          return create(FilterSchema, {
+            value: {
+              kind: {
+                case: "int32List",
+                value: {
+                  values: model.values,
+                },
+              },
+            },
+            filterBy,
+            filterOperator: FilterOperator.SET,
+          });
+        }
+
+        return create(FilterSchema, {
+          value: {
+            kind: {
+              case: "stringValue",
+              value: {
+                values: model.values,
+              },
+            },
+          },
+          filterBy,
+          filterOperator: FilterOperator.SET,
+        });
+      }
+
       return create(FilterSchema, {
-        filter: String(model.filter ?? ""),
+        value: {
+          kind: {
+            case: "stringValue",
+            value: String(model.filter ?? ""),
+          },
+        },
         filterBy,
         filterOperator: operator,
       });
@@ -679,7 +717,6 @@ function mapAgGridFilterModelToProtoFilters(
 }
 
 const toast = useToast();
-
 
 const filter = ref<FilterModel>({});
 
@@ -719,7 +756,6 @@ const tournamentsQueryKey = computed(() => [
   filter.value,
   sort.value,
 ]);
-
 
 const queryClient = useQueryClient();
 
