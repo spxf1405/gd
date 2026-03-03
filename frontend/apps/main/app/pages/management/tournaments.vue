@@ -29,6 +29,16 @@ import {
   type SortChangedEvent,
 } from "ag-grid-community";
 import { AgGridVue } from "ag-grid-vue3";
+import {
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogOverlay,
+  DialogPortal,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "radix-vue";
 
 import { ref } from "vue";
 import CreateTournamentButton from "~/components/features/tournaments/create-tournament-button.vue";
@@ -81,7 +91,8 @@ const PrizeCell = defineComponent({
   },
   render() {
     const rawPrize = this.params.data?.totalPrize?.toString() || "";
-    if (!rawPrize) return <div class="text-slate-300 text-end px-2">---</div>;
+    if (!rawPrize)
+      return <div class="text-slate-300 w-full text-end px-2">---</div>;
 
     const isUSD = rawPrize.trim().endsWith("$");
     const numericValue = parseFloat(rawPrize.replace(/[^-0-9.]/g, ""));
@@ -90,7 +101,7 @@ const PrizeCell = defineComponent({
     const formattedNumber = new Intl.NumberFormat("en-US").format(numericValue);
 
     return (
-      <div class="flex items-baseline justify-end w-full px-2 gap-1 select-all">
+      <div class="flex h-full items-center justify-end w-full px-2 gap-1 select-all">
         {isUSD && (
           <span class="text-xs font-black text-white-950 opacity-60">$</span>
         )}
@@ -343,7 +354,7 @@ const PlayersCell = defineComponent({
     const percentage = (registered / max) * 100;
 
     return (
-      <div class="flex flex-col gap-1">
+      <div class="flex flex-col gap-1 w-full">
         <span class="text-sm">
           {registered}/{max}
         </span>
@@ -358,6 +369,8 @@ const PlayersCell = defineComponent({
   },
 });
 
+const DeleteAction = defineComponent({});
+
 const ActionCell = defineComponent({
   props: {
     params: {
@@ -366,11 +379,12 @@ const ActionCell = defineComponent({
     },
   },
   setup(props) {
+    const open = ref(false);
     const data = props.params.data;
     if (!data) return null;
 
     const viewDetails = () => {
-      navigateTo(`/tournaments/${data.id}`);
+      navigateTo(`/tournament/${data.id}`);
     };
 
     const edit = () => {
@@ -383,7 +397,20 @@ const ActionCell = defineComponent({
       }
     };
 
-    return { viewDetails, edit, remove };
+    const confirmDelete = async () => {
+      try {
+        await tournamentClient.deleteTournament({
+          id: data.id,
+        });
+        open.value = false;
+        toast.error("Xoá thành công!");
+        queryClient.invalidateQueries({ queryKey: ["tournaments"] });
+      } catch (error) {
+        toast.error("Xoá không thành công!");
+      }
+    };
+
+    return { viewDetails, edit, remove, open, confirmDelete };
   },
   render() {
     return (
@@ -393,7 +420,7 @@ const ActionCell = defineComponent({
           onClick={this.viewDetails}
         >
           <Icon icon="mdi:eye" />
-          Xem
+          Chi tiết
         </button>
         <button
           class="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded text-sm flex items-center gap-1"
@@ -402,13 +429,85 @@ const ActionCell = defineComponent({
           <Icon icon="mdi:pencil" />
           Sửa
         </button>
-        <button
-          class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-sm flex items-center gap-1"
-          onClick={this.remove}
+        <DialogRoot
+          open={this.open}
+          onUpdate:open={(val: boolean) => (this.open = val)}
         >
-          <Icon icon="mdi:delete" />
-          Xóa
-        </button>
+          <DialogTrigger asChild>
+            <button
+              class="px-3 py-1.5 bg-red-500/90 hover:bg-red-600
+           text-white rounded-md text-sm font-medium
+           flex items-center gap-1.5
+           transition-all duration-200
+           hover:scale-[1.03] active:scale-[0.97]"
+            >
+              <Icon icon="mdi:delete" class="w-4 h-4" />
+              Xóa
+            </button>
+          </DialogTrigger>
+
+          <DialogPortal>
+            <DialogOverlay class="fixed inset-0 z-50 bg-black/75 dialog-transition" />
+
+            <DialogContent
+              class="fixed left-1/2 top-1/2 z-50
+           w-full max-w-md
+           -translate-x-1/2 -translate-y-1/2
+           bg-[#0F172A]
+           rounded-2xl shadow-2xl
+           dialog-transition
+           p-6 flex flex-col gap-2"
+            >
+              <DialogTitle class="text-lg font-semibold text-white">
+                Xác nhận xoá
+              </DialogTitle>
+
+              <div class="text-sm text-white leading-relaxed">
+                Bạn có chắc chắn muốn xoá giải đấu này?
+              </div>
+
+              <div class="flex justify-end gap-3 pt-2">
+                <DialogClose asChild>
+                  <button
+                    class="px-4 py-2 text-sm font-medium
+                 rounded-lg bg-white/5 hover:bg-white/10
+                 text-slate-300
+                 transition-all duration-200"
+                  >
+                    Huỷ
+                  </button>
+                </DialogClose>
+
+                <button
+                  onClick={this.confirmDelete}
+                  class="px-4 py-2 text-sm font-semibold
+               rounded-lg
+               bg-gradient-to-r from-red-500 to-red-600
+               hover:from-red-600 hover:to-red-700
+               text-white
+               shadow-lg shadow-red-500/20
+               transition-all duration-200
+               hover:scale-[1.03]
+               active:scale-[0.96]
+               focus:outline-none
+               focus:ring-2 focus:ring-red-400/50"
+                >
+                  <Icon icon="mdi:delete" class="w-4 h-4 mr-2 inline" />
+                  Xóa
+                </button>
+              </div>
+
+              <DialogClose
+                class="absolute right-4 top-4 p-2 rounded-md
+             text-slate-400 hover:text-white
+             hover:bg-white/10
+             transition-colors"
+              >
+                <Icon icon="lucide:x" class="w-4 h-4" />
+              </DialogClose>
+            </DialogContent>
+          </DialogPortal>
+        </DialogRoot>
       </div>
     );
   },
@@ -428,6 +527,7 @@ const columnDefs = ref<ColDef<Tournament>[]>([
     width: 400,
     pinned: "left",
     sortable: false,
+    autoHeight: true,
     filterParams: {
       maxNumConditions: 1,
       suppressAndOrCondition: true,
@@ -486,7 +586,6 @@ const columnDefs = ref<ColDef<Tournament>[]>([
     headerName: "Người tham gia",
     width: 150,
     cellRenderer: PlayersCell,
-    autoHeight: true,
     filter: false,
     sortable: false,
   },
@@ -494,7 +593,6 @@ const columnDefs = ref<ColDef<Tournament>[]>([
   {
     field: "totalPrize",
     headerName: "Tổng giải thưởng",
-    width: 150,
     cellRenderer: PrizeCell,
     filter: false,
   },
@@ -518,7 +616,6 @@ const columnDefs = ref<ColDef<Tournament>[]>([
     width: 270,
     resizable: false,
     suppressMovable: true,
-    autoHeight: true,
     pinned: "right",
   },
 ]);
@@ -664,15 +761,12 @@ function mapAgGridFilterModelToProtoFilters(
 ): Filter[] {
   if (!filterModel) return [];
 
-  console.log("filterModel", toRaw(filterModel));
-
   return Object.entries(filterModel)
     .map(([field, model]) => {
       const filterBy = mapFieldToTournamentFilterBy(field);
       const operator = mapAgGridOperatorToFilterOperator(model.type);
 
       if (model.values instanceof Array) {
-        console.log("model.values", model.values);
         if (filterBy === TournamentFilterBy.STATUS) {
           return create(FilterSchema, {
             value: {
@@ -691,7 +785,7 @@ function mapAgGridFilterModelToProtoFilters(
         return create(FilterSchema, {
           value: {
             kind: {
-              case: "stringValue",
+              case: "stringList",
               value: {
                 values: model.values,
               },
@@ -742,8 +836,6 @@ async function getTournaments() {
       },
     });
 
-    console.log("res", res);
-
     toast.success("Tải dữ liệu thành công!");
     return res.tournaments;
   } catch (error) {
@@ -767,6 +859,7 @@ await queryClient.prefetchQuery({
 const { data: tournaments, isFetching } = useQuery({
   queryKey: tournamentsQueryKey,
   queryFn: getTournaments,
+  staleTime: 0,
 });
 
 const handleSubmitCreateTournament = async (name: string) => {
@@ -779,18 +872,16 @@ const handleSubmitCreateTournament = async (name: string) => {
 function onFilterChange(event: FilterChangedEvent) {
   const filterModel = event.api.getFilterModel();
 
-  console.log("filterModel", filterModel);
-
   filter.value = filterModel;
 }
 
-function onSortChange(event: SortChangedEvent) {
+async function onSortChange(event: SortChangedEvent) {
   const sortInfo = event.api.getColumnState().find((e) => e.sort !== null);
 
   if (!sortInfo) {
     sort.value = {
       type: TournamentSortBy.CREATED_AT,
-      direction: SortOrder.DESC,
+      direction: SortOrder.UNSPECIFIED,
     };
     return;
   }
@@ -802,8 +893,8 @@ function onSortChange(event: SortChangedEvent) {
 }
 
 watchEffect(() => {
-  console.log("tournaments", tournaments.value);
-  console.log("filter1", toRaw(filter.value));
+  console.log("tournaments", toRaw(tournaments.value));
+  // console.log("sort", toRaw(sort.value));
 });
 </script>
 
@@ -826,6 +917,7 @@ watchEffect(() => {
           floatingFilter: true,
           autoHeaderHeight: true,
           wrapHeaderText: true,
+          cellClass: '!h-full !flex !items-center p-1',
           filterParams: {
             maxNumConditions: 1,
             suppressAndOrCondition: true,

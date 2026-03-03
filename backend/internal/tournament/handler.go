@@ -78,3 +78,22 @@ func (h *Hanlder) CreateTournament(
 
 	return res, nil
 }
+
+func (h *Hanlder) DeleteTournament(
+	ctx context.Context,
+	req *connect.Request[tournamentpb.DeleteTournamentRequest],
+) (*connect.Response[tournamentpb.DeleteTournamentResponse], error) {
+	deletedAt, err := h.service.deleteTournament(ctx, req.Msg.Id)
+	if err != nil {
+		return nil, connect.NewError(
+			connect.CodeInternal,
+			errors.New("internal server error"),
+		)
+	}
+
+	res := connect.NewResponse(&tournamentpb.DeleteTournamentResponse{
+		DeletedAt: deletedAt,
+	})
+
+	return res, nil
+}

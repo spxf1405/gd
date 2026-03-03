@@ -49,7 +49,40 @@
   .bg-sidebar-gradient {
     background-image: linear-gradient(180deg, #0f1729 0%, #1a1f3a 100%);
   }
+
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes dialog-out {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+
+  .dialog-transition {
+    &[data-state="open"] {
+      animation: dialog-in 0.2s ease-out;
+    }
+
+    &[data-state="closed"] {
+      animation: dialog-out 0.15s ease-in;
+    }
+  }
 }
+
 
 * {
   font-family:
@@ -61,7 +94,6 @@
     "Helvetica Neue",
     Arial;
 }
-
 
 :root {
   --scrollbar-size: 10px;

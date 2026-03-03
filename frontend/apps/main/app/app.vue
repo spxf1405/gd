@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ToastProvider1 from "./components/reuseables/ToastProvider1.vue";
+import AppToastProvider from "./components/reuseables/ToastProvider.vue";
 
 useHead({
   link: [
@@ -14,9 +14,9 @@ useHead({
 </script>
 
 <template>
-  <ToastProvider1>
+  <AppToastProvider>
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
-  </ToastProvider1>
+  </AppToastProvider>
 </template>

@@ -100,7 +100,16 @@ message CreateTournamentResponse {
   string id = 1;
 }
 
+message DeleteTournamentRequest {
+  string id = 1;
+}
+
+message DeleteTournamentResponse {
+  string deleted_at = 1;
+}
+
 service TournamentService {
   rpc GetTournaments(GetTournamentsRequestWrapper) returns (GetTournamentsResponse);
   rpc CreateTournament(CreateTournamentRequest) returns (CreateTournamentResponse);
+  rpc DeleteTournament(DeleteTournamentRequest) returns (DeleteTournamentResponse);
 }

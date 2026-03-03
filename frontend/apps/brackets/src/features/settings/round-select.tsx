@@ -20,7 +20,6 @@ const RoundSelect = () => {
   const { updateCurrentRound } = useMatchesStore();
 
   const handleChangeRound = (round: string) => {
-    console.log("round", round)
     setOrderByVal(round);
     updateCurrentRound(round);
   };

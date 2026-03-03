@@ -30,3 +30,11 @@ func (s *Service) createTournament(ctx context.Context, name string) (uuid.UUID,
 	}
 	return id, nil
 }
+
+func (s *Service) deleteTournament(ctx context.Context, name string) (string, error) {
+	deletedAt, err := s.repo.deleteTournament(ctx, name)
+	if err != nil {
+		return "", err
+	}
+	return deletedAt, nil
+}

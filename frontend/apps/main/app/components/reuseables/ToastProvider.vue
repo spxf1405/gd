@@ -61,10 +61,8 @@ provide(TOAST_INJECTION_KEY, toastMethods)
 
 <template>
   <ToastProvider>
-    <!-- Your app content -->
     <slot />
 
-    <!-- Toast Viewport (where toasts appear) -->
     <ToastViewport
       class="fixed bottom-0 right-0 z-[100] flex max-h-screen w-full flex-col gap-2 p-4 sm:top-0 sm:bottom-auto sm:flex-col-reverse md:max-w-[420px]"
     />

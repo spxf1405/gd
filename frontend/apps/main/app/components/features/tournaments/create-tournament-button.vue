@@ -46,17 +46,10 @@ const toastRef = ref<boolean>(false);
     </DialogTrigger>
 
     <DialogPortal>
-      <DialogOverlay
-        className="fixed inset-0 z-50 
-             data-[state=open]:animate-in 
-             data-[state=closed]:animate-out 
-             data-[state=closed]:fade-out-0 
-             data-[state=open]:fade-in-0 
-             bg-black/75"
-      />
+      <DialogOverlay class="fixed inset-0 z-50 dialog-transition bg-black/75" />
 
       <DialogContent
-        class="fixed left-[50%] top-[50%] z-50 w-full max-w-xl translate-x-[-50%] translate-y-[-50%] bg-gradient-to-br from-[#0A1628] to-[#0D1624] border border-[#00D4FF]/30 rounded-2xl shadow-2xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 overflow-hidden"
+        class="fixed left-[50%] top-[50%] z-50 w-full max-w-xl translate-x-[-50%] translate-y-[-50%] bg-gradient-to-br from-[#0A1628] to-[#0D1624] border border-[#00D4FF]/30 rounded-2xl shadow-2xl dialog-transition overflow-hidden"
       >
         <!-- Header -->
         <div class="px-6 py-5 border-b border-[#00D4FF]/20">
@@ -152,63 +145,3 @@ const toastRef = ref<boolean>(false);
     </DialogPortal>
   </DialogRoot>
 </template>
-
-<style scoped>
-/* Beautiful backdrop with gradient overlay */
-.backdrop-overlay {
-  background:
-    radial-gradient(
-      circle at 20% 50%,
-      rgba(0, 212, 255, 0.15) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 80% 80%,
-      rgba(0, 255, 179, 0.15) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 40% 20%,
-      rgba(138, 43, 226, 0.1) 0%,
-      transparent 50%
-    ),
-    linear-gradient(
-      135deg,
-      rgba(6, 19, 34, 0.95) 0%,
-      rgba(13, 22, 36, 0.95) 100%
-    );
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-/* Custom animations */
-@keyframes animate-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes animate-out {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-}
-
-.data-\[state\=open\]\:animate-in[data-state="open"] {
-  animation: animate-in 0.2s ease-out;
-}
-
-.data-\[state\=closed\]\:animate-out[data-state="closed"] {
-  animation: animate-out 0.15s ease-in;
-}
-</style>

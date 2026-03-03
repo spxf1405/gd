@@ -192,6 +192,8 @@ func (r *TournamentRepository) getTournaments(
 			t.organizer
 		`)
 
+	qb = qb.Where(sq.Eq{"deleted_at": nil})
+
 	if params != nil {
 		for _, f := range params.Query.Filters {
 			col := filterByToColumn(f.FilterBy)
@@ -215,13 +217,15 @@ func (r *TournamentRepository) getTournaments(
 		sortOrder = params.Query.SortOrder
 	}
 
-	qb = qb.OrderBy(
-		fmt.Sprintf(
-			"%s %s",
-			sortByToColumn(sortBy),
-			sortOrderToSQL(sortOrder),
-		),
-	)
+	if sortOrder != tournamentpb.SortOrder_SORT_ORDER_UNSPECIFIED {
+		qb = qb.OrderBy(
+			fmt.Sprintf(
+				"%s %s",
+				sortByToColumn(sortBy),
+				sortOrderToSQL(sortOrder),
+			),
+		)
+	}
 
 	query, args, err := qb.ToSql()
 
@@ -232,7 +236,6 @@ func (r *TournamentRepository) getTournaments(
 	rows, err := r.DB.Pool.Query(ctx, query, args...)
 	fmt.Println("query", query)
 	if err != nil {
-		fmt.Println("query", query)
 		return nil, err
 	}
 	defer rows.Close()
@@ -311,7 +314,7 @@ func (r *TournamentRepository) createTournament(
 		panic("DB pool is nil")
 	}
 
-	query := `INSERT INTO tournament (name) VALUES ($1) RETURNING id`
+	query := `INSERT INTO tournaments (name) VALUES ($1) RETURNING id`
 
 	var id uuid.UUID
 	err := r.DB.Pool.QueryRow(ctx, query, name).Scan(&id)
@@ -320,4 +323,25 @@ func (r *TournamentRepository) createTournament(
 	}
 
 	return id, nil
+}
+
+func (r *TournamentRepository) deleteTournament(
+	ctx context.Context,
+	id string,
+) (string, error) {
+
+	if r.DB == nil || r.DB.Pool == nil {
+		panic("DB pool is nil")
+	}
+
+	query := `UPDATE tournaments SET deleted_at = NOW() WHERE id = $1`
+
+	var deletedAt time.Time
+	err := r.DB.Pool.QueryRow(ctx, query, id).Scan(&deletedAt)
+
+	if err != nil {
+		return "", nil
+	}
+
+	return deletedAt.Format(time.RFC3339), nil
 }
