@@ -56,7 +56,7 @@ const StatCard = ({ label, value, delta, color }) => (
       className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl pointer-events-none"
       style={{ background: color + "18", transform: "translate(30%,-30%)" }}
     />
-    <span className="text-[10px] font-semibold tracking-[0.16em] uppercase" style={{ color: "#5a6070" }}>
+    <span className="text-[10px] font-semibold tracking-[0.16em] uppercase" style={{ color: "#8a95a8" }}>
       {label}
     </span>
     <span className="text-[32px] font-bold text-white leading-none">
@@ -76,7 +76,7 @@ const Toggle = ({ label, sub, defaultOn = false }) => {
     <div className="flex items-center justify-between py-3.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
       <div>
         <p className="text-[13px] font-medium text-white">{label}</p>
-        {sub && <p className="text-[11px] mt-0.5" style={{ color: "#5a6070" }}>{sub}</p>}
+        {sub && <p className="text-[11px] mt-0.5" style={{ color: "#8a95a8" }}>{sub}</p>}
       </div>
       <div
         className="relative w-9 h-5 rounded-full cursor-pointer transition-all duration-300 flex-shrink-0"
@@ -97,7 +97,7 @@ const SidebarTab = ({ tab }) => {
   return (
     <Tabs.Trigger
       value={tab.value}
-      className="group relative w-full text-left outline-none cursor-pointer p-0 bg-transparent"
+      className="group relative w-full text-left outline-none cursor-pointer"
     >
       {/* Left accent bar */}
       <div
@@ -132,7 +132,7 @@ const SidebarTab = ({ tab }) => {
           />
           {/* Icon — inactive */}
           <span className="relative z-10 group-data-[state=active]:hidden">
-            <Icon size={20} color="#5a6070" />
+            <Icon size={20} color="#9aa4b4" />
           </span>
           {/* Icon — active colored */}
           <span className="relative z-10 hidden group-data-[state=active]:inline-flex">
@@ -142,11 +142,11 @@ const SidebarTab = ({ tab }) => {
 
         {/* Labels */}
         <div className="min-w-0 flex-1 relative z-10">
-          <p className="text-[14px] font-semibold leading-tight text-[#6a7484] transition-colors duration-200 group-hover:text-[#aab2bd] group-data-[state=active]:text-white">
+          <p className="text-[14px] font-semibold leading-tight text-[#9aa3b0] transition-colors duration-200 group-hover:text-[#ccd3db] group-data-[state=active]:text-white">
             {tab.label}
           </p>
           <p className="text-[11px] leading-tight mt-0.5">
-            <span className="text-[#2e3545] group-data-[state=active]:hidden">{tab.sub}</span>
+            <span className="text-[#7a8494] group-data-[state=active]:hidden">{tab.sub}</span>
             <span className="hidden group-data-[state=active]:inline" style={{ color: tab.accent }}>{tab.sub}</span>
           </p>
         </div>
@@ -170,7 +170,7 @@ const OverviewContent = () => (
       <h3 className="text-[22px] font-bold text-white mb-0.5" style={{ letterSpacing: "-0.02em" }}>
         Dashboard Overview
       </h3>
-      <p className="text-[13px]" style={{ color: "#5a6070" }}>Real-time metrics · Last synced 2 min ago</p>
+      <p className="text-[13px]" style={{ color: "#8a95a8" }}>Real-time metrics · Last synced 2 min ago</p>
     </div>
     <div className="grid grid-cols-3 gap-3">
       <StatCard label="Revenue" value="₫ 4.2M" delta="↑ 12.4% this week" color="#10b981" />
@@ -182,7 +182,7 @@ const OverviewContent = () => (
       style={{ background: "#1a1d27", border: "1px solid rgba(16,185,129,0.15)", borderLeft: "3px solid #10b981" }}
     >
       <p className="text-[12px] font-semibold text-white mb-1">System Status</p>
-      <p className="text-[12px] leading-relaxed" style={{ color: "#8892a4" }}>
+      <p className="text-[12px] leading-relaxed" style={{ color: "#b0bac8" }}>
         All services running normally. Dashboard được thiết kế tối ưu cho trải nghiệm người dùng ban đêm.
         Dữ liệu được cập nhật theo thời gian thực từ các API nội bộ.
       </p>
@@ -196,7 +196,7 @@ const OrdersContent = () => (
       <h3 className="text-[22px] font-bold text-white mb-0.5" style={{ letterSpacing: "-0.02em" }}>
         Orders Management
       </h3>
-      <p className="text-[13px]" style={{ color: "#5a6070" }}>Quản lý và theo dõi đơn hàng</p>
+      <p className="text-[13px]" style={{ color: "#8a95a8" }}>Quản lý và theo dõi đơn hàng</p>
     </div>
     {[
       { id: "#ORD-2891", status: "Completed", amount: "₫ 320,000", time: "2 min ago", color: "#10b981" },
@@ -207,10 +207,10 @@ const OrdersContent = () => (
       <div key={o.id} className="flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-150 hover:bg-white/[0.03]"
         style={{ border: "1px solid rgba(255,255,255,0.05)" }}>
         <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: o.color, boxShadow: `0 0 8px ${o.color}` }} />
-        <span className="text-[12px] font-semibold flex-1" style={{ color: "#c8cdd8" }}>{o.id}</span>
+        <span className="text-[12px] font-semibold flex-1" style={{ color: "#e2e6ec" }}>{o.id}</span>
         <span className="text-[11px] px-2.5 py-0.5 rounded-full" style={{ background: o.color + "18", color: o.color }}>{o.status}</span>
-        <span className="text-[12px] font-medium" style={{ color: "#8892a4" }}>{o.amount}</span>
-        <span className="text-[10px]" style={{ color: "#3d4555" }}>{o.time}</span>
+        <span className="text-[12px] font-medium" style={{ color: "#b0bac8" }}>{o.amount}</span>
+        <span className="text-[10px]" style={{ color: "#8a95a8" }}>{o.time}</span>
       </div>
     ))}
   </div>
@@ -222,7 +222,7 @@ const GrowthContent = () => (
       <h3 className="text-[22px] font-bold text-white mb-0.5" style={{ letterSpacing: "-0.02em" }}>
         Growth Analytics
       </h3>
-      <p className="text-[13px]" style={{ color: "#5a6070" }}>Phân tích tăng trưởng theo thời gian</p>
+      <p className="text-[13px]" style={{ color: "#8a95a8" }}>Phân tích tăng trưởng theo thời gian</p>
     </div>
     <div className="grid grid-cols-2 gap-3">
       {[
@@ -243,7 +243,7 @@ const SecurityContent = () => (
       <h3 className="text-[22px] font-bold text-white mb-0.5" style={{ letterSpacing: "-0.02em" }}>
         Security Center
       </h3>
-      <p className="text-[13px]" style={{ color: "#5a6070" }}>Thiết lập xác thực và quản lý phiên</p>
+      <p className="text-[13px]" style={{ color: "#8a95a8" }}>Thiết lập xác thực và quản lý phiên</p>
     </div>
     <div className="flex flex-col">
       <Toggle label="Xác thực 2 yếu tố" sub="Yêu cầu OTP khi đăng nhập" defaultOn={true} />
@@ -256,7 +256,7 @@ const SecurityContent = () => (
       style={{ background: "rgba(239,68,68,0.07)", border: "1px solid rgba(239,68,68,0.18)" }}
     >
       <ShieldCheck size={16} className="flex-shrink-0 mt-0.5" style={{ color: "#ef4444" }} />
-      <p className="text-[12px] leading-relaxed" style={{ color: "#8892a4" }}>
+      <p className="text-[12px] leading-relaxed" style={{ color: "#b0bac8" }}>
         Phiên đăng nhập cuối: <span style={{ color: "#ef4444" }}>192.168.1.42</span> · 2 giờ trước · Hà Nội, VN
       </p>
     </div>
@@ -335,7 +335,7 @@ export const Setting = () => {
                   <Dialog.Title className="text-[14px] font-bold text-white" style={{ letterSpacing: "-0.01em" }}>
                     Hệ Thống Quản Trị
                   </Dialog.Title>
-                  <Dialog.Description className="text-[10px] mt-0.5" style={{ color: "#4a5260", letterSpacing: "0.06em" }}>
+                  <Dialog.Description className="text-[10px] mt-0.5" style={{ color: "#9aa4b4", letterSpacing: "0.06em" }}>
                     SYSTEM · CONFIGURATION · v2.4.1
                   </Dialog.Description>
                 </div>
@@ -344,9 +344,9 @@ export const Setting = () => {
               <Dialog.Close asChild>
                 <button
                   className="w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-150 cursor-pointer border-0"
-                  style={{ background: "rgba(255,255,255,0.05)", color: "#5a6070" }}
+                  style={{ background: "rgba(255,255,255,0.05)", color: "#8a95a8" }}
                   onMouseEnter={e => { e.currentTarget.style.background = "rgba(239,68,68,0.15)"; e.currentTarget.style.color = "#ef4444"; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.color = "#5a6070"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.color = "#8a95a8"; }}
                 >
                   <X size={13} />
                 </button>
@@ -362,7 +362,7 @@ export const Setting = () => {
                 style={{ width: 330, borderRight: "1px solid rgba(255,255,255,0.06)", background: "rgba(0,0,0,0.15)", padding: "24px 16px" }}
               >
                 {/* section label */}
-                <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "#2d3240", paddingLeft: 4, marginBottom: 10 }}>
+                <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "#8a95a8", paddingLeft: 4, marginBottom: 10 }}>
                   Navigation
                 </p>
 
@@ -382,7 +382,7 @@ export const Setting = () => {
                     <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#10b981", boxShadow: "0 0 8px #10b981", animation: "pulse 2s infinite" }} />
                     <div>
                       <p style={{ fontSize: 10, fontWeight: 600, color: "#10b981" }}>All Systems Online</p>
-                      <p style={{ fontSize: 9, color: "#2d5040", marginTop: 1 }}>99.9% uptime · 30d</p>
+                      <p style={{ fontSize: 9, color: "#7ab090", marginTop: 1 }}>99.9% uptime · 30d</p>
                     </div>
                   </div>
                 </div>
@@ -407,14 +407,14 @@ export const Setting = () => {
               className="flex-shrink-0 flex items-center justify-between px-6 py-3.5"
               style={{ borderTop: "1px solid rgba(255,255,255,0.06)", background: "rgba(0,0,0,0.2)" }}
             >
-              <p style={{ fontSize: 10, color: "#2d3240", letterSpacing: "0.06em" }}>
+              <p style={{ fontSize: 10, color: "#8a95a8", letterSpacing: "0.06em" }}>
                 LAST SAVED · 14:32:07
               </p>
               <div className="flex gap-2.5">
                 <Dialog.Close asChild>
                   <button
                     className="px-4 py-2 rounded-lg text-[12px] font-medium transition-all duration-150 cursor-pointer border-0"
-                    style={{ background: "rgba(255,255,255,0.05)", color: "#8892a4", border: "1px solid rgba(255,255,255,0.08)" }}
+                    style={{ background: "rgba(255,255,255,0.05)", color: "#b0bac8", border: "1px solid rgba(255,255,255,0.08)" }}
                     onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.09)"}
                     onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.05)"}
                   >
