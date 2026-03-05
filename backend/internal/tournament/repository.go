@@ -3,6 +3,7 @@ package tournament
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
@@ -12,6 +13,7 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
@@ -169,7 +171,7 @@ func (r *TournamentRepository) getTournaments(
 					)
 				) FILTER (WHERE p.id IS NOT NULL),
 				'[]'
-			) AS registed_players`,
+			) AS registered_players`,
 		).
 		From("tournaments t").
 		LeftJoin("registrations r ON r.tournament_id = t.id").
@@ -186,7 +188,6 @@ func (r *TournamentRepository) getTournaments(
 			t.entry_fee,
 			t.max_players,
 			t.status,
-			t.type,
 			t.created_at,
 			t.updated_at,
 			t.organizer
@@ -268,7 +269,6 @@ func (r *TournamentRepository) getTournaments(
 			&t.RegisteredPlayers,
 		)
 		if err != nil {
-			fmt.Println("err", err)
 			return nil, err
 		}
 
@@ -303,6 +303,123 @@ func (r *TournamentRepository) getTournaments(
 	}
 
 	return tournaments, nil
+}
+
+func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string) (*tournamentpb.Tournament, error) {
+	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
+
+	queryBuilder := psql.Select(
+		"t.id",
+		"t.name",
+		"t.type",
+		"t.format",
+		"t.start_date",
+		"t.end_date",
+		"t.location",
+		"t.total_prize",
+		"t.entry_fee",
+		"t.max_players",
+		"t.status",
+		"t.created_at",
+		"t.updated_at",
+		"t.organizer",
+		`COALESCE(
+				json_agg(
+					json_build_object(
+						'id', p.id,
+						'name', p.name
+					)
+				) FILTER (WHERE p.id IS NOT NULL),
+				'[]'
+			) AS registered_players`,
+	).
+		From("tournaments t").
+		LeftJoin("registrations r ON r.tournament_id = t.id").
+		LeftJoin("players p ON p.id = r.player_id").
+		GroupBy(`
+			t.id,
+			t.name,
+			t.type,
+			t.format,
+			t.start_date,
+			t.end_date,
+			t.location,
+			t.total_prize,
+			t.entry_fee,
+			t.max_players,
+			t.status,
+			t.created_at,
+			t.updated_at,
+			t.organizer
+		`).
+		Where(sq.Eq{"t.id": id})
+
+	query, args, err := queryBuilder.ToSql()
+
+	if err != nil {
+		return nil, err
+	}
+
+	row := r.DB.Pool.QueryRow(ctx, query, args...)
+
+	tournament := &tournamentpb.Tournament{}
+
+	var typeT, location, format, totalPrize sql.NullString
+	var createdAt, updatedAt time.Time
+	var startDate sql.NullTime
+	var max_players sql.NullInt32
+
+	err = row.Scan(
+		&tournament.Id,
+		&tournament.Name,
+		&typeT,
+		&format,
+		&startDate,
+		&tournament.EndDate,
+		&location,
+		&totalPrize,
+		&tournament.EntryFee,
+		&max_players,
+		&tournament.Status,
+		&createdAt,
+		&updatedAt,
+		&tournament.Organizer,
+		&tournament.RegisteredPlayers,
+	)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	if location.Valid {
+		tournament.Location = wrapperspb.String(location.String)
+	}
+
+	tournament.CreatedAt = createdAt.Format(time.RFC3339)
+	tournament.UpdateAt = updatedAt.Format(time.RFC3339)
+
+	if startDate.Valid {
+		tournament.StartDate = wrapperspb.String(startDate.Time.Format(time.RFC3339))
+	}
+
+	if typeT.Valid {
+		tournament.Type = wrapperspb.String(typeT.String)
+	}
+
+	if format.Valid {
+		tournament.Format = wrapperspb.String(format.String)
+	}
+
+	if totalPrize.Valid {
+		tournament.TotalPrize = wrapperspb.String(totalPrize.String)
+	}
+
+	if max_players.Valid {
+		tournament.MaxPlayers = wrapperspb.Int32(max_players.Int32)
+	}
+
+	return tournament, nil
 }
 
 func (r *TournamentRepository) createTournament(

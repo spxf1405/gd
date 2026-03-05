@@ -36,6 +36,9 @@ const (
 	// TournamentServiceGetTournamentsProcedure is the fully-qualified name of the TournamentService's
 	// GetTournaments RPC.
 	TournamentServiceGetTournamentsProcedure = "/tournament.v1.TournamentService/GetTournaments"
+	// TournamentServiceGetTournamentByIDProcedure is the fully-qualified name of the
+	// TournamentService's GetTournamentByID RPC.
+	TournamentServiceGetTournamentByIDProcedure = "/tournament.v1.TournamentService/GetTournamentByID"
 	// TournamentServiceCreateTournamentProcedure is the fully-qualified name of the TournamentService's
 	// CreateTournament RPC.
 	TournamentServiceCreateTournamentProcedure = "/tournament.v1.TournamentService/CreateTournament"
@@ -47,6 +50,7 @@ const (
 // TournamentServiceClient is a client for the tournament.v1.TournamentService service.
 type TournamentServiceClient interface {
 	GetTournaments(context.Context, *connect.Request[v1.GetTournamentsRequestWrapper]) (*connect.Response[v1.GetTournamentsResponse], error)
+	GetTournamentByID(context.Context, *connect.Request[v1.GetTournamentByIDRequest]) (*connect.Response[v1.GetTournamentByIDResponse], error)
 	CreateTournament(context.Context, *connect.Request[v1.CreateTournamentRequest]) (*connect.Response[v1.CreateTournamentResponse], error)
 	DeleteTournament(context.Context, *connect.Request[v1.DeleteTournamentRequest]) (*connect.Response[v1.DeleteTournamentResponse], error)
 }
@@ -68,6 +72,12 @@ func NewTournamentServiceClient(httpClient connect.HTTPClient, baseURL string, o
 			connect.WithSchema(tournamentServiceMethods.ByName("GetTournaments")),
 			connect.WithClientOptions(opts...),
 		),
+		getTournamentByID: connect.NewClient[v1.GetTournamentByIDRequest, v1.GetTournamentByIDResponse](
+			httpClient,
+			baseURL+TournamentServiceGetTournamentByIDProcedure,
+			connect.WithSchema(tournamentServiceMethods.ByName("GetTournamentByID")),
+			connect.WithClientOptions(opts...),
+		),
 		createTournament: connect.NewClient[v1.CreateTournamentRequest, v1.CreateTournamentResponse](
 			httpClient,
 			baseURL+TournamentServiceCreateTournamentProcedure,
@@ -85,14 +95,20 @@ func NewTournamentServiceClient(httpClient connect.HTTPClient, baseURL string, o
 
 // tournamentServiceClient implements TournamentServiceClient.
 type tournamentServiceClient struct {
-	getTournaments   *connect.Client[v1.GetTournamentsRequestWrapper, v1.GetTournamentsResponse]
-	createTournament *connect.Client[v1.CreateTournamentRequest, v1.CreateTournamentResponse]
-	deleteTournament *connect.Client[v1.DeleteTournamentRequest, v1.DeleteTournamentResponse]
+	getTournaments    *connect.Client[v1.GetTournamentsRequestWrapper, v1.GetTournamentsResponse]
+	getTournamentByID *connect.Client[v1.GetTournamentByIDRequest, v1.GetTournamentByIDResponse]
+	createTournament  *connect.Client[v1.CreateTournamentRequest, v1.CreateTournamentResponse]
+	deleteTournament  *connect.Client[v1.DeleteTournamentRequest, v1.DeleteTournamentResponse]
 }
 
 // GetTournaments calls tournament.v1.TournamentService.GetTournaments.
 func (c *tournamentServiceClient) GetTournaments(ctx context.Context, req *connect.Request[v1.GetTournamentsRequestWrapper]) (*connect.Response[v1.GetTournamentsResponse], error) {
 	return c.getTournaments.CallUnary(ctx, req)
+}
+
+// GetTournamentByID calls tournament.v1.TournamentService.GetTournamentByID.
+func (c *tournamentServiceClient) GetTournamentByID(ctx context.Context, req *connect.Request[v1.GetTournamentByIDRequest]) (*connect.Response[v1.GetTournamentByIDResponse], error) {
+	return c.getTournamentByID.CallUnary(ctx, req)
 }
 
 // CreateTournament calls tournament.v1.TournamentService.CreateTournament.
@@ -108,6 +124,7 @@ func (c *tournamentServiceClient) DeleteTournament(ctx context.Context, req *con
 // TournamentServiceHandler is an implementation of the tournament.v1.TournamentService service.
 type TournamentServiceHandler interface {
 	GetTournaments(context.Context, *connect.Request[v1.GetTournamentsRequestWrapper]) (*connect.Response[v1.GetTournamentsResponse], error)
+	GetTournamentByID(context.Context, *connect.Request[v1.GetTournamentByIDRequest]) (*connect.Response[v1.GetTournamentByIDResponse], error)
 	CreateTournament(context.Context, *connect.Request[v1.CreateTournamentRequest]) (*connect.Response[v1.CreateTournamentResponse], error)
 	DeleteTournament(context.Context, *connect.Request[v1.DeleteTournamentRequest]) (*connect.Response[v1.DeleteTournamentResponse], error)
 }
@@ -123,6 +140,12 @@ func NewTournamentServiceHandler(svc TournamentServiceHandler, opts ...connect.H
 		TournamentServiceGetTournamentsProcedure,
 		svc.GetTournaments,
 		connect.WithSchema(tournamentServiceMethods.ByName("GetTournaments")),
+		connect.WithHandlerOptions(opts...),
+	)
+	tournamentServiceGetTournamentByIDHandler := connect.NewUnaryHandler(
+		TournamentServiceGetTournamentByIDProcedure,
+		svc.GetTournamentByID,
+		connect.WithSchema(tournamentServiceMethods.ByName("GetTournamentByID")),
 		connect.WithHandlerOptions(opts...),
 	)
 	tournamentServiceCreateTournamentHandler := connect.NewUnaryHandler(
@@ -141,6 +164,8 @@ func NewTournamentServiceHandler(svc TournamentServiceHandler, opts ...connect.H
 		switch r.URL.Path {
 		case TournamentServiceGetTournamentsProcedure:
 			tournamentServiceGetTournamentsHandler.ServeHTTP(w, r)
+		case TournamentServiceGetTournamentByIDProcedure:
+			tournamentServiceGetTournamentByIDHandler.ServeHTTP(w, r)
 		case TournamentServiceCreateTournamentProcedure:
 			tournamentServiceCreateTournamentHandler.ServeHTTP(w, r)
 		case TournamentServiceDeleteTournamentProcedure:
@@ -156,6 +181,10 @@ type UnimplementedTournamentServiceHandler struct{}
 
 func (UnimplementedTournamentServiceHandler) GetTournaments(context.Context, *connect.Request[v1.GetTournamentsRequestWrapper]) (*connect.Response[v1.GetTournamentsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tournament.v1.TournamentService.GetTournaments is not implemented"))
+}
+
+func (UnimplementedTournamentServiceHandler) GetTournamentByID(context.Context, *connect.Request[v1.GetTournamentByIDRequest]) (*connect.Response[v1.GetTournamentByIDResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tournament.v1.TournamentService.GetTournamentByID is not implemented"))
 }
 
 func (UnimplementedTournamentServiceHandler) CreateTournament(context.Context, *connect.Request[v1.CreateTournamentRequest]) (*connect.Response[v1.CreateTournamentResponse], error) {

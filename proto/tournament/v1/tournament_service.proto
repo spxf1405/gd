@@ -92,6 +92,14 @@ message GetTournamentsRequestWrapper {
   }
 }
 
+message GetTournamentByIDRequest {
+  string id = 1;
+}
+
+message GetTournamentByIDResponse {
+  Tournament tournament = 1;
+}
+
 message CreateTournamentRequest {
   string name = 1;
 }
@@ -110,6 +118,7 @@ message DeleteTournamentResponse {
 
 service TournamentService {
   rpc GetTournaments(GetTournamentsRequestWrapper) returns (GetTournamentsResponse);
+  rpc GetTournamentByID(GetTournamentByIDRequest) returns (GetTournamentByIDResponse);
   rpc CreateTournament(CreateTournamentRequest) returns (CreateTournamentResponse);
   rpc DeleteTournament(DeleteTournamentRequest) returns (DeleteTournamentResponse);
 }
