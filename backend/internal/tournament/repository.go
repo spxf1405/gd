@@ -390,6 +390,7 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil
 		}
+		fmt.Println("err", err)
 		return nil, err
 	}
 	if location.Valid {

@@ -4,6 +4,7 @@ import type { Edge, Node } from "@xyflow/react";
 import { getPlayersInfo } from "@/features/flow/helper/player";
 import { createWbFlow as createWBFlow } from "@/features/flow/helper/winner";
 import { createLBFlow } from "@/features/flow/helper/loser";
+import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 
 export type WinnerBracketInfo = {
   players: string[];
@@ -35,16 +36,20 @@ type TourInfo = {
   };
 };
 
+
+
 type TourState = {
+  tournament?: Tournament,
   tourInfo: TourInfo;
   initTourInfo: (players: string[]) => void;
   updateCurrentRound: (round: string) => void;
+  initTournamentInfo: (tournament?: Tournament) => void
   reset: () => void;
 };
 
 const initTourInfoState: Omit<
   TourState,
-  "updateCurrentRound" | "initTourInfo" | "reset"
+  "updateCurrentRound" | "initTourInfo" | "reset" | "initTournamentInfo"
 > = {
   tourInfo: {
     players: [],
@@ -69,10 +74,14 @@ const initTourInfoState: Omit<
   },
 };
 
-export const useMatchesStore = create<TourState>()(
+export const useTournamentStore = create<TourState>()(
   immer((set) => ({
     ...initTourInfoState,
-
+    initTournamentInfo: (tournament?: Tournament) => {
+      set((state) => {
+        state.tournament = tournament
+      })
+    },
     initTourInfo: (rawPlayers: string[]) =>
       set((state) => {
         const bracketInfo = getPlayersInfo(rawPlayers);

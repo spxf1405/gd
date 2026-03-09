@@ -12,6 +12,7 @@
   "dependencies": {
     "@gd/proto": "workspace:*",
     "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-query": "^5.90.21",
     "@uidotdev/usehooks": "^2.4.1",
     "@xyflow/react": "^12.10.0",
     "ag-grid-react": "^35.0.0",

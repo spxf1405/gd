@@ -60,7 +60,7 @@ func (h *Hanlder) GetTournaments(
 	return res, nil
 }
 
-func (h *Hanlder) getTournamentByID(ctx context.Context, req *connect.Request[tournamentpb.GetTournamentByIDRequest]) (*connect.Response[tournamentpb.GetTournamentByIDResponse], error) {
+func (h *Hanlder) GetTournamentByID(ctx context.Context, req *connect.Request[tournamentpb.GetTournamentByIDRequest]) (*connect.Response[tournamentpb.GetTournamentByIDResponse], error) {
 	tournament, err := h.service.getTournamentByID(ctx, req.Msg.Id)
 
 	if err != nil {

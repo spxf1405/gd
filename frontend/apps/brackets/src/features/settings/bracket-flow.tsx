@@ -8,10 +8,11 @@ import {
   useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useMatchesStore } from "@/store/match";
+import { useTournamentStore } from "@/store/match";
 import { useDimensionStore } from "@/store/dismension";
 import { BracketEdge, FinalMatchEdge } from "../flow/edge";
 import { CustomNode, FinalNode, FinalOfFinalNode } from "../flow/nodes";
+import { EventBus } from "@/helper/event-bus";
 
 const edgeTypes = {
   bracket: BracketEdge,
@@ -24,10 +25,12 @@ const nodeTypes = {
   finalOfFinal: FinalOfFinalNode,
 };
 
+const bus = new EventBus();
+
 function BracketFlow() {
   const reactFlowInstance = useReactFlow();
 
-  const { initTourInfo, tourInfo } = useMatchesStore();
+  const { initTourInfo, tourInfo } = useTournamentStore();
   const { width, height, setSize } = useDimensionStore();
 
   const { currentRound } = tourInfo;
@@ -63,19 +66,9 @@ function BracketFlow() {
   }, [initTourInfo, currentRound]);
 
   useEffect(() => {
-    const handleMessage = (event) => {
-      if (event.data.type === "CONTAINER_SIZE") {
-        const { width, height } = event.data;
-
-        setSize(width, height);
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
+    bus.on("CONTAINER_SIZE", (data) => {
+      setSize(data.width, data.height);
+    });
   }, [setSize]);
 
   useEffect(() => {
@@ -83,6 +76,7 @@ function BracketFlow() {
       reactFlowInstance.fitView({ duration: 400 });
     }
   }, [reactFlowInstance, nodes, currentRound]);
+
 
   return (
     <div style={{ width, height }}>

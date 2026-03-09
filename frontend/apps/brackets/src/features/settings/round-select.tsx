@@ -1,4 +1,4 @@
-import { useMatchesStore } from "@/store/match";
+import { useTournamentStore } from "@/store/match";
 import { AlignVerticalDistributeCenter, ChevronDownIcon } from "lucide-react";
 import { Select } from "radix-ui";
 import { useState } from "react";
@@ -17,7 +17,7 @@ const RoundSelect = () => {
   ];
 
   const [orderByVal, setOrderByVal] = useState("");
-  const { updateCurrentRound } = useMatchesStore();
+  const { updateCurrentRound } = useTournamentStore();
 
   const handleChangeRound = (round: string) => {
     setOrderByVal(round);
