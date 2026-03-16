@@ -16,6 +16,7 @@ import { useTournamentStore } from "./store/match";
 
 import "@xyflow/react/dist/style.css";
 import "./App.css";
+import { CalendarPicker } from "./calendar";
 
 const queryClient = new QueryClient();
 const bus = new EventBus();
@@ -28,6 +29,7 @@ function App() {
     const res = await tournamentClient.getTournamentByID({
       id: id,
     });
+    console.log("res.tournament", res.tournament)
     return res.tournament;
   };
 
@@ -57,6 +59,7 @@ function App() {
         <RoundSelect />
         <PlayerMatchHistory />
         <GamingCommandMenu />
+        <CalendarPicker />
       </div>
       <BracketFlow />
     </div>

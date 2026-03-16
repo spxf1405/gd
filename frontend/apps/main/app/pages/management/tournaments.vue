@@ -894,7 +894,6 @@ async function onSortChange(event: SortChangedEvent) {
 
 watchEffect(() => {
   console.log("tournaments", toRaw(tournaments.value));
-  // console.log("sort", toRaw(sort.value));
 });
 </script>
 

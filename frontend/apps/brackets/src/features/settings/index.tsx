@@ -16,6 +16,10 @@ import {
   Check,
 } from "lucide-react";
 import { useTournamentStore } from "@/store/match";
+import {
+  TournamentFormat,
+  TournamentType,
+} from "@gd/proto/tournament/v1/tournament_pb";
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const COLORS = {
@@ -221,7 +225,7 @@ const LSelectItem = ({ value, children }) => (
   <Select.Item
     value={value}
     className="
-      flex items-center justify-between gap-2
+      flex items-center justify-between gap-2 my-1
       px-3 py-2.5 rounded-[9px]
       text-[13px] text-[#b0bac8]
       cursor-pointer outline-none select-none
@@ -377,6 +381,32 @@ const CurrencyHint = ({ value }) =>
     </p>
   ) : null;
 
+const TournamentTypeList = [
+  {
+    val: TournamentType.SINGLE,
+    label: "Đơn",
+  },
+  {
+    val: TournamentType.TEAM,
+    label: "Đồng đội",
+  },
+];
+
+const TournamentFormatList = [
+  {
+    val: TournamentFormat.TOURNAMENT_TYPE_8_BALL,
+    label: "8 Bi",
+  },
+  {
+    val: TournamentFormat.TOURNAMENT_TYPE_9_BALL,
+    label: "9 Bi",
+  },
+  {
+    val: TournamentFormat.TOURNAMENT_TYPE_10_BALL,
+    label: "10 Bi",
+  },
+];
+
 // ─── Tab 1 ────────────────────────────────────────────────────────────────────
 const BasicTab = ({ form, set }) => (
   <div className="flex flex-col gap-5">
@@ -392,26 +422,39 @@ const BasicTab = ({ form, set }) => (
         placeholder="VD: Giải Vô Địch 8-Ball Hà Nội 2026"
       />
     </Field>
-    <div className="grid grid-cols-2 gap-4">
-      <Field label="Thể thức" required>
-        <LSelect value={form.type} onValueChange={(v) => set("type", v)}>
-          {OPTIONS.gameType.map((v) => (
-            <LSelectItem key={v} value={v}>
-              {v}
-            </LSelectItem>
-          ))}
-        </LSelect>
-      </Field>
-      <Field label="Nội dung" required>
-        <LSelect value={form.format} onValueChange={(v) => set("format", v)}>
-          {OPTIONS.format.map((v) => (
-            <LSelectItem key={v} value={v}>
-              {v}
-            </LSelectItem>
-          ))}
-        </LSelect>
-      </Field>
+    <div className="grid grid-cols-12 gap-4">
+      <div className="col-span-2">
+        <Field label="Nội dung" required>
+          <LSelect value={form.type} onValueChange={(v) => set("format", v)}>
+            {TournamentTypeList.map(({ val, label }) => (
+              <LSelectItem key={val} value={val}>
+                {label}
+              </LSelectItem>
+            ))}
+          </LSelect>
+        </Field>
+      </div>
+      <div className="col-span-2">
+        <Field label="Thể thức" required>
+          <LSelect value={form.format} onValueChange={(v) => set("type", v)}>
+            {TournamentFormatList.map(({ val, label }) => (
+              <LSelectItem key={val} value={val}>
+                {label}
+              </LSelectItem>
+            ))}
+          </LSelect>
+        </Field>
+      </div>
+      <div className="col-span-8">
+        <Field label="Mô tả thêm thể thức" required={false}>
+          <LInput
+            value={form.formatDescription}
+            placeholder="Eg. Xếp Cao - Thắng Phá - WPA Rules"
+          />
+        </Field>
+      </div>
     </div>
+
     <Field label="Ban tổ chức" required>
       <LInput
         value={form.organizer}
@@ -787,7 +830,7 @@ const MediaTab = ({ form, set, handleFile }) => (
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export const Setting = () => {
   const { tournament } = useTournamentStore();
-  console.log("tournament", tournament)
+  console.log("tournament", tournament);
   const [form, setForm] = useState(FORM_DEFAULTS);
 
   useEffect(() => {

@@ -21,6 +21,7 @@
     "@bufbuild/protobuf": "^2.6.3",
     "@connectrpc/connect": "^2.1.1",
     "@connectrpc/connect-web": "^2.1.1",
-    "ag-grid-community": "^35.0.0"
+    "ag-grid-community": "^35.0.0",
+    "dayjs": "^1.11.20"
   }
 }

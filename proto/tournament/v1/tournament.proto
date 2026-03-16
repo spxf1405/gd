@@ -9,13 +9,13 @@ import "google/protobuf/wrappers.proto";
 
 // Trạng thái giải đấu
 enum TournamentStatus {
-  TOURNAMENT_STATUS_UNSPECIFIED = 0;
-  TOURNAMENT_STATUS_REGISTERING = 1;
+  TOURNAMENT_STATUS_UNSPECIFIED         = 0;
+  TOURNAMENT_STATUS_REGISTERING         = 1;
   TOURNAMENT_STATUS_REGISTRATION_CLOSED = 2;
-  TOURNAMENT_STATUS_STARTED = 3;
-  TOURNAMENT_STATUS_RUNNING = 4;
-  TOURNAMENT_STATUS_FINISHED = 5;
-  TOURNAMENT_STATUS_CANCELLED = 6;
+  TOURNAMENT_STATUS_STARTED             = 3;
+  TOURNAMENT_STATUS_RUNNING             = 4;
+  TOURNAMENT_STATUS_FINISHED            = 5;
+  TOURNAMENT_STATUS_CANCELLED           = 6;
 }
 
 message Player {
@@ -23,22 +23,40 @@ message Player {
   string name = 2;
 }
 
+enum TournamentType {
+  TOURNAMENT_TYPE_SINGLE = 0;
+  TOURNAMENT_TYPE_TEAM   = 1;
+}
+
+enum TournamentFormat {
+  TOURNAMENT_TYPE_8_BALL  = 0;
+  TOURNAMENT_TYPE_9_BALL  = 1;
+  TOURNAMENT_TYPE_10_BALL = 2;
+}
+
 // Thông tin giải đấu
 message Tournament {
-  string                      id                 = 1;
-  string                      name               = 2;
-  google.protobuf.StringValue type               = 3;
-  google.protobuf.StringValue format             = 4;
-  google.protobuf.StringValue start_date         = 5;
-  google.protobuf.StringValue end_date           = 6;
-  google.protobuf.StringValue location           = 7;
-  google.protobuf.Int32Value  tables             = 8;
-  google.protobuf.StringValue total_prize        = 9;
-  google.protobuf.StringValue entry_fee          = 10;
-  google.protobuf.Int32Value  max_players        = 11;
-  TournamentStatus            status             = 12;
-  google.protobuf.StringValue organizer          = 13;
-  string                      created_at         = 14;
-  string                      update_at          = 15;
-  repeated Player             registered_players = 16;
+  string           id     = 1;
+  string           name   = 2;
+  TournamentType   type   = 3;
+  TournamentFormat format = 4;
+
+  google.protobuf.StringValue format_description = 5;
+  google.protobuf.StringValue start_date = 6;
+  google.protobuf.StringValue end_date   = 7;
+  google.protobuf.StringValue location   = 8;
+
+  google.protobuf.Int32Value  tables      = 9;
+  google.protobuf.StringValue total_prize = 10;
+  google.protobuf.StringValue entry_fee   = 11;
+  google.protobuf.Int32Value  max_players = 12;
+
+  TournamentStatus            status    = 13;
+  google.protobuf.StringValue organizer = 14;
+
+  string created_at = 15;
+  string update_at  = 16;
+  google.protobuf.StringValue description = 17;
+
+  repeated Player registered_players = 18;
 }

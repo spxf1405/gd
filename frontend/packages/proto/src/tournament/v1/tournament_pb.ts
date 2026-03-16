@@ -11,7 +11,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file tournament/v1/tournament.proto.
  */
 export const file_tournament_v1_tournament: GenFile = /*@__PURE__*/
-  fileDesc("Ch50b3VybmFtZW50L3YxL3RvdXJuYW1lbnQucHJvdG8SDXRvdXJuYW1lbnQudjEiIgoGUGxheWVyEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkikQUKClRvdXJuYW1lbnQSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRIqCgR0eXBlGAMgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEiwKBmZvcm1hdBgEIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRIwCgpzdGFydF9kYXRlGAUgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEi4KCGVuZF9kYXRlGAYgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEi4KCGxvY2F0aW9uGAcgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEisKBnRhYmxlcxgIIAEoCzIbLmdvb2dsZS5wcm90b2J1Zi5JbnQzMlZhbHVlEjEKC3RvdGFsX3ByaXplGAkgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEi8KCWVudHJ5X2ZlZRgKIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRIwCgttYXhfcGxheWVycxgLIAEoCzIbLmdvb2dsZS5wcm90b2J1Zi5JbnQzMlZhbHVlEi8KBnN0YXR1cxgMIAEoDjIfLnRvdXJuYW1lbnQudjEuVG91cm5hbWVudFN0YXR1cxIvCglvcmdhbml6ZXIYDSABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSEgoKY3JlYXRlZF9hdBgOIAEoCRIRCgl1cGRhdGVfYXQYDyABKAkSMQoScmVnaXN0ZXJlZF9wbGF5ZXJzGBAgAygLMhUudG91cm5hbWVudC52MS5QbGF5ZXIqggIKEFRvdXJuYW1lbnRTdGF0dXMSIQodVE9VUk5BTUVOVF9TVEFUVVNfVU5TUEVDSUZJRUQQABIhCh1UT1VSTkFNRU5UX1NUQVRVU19SRUdJU1RFUklORxABEikKJVRPVVJOQU1FTlRfU1RBVFVTX1JFR0lTVFJBVElPTl9DTE9TRUQQAhIdChlUT1VSTkFNRU5UX1NUQVRVU19TVEFSVEVEEAMSHQoZVE9VUk5BTUVOVF9TVEFUVVNfUlVOTklORxAEEh4KGlRPVVJOQU1FTlRfU1RBVFVTX0ZJTklTSEVEEAUSHwobVE9VUk5BTUVOVF9TVEFUVVNfQ0FOQ0VMTEVEEAZCMVovYmFja2VuZC9pbnRlcm5hbC9nZW4vdG91cm5hbWVudC92MTt0b3VybmFtZW50cGJiBnByb3RvMw", [file_google_protobuf_timestamp, file_google_protobuf_wrappers]);
+  fileDesc("Ch50b3VybmFtZW50L3YxL3RvdXJuYW1lbnQucHJvdG8SDXRvdXJuYW1lbnQudjEiIgoGUGxheWVyEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkiggYKClRvdXJuYW1lbnQSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRIrCgR0eXBlGAMgASgOMh0udG91cm5hbWVudC52MS5Ub3VybmFtZW50VHlwZRIvCgZmb3JtYXQYBCABKA4yHy50b3VybmFtZW50LnYxLlRvdXJuYW1lbnRGb3JtYXQSOAoSZm9ybWF0X2Rlc2NyaXB0aW9uGAUgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEjAKCnN0YXJ0X2RhdGUYBiABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSLgoIZW5kX2RhdGUYByABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSLgoIbG9jYXRpb24YCCABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSKwoGdGFibGVzGAkgASgLMhsuZ29vZ2xlLnByb3RvYnVmLkludDMyVmFsdWUSMQoLdG90YWxfcHJpemUYCiABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSLwoJZW50cnlfZmVlGAsgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEjAKC21heF9wbGF5ZXJzGAwgASgLMhsuZ29vZ2xlLnByb3RvYnVmLkludDMyVmFsdWUSLwoGc3RhdHVzGA0gASgOMh8udG91cm5hbWVudC52MS5Ub3VybmFtZW50U3RhdHVzEi8KCW9yZ2FuaXplchgOIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRISCgpjcmVhdGVkX2F0GA8gASgJEhEKCXVwZGF0ZV9hdBgQIAEoCRIxCgtkZXNjcmlwdGlvbhgRIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRIxChJyZWdpc3RlcmVkX3BsYXllcnMYEiADKAsyFS50b3VybmFtZW50LnYxLlBsYXllciqCAgoQVG91cm5hbWVudFN0YXR1cxIhCh1UT1VSTkFNRU5UX1NUQVRVU19VTlNQRUNJRklFRBAAEiEKHVRPVVJOQU1FTlRfU1RBVFVTX1JFR0lTVEVSSU5HEAESKQolVE9VUk5BTUVOVF9TVEFUVVNfUkVHSVNUUkFUSU9OX0NMT1NFRBACEh0KGVRPVVJOQU1FTlRfU1RBVFVTX1NUQVJURUQQAxIdChlUT1VSTkFNRU5UX1NUQVRVU19SVU5OSU5HEAQSHgoaVE9VUk5BTUVOVF9TVEFUVVNfRklOSVNIRUQQBRIfChtUT1VSTkFNRU5UX1NUQVRVU19DQU5DRUxMRUQQBipGCg5Ub3VybmFtZW50VHlwZRIaChZUT1VSTkFNRU5UX1RZUEVfU0lOR0xFEAASGAoUVE9VUk5BTUVOVF9UWVBFX1RFQU0QASpnChBUb3VybmFtZW50Rm9ybWF0EhoKFlRPVVJOQU1FTlRfVFlQRV84X0JBTEwQABIaChZUT1VSTkFNRU5UX1RZUEVfOV9CQUxMEAESGwoXVE9VUk5BTUVOVF9UWVBFXzEwX0JBTEwQAkIxWi9iYWNrZW5kL2ludGVybmFsL2dlbi90b3VybmFtZW50L3YxO3RvdXJuYW1lbnRwYmIGcHJvdG8z", [file_google_protobuf_timestamp, file_google_protobuf_wrappers]);
 
 /**
  * @generated from message tournament.v1.Player
@@ -52,72 +52,82 @@ export type Tournament = Message<"tournament.v1.Tournament"> & {
   name: string;
 
   /**
-   * @generated from field: google.protobuf.StringValue type = 3;
+   * @generated from field: tournament.v1.TournamentType type = 3;
    */
-  type?: string;
+  type: TournamentType;
 
   /**
-   * @generated from field: google.protobuf.StringValue format = 4;
+   * @generated from field: tournament.v1.TournamentFormat format = 4;
    */
-  format?: string;
+  format: TournamentFormat;
 
   /**
-   * @generated from field: google.protobuf.StringValue start_date = 5;
+   * @generated from field: google.protobuf.StringValue format_description = 5;
+   */
+  formatDescription?: string;
+
+  /**
+   * @generated from field: google.protobuf.StringValue start_date = 6;
    */
   startDate?: string;
 
   /**
-   * @generated from field: google.protobuf.StringValue end_date = 6;
+   * @generated from field: google.protobuf.StringValue end_date = 7;
    */
   endDate?: string;
 
   /**
-   * @generated from field: google.protobuf.StringValue location = 7;
+   * @generated from field: google.protobuf.StringValue location = 8;
    */
   location?: string;
 
   /**
-   * @generated from field: google.protobuf.Int32Value tables = 8;
+   * @generated from field: google.protobuf.Int32Value tables = 9;
    */
   tables?: number;
 
   /**
-   * @generated from field: google.protobuf.StringValue total_prize = 9;
+   * @generated from field: google.protobuf.StringValue total_prize = 10;
    */
   totalPrize?: string;
 
   /**
-   * @generated from field: google.protobuf.StringValue entry_fee = 10;
+   * @generated from field: google.protobuf.StringValue entry_fee = 11;
    */
   entryFee?: string;
 
   /**
-   * @generated from field: google.protobuf.Int32Value max_players = 11;
+   * @generated from field: google.protobuf.Int32Value max_players = 12;
    */
   maxPlayers?: number;
 
   /**
-   * @generated from field: tournament.v1.TournamentStatus status = 12;
+   * @generated from field: tournament.v1.TournamentStatus status = 13;
    */
   status: TournamentStatus;
 
   /**
-   * @generated from field: google.protobuf.StringValue organizer = 13;
+   * @generated from field: google.protobuf.StringValue organizer = 14;
    */
   organizer?: string;
 
   /**
-   * @generated from field: string created_at = 14;
+   * @generated from field: string created_at = 15;
    */
   createdAt: string;
 
   /**
-   * @generated from field: string update_at = 15;
+   * @generated from field: string update_at = 16;
    */
   updateAt: string;
 
   /**
-   * @generated from field: repeated tournament.v1.Player registered_players = 16;
+   * @generated from field: google.protobuf.StringValue description = 17;
+   */
+  description?: string;
+
+  /**
+   * @generated from field: repeated tournament.v1.Player registered_players = 18;
    */
   registeredPlayers: Player[];
 };
@@ -176,4 +186,51 @@ export enum TournamentStatus {
  */
 export const TournamentStatusSchema: GenEnum<TournamentStatus> = /*@__PURE__*/
   enumDesc(file_tournament_v1_tournament, 0);
+
+/**
+ * @generated from enum tournament.v1.TournamentType
+ */
+export enum TournamentType {
+  /**
+   * @generated from enum value: TOURNAMENT_TYPE_SINGLE = 0;
+   */
+  SINGLE = 0,
+
+  /**
+   * @generated from enum value: TOURNAMENT_TYPE_TEAM = 1;
+   */
+  TEAM = 1,
+}
+
+/**
+ * Describes the enum tournament.v1.TournamentType.
+ */
+export const TournamentTypeSchema: GenEnum<TournamentType> = /*@__PURE__*/
+  enumDesc(file_tournament_v1_tournament, 1);
+
+/**
+ * @generated from enum tournament.v1.TournamentFormat
+ */
+export enum TournamentFormat {
+  /**
+   * @generated from enum value: TOURNAMENT_TYPE_8_BALL = 0;
+   */
+  TOURNAMENT_TYPE_8_BALL = 0,
+
+  /**
+   * @generated from enum value: TOURNAMENT_TYPE_9_BALL = 1;
+   */
+  TOURNAMENT_TYPE_9_BALL = 1,
+
+  /**
+   * @generated from enum value: TOURNAMENT_TYPE_10_BALL = 2;
+   */
+  TOURNAMENT_TYPE_10_BALL = 2,
+}
+
+/**
+ * Describes the enum tournament.v1.TournamentFormat.
+ */
+export const TournamentFormatSchema: GenEnum<TournamentFormat> = /*@__PURE__*/
+  enumDesc(file_tournament_v1_tournament, 2);
 
