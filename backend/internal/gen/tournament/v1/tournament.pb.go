@@ -85,6 +85,101 @@ func (TournamentStatus) EnumDescriptor() ([]byte, []int) {
 	return file_tournament_v1_tournament_proto_rawDescGZIP(), []int{0}
 }
 
+type TournamentType int32
+
+const (
+	TournamentType_TOURNAMENT_TYPE_SINGLE TournamentType = 0
+	TournamentType_TOURNAMENT_TYPE_TEAM   TournamentType = 1
+)
+
+// Enum value maps for TournamentType.
+var (
+	TournamentType_name = map[int32]string{
+		0: "TOURNAMENT_TYPE_SINGLE",
+		1: "TOURNAMENT_TYPE_TEAM",
+	}
+	TournamentType_value = map[string]int32{
+		"TOURNAMENT_TYPE_SINGLE": 0,
+		"TOURNAMENT_TYPE_TEAM":   1,
+	}
+)
+
+func (x TournamentType) Enum() *TournamentType {
+	p := new(TournamentType)
+	*p = x
+	return p
+}
+
+func (x TournamentType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (TournamentType) Descriptor() protoreflect.EnumDescriptor {
+	return file_tournament_v1_tournament_proto_enumTypes[1].Descriptor()
+}
+
+func (TournamentType) Type() protoreflect.EnumType {
+	return &file_tournament_v1_tournament_proto_enumTypes[1]
+}
+
+func (x TournamentType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use TournamentType.Descriptor instead.
+func (TournamentType) EnumDescriptor() ([]byte, []int) {
+	return file_tournament_v1_tournament_proto_rawDescGZIP(), []int{1}
+}
+
+type TournamentFormat int32
+
+const (
+	TournamentFormat_TOURNAMENT_TYPE_8_BALL  TournamentFormat = 0
+	TournamentFormat_TOURNAMENT_TYPE_9_BALL  TournamentFormat = 1
+	TournamentFormat_TOURNAMENT_TYPE_10_BALL TournamentFormat = 2
+)
+
+// Enum value maps for TournamentFormat.
+var (
+	TournamentFormat_name = map[int32]string{
+		0: "TOURNAMENT_TYPE_8_BALL",
+		1: "TOURNAMENT_TYPE_9_BALL",
+		2: "TOURNAMENT_TYPE_10_BALL",
+	}
+	TournamentFormat_value = map[string]int32{
+		"TOURNAMENT_TYPE_8_BALL":  0,
+		"TOURNAMENT_TYPE_9_BALL":  1,
+		"TOURNAMENT_TYPE_10_BALL": 2,
+	}
+)
+
+func (x TournamentFormat) Enum() *TournamentFormat {
+	p := new(TournamentFormat)
+	*p = x
+	return p
+}
+
+func (x TournamentFormat) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (TournamentFormat) Descriptor() protoreflect.EnumDescriptor {
+	return file_tournament_v1_tournament_proto_enumTypes[2].Descriptor()
+}
+
+func (TournamentFormat) Type() protoreflect.EnumType {
+	return &file_tournament_v1_tournament_proto_enumTypes[2]
+}
+
+func (x TournamentFormat) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use TournamentFormat.Descriptor instead.
+func (TournamentFormat) EnumDescriptor() ([]byte, []int) {
+	return file_tournament_v1_tournament_proto_rawDescGZIP(), []int{2}
+}
+
 type Player struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -142,20 +237,22 @@ type Tournament struct {
 	state             protoimpl.MessageState  `protogen:"open.v1"`
 	Id                string                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name              string                  `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Type              *wrapperspb.StringValue `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
-	Format            *wrapperspb.StringValue `protobuf:"bytes,4,opt,name=format,proto3" json:"format,omitempty"`
-	StartDate         *wrapperspb.StringValue `protobuf:"bytes,5,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
-	EndDate           *wrapperspb.StringValue `protobuf:"bytes,6,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
-	Location          *wrapperspb.StringValue `protobuf:"bytes,7,opt,name=location,proto3" json:"location,omitempty"`
-	Tables            *wrapperspb.Int32Value  `protobuf:"bytes,8,opt,name=tables,proto3" json:"tables,omitempty"`
-	TotalPrize        *wrapperspb.StringValue `protobuf:"bytes,9,opt,name=total_prize,json=totalPrize,proto3" json:"total_prize,omitempty"`
-	EntryFee          *wrapperspb.StringValue `protobuf:"bytes,10,opt,name=entry_fee,json=entryFee,proto3" json:"entry_fee,omitempty"`
-	MaxPlayers        *wrapperspb.Int32Value  `protobuf:"bytes,11,opt,name=max_players,json=maxPlayers,proto3" json:"max_players,omitempty"`
-	Status            TournamentStatus        `protobuf:"varint,12,opt,name=status,proto3,enum=tournament.v1.TournamentStatus" json:"status,omitempty"`
-	Organizer         *wrapperspb.StringValue `protobuf:"bytes,13,opt,name=organizer,proto3" json:"organizer,omitempty"`
-	CreatedAt         string                  `protobuf:"bytes,14,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdateAt          string                  `protobuf:"bytes,15,opt,name=update_at,json=updateAt,proto3" json:"update_at,omitempty"`
-	RegisteredPlayers []*Player               `protobuf:"bytes,16,rep,name=registered_players,json=registeredPlayers,proto3" json:"registered_players,omitempty"`
+	Type              TournamentType          `protobuf:"varint,3,opt,name=type,proto3,enum=tournament.v1.TournamentType" json:"type,omitempty"`
+	Format            TournamentFormat        `protobuf:"varint,4,opt,name=format,proto3,enum=tournament.v1.TournamentFormat" json:"format,omitempty"`
+	FormatDescription *wrapperspb.StringValue `protobuf:"bytes,5,opt,name=format_description,json=formatDescription,proto3" json:"format_description,omitempty"`
+	StartDate         *wrapperspb.StringValue `protobuf:"bytes,6,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
+	EndDate           *wrapperspb.StringValue `protobuf:"bytes,7,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
+	Location          *wrapperspb.StringValue `protobuf:"bytes,8,opt,name=location,proto3" json:"location,omitempty"`
+	Tables            *wrapperspb.Int32Value  `protobuf:"bytes,9,opt,name=tables,proto3" json:"tables,omitempty"`
+	TotalPrize        *wrapperspb.StringValue `protobuf:"bytes,10,opt,name=total_prize,json=totalPrize,proto3" json:"total_prize,omitempty"`
+	EntryFee          *wrapperspb.StringValue `protobuf:"bytes,11,opt,name=entry_fee,json=entryFee,proto3" json:"entry_fee,omitempty"`
+	MaxPlayers        *wrapperspb.Int32Value  `protobuf:"bytes,12,opt,name=max_players,json=maxPlayers,proto3" json:"max_players,omitempty"`
+	Status            TournamentStatus        `protobuf:"varint,13,opt,name=status,proto3,enum=tournament.v1.TournamentStatus" json:"status,omitempty"`
+	Organizer         *wrapperspb.StringValue `protobuf:"bytes,14,opt,name=organizer,proto3" json:"organizer,omitempty"`
+	CreatedAt         string                  `protobuf:"bytes,15,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdateAt          string                  `protobuf:"bytes,16,opt,name=update_at,json=updateAt,proto3" json:"update_at,omitempty"`
+	Description       *wrapperspb.StringValue `protobuf:"bytes,17,opt,name=description,proto3" json:"description,omitempty"`
+	RegisteredPlayers []*Player               `protobuf:"bytes,18,rep,name=registered_players,json=registeredPlayers,proto3" json:"registered_players,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -204,16 +301,23 @@ func (x *Tournament) GetName() string {
 	return ""
 }
 
-func (x *Tournament) GetType() *wrapperspb.StringValue {
+func (x *Tournament) GetType() TournamentType {
 	if x != nil {
 		return x.Type
 	}
-	return nil
+	return TournamentType_TOURNAMENT_TYPE_SINGLE
 }
 
-func (x *Tournament) GetFormat() *wrapperspb.StringValue {
+func (x *Tournament) GetFormat() TournamentFormat {
 	if x != nil {
 		return x.Format
+	}
+	return TournamentFormat_TOURNAMENT_TYPE_8_BALL
+}
+
+func (x *Tournament) GetFormatDescription() *wrapperspb.StringValue {
+	if x != nil {
+		return x.FormatDescription
 	}
 	return nil
 }
@@ -295,6 +399,13 @@ func (x *Tournament) GetUpdateAt() string {
 	return ""
 }
 
+func (x *Tournament) GetDescription() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Description
+	}
+	return nil
+}
+
 func (x *Tournament) GetRegisteredPlayers() []*Player {
 	if x != nil {
 		return x.RegisteredPlayers
@@ -309,30 +420,32 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\x1etournament/v1/tournament.proto\x12\rtournament.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\",\n" +
 	"\x06Player\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\"\xac\x06\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\"\xbd\a\n" +
 	"\n" +
 	"Tournament\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x120\n" +
-	"\x04type\x18\x03 \x01(\v2\x1c.google.protobuf.StringValueR\x04type\x124\n" +
-	"\x06format\x18\x04 \x01(\v2\x1c.google.protobuf.StringValueR\x06format\x12;\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x121\n" +
+	"\x04type\x18\x03 \x01(\x0e2\x1d.tournament.v1.TournamentTypeR\x04type\x127\n" +
+	"\x06format\x18\x04 \x01(\x0e2\x1f.tournament.v1.TournamentFormatR\x06format\x12K\n" +
+	"\x12format_description\x18\x05 \x01(\v2\x1c.google.protobuf.StringValueR\x11formatDescription\x12;\n" +
 	"\n" +
-	"start_date\x18\x05 \x01(\v2\x1c.google.protobuf.StringValueR\tstartDate\x127\n" +
-	"\bend_date\x18\x06 \x01(\v2\x1c.google.protobuf.StringValueR\aendDate\x128\n" +
-	"\blocation\x18\a \x01(\v2\x1c.google.protobuf.StringValueR\blocation\x123\n" +
-	"\x06tables\x18\b \x01(\v2\x1b.google.protobuf.Int32ValueR\x06tables\x12=\n" +
-	"\vtotal_prize\x18\t \x01(\v2\x1c.google.protobuf.StringValueR\n" +
+	"start_date\x18\x06 \x01(\v2\x1c.google.protobuf.StringValueR\tstartDate\x127\n" +
+	"\bend_date\x18\a \x01(\v2\x1c.google.protobuf.StringValueR\aendDate\x128\n" +
+	"\blocation\x18\b \x01(\v2\x1c.google.protobuf.StringValueR\blocation\x123\n" +
+	"\x06tables\x18\t \x01(\v2\x1b.google.protobuf.Int32ValueR\x06tables\x12=\n" +
+	"\vtotal_prize\x18\n" +
+	" \x01(\v2\x1c.google.protobuf.StringValueR\n" +
 	"totalPrize\x129\n" +
-	"\tentry_fee\x18\n" +
-	" \x01(\v2\x1c.google.protobuf.StringValueR\bentryFee\x12<\n" +
-	"\vmax_players\x18\v \x01(\v2\x1b.google.protobuf.Int32ValueR\n" +
+	"\tentry_fee\x18\v \x01(\v2\x1c.google.protobuf.StringValueR\bentryFee\x12<\n" +
+	"\vmax_players\x18\f \x01(\v2\x1b.google.protobuf.Int32ValueR\n" +
 	"maxPlayers\x127\n" +
-	"\x06status\x18\f \x01(\x0e2\x1f.tournament.v1.TournamentStatusR\x06status\x12:\n" +
-	"\torganizer\x18\r \x01(\v2\x1c.google.protobuf.StringValueR\torganizer\x12\x1d\n" +
+	"\x06status\x18\r \x01(\x0e2\x1f.tournament.v1.TournamentStatusR\x06status\x12:\n" +
+	"\torganizer\x18\x0e \x01(\v2\x1c.google.protobuf.StringValueR\torganizer\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\x0e \x01(\tR\tcreatedAt\x12\x1b\n" +
-	"\tupdate_at\x18\x0f \x01(\tR\bupdateAt\x12D\n" +
-	"\x12registered_players\x18\x10 \x03(\v2\x15.tournament.v1.PlayerR\x11registeredPlayers*\x82\x02\n" +
+	"created_at\x18\x0f \x01(\tR\tcreatedAt\x12\x1b\n" +
+	"\tupdate_at\x18\x10 \x01(\tR\bupdateAt\x12>\n" +
+	"\vdescription\x18\x11 \x01(\v2\x1c.google.protobuf.StringValueR\vdescription\x12D\n" +
+	"\x12registered_players\x18\x12 \x03(\v2\x15.tournament.v1.PlayerR\x11registeredPlayers*\x82\x02\n" +
 	"\x10TournamentStatus\x12!\n" +
 	"\x1dTOURNAMENT_STATUS_UNSPECIFIED\x10\x00\x12!\n" +
 	"\x1dTOURNAMENT_STATUS_REGISTERING\x10\x01\x12)\n" +
@@ -340,7 +453,14 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\x19TOURNAMENT_STATUS_STARTED\x10\x03\x12\x1d\n" +
 	"\x19TOURNAMENT_STATUS_RUNNING\x10\x04\x12\x1e\n" +
 	"\x1aTOURNAMENT_STATUS_FINISHED\x10\x05\x12\x1f\n" +
-	"\x1bTOURNAMENT_STATUS_CANCELLED\x10\x06B1Z/backend/internal/gen/tournament/v1;tournamentpbb\x06proto3"
+	"\x1bTOURNAMENT_STATUS_CANCELLED\x10\x06*F\n" +
+	"\x0eTournamentType\x12\x1a\n" +
+	"\x16TOURNAMENT_TYPE_SINGLE\x10\x00\x12\x18\n" +
+	"\x14TOURNAMENT_TYPE_TEAM\x10\x01*g\n" +
+	"\x10TournamentFormat\x12\x1a\n" +
+	"\x16TOURNAMENT_TYPE_8_BALL\x10\x00\x12\x1a\n" +
+	"\x16TOURNAMENT_TYPE_9_BALL\x10\x01\x12\x1b\n" +
+	"\x17TOURNAMENT_TYPE_10_BALL\x10\x02B1Z/backend/internal/gen/tournament/v1;tournamentpbb\x06proto3"
 
 var (
 	file_tournament_v1_tournament_proto_rawDescOnce sync.Once
@@ -354,33 +474,37 @@ func file_tournament_v1_tournament_proto_rawDescGZIP() []byte {
 	return file_tournament_v1_tournament_proto_rawDescData
 }
 
-var file_tournament_v1_tournament_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_tournament_v1_tournament_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
 var file_tournament_v1_tournament_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_tournament_v1_tournament_proto_goTypes = []any{
 	(TournamentStatus)(0),          // 0: tournament.v1.TournamentStatus
-	(*Player)(nil),                 // 1: tournament.v1.Player
-	(*Tournament)(nil),             // 2: tournament.v1.Tournament
-	(*wrapperspb.StringValue)(nil), // 3: google.protobuf.StringValue
-	(*wrapperspb.Int32Value)(nil),  // 4: google.protobuf.Int32Value
+	(TournamentType)(0),            // 1: tournament.v1.TournamentType
+	(TournamentFormat)(0),          // 2: tournament.v1.TournamentFormat
+	(*Player)(nil),                 // 3: tournament.v1.Player
+	(*Tournament)(nil),             // 4: tournament.v1.Tournament
+	(*wrapperspb.StringValue)(nil), // 5: google.protobuf.StringValue
+	(*wrapperspb.Int32Value)(nil),  // 6: google.protobuf.Int32Value
 }
 var file_tournament_v1_tournament_proto_depIdxs = []int32{
-	3,  // 0: tournament.v1.Tournament.type:type_name -> google.protobuf.StringValue
-	3,  // 1: tournament.v1.Tournament.format:type_name -> google.protobuf.StringValue
-	3,  // 2: tournament.v1.Tournament.start_date:type_name -> google.protobuf.StringValue
-	3,  // 3: tournament.v1.Tournament.end_date:type_name -> google.protobuf.StringValue
-	3,  // 4: tournament.v1.Tournament.location:type_name -> google.protobuf.StringValue
-	4,  // 5: tournament.v1.Tournament.tables:type_name -> google.protobuf.Int32Value
-	3,  // 6: tournament.v1.Tournament.total_prize:type_name -> google.protobuf.StringValue
-	3,  // 7: tournament.v1.Tournament.entry_fee:type_name -> google.protobuf.StringValue
-	4,  // 8: tournament.v1.Tournament.max_players:type_name -> google.protobuf.Int32Value
-	0,  // 9: tournament.v1.Tournament.status:type_name -> tournament.v1.TournamentStatus
-	3,  // 10: tournament.v1.Tournament.organizer:type_name -> google.protobuf.StringValue
-	1,  // 11: tournament.v1.Tournament.registered_players:type_name -> tournament.v1.Player
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	1,  // 0: tournament.v1.Tournament.type:type_name -> tournament.v1.TournamentType
+	2,  // 1: tournament.v1.Tournament.format:type_name -> tournament.v1.TournamentFormat
+	5,  // 2: tournament.v1.Tournament.format_description:type_name -> google.protobuf.StringValue
+	5,  // 3: tournament.v1.Tournament.start_date:type_name -> google.protobuf.StringValue
+	5,  // 4: tournament.v1.Tournament.end_date:type_name -> google.protobuf.StringValue
+	5,  // 5: tournament.v1.Tournament.location:type_name -> google.protobuf.StringValue
+	6,  // 6: tournament.v1.Tournament.tables:type_name -> google.protobuf.Int32Value
+	5,  // 7: tournament.v1.Tournament.total_prize:type_name -> google.protobuf.StringValue
+	5,  // 8: tournament.v1.Tournament.entry_fee:type_name -> google.protobuf.StringValue
+	6,  // 9: tournament.v1.Tournament.max_players:type_name -> google.protobuf.Int32Value
+	0,  // 10: tournament.v1.Tournament.status:type_name -> tournament.v1.TournamentStatus
+	5,  // 11: tournament.v1.Tournament.organizer:type_name -> google.protobuf.StringValue
+	5,  // 12: tournament.v1.Tournament.description:type_name -> google.protobuf.StringValue
+	3,  // 13: tournament.v1.Tournament.registered_players:type_name -> tournament.v1.Player
+	14, // [14:14] is the sub-list for method output_type
+	14, // [14:14] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_tournament_v1_tournament_proto_init() }
@@ -393,7 +517,7 @@ func file_tournament_v1_tournament_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tournament_v1_tournament_proto_rawDesc), len(file_tournament_v1_tournament_proto_rawDesc)),
-			NumEnums:      1,
+			NumEnums:      3,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,

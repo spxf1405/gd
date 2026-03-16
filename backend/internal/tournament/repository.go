@@ -153,6 +153,7 @@ func (r *TournamentRepository) getTournaments(
 			"t.name",
 			"t.type",
 			"t.format",
+			"t.format_description",
 			"t.start_date",
 			"t.end_date",
 			"t.location",
@@ -163,6 +164,7 @@ func (r *TournamentRepository) getTournaments(
 			"t.created_at",
 			"t.updated_at",
 			"t.organizer",
+			"t.description",
 			`COALESCE(
 				json_agg(
 					json_build_object(
@@ -181,6 +183,7 @@ func (r *TournamentRepository) getTournaments(
 			t.name,
 			t.type,
 			t.format,
+			t.format_description,
 			t.start_date,
 			t.end_date,
 			t.location,
@@ -190,7 +193,8 @@ func (r *TournamentRepository) getTournaments(
 			t.status,
 			t.created_at,
 			t.updated_at,
-			t.organizer
+			t.organizer,
+			t.description
 		`)
 
 	qb = qb.Where(sq.Eq{"deleted_at": nil})
@@ -235,7 +239,7 @@ func (r *TournamentRepository) getTournaments(
 	}
 
 	rows, err := r.DB.Pool.Query(ctx, query, args...)
-	fmt.Println("query", query)
+
 	if err != nil {
 		return nil, err
 	}
@@ -246,7 +250,7 @@ func (r *TournamentRepository) getTournaments(
 	for rows.Next() {
 		t := &tournamentpb.Tournament{}
 
-		var typeT, location, format, totalPrize sql.NullString
+		var location, totalPrize, organizer, formatDescription, description sql.NullString
 		var createdAt, updatedAt time.Time
 		var startDate sql.NullTime
 		var max_players sql.NullInt32
@@ -254,8 +258,9 @@ func (r *TournamentRepository) getTournaments(
 		err := rows.Scan(
 			&t.Id,
 			&t.Name,
-			&typeT,
-			&format,
+			&t.Type,
+			&t.Format,
+			&formatDescription,
 			&startDate,
 			&t.EndDate,
 			&location,
@@ -265,11 +270,21 @@ func (r *TournamentRepository) getTournaments(
 			&t.Status,
 			&createdAt,
 			&updatedAt,
-			&t.Organizer,
+			&organizer,
+			&description,
 			&t.RegisteredPlayers,
 		)
 		if err != nil {
+			fmt.Println(err)
 			return nil, err
+		}
+
+		if formatDescription.Valid {
+			t.FormatDescription = wrapperspb.String(formatDescription.String)
+		}
+
+		if description.Valid {
+			t.Description = wrapperspb.String(description.String)
 		}
 
 		if location.Valid {
@@ -283,20 +298,16 @@ func (r *TournamentRepository) getTournaments(
 			t.StartDate = wrapperspb.String(startDate.Time.Format(time.RFC3339))
 		}
 
-		if typeT.Valid {
-			t.Type = wrapperspb.String(typeT.String)
-		}
-
-		if format.Valid {
-			t.Format = wrapperspb.String(format.String)
-		}
-
 		if totalPrize.Valid {
 			t.TotalPrize = wrapperspb.String(totalPrize.String)
 		}
 
 		if max_players.Valid {
 			t.MaxPlayers = wrapperspb.Int32(max_players.Int32)
+		}
+
+		if organizer.Valid {
+			t.Organizer = wrapperspb.String(organizer.String)
 		}
 
 		tournaments = append(tournaments, t)
@@ -313,6 +324,7 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		"t.name",
 		"t.type",
 		"t.format",
+		"t.format_description",
 		"t.start_date",
 		"t.end_date",
 		"t.location",
@@ -323,6 +335,7 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		"t.created_at",
 		"t.updated_at",
 		"t.organizer",
+		"t.description",
 		`COALESCE(
 				json_agg(
 					json_build_object(
@@ -341,6 +354,7 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 			t.name,
 			t.type,
 			t.format,
+			t.format_description,
 			t.start_date,
 			t.end_date,
 			t.location,
@@ -350,13 +364,15 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 			t.status,
 			t.created_at,
 			t.updated_at,
-			t.organizer
+			t.organizer,
+			t.description
 		`).
 		Where(sq.Eq{"t.id": id})
 
 	query, args, err := queryBuilder.ToSql()
 
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
@@ -364,7 +380,7 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 
 	tournament := &tournamentpb.Tournament{}
 
-	var typeT, location, format, totalPrize sql.NullString
+	var location, totalPrize, organizer, formatDescription, description sql.NullString
 	var createdAt, updatedAt time.Time
 	var startDate sql.NullTime
 	var max_players sql.NullInt32
@@ -372,8 +388,9 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 	err = row.Scan(
 		&tournament.Id,
 		&tournament.Name,
-		&typeT,
-		&format,
+		&tournament.Type,
+		&tournament.Format,
+		&formatDescription,
 		&startDate,
 		&tournament.EndDate,
 		&location,
@@ -383,18 +400,27 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		&tournament.Status,
 		&createdAt,
 		&updatedAt,
-		&tournament.Organizer,
+		&organizer,
+		&description,
 		&tournament.RegisteredPlayers,
 	)
 	if err != nil {
+		fmt.Println("err", err)
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, nil
 		}
-		fmt.Println("err", err)
 		return nil, err
 	}
 	if location.Valid {
 		tournament.Location = wrapperspb.String(location.String)
+	}
+
+	if formatDescription.Valid {
+		tournament.FormatDescription = wrapperspb.String(formatDescription.String)
+	}
+
+	if description.Valid {
+		tournament.Description = wrapperspb.String(description.String)
 	}
 
 	tournament.CreatedAt = createdAt.Format(time.RFC3339)
@@ -404,16 +430,12 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		tournament.StartDate = wrapperspb.String(startDate.Time.Format(time.RFC3339))
 	}
 
-	if typeT.Valid {
-		tournament.Type = wrapperspb.String(typeT.String)
-	}
-
-	if format.Valid {
-		tournament.Format = wrapperspb.String(format.String)
-	}
-
 	if totalPrize.Valid {
 		tournament.TotalPrize = wrapperspb.String(totalPrize.String)
+	}
+
+	if organizer.Valid {
+		tournament.Organizer = wrapperspb.String(organizer.String)
 	}
 
 	if max_players.Valid {
