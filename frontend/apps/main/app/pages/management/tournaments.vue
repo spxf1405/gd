@@ -29,6 +29,7 @@ import {
   type SortChangedEvent,
 } from "ag-grid-community";
 import { AgGridVue } from "ag-grid-vue3";
+import dayjs from "dayjs";
 import {
   DialogClose,
   DialogContent,
@@ -43,6 +44,7 @@ import {
 import { ref } from "vue";
 import CreateTournamentButton from "~/components/features/tournaments/create-tournament-button.vue";
 import DeleteTournament from "~/components/features/tournaments/delete-tournament.vue";
+import StartDateFilter from "~/components/features/tournaments/start-date-filter.vue";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -371,6 +373,71 @@ const PlayersCell = defineComponent({
 
 const DeleteAction = defineComponent({});
 
+// const DateFilter = defineComponent({
+//   props: {
+//     params: {
+//       type: Object as PropType<IFilterParams<Tournament1>>,
+//       required: true,
+//     },
+//   },
+//   setup(props) {
+//     const selected = ref<Date | null>(null);
+
+//     const onSelect = ({ date }: { date: Date | null }) => {
+//       console.log("selected", date);
+//       selected.value = date;
+//       props.params.filterChangedCallback();
+//     };
+
+//     return { onSelect, selected };
+//   },
+//   render() {
+//     return (
+//       <Calendar
+//         onSelect={this.onSelect}
+//         v-slots={{
+//           trigger: () => (
+//             <div class="inline-flex items-center gap-2 px-3.5 py-2 cursor-pointer bg-white/[0.05] w-full transition-all duration-150 hover:bg-white/[0.08] hover:border-white/[0.15] hover:shadow-lg hover:shadow-black/30">
+//               <svg
+//                 width="14"
+//                 height="14"
+//                 viewBox="0 0 16 16"
+//                 fill="none"
+//                 class="text-emerald-400 flex-shrink-0"
+//               >
+//                 <rect
+//                   x="1"
+//                   y="3"
+//                   width="14"
+//                   height="12"
+//                   rx="2.5"
+//                   stroke="currentColor"
+//                   stroke-width="1.4"
+//                 />
+//                 <path
+//                   d="M5 1v3M11 1v3M1 7h14"
+//                   stroke="currentColor"
+//                   stroke-width="1.4"
+//                   stroke-linecap="round"
+//                 />
+//               </svg>
+
+//               <span
+//                 class={[
+//                   "text-[13px] tracking-[0.01em] transition-colors",
+//                   this.selected ? "text-white" : "text-[#4a5568]",
+//                 ]}
+//               >
+//                 {this.selected ? dayjs(this.selected).format("DD MMM YYYY") : "Chọn ngày" }
+//               </span>
+//             </div>
+//           ),
+//         }}
+//       />
+//     );
+//   },
+// });
+
 const ActionCell = defineComponent({
   props: {
     params: {
@@ -513,6 +580,8 @@ const ActionCell = defineComponent({
   },
 });
 
+const startDateFilterRef = ref();
+
 const columnDefs = ref<ColDef<Tournament>[]>([
   {
     headerCheckboxSelection: true,
@@ -563,14 +632,7 @@ const columnDefs = ref<ColDef<Tournament>[]>([
     field: "createdAt",
     headerName: "Ngày tạo",
     minWidth: 195,
-    filterParams: {
-      buttons: ["apply", "reset", "clear"],
-      closeOnApply: true,
-    },
-    valueFormatter: (params) => {
-      if (!params.value) return "";
-      return new Date(params.value).toLocaleDateString("vi-VN");
-    },
+    filter: () => <StartDateFilter ref={startDateFilterRef} />,
   },
   {
     field: "startDate",
@@ -892,6 +954,8 @@ async function onSortChange(event: SortChangedEvent) {
   };
 }
 
+const openCalendar = ref(false);
+
 watchEffect(() => {
   console.log("tournaments", toRaw(tournaments.value));
 });
@@ -904,6 +968,7 @@ watchEffect(() => {
         <div class="flex gap-2">
           <DeleteTournament />
           <CreateTournamentButton @submit="handleSubmitCreateTournament" />
+          <Calendar :open="openCalendar" />
         </div>
       </div>
 
