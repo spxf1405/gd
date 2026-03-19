@@ -33,6 +33,7 @@ import { mapFieldToSort, mapFieldToTournamentFilterBy } from "./utils/utils";
 
 import CreateTournamentButton from "../create-tournament/create-tournament-button.vue";
 import DeleteTournament from "../delete-tournament/delete-tournament.vue";
+import "./index.css";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -209,7 +210,6 @@ watchEffect(() => {
 });
 </script>
 
-
 <template>
   <NuxtLayout name="admin">
     <div class="p-6">
@@ -221,7 +221,11 @@ watchEffect(() => {
       </div>
 
       <AgGridVue
+        id="tournaments-table"
         class="w-full h-[calc(100dvh-273px)]"
+        :grid-options="{
+          editType: 'fullRow'
+        }"
         :rowData="tournaments"
         :columnDefs="columnDefs"
         :defaultColDef="{
@@ -229,7 +233,7 @@ watchEffect(() => {
           floatingFilter: true,
           autoHeaderHeight: true,
           wrapHeaderText: true,
-          cellClass: '!h-full !flex !items-center p-1',
+          cellClass: '!h-full !flex !items-center !p-1.5',
           filterParams: {
             maxNumConditions: 1,
             suppressAndOrCondition: true,

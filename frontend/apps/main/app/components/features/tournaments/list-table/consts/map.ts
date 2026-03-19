@@ -39,7 +39,7 @@ export const StatusMap: Partial<
 
 export const TypeMap: Partial<Record<TournamentType, string>> = {
   [TournamentType.SINGLE]: "Đơn",
-  [TournamentType.TEAM]: "Đôi",
+  [TournamentType.TEAM]: "Đồng đội",
 };
 
 export const FormatMap: Partial<Record<TournamentFormat, string>> = {

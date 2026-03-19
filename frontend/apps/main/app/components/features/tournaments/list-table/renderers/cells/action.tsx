@@ -2,7 +2,15 @@ import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 import { Icon } from "@iconify/vue";
 import { useQueryClient } from "@tanstack/vue-query";
 import type { ICellRendererParams } from "ag-grid-community";
-import { DialogClose, DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle, DialogTrigger } from "radix-vue";
+import {
+  DialogClose,
+  DialogContent,
+  DialogOverlay,
+  DialogPortal,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "radix-vue";
 
 export const ActionCell = defineComponent({
   props: {
@@ -46,11 +54,19 @@ export const ActionCell = defineComponent({
       }
     };
 
-    return { viewDetails, edit, remove, open, confirmDelete };
+    const onEdit = () => {
+      props.params.api.startEditingCell({
+        rowIndex: props.params.node.rowIndex,
+        colKey: props.params.columnApi.getAllDisplayedColumns()[0].getColId(),
+      });
+    };
+
+    return { onEdit, viewDetails, edit, remove, open, confirmDelete };
   },
   render() {
     return (
       <div class="flex gap-2 py-2">
+        <button onClick={this.onEdit}>Edit</button>
         <button
           class="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded text-sm flex items-center gap-1"
           onClick={this.viewDetails}

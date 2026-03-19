@@ -14,6 +14,8 @@ export const TypeCell = defineComponent({
   render() {
     const type = this.params.data?.type;
 
+    console.log("type", type)
+
     const label =
       typeof type === "number"
         ? (TypeMap[type as TournamentType] ?? "Không xác định")

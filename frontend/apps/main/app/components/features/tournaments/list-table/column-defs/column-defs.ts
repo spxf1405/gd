@@ -1,11 +1,25 @@
 import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
-import {
-    type ColDef
-} from "ag-grid-community";
+import { type ColDef } from "ag-grid-community";
 import dayjs from "dayjs";
-import { ActionCell, FormatCell, PlayersCell, PrizeCell, StatusCell, TypeCell } from "../renderers/cells/cells";
-import { StatusFilter, TypeFilter } from "../renderers/filters/filters";
+import {
+  ActionCell,
+  FormatCell,
+  PlayersCell,
+  PrizeCell,
+  StatusCell,
+  TypeCell,
+} from "../renderers/cells/cells";
+import {
+  FormatFilter,
+  StatusFilter,
+  TypeFilter,
+} from "../renderers/filters/filters";
 import StartDate from "../renderers/filters/start-date.vue";
+import {
+  TypeEditor,
+  FormatEditor,
+  StartDateEditor,
+} from "../renderers/editors/edtitors";
 
 export const TournamentColumnDefs: ColDef<Tournament>[] = [
   {
@@ -40,20 +54,32 @@ export const TournamentColumnDefs: ColDef<Tournament>[] = [
     headerName: "Loại hình",
     width: 130,
     sortable: false,
+    editable: true,
     filter: TypeFilter,
     cellRenderer: TypeCell,
+    cellEditor: TypeEditor,
+    valueSetter: (params) => {
+      console.log("new value:", params.newValue);
+
+      params.data.type = params.newValue;
+      return true;
+    },
   },
   {
     field: "format",
     headerName: "Thể thức",
     sortable: false,
+    editable: true,
+    cellEditor: FormatEditor,
     cellRenderer: FormatCell,
+    filter: FormatFilter,
   },
   {
     field: "location",
     headerName: "Địa điểm",
     width: 400,
     sortable: false,
+    editable: true,
   },
   {
     field: "createdAt",
@@ -69,10 +95,8 @@ export const TournamentColumnDefs: ColDef<Tournament>[] = [
     field: "startDate",
     headerName: "Ngày khởi tranh",
     minWidth: 195,
-    valueFormatter: (params) => {
-      if (!params.value) return "";
-      return dayjs(params.value).format("DD/MM/YYYY");
-    },
+    editable: true,
+    cellEditor: StartDateEditor,
   },
   {
     field: "registeredPlayers",
@@ -104,7 +128,7 @@ export const TournamentColumnDefs: ColDef<Tournament>[] = [
     cellRenderer: ActionCell,
     filter: false,
     sortable: false,
-    width: 270,
+    width: 360,
     resizable: false,
     suppressMovable: true,
     pinned: "right",

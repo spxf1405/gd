@@ -1,0 +1,12 @@
+#tournaments-table .ag-cell:focus,
+#tournaments-table .ag-cell-focus,
+#tournaments-table .ag-row-focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#tournaments-table .ag-cell-inline-editing {
+  border: none !important;
+  box-shadow: none !important;
+}

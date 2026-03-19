@@ -1,55 +1,55 @@
 <template>
-  <div>
-    <PopoverRoot v-model:open="open" @update:open="onOpenChange">
-      <!-- ── Trigger: slot or default ── -->
-      <PopoverTrigger as-child>
-        <slot name="trigger">
-          <!-- Default trigger -->
-          <div
-            class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl cursor-pointer bg-white/[0.05] border border-white/[0.09] transition-all duration-150 hover:bg-white/[0.08] hover:border-white/[0.15] hover:shadow-lg hover:shadow-black/30"
+  <PopoverRoot v-model:open="open" @update:open="onOpenChange">
+    <!-- ── Trigger: slot or default ── -->
+    <PopoverTrigger as-child>
+      <slot name="trigger">
+        <!-- Default trigger -->
+        <div
+          class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl cursor-pointer bg-white/[0.05] border border-white/[0.09] transition-all duration-150 hover:bg-white/[0.08] hover:border-white/[0.15] hover:shadow-lg hover:shadow-black/30"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 16 16"
+            fill="none"
+            class="text-emerald-400 flex-shrink-0"
           >
-            <svg
+            <rect
+              x="1"
+              y="3"
               width="14"
-              height="14"
-              viewBox="0 0 16 16"
-              fill="none"
-              class="text-emerald-400 flex-shrink-0"
-            >
-              <rect
-                x="1"
-                y="3"
-                width="14"
-                height="12"
-                rx="2.5"
-                stroke="currentColor"
-                stroke-width="1.4"
-              />
-              <path
-                d="M5 1v3M11 1v3M1 7h14"
-                stroke="currentColor"
-                stroke-width="1.4"
-                stroke-linecap="round"
-              />
-            </svg>
-            <span
-              :class="[
-                'text-[13px] tracking-[0.01em] transition-colors',
-                modelValue ? 'text-white' : 'text-[#4a5568]',
-              ]"
-            >
-              {{ label }}
-            </span>
-            <button
-              v-if="modelValue"
-              @click.stop="emit('update:modelValue', null)"
-              class="w-[18px] h-[18px] rounded-full flex items-center justify-center flex-shrink-0 bg-white/[0.10] text-[#9aa4b4] text-[10px] transition-all duration-150 hover:bg-white/[0.22] hover:text-white hover:scale-110"
-            >
-              ✕
-            </button>
-          </div>
-        </slot>
-      </PopoverTrigger>
+              height="12"
+              rx="2.5"
+              stroke="currentColor"
+              stroke-width="1.4"
+            />
+            <path
+              d="M5 1v3M11 1v3M1 7h14"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-linecap="round"
+            />
+          </svg>
+          <span
+            :class="[
+              'text-[13px] tracking-[0.01em] transition-colors',
+              modelValue ? 'text-white' : 'text-white/70',
+            ]"
+          >
+            {{ label }}
+          </span>
+          <button
+            v-if="modelValue"
+            @click.stop="emit('update:modelValue', null)"
+            class="w-[18px] h-[18px] rounded-full flex items-center justify-center flex-shrink-0 bg-white/[0.10] text-white/70 text-[10px] transition-all duration-150 hover:bg-white/[0.22] hover:text-white hover:scale-110"
+          >
+            ✕
+          </button>
+        </div>
+      </slot>
+    </PopoverTrigger>
 
+    <PopoverPortal>
       <PopoverContent
         :side-offset="8"
         align="start"
@@ -60,7 +60,7 @@
           <template v-if="pickerMode === 'day'">
             <button
               @click="navigate(-1)"
-              class="w-[28px] h-[28px] rounded-lg flex items-center justify-center bg-white/[0.05] border border-white/[0.08] text-[#9aa4b4] transition-all duration-150 hover:bg-white/[0.10] hover:text-white hover:scale-105 active:scale-95"
+              class="w-[28px] h-[28px] rounded-lg flex items-center justify-center bg-white/[0.05] border border-white/[0.08] text-white/70 transition-all duration-150 hover:bg-white/[0.10] hover:text-white hover:scale-105 active:scale-95"
             >
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                 <path
@@ -78,18 +78,18 @@
                 class="flex items-center gap-1 px-2 py-1 rounded-lg text-[13px] font-semibold text-white border border-transparent transition-all duration-150 hover:bg-white/[0.07] hover:border-white/[0.10]"
               >
                 {{ MONTHS[viewMonth] }}
-                <span class="text-[10px] text-[#5a6475]">▾</span>
+                <span class="text-[10px] text-white/30">▾</span>
               </button>
               <button
                 @click="pickerMode = 'year'"
                 class="flex items-center gap-1 px-2 py-1 rounded-lg text-[13px] font-semibold text-white border border-transparent transition-all duration-150 hover:bg-white/[0.07] hover:border-white/[0.10]"
               >
-                {{ viewYear }} <span class="text-[10px] text-[#5a6475]">▾</span>
+                {{ viewYear }} <span class="text-[10px] text-white/30">▾</span>
               </button>
             </div>
             <button
               @click="navigate(1)"
-              class="w-[28px] h-[28px] rounded-lg flex items-center justify-center bg-white/[0.05] border border-white/[0.08] text-[#9aa4b4] transition-all duration-150 hover:bg-white/[0.10] hover:text-white hover:scale-105 active:scale-95"
+              class="w-[28px] h-[28px] rounded-lg flex items-center justify-center bg-white/[0.05] border border-white/[0.08] text-white/70 transition-all duration-150 hover:bg-white/[0.10] hover:text-white hover:scale-105 active:scale-95"
             >
               <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                 <path
@@ -106,7 +106,7 @@
             <div class="flex items-center justify-between w-full">
               <button
                 @click="pickerMode = 'day'"
-                class="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[12px] font-medium text-[#9aa4b4] border border-transparent transition-all duration-150 hover:bg-white/[0.07] hover:text-white hover:border-white/[0.10]"
+                class="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[12px] font-medium text-white/70 border border-transparent transition-all duration-150 hover:bg-white/[0.07] hover:text-white hover:border-white/[0.10]"
               >
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                   <path
@@ -120,7 +120,7 @@
                 Back
               </button>
               <span
-                class="text-[11px] font-bold tracking-[0.12em] uppercase text-[#5a6475]"
+                class="text-[11px] font-bold tracking-[0.12em] uppercase text-white/70"
               >
                 {{ pickerMode === "month" ? "Month" : "Year" }}
               </span>
@@ -134,7 +134,7 @@
             <div
               v-for="wd in WEEKDAYS"
               :key="wd"
-              class="text-center text-[10px] font-semibold tracking-[0.06em] text-[#5a6475] py-0.5"
+              class="text-center text-[10px] font-semibold tracking-[0.06em] text-white/30 py-0.5"
             >
               {{ wd }}
             </div>
@@ -170,7 +170,7 @@
                 ? 'bg-emerald-500 text-white border-transparent shadow-[0_2px_10px_rgba(16,185,129,0.4)]'
                 : today.getMonth() === i && today.getFullYear() === viewYear
                   ? 'border-emerald-500/35 text-emerald-400 bg-transparent hover:bg-white/[0.07] hover:text-white'
-                  : 'border-transparent text-[#9aa4b4] hover:bg-white/[0.07] hover:text-white',
+                  : 'border-transparent text-white/70 hover:bg-white/[0.07] hover:text-white',
             ]"
           >
             {{ m }}
@@ -198,7 +198,7 @@
                 ? 'bg-emerald-500 text-white border-transparent shadow-[0_2px_10px_rgba(16,185,129,0.35)] hover:bg-emerald-400'
                 : today.getFullYear() === y
                   ? 'border-emerald-500/35 text-emerald-400 hover:bg-white/[0.07] hover:text-white'
-                  : 'border-transparent text-[#9aa4b4] hover:bg-white/[0.07] hover:text-white',
+                  : 'border-transparent text-white/70 hover:bg-white/[0.07] hover:text-white',
             ]"
           >
             {{ y }}
@@ -211,30 +211,26 @@
         >
           <button
             @click="goToday"
-            class="text-[11px] text-[#5a6475] px-2 py-1 rounded-md transition-all duration-150 hover:bg-white/[0.07] hover:text-white"
+            class="text-[11px] text-white/70 px-2 py-1 rounded-md transition-all duration-150 hover:bg-white/[0.07] hover:text-white"
           >
             Today
           </button>
           <button
             @click="clearAndClose"
-            class="text-[11px] text-[#5a6475] px-2 py-1 rounded-md transition-all duration-150 hover:bg-white/[0.07] hover:text-white"
+            class="text-[11px] text-white/70 px-2 py-1 rounded-md transition-all duration-150 hover:bg-white/[0.07] hover:text-white"
           >
             Clear
           </button>
         </div>
       </PopoverContent>
-    </PopoverRoot>
-  </div>
+    </PopoverPortal>
+  </PopoverRoot>
 </template>
 
 <script setup>
-import {
-  PopoverContent,
-  PopoverRoot,
-  PopoverTrigger
-} from "radix-vue";
+import { PopoverContent, PopoverPortal, PopoverRoot, PopoverTrigger } from "radix-vue";
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
-import './calendar-picker.css'
+import "./calendar-picker.css";
 
 // ── Props & Emits ──────────────────────────────────────────────────────────
 const props = defineProps({
@@ -244,25 +240,14 @@ const emit = defineEmits(["update:modelValue", "select"]);
 
 // ── Constants ──────────────────────────────────────────────────────────────
 const MONTHS = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ];
 const YEARS = Array.from(
   { length: 20 },
   (_, i) => new Date().getFullYear() - 5 + i,
 );
 const WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
-
 
 // ── State ──────────────────────────────────────────────────────────────────
 const today = new Date();
@@ -289,11 +274,7 @@ const animClass = computed(() => {
 
 const visibleDays = computed(() => {
   const firstDow = new Date(viewYear.value, viewMonth.value, 1).getDay();
-  const daysInMonth = new Date(
-    viewYear.value,
-    viewMonth.value + 1,
-    0,
-  ).getDate();
+  const daysInMonth = new Date(viewYear.value, viewMonth.value + 1, 0).getDate();
   const prevDays = new Date(viewYear.value, viewMonth.value, 0).getDate();
   const days = [];
   for (let i = firstDow - 1; i >= 0; i--) {
@@ -321,16 +302,9 @@ function onOpenChange(v) {
 function navigate(dir) {
   animDir.value = dir === 1 ? "right" : "left";
   animKey.value++;
-  let m = viewMonth.value + dir,
-    y = viewYear.value;
-  if (m > 11) {
-    m = 0;
-    y++;
-  }
-  if (m < 0) {
-    m = 11;
-    y--;
-  }
+  let m = viewMonth.value + dir, y = viewYear.value;
+  if (m > 11) { m = 0; y++; }
+  if (m < 0)  { m = 11; y--; }
   viewMonth.value = m;
   viewYear.value = y;
 }
@@ -339,9 +313,7 @@ function selectDate(day) {
   const date = new Date(day.y, day.m, day.d);
   emit("update:modelValue", date);
   emit("select", { date });
-  setTimeout(() => {
-    open.value = false;
-  }, 120);
+  setTimeout(() => { open.value = false; }, 120);
 }
 
 function selectMonth(i) {
@@ -356,7 +328,6 @@ function goToday() {
   viewYear.value = today.getFullYear();
   viewMonth.value = today.getMonth();
 }
-
 function clearAndClose() {
   emit("update:modelValue", null);
   emit("select", { date: null });
@@ -378,8 +349,8 @@ function getDayClass(day) {
   if (isToday)
     return "border-emerald-500/40 text-emerald-400 hover:bg-white/[0.07] hover:text-white hover:scale-110";
   if (!day.inMonth)
-    return "text-white/[0.15] hover:bg-white/[0.04] hover:text-white/40";
-  return "text-[#9aa4b4] hover:bg-white/[0.07] hover:text-white hover:scale-110";
+    return "text-white/20 hover:bg-white/[0.04] hover:text-white/40";
+  return "text-white/70 hover:bg-white/[0.07] hover:text-white hover:scale-110";
 }
 
 function onKeydown(e) {
