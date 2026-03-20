@@ -35,7 +35,6 @@ export const TypeEditor = defineComponent({
 
     const onChange = (val: string) => {
       value.value = val;
-      props.params.stopEditing();
     };
 
     return {

@@ -14,8 +14,8 @@ import {
 } from "radix-vue";
 import CalendarPicker from "../../../calendar-picker/calendar-picker.vue";
 
-export default defineComponent({
-  name: "DateFilter",
+const StartDateFilter = defineComponent({
+  name: "StartDateFilter",
 
   components: {
     SelectContent,
@@ -142,6 +142,8 @@ export default defineComponent({
     };
   },
 });
+
+export { StartDateFilter };
 </script>
 
 <template>

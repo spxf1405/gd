@@ -233,7 +233,7 @@ watchEffect(() => {
           floatingFilter: true,
           autoHeaderHeight: true,
           wrapHeaderText: true,
-          cellClass: '!h-full !flex !items-center !p-1.5',
+          cellClass: '!h-full !flex !items-center !p-2',
           filterParams: {
             maxNumConditions: 1,
             suppressAndOrCondition: true,

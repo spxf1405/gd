@@ -1,3 +1,5 @@
 export * from './type'
 export * from './format'
 export * from './start-date'
+export * from './location'
+export * from './status'

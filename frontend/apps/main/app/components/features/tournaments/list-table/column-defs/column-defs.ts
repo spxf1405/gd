@@ -8,18 +8,16 @@ import {
   PrizeCell,
   StatusCell,
   TypeCell,
-} from "../renderers/cells/cells";
-import {
   FormatFilter,
   StatusFilter,
   TypeFilter,
-} from "../renderers/filters/filters";
-import StartDate from "../renderers/filters/start-date.vue";
-import {
   TypeEditor,
   FormatEditor,
   StartDateEditor,
-} from "../renderers/editors/edtitors";
+  LocationEditor,
+} from "../renderers/renderers";
+import { StartDateFilter } from "../renderers/filters/start-date.vue";
+import { StatusEditor } from "../renderers/editors/status";
 
 export const TournamentColumnDefs: ColDef<Tournament>[] = [
   {
@@ -44,10 +42,11 @@ export const TournamentColumnDefs: ColDef<Tournament>[] = [
   {
     field: "status",
     headerName: "Trạng thái",
-    width: 150,
+    editable: true,
+    sortable: false,
     cellRenderer: StatusCell,
     filter: StatusFilter,
-    sortable: false,
+    cellEditor: StatusEditor,
   },
   {
     field: "type",
@@ -80,12 +79,13 @@ export const TournamentColumnDefs: ColDef<Tournament>[] = [
     width: 400,
     sortable: false,
     editable: true,
+    cellEditor: LocationEditor,
   },
   {
     field: "createdAt",
     headerName: "Ngày tạo",
     minWidth: 195,
-    filter: markRaw(StartDate),
+    filter: markRaw(StartDateFilter),
     valueFormatter: (params) => {
       if (!params.value) return "";
       return dayjs(params.value).format("DD/MM/YYYY");
