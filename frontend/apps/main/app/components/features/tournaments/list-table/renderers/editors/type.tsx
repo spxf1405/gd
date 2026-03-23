@@ -27,8 +27,8 @@ export const TypeEditor = defineComponent({
     const open = ref(false);
 
     const options = [
-      { label: "Single", value: "0" },
-      { label: "Team", value: "1" },
+      { label: "Đơn", value: "0" },
+      { label: "Đồng Đội", value: "1" },
     ];
 
     const getValue = () => value.value;
@@ -84,6 +84,7 @@ export const TypeEditor = defineComponent({
             class="z-[9999] w-[--radix-select-trigger-width] rounded-[12px] overflow-hidden 
             bg-[#1a1d2e] border border-white/[0.10] 
             shadow-[0_16px_40px_rgba(0,0,0,0.6)]
+            ag-custom-component-popup
             animate-[calPopIn_0.18s_cubic-bezier(0.34,1.56,0.64,1)]"
           >
             <SelectViewport class="p-1.5">

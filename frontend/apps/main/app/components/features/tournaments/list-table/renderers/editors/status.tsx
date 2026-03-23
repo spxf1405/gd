@@ -133,6 +133,7 @@ export const StatusEditor = defineComponent({
             sideOffset={6}
             class="z-[9999] w-[--radix-select-trigger-width] rounded-[12px] overflow-hidden
             bg-[#1a1d2e] border border-white/[0.10]
+            ag-custom-component-popup
             shadow-[0_16px_40px_rgba(0,0,0,0.6)]
             animate-[calPopIn_0.18s_cubic-bezier(0.34,1.56,0.64,1)]"
           >

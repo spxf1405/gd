@@ -23,6 +23,7 @@
     "radix-vue": "^1.9.17",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "react-hook-form": "^7.72.0",
     "tailwindcss": "^4.1.18",
     "zustand": "^5.0.9"
   },

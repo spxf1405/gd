@@ -224,7 +224,8 @@ watchEffect(() => {
         id="tournaments-table"
         class="w-full h-[calc(100dvh-273px)]"
         :grid-options="{
-          editType: 'fullRow'
+          editType: 'fullRow',
+          suppressClickEdit: true //TODO: Bật lên khi hoàn thiện cell editor
         }"
         :rowData="tournaments"
         :columnDefs="columnDefs"

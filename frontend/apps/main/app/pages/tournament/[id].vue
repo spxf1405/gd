@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
+import { useQuery } from "@tanstack/vue-query";
 import { ref } from "vue";
 
 definePageMeta({
@@ -96,20 +97,93 @@ const rules = [
 ];
 
 const prizes = [
-  { place: "1st Place", reward: "10,000 pts", icon: "trophy", color: "from-yellow-400 to-yellow-600" },
-  { place: "2nd Place", reward: "6,000 pts", icon: "medal", color: "from-gray-300 to-gray-400" },
-  { place: "3rd Place", reward: "4,000 pts", icon: "award", color: "from-orange-400 to-orange-600" },
-  { place: "4th Place", reward: "2,500 pts", icon: "star", color: "from-blue-400 to-blue-600" },
+  {
+    place: "1st Place",
+    reward: "10,000 pts",
+    icon: "trophy",
+    color: "from-yellow-400 to-yellow-600",
+  },
+  {
+    place: "2nd Place",
+    reward: "6,000 pts",
+    icon: "medal",
+    color: "from-gray-300 to-gray-400",
+  },
+  {
+    place: "3rd Place",
+    reward: "4,000 pts",
+    icon: "award",
+    color: "from-orange-400 to-orange-600",
+  },
+  {
+    place: "4th Place",
+    reward: "2,500 pts",
+    icon: "star",
+    color: "from-blue-400 to-blue-600",
+  },
 ];
 
 const registeredPlayers = [
-  { name: "ProGamer_X", avatar: "from-purple-500 to-pink-600", joinedDate: "Dec 1, 2024", rank: "#24" },
-  { name: "SkillMaster", avatar: "from-blue-500 to-cyan-600", joinedDate: "Dec 2, 2024", rank: "#45" },
-  { name: "Champion_2024", avatar: "from-green-500 to-emerald-600", joinedDate: "Dec 3, 2024", rank: "#89" },
-  { name: "NightHawk", avatar: "from-red-500 to-orange-500", joinedDate: "Dec 3, 2024", rank: "#156" },
-  { name: "ShadowStrike", avatar: "from-violet-500 to-purple-600", joinedDate: "Dec 4, 2024", rank: "#203" },
-  { name: "ThunderBolt", avatar: "from-yellow-500 to-amber-600", joinedDate: "Dec 5, 2024", rank: "#312" },
+  {
+    name: "ProGamer_X",
+    avatar: "from-purple-500 to-pink-600",
+    joinedDate: "Dec 1, 2024",
+    rank: "#24",
+  },
+  {
+    name: "SkillMaster",
+    avatar: "from-blue-500 to-cyan-600",
+    joinedDate: "Dec 2, 2024",
+    rank: "#45",
+  },
+  {
+    name: "Champion_2024",
+    avatar: "from-green-500 to-emerald-600",
+    joinedDate: "Dec 3, 2024",
+    rank: "#89",
+  },
+  {
+    name: "NightHawk",
+    avatar: "from-red-500 to-orange-500",
+    joinedDate: "Dec 3, 2024",
+    rank: "#156",
+  },
+  {
+    name: "ShadowStrike",
+    avatar: "from-violet-500 to-purple-600",
+    joinedDate: "Dec 4, 2024",
+    rank: "#203",
+  },
+  {
+    name: "ThunderBolt",
+    avatar: "from-yellow-500 to-amber-600",
+    joinedDate: "Dec 5, 2024",
+    rank: "#312",
+  },
 ];
+
+const route = useRoute();
+const id = route.params.id;
+
+const getTournamentByID = async () => {
+  if (!id || typeof id !== "string") return;
+  console.log("id", id)
+  const res = await tournamentClient.getTournamentByID({
+    id: id,
+  });
+  console.log("res.tournament", res.tournament);
+  return res.tournament;
+};
+
+const { data: tournament } = useQuery({
+  queryKey: ["tournament", id],
+  queryFn: getTournamentByID,
+  enabled: !!id,
+});
+
+watchEffect(() => {
+  console.log("tournament", toRaw(tournament.value));
+});
 </script>
 
 <template>
@@ -196,7 +270,9 @@ const registeredPlayers = [
 
             <div class="relative z-10 p-8">
               <!-- Breadcrumb -->
-              <div class="flex items-center space-x-2 text-sm text-gray-400 mb-6">
+              <div
+                class="flex items-center space-x-2 text-sm text-gray-400 mb-6"
+              >
                 <a href="#" class="hover:text-white transition-colors"
                   >Tournaments</a
                 >
@@ -208,21 +284,32 @@ const registeredPlayers = [
                 <span class="text-white">Winter 2025 Championship</span>
               </div>
 
-              <div class="flex flex-col lg:flex-row items-start justify-between">
+              <div
+                class="flex flex-col lg:flex-row items-start justify-between"
+              >
                 <div class="flex-1 mb-6 lg:mb-0">
                   <!-- Tournament Image/Icon -->
                   <div
-                    class="w-24 h-24 bg-gradient-to-br from-purple-600 via-blue-600 to-purple-800 rounded-2xl flex items-center justify-center mb-6 border-2 border-white/20 shadow-2xl"
+                    class="w-24 h-24 rounded-2xl flex items-center justify-center mb-6 border-2 border-white/20 shadow-2xl overflow-hidden relative"
                   >
-                    <i class="fas fa-sword text-5xl text-white drop-shadow-lg"></i>
+                    <!-- Image -->
+                    <img
+                      src="/logo.jpg"
+                      class="absolute inset-0 w-full h-full object-cover"
+                    />
+
+                    <!-- Overlay (optional để tối ảnh cho icon nổi) -->
+                    <div class="absolute inset-0 bg-black/30"></div>
+
+                    <!-- Icon -->
+                    <i
+                      class="fas fa-sword text-5xl text-white drop-shadow-lg relative z-10"
+                    ></i>
                   </div>
 
                   <!-- Tournament Name -->
-                  <h1
-                    class="text-4xl lg:text-5xl font-bold mb-4 leading-tight"
-                    style="font-family: Orbitron, sans-serif"
-                  >
-                    {{ tournamentInfo.name }}
+                  <h1 class="text-4xl lg:text-5xl font-bold mb-4 leading-tight">
+                    {{ tournament.name }}
                   </h1>
 
                   <!-- Tournament Meta -->
@@ -235,20 +322,30 @@ const registeredPlayers = [
                     <span
                       class="bg-cyber-green/20 text-cyber-green backdrop-blur-sm px-4 py-2 rounded-lg text-sm font-semibold border border-cyber-green/30 animate-pulse"
                     >
-                      <i class="fas fa-circle text-xs mr-2"></i>{{
-                        tournamentInfo.status
-                      }}
+                      <i class="fas fa-circle text-xs mr-2"></i
+                      >{{ tournamentInfo.status }}
                     </span>
                     <span
                       class="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg text-sm border border-white/20"
                     >
-                      <i class="fab fa-windows mr-2"></i>{{ tournamentInfo.platform }}
+                      <i class="fab fa-windows mr-2"></i
+                      >{{ tournamentInfo.platform }}
                     </span>
                     <span
                       class="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg text-sm border border-white/20"
                     >
-                      <i class="fas fa-globe mr-2"></i>{{ tournamentInfo.region }}
+                      <i class="fas fa-globe mr-2"></i
+                      >{{ tournamentInfo.region }}
                     </span>
+                    <NuxtLink
+                      class="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg text-sm border border-white/20"
+                      :to="{
+                        path: `/management/tournament/${id}`,
+                      }"
+                      as="span"
+                    >
+                      <i class="fas fa-globe mr-2"></i>Settings
+                    </NuxtLink>
                   </div>
 
                   <!-- Quick Stats -->
@@ -283,12 +380,15 @@ const registeredPlayers = [
                   class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 min-w-[320px] shadow-2xl"
                 >
                   <div class="text-center mb-6">
-                    <div class="text-sm text-gray-400 mb-2">Tournament Starts In</div>
+                    <div class="text-sm text-gray-400 mb-2">
+                      Tournament Starts In
+                    </div>
                     <div class="text-4xl font-bold text-cyber-green mb-1">
                       07:45:52
                     </div>
                     <div class="text-sm text-gray-400">
-                      {{ tournamentInfo.startDate }} at {{ tournamentInfo.startTime }}
+                      {{ tournamentInfo.startDate }} at
+                      {{ tournamentInfo.startTime }}
                     </div>
                   </div>
 
@@ -363,16 +463,16 @@ const registeredPlayers = [
                   >
                     <h2 class="text-2xl font-bold mb-4">About Tournament</h2>
                     <p class="text-gray-300 mb-4 leading-relaxed">
-                      Welcome to the Winter 2025 Championship! This is the biggest
-                      League of Legends tournament of the season, featuring the
-                      best players from across Europe. Compete for glory, climb
-                      the ranks, and win amazing prizes.
+                      Welcome to the Winter 2025 Championship! This is the
+                      biggest League of Legends tournament of the season,
+                      featuring the best players from across Europe. Compete for
+                      glory, climb the ranks, and win amazing prizes.
                     </p>
                     <p class="text-gray-300 mb-4 leading-relaxed">
                       This tournament will test your skills, strategy, and
                       teamwork. Only the best will advance through each stage to
-                      reach the grand finals. Make sure you're prepared and ready
-                      to give your best performance!
+                      reach the grand finals. Make sure you're prepared and
+                      ready to give your best performance!
                     </p>
                     <div
                       class="bg-accent-blue/10 border border-accent-blue/20 rounded-lg p-4"
@@ -382,9 +482,9 @@ const registeredPlayers = [
                         <div>
                           <div class="font-semibold mb-1">Important Notice</div>
                           <div class="text-sm text-gray-400">
-                            All participants must be registered at least 24 hours
-                            before the tournament starts. Late registrations will
-                            not be accepted.
+                            All participants must be registered at least 24
+                            hours before the tournament starts. Late
+                            registrations will not be accepted.
                           </div>
                         </div>
                       </div>
@@ -400,20 +500,28 @@ const registeredPlayers = [
                       <div
                         class="bg-darker-surface/50 rounded-xl p-4 border border-accent-blue/10"
                       >
-                        <div class="text-sm text-gray-400 mb-2">Total Matches</div>
+                        <div class="text-sm text-gray-400 mb-2">
+                          Total Matches
+                        </div>
                         <div class="text-3xl font-bold text-white">39</div>
                       </div>
                       <div
                         class="bg-darker-surface/50 rounded-xl p-4 border border-accent-blue/10"
                       >
-                        <div class="text-sm text-gray-400 mb-2">Avg. Duration</div>
+                        <div class="text-sm text-gray-400 mb-2">
+                          Avg. Duration
+                        </div>
                         <div class="text-3xl font-bold text-white">35 min</div>
                       </div>
                       <div
                         class="bg-darker-surface/50 rounded-xl p-4 border border-accent-blue/10"
                       >
-                        <div class="text-sm text-gray-400 mb-2">Slots Filled</div>
-                        <div class="text-3xl font-bold text-cyber-green">58%</div>
+                        <div class="text-sm text-gray-400 mb-2">
+                          Slots Filled
+                        </div>
+                        <div class="text-3xl font-bold text-cyber-green">
+                          58%
+                        </div>
                       </div>
                       <div
                         class="bg-darker-surface/50 rounded-xl p-4 border border-accent-blue/10"
@@ -421,7 +529,9 @@ const registeredPlayers = [
                         <div class="text-sm text-gray-400 mb-2">
                           Spectators Expected
                         </div>
-                        <div class="text-3xl font-bold text-accent-blue">5.2K</div>
+                        <div class="text-3xl font-bold text-accent-blue">
+                          5.2K
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -461,7 +571,9 @@ const registeredPlayers = [
                       </div>
                       <div class="flex justify-between items-center">
                         <span class="text-gray-400 text-sm">Region</span>
-                        <span class="font-medium">{{ tournamentInfo.region }}</span>
+                        <span class="font-medium">{{
+                          tournamentInfo.region
+                        }}</span>
                       </div>
                     </div>
                   </div>
@@ -470,7 +582,9 @@ const registeredPlayers = [
                   <div
                     class="bg-card-gradient border border-accent-blue/20 rounded-2xl p-6"
                   >
-                    <h3 class="text-xl font-bold mb-4">Registration Progress</h3>
+                    <h3 class="text-xl font-bold mb-4">
+                      Registration Progress
+                    </h3>
                     <div class="mb-4">
                       <div class="flex justify-between text-sm mb-2">
                         <span class="text-gray-400">Players Registered</span>
@@ -491,7 +605,8 @@ const registeredPlayers = [
                     </div>
                     <div class="text-sm text-gray-400">
                       {{
-                        tournamentInfo.maxPlayers - tournamentInfo.currentPlayers
+                        tournamentInfo.maxPlayers -
+                        tournamentInfo.currentPlayers
                       }}
                       slots remaining
                     </div>
@@ -653,14 +768,17 @@ const registeredPlayers = [
                   class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mt-6"
                 >
                   <div class="flex items-start space-x-3">
-                    <i class="fas fa-exclamation-triangle text-red-500 mt-1"></i>
+                    <i
+                      class="fas fa-exclamation-triangle text-red-500 mt-1"
+                    ></i>
                     <div>
                       <div class="font-semibold text-red-400 mb-1">
-                        Important Warning 
+                        Important Warning
                       </div>
                       <div class="text-sm text-gray-300">
-                        Violation of any tournament rules may result in immediate
-                        disqualification and potential ban from future tournaments.
+                        Violation of any tournament rules may result in
+                        immediate disqualification and potential ban from future
+                        tournaments.
                       </div>
                     </div>
                   </div>
@@ -685,7 +803,9 @@ const registeredPlayers = [
                         class="w-16 h-16 rounded-full bg-gradient-to-br flex items-center justify-center shadow-lg"
                         :class="prize.color"
                       >
-                        <i :class="`fas fa-${prize.icon} text-2xl text-white`"></i>
+                        <i
+                          :class="`fas fa-${prize.icon} text-2xl text-white`"
+                        ></i>
                       </div>
                       <div>
                         <div class="text-2xl font-bold">{{ prize.place }}</div>
@@ -705,14 +825,15 @@ const registeredPlayers = [
                 >
                   <h3 class="font-semibold mb-2">Additional Rewards</h3>
                   <p class="text-gray-300 text-sm mb-4">
-                    All participants will receive participation badges and special
-                    in-game items. Top 8 players will receive exclusive tournament
-                    merchandise.
+                    All participants will receive participation badges and
+                    special in-game items. Top 8 players will receive exclusive
+                    tournament merchandise.
                   </p>
                   <div class="flex flex-wrap gap-2">
                     <span
                       class="bg-white/10 border border-white/20 px-3 py-1 rounded-lg text-sm"
-                      ><i class="fas fa-medal mr-2"></i>Participation Badge</span
+                      ><i class="fas fa-medal mr-2"></i>Participation
+                      Badge</span
                     >
                     <span
                       class="bg-white/10 border border-white/20 px-3 py-1 rounded-lg text-sm"
@@ -772,7 +893,10 @@ const registeredPlayers = [
                           : 'bg-darker-surface text-gray-400'
                       "
                     >
-                      <i v-if="currentStep > 1" class="fas fa-check text-xs"></i>
+                      <i
+                        v-if="currentStep > 1"
+                        class="fas fa-check text-xs"
+                      ></i>
                       <span v-else>1</span>
                     </div>
                     <span
@@ -791,7 +915,10 @@ const registeredPlayers = [
                           : 'bg-darker-surface text-gray-400'
                       "
                     >
-                      <i v-if="currentStep > 2" class="fas fa-check text-xs"></i>
+                      <i
+                        v-if="currentStep > 2"
+                        class="fas fa-check text-xs"
+                      ></i>
                       <span v-else>2</span>
                     </div>
                     <span
@@ -899,8 +1026,8 @@ const registeredPlayers = [
                           />
                           <span
                             class="text-xs text-gray-300 group-hover:text-white transition-colors"
-                            >Tôi hiểu Elite Gamer không chịu trách nhiệm về giải đấu
-                            giả mạo.</span
+                            >Tôi hiểu Elite Gamer không chịu trách nhiệm về giải
+                            đấu giả mạo.</span
                           >
                         </label>
                       </div>
@@ -915,9 +1042,11 @@ const registeredPlayers = [
                           class="fas fa-exclamation-triangle text-amber-400 mt-0.5 text-xs"
                         ></i>
                         <div class="text-xs text-gray-300">
-                          <span class="font-semibold text-amber-400">Lưu ý:</span>
-                          Hoàn thành thanh toán trong 24h, nếu không đăng ký sẽ bị
-                          hủy.
+                          <span class="font-semibold text-amber-400"
+                            >Lưu ý:</span
+                          >
+                          Hoàn thành thanh toán trong 24h, nếu không đăng ký sẽ
+                          bị hủy.
                         </div>
                       </div>
                     </div>
@@ -930,12 +1059,14 @@ const registeredPlayers = [
                       class="bg-darker-surface/50 border border-accent-blue/20 rounded-lg p-3"
                     >
                       <h3 class="font-semibold text-white text-sm mb-3">
-                        Thông tin đăng ký (bỏ trống nếu bạn đăng ký cho bản thân)
+                        Thông tin đăng ký (bỏ trống nếu bạn đăng ký cho bản
+                        thân)
                       </h3>
                       <div class="space-y-2.5">
                         <div>
                           <label class="block text-xs text-gray-400 mb-1"
-                            >Người chơi <span class="text-red-400">*</span></label
+                            >Người chơi
+                            <span class="text-red-400">*</span></label
                           >
                           <input
                             v-model="registrationForm.playerName"
@@ -959,7 +1090,8 @@ const registeredPlayers = [
 
                         <div>
                           <label class="block text-xs text-gray-400 mb-1"
-                            >Số điện thoại <span class="text-red-400">*</span></label
+                            >Số điện thoại
+                            <span class="text-red-400">*</span></label
                           >
                           <input
                             v-model="registrationForm.phone"
@@ -1033,7 +1165,9 @@ const registeredPlayers = [
                       <div class="space-y-1.5 text-xs">
                         <div class="flex justify-between">
                           <span class="text-gray-400">Ngân hàng</span>
-                          <span class="font-medium text-white">Vietcombank</span>
+                          <span class="font-medium text-white"
+                            >Vietcombank</span
+                          >
                         </div>
                         <div class="flex justify-between">
                           <span class="text-gray-400">STK</span>
@@ -1062,8 +1196,8 @@ const registeredPlayers = [
                           class="fas fa-info-circle text-accent-blue mt-0.5 text-xs"
                         ></i>
                         <div class="text-xs text-gray-300">
-                          BTC sẽ xác nhận thanh toán trong 2-24 giờ. Email thông báo
-                          sẽ được gửi khi duyệt.
+                          BTC sẽ xác nhận thanh toán trong 2-24 giờ. Email thông
+                          báo sẽ được gửi khi duyệt.
                         </div>
                       </div>
                     </div>
@@ -1155,7 +1289,9 @@ const registeredPlayers = [
                     <div
                       class="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4 text-left"
                     >
-                      <h4 class="font-semibold text-white text-sm mb-3 flex items-center">
+                      <h4
+                        class="font-semibold text-white text-sm mb-3 flex items-center"
+                      >
                         <i class="fas fa-list-check text-accent-blue mr-2"></i>
                         Các bước tiếp theo
                       </h4>
@@ -1167,7 +1303,9 @@ const registeredPlayers = [
                           <span>Kiểm tra email xác nhận</span>
                         </li>
                         <li class="flex items-start">
-                          <i class="fas fa-clock text-amber-400 mr-2 mt-0.5"></i>
+                          <i
+                            class="fas fa-clock text-amber-400 mr-2 mt-0.5"
+                          ></i>
                           <span>Chờ BTC duyệt (2-24h)</span>
                         </li>
                         <li class="flex items-start">

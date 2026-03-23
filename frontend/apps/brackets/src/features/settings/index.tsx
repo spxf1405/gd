@@ -1,5 +1,13 @@
-import { useEffect, useState } from "react";
-import { Dialog, Tabs, Select, Tooltip, Separator } from "radix-ui";
+import React, { useEffect } from "react";
+import {
+  useForm,
+  Controller,
+  type Control,
+  type UseFormWatch,
+  type UseFormRegister,
+  type UseFormSetValue,
+} from "react-hook-form";
+import { Dialog, Tabs, Select, Tooltip, Separator, Switch } from "radix-ui";
 import {
   X,
   Trophy,
@@ -19,9 +27,12 @@ import { useTournamentStore } from "@/store/match";
 import {
   TournamentFormat,
   TournamentType,
+  type Tournament,
 } from "@gd/proto/tournament/v1/tournament_pb";
+import { CalendarPicker } from "@/components/ui/calendar";
+import type { Message } from "@bufbuild/protobuf";
+import classnames from "classnames";
 
-// ─── Design tokens ────────────────────────────────────────────────────────────
 const COLORS = {
   surface: "#13151f",
   surfaceAlt: "#1a1d2e",
@@ -53,7 +64,6 @@ const COLORS = {
   cancelText: "#b0bac8",
 };
 
-// ─── Tab config ───────────────────────────────────────────────────────────────
 const TAB_CONFIG = [
   {
     value: "basic",
@@ -92,7 +102,6 @@ const TAB_CONFIG = [
   },
 ];
 
-// ─── Form option lists ────────────────────────────────────────────────────────
 const OPTIONS = {
   gameType: ["8-Ball", "9-Ball", "10-Ball"],
   format: ["Đơn nam", "Đơn nữ", "Đôi nam nữ", "Đồng đội", "Quốc gia"],
@@ -112,7 +121,6 @@ const OPTIONS = {
   ],
 };
 
-// ─── Prize distribution ───────────────────────────────────────────────────────
 const PRIZE_DIST = {
   "50-30-20": [0.5, 0.3, 0.2],
   "40-25-20-15": [0.4, 0.25, 0.2, 0.15],
@@ -127,7 +135,6 @@ const PRIZE_RANK_COLORS = [
   COLORS.cancelText,
 ];
 
-// ─── Form defaults ────────────────────────────────────────────────────────────
 const FORM_DEFAULTS = {
   name: "",
   type: "8-Ball",
@@ -150,7 +157,6 @@ const FORM_DEFAULTS = {
   themeColor: "#00D9FF",
 };
 
-// ─── Shared CSS ───────────────────────────────────────────────────────────────
 const INPUT_BASE_CLS =
   "w-full px-3.5 py-2.5 text-[13px] text-white rounded-xl outline-none transition-all duration-150 focus:ring-2 focus:ring-white/10 placeholder-[#4a5568]";
 const INPUT_STYLE = {
@@ -158,7 +164,6 @@ const INPUT_STYLE = {
   border: `1px solid ${COLORS.inputBorder}`,
 };
 
-// ─── Base atoms ───────────────────────────────────────────────────────────────
 const LInput = ({ className = "", ...p }) => (
   <input
     className={`${INPUT_BASE_CLS} ${className}`}
@@ -175,8 +180,17 @@ const LTextarea = ({ className = "", ...p }) => (
   />
 );
 
-// ─── Radix Select ─────────────────────────────────────────────────────────────
-const LSelect = ({ value, onValueChange, children, className = "" }) => (
+const LSelect = ({
+  value,
+  onValueChange,
+  children,
+  className = "",
+}: {
+  value: string;
+  onValueChange: (value: string) => void;
+  children: React.ReactNode;
+  className?: string;
+}) => (
   <Select.Root value={value} onValueChange={onValueChange}>
     <Select.Trigger
       className={`${INPUT_BASE_CLS} flex items-center justify-between gap-2 cursor-pointer ${className}`}
@@ -221,7 +235,13 @@ const LSelect = ({ value, onValueChange, children, className = "" }) => (
   </Select.Root>
 );
 
-const LSelectItem = ({ value, children }) => (
+const LSelectItem = ({
+  value,
+  children,
+}: {
+  value: string;
+  children: React.ReactNode;
+}) => (
   <Select.Item
     value={value}
     className="
@@ -241,8 +261,13 @@ const LSelectItem = ({ value, children }) => (
   </Select.Item>
 );
 
-// ─── Radix Tooltip ────────────────────────────────────────────────────────────
-const LTooltip = ({ content, children }) => (
+const LTooltip = ({
+  content,
+  children,
+}: {
+  content: string;
+  children: React.ReactNode;
+}) => (
   <Tooltip.Provider delayDuration={400}>
     <Tooltip.Root>
       <Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
@@ -264,8 +289,15 @@ const LTooltip = ({ content, children }) => (
   </Tooltip.Provider>
 );
 
-// ─── Field & SectionHeader ────────────────────────────────────────────────────
-const Field = ({ label, required, children }) => (
+const Field = ({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) => (
   <div className="flex flex-col gap-1.5">
     <label
       className="text-[11px] font-semibold uppercase tracking-[0.09em]"
@@ -278,7 +310,15 @@ const Field = ({ label, required, children }) => (
   </div>
 );
 
-const SectionHeader = ({ icon, title, accent = COLORS.green }) => (
+const SectionHeader = ({
+  icon,
+  title,
+  accent = COLORS.green,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  accent?: string;
+}) => (
   <div
     className="flex items-center gap-3 pb-3 mb-1"
     style={{ borderBottom: `1px solid ${COLORS.borderFaint}` }}
@@ -302,7 +342,6 @@ const SectionHeader = ({ icon, title, accent = COLORS.green }) => (
   </div>
 );
 
-// ─── Sidebar tab ──────────────────────────────────────────────────────────────
 const SidebarTab = ({ tab }) => {
   const Icon = tab.icon;
   return (
@@ -373,7 +412,6 @@ const SidebarTab = ({ tab }) => {
   );
 };
 
-// ─── Currency hint ────────────────────────────────────────────────────────────
 const CurrencyHint = ({ value }) =>
   value > 0 ? (
     <p className="text-[11px] mt-1" style={{ color: COLORS.indigo }}>
@@ -382,33 +420,17 @@ const CurrencyHint = ({ value }) =>
   ) : null;
 
 const TournamentTypeList = [
-  {
-    val: TournamentType.SINGLE,
-    label: "Đơn",
-  },
-  {
-    val: TournamentType.TEAM,
-    label: "Đồng đội",
-  },
+  { val: TournamentType.SINGLE, label: "Đơn" },
+  { val: TournamentType.TEAM, label: "Đồng đội" },
 ];
 
 const TournamentFormatList = [
-  {
-    val: TournamentFormat.TOURNAMENT_TYPE_8_BALL,
-    label: "8 Bi",
-  },
-  {
-    val: TournamentFormat.TOURNAMENT_TYPE_9_BALL,
-    label: "9 Bi",
-  },
-  {
-    val: TournamentFormat.TOURNAMENT_TYPE_10_BALL,
-    label: "10 Bi",
-  },
+  { val: TournamentFormat.TOURNAMENT_TYPE_8_BALL, label: "8 Bi" },
+  { val: TournamentFormat.TOURNAMENT_TYPE_9_BALL, label: "9 Bi" },
+  { val: TournamentFormat.TOURNAMENT_TYPE_10_BALL, label: "10 Bi" },
 ];
 
-// ─── Tab 1 ────────────────────────────────────────────────────────────────────
-const BasicTab = ({ form, set }) => (
+const BasicTab = ({ control, register }) => (
   <div className="flex flex-col gap-5">
     <SectionHeader
       icon={<Info size={18} />}
@@ -417,55 +439,60 @@ const BasicTab = ({ form, set }) => (
     />
     <Field label="Tên giải đấu" required>
       <LInput
-        value={form.name}
-        onChange={(e) => set("name", e.target.value)}
+        {...register("name")}
         placeholder="VD: Giải Vô Địch 8-Ball Hà Nội 2026"
       />
     </Field>
     <div className="grid grid-cols-12 gap-4">
       <div className="col-span-2">
         <Field label="Nội dung" required>
-          <LSelect value={form.type} onValueChange={(v) => set("format", v)}>
-            {TournamentTypeList.map(({ val, label }) => (
-              <LSelectItem key={val} value={val}>
-                {label}
-              </LSelectItem>
-            ))}
-          </LSelect>
+          <Controller
+            name="type"
+            control={control}
+            render={({ field }) => (
+              <LSelect value={field.value} onValueChange={field.onChange}>
+                {TournamentTypeList.map(({ val, label }) => (
+                  <LSelectItem key={val} value={val}>
+                    {label}
+                  </LSelectItem>
+                ))}
+              </LSelect>
+            )}
+          />
         </Field>
       </div>
       <div className="col-span-2">
         <Field label="Thể thức" required>
-          <LSelect value={form.format} onValueChange={(v) => set("type", v)}>
-            {TournamentFormatList.map(({ val, label }) => (
-              <LSelectItem key={val} value={val}>
-                {label}
-              </LSelectItem>
-            ))}
-          </LSelect>
+          <Controller
+            name="format"
+            control={control}
+            render={({ field }) => (
+              <LSelect value={field.value} onValueChange={field.onChange}>
+                {TournamentFormatList.map(({ val, label }) => (
+                  <LSelectItem key={val} value={val}>
+                    {label}
+                  </LSelectItem>
+                ))}
+              </LSelect>
+            )}
+          />
         </Field>
       </div>
       <div className="col-span-8">
         <Field label="Mô tả thêm thể thức" required={false}>
           <LInput
-            value={form.formatDescription}
+            {...register("formatDescription")}
             placeholder="Eg. Xếp Cao - Thắng Phá - WPA Rules"
           />
         </Field>
       </div>
     </div>
-
     <Field label="Ban tổ chức" required>
-      <LInput
-        value={form.organizer}
-        onChange={(e) => set("organizer", e.target.value)}
-        placeholder="VD: CLB Billard Golden"
-      />
+      <LInput {...register("organizer")} placeholder="VD: CLB Billard Golden" />
     </Field>
     <Field label="Mô tả giải đấu">
       <LTextarea
-        value={form.description}
-        onChange={(e) => set("description", e.target.value)}
+        {...register("description")}
         rows={3}
         placeholder="Mô tả chi tiết về giải đấu..."
       />
@@ -473,8 +500,7 @@ const BasicTab = ({ form, set }) => (
   </div>
 );
 
-// ─── Tab 2 ────────────────────────────────────────────────────────────────────
-const ScheduleTab = ({ form, set }) => (
+const ScheduleTab = ({ register }) => (
   <div className="flex flex-col gap-5">
     <SectionHeader
       icon={<Calendar size={18} />}
@@ -482,19 +508,11 @@ const ScheduleTab = ({ form, set }) => (
       accent={COLORS.amber}
     />
     <div className="grid grid-cols-2 gap-4">
-      <Field label="Ngày bắt đầu" required>
-        <LInput
-          type="date"
-          value={form.startDate}
-          onChange={(e) => set("startDate", e.target.value)}
-        />
+      <Field label="Ngày tạo" required>
+        <CalendarPicker />
       </Field>
-      <Field label="Ngày kết thúc" required>
-        <LInput
-          type="date"
-          value={form.endDate}
-          onChange={(e) => set("endDate", e.target.value)}
-        />
+      <Field label="Ngày bắt đầu" required>
+        <CalendarPicker />
       </Field>
     </div>
     <Field label="Địa điểm tổ chức" required>
@@ -505,28 +523,21 @@ const ScheduleTab = ({ form, set }) => (
           style={{ color: COLORS.amber }}
         />
         <LInput
-          value={form.location}
-          onChange={(e) => set("location", e.target.value)}
+          {...register("location")}
           placeholder="VD: CLB Billard Golden, Hà Nội"
           className="!pl-9"
         />
       </div>
     </Field>
-    <Field label="Số bàn billard" required>
-      <LInput
-        type="number"
-        value={form.tables}
-        onChange={(e) => set("tables", +e.target.value)}
-        min="1"
-        className="max-w-[160px]"
-      />
-    </Field>
   </div>
 );
 
-// ─── Tab 3 ────────────────────────────────────────────────────────────────────
-const FinanceTab = ({ form, set }) => {
-  const pcts = PRIZE_DIST[form.prizeDistribution] ?? PRIZE_DIST["50-30-20"];
+const FinanceTab = ({ control, register, watch }) => {
+  const totalPrize = watch("totalPrize");
+  const entryFee = watch("entryFee");
+  const prizeDistribution = watch("prizeDistribution");
+  const pcts = PRIZE_DIST[prizeDistribution] ?? PRIZE_DIST["50-30-20"];
+
   return (
     <div className="flex flex-col gap-5">
       <SectionHeader
@@ -543,36 +554,37 @@ const FinanceTab = ({ form, set }) => {
           />
           <LInput
             type="number"
-            value={form.totalPrize}
-            onChange={(e) => set("totalPrize", +e.target.value)}
+            {...register("totalPrize", { valueAsNumber: true })}
             placeholder="50000000"
             className="!pl-9"
           />
         </div>
-        <CurrencyHint value={form.totalPrize} />
+        <CurrencyHint value={totalPrize} />
       </Field>
       <Field label="Lệ phí tham gia (VNĐ)">
         <LInput
           type="number"
-          value={form.entryFee}
-          onChange={(e) => set("entryFee", +e.target.value)}
+          {...register("entryFee", { valueAsNumber: true })}
           placeholder="500000"
         />
-        <CurrencyHint value={form.entryFee} />
+        <CurrencyHint value={entryFee} />
       </Field>
       <Field label="Phân phối giải thưởng">
-        <LSelect
-          value={form.prizeDistribution}
-          onValueChange={(v) => set("prizeDistribution", v)}
-        >
-          {OPTIONS.prizeDist.map(({ value, label }) => (
-            <LSelectItem key={value} value={value}>
-              {label}
-            </LSelectItem>
-          ))}
-        </LSelect>
+        <Controller
+          name="prizeDistribution"
+          control={control}
+          render={({ field }) => (
+            <LSelect value={field.value} onValueChange={field.onChange}>
+              {OPTIONS.prizeDist.map(({ value, label }) => (
+                <LSelectItem key={value} value={value}>
+                  {label}
+                </LSelectItem>
+              ))}
+            </LSelect>
+          )}
+        />
       </Field>
-      {form.totalPrize > 0 && (
+      {totalPrize > 0 && (
         <div
           className="rounded-xl overflow-hidden"
           style={{
@@ -615,7 +627,7 @@ const FinanceTab = ({ form, set }) => {
                 className="text-[13px] font-bold"
                 style={{ color: PRIZE_RANK_COLORS[i] }}
               >
-                {(form.totalPrize * p).toLocaleString("vi-VN")} đ
+                {(totalPrize * p).toLocaleString("vi-VN")} đ
               </span>
             </div>
           ))}
@@ -625,239 +637,373 @@ const FinanceTab = ({ form, set }) => {
   );
 };
 
-// ─── Tab 4 ────────────────────────────────────────────────────────────────────
-const PlayersTab = ({ form, set }) => (
-  <div className="flex flex-col gap-5">
-    <SectionHeader
-      icon={<Users size={18} />}
-      title="Cài đặt người chơi"
-      accent={COLORS.blue}
-    />
-    <Field label="Số lượng người chơi tối đa" required>
-      <LSelect
-        value={String(form.maxPlayers)}
-        onValueChange={(v) => set("maxPlayers", +v)}
-        className="max-w-[220px]"
-      >
-        {OPTIONS.maxPlayers.map((n) => (
-          <LSelectItem key={n} value={String(n)}>
-            {n} người
-          </LSelectItem>
-        ))}
-      </LSelect>
-    </Field>
-    <div className="grid grid-cols-2 gap-4">
-      <Field label="Độ tuổi tối thiểu">
-        <LInput
-          type="number"
-          value={form.minAge}
-          onChange={(e) => set("minAge", +e.target.value)}
-          min="0"
-        />
-      </Field>
-      <Field label="Giới tính">
-        <LSelect value={form.gender} onValueChange={(v) => set("gender", v)}>
-          {OPTIONS.gender.map((v) => (
-            <LSelectItem key={v} value={v}>
-              {v}
-            </LSelectItem>
-          ))}
-        </LSelect>
-      </Field>
-    </div>
-    <Field label="Trình độ">
-      <LSelect
-        value={form.skillLevel}
-        onValueChange={(v) => set("skillLevel", v)}
-      >
-        {OPTIONS.skillLevel.map((v) => (
-          <LSelectItem key={v} value={v}>
-            {v}
-          </LSelectItem>
-        ))}
-      </LSelect>
-    </Field>
-  </div>
-);
+interface SwitchProps extends React.ComponentPropsWithoutRef<
+  typeof Switch.Root
+> {
+  size?: "sm" | "md" | "lg";
+}
 
-// ─── Tab 5 ────────────────────────────────────────────────────────────────────
-const MediaTab = ({ form, set, handleFile }) => (
-  <div className="flex flex-col gap-5">
-    <SectionHeader
-      icon={<ImageIcon size={18} />}
-      title="Hình ảnh & Theme"
-      accent={COLORS.red}
-    />
-    <Field label="Ảnh nền giải đấu">
-      <input
-        type="file"
-        accept="image/*"
-        id="bg-upload"
-        className="hidden"
-        onChange={(e) => handleFile("background", e.target.files?.[0] ?? null)}
+const sizeConfig = {
+  sm: {
+    track: "w-8 h-[18px]",
+    thumb: "size-[13px] data-[state=checked]:translate-x-[14px]",
+  },
+  md: {
+    track: "w-[42px] h-6",
+    thumb: "size-[18px] data-[state=checked]:translate-x-[18px]",
+  },
+  lg: {
+    track: "w-[54px] h-[30px]",
+    thumb: "size-[23px] data-[state=checked]:translate-x-[24px]",
+  },
+};
+
+export const SwitchComp = ({
+  size = "md",
+  className,
+  ...props
+}: SwitchProps) => {
+  const { track, thumb } = sizeConfig[size];
+
+  return (
+    <Switch.Root
+      className={classnames(
+        "inline-flex shrink-0 cursor-pointer items-center rounded-full",
+        "border-none outline-none transition-colors",
+        "bg-border focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
+        "data-[state=checked]:bg-blue-500",
+        "disabled:cursor-not-allowed disabled:opacity-40",
+        track,
+        className,
+      )}
+      {...props}
+    >
+      <Switch.Thumb
+        className={classnames(
+          "pointer-events-none block rounded-full bg-white shadow-sm",
+          "transition-transform duration-200 ease-[cubic-bezier(0.34,1.2,0.64,1)]",
+          "translate-x-[3px]",
+          thumb,
+        )}
       />
-      <label
-        htmlFor="bg-upload"
-        className="flex flex-col items-center justify-center gap-2 h-40 rounded-xl cursor-pointer overflow-hidden transition-all duration-200 hover:bg-white/[0.03]"
-        style={{ border: "2px dashed rgba(255,255,255,0.1)" }}
-      >
-        {form.backgroundPreview ? (
-          <img
-            src={form.backgroundPreview}
-            alt="bg"
-            className="w-full h-full object-cover"
+    </Switch.Root>
+  );
+};
+
+const PlayersTab = ({
+  control,
+  register,
+  watch,
+}: {
+  control: Control<Tournament, any, Tournament>;
+  register: UseFormRegister<Tournament>;
+  watch: UseFormWatch<Tournament>;
+}) => {
+  const minAge = watch("minAge");
+  const hasRanking = watch("hasRanking");
+
+  return (
+    <div className="flex flex-col gap-6">
+      <SectionHeader
+        icon={<Users size={18} />}
+        title="Cài đặt người chơi"
+        accent={COLORS.blue}
+      />
+
+      {/* Row 1: maxPlayers + gender */}
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="Số lượng người chơi tối đa" required>
+          <Controller
+            name="maxPlayers"
+            control={control}
+            render={({ field }) => (
+              <LSelect
+                value={String(field.value)}
+                onValueChange={(v) => field.onChange(+v)}
+              >
+                {OPTIONS.maxPlayers.map((n) => (
+                  <LSelectItem key={n} value={String(n)}>
+                    {n} người
+                  </LSelectItem>
+                ))}
+              </LSelect>
+            )}
+          />
+        </Field>
+
+        <Field label="Giới tính">
+          <Controller
+            name="gender"
+            control={control}
+            render={({ field }) => (
+              <LSelect value={field.value} onValueChange={field.onChange}>
+                {OPTIONS.gender.map((v) => (
+                  <LSelectItem key={v} value={v}>
+                    {v}
+                  </LSelectItem>
+                ))}
+              </LSelect>
+            )}
+          />
+        </Field>
+      </div>
+
+      {/* Row 2: minAge + skillLevel */}
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="Độ tuổi tối thiểu">
+          <LInput
+            type="number"
+            {...register("minAge", { valueAsNumber: true })}
+            min="0"
+          />
+        </Field>
+
+       
+      </div>
+
+      {/* Row 3: Phân hạng */}
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <Field label="Phân hạng" noMargin>
+            <></>
+          </Field>
+          <Controller
+            name="hasRanking"
+            control={control}
+            render={({ field }) => (
+              <SwitchComp
+                checked={!!field.value}
+                onCheckedChange={field.onChange}
+              />
+            )}
+          />
+        </div>
+
+        {hasRanking ? (
+          <Controller
+            name="rankingClass"
+            control={control}
+            render={({ field }) => (
+              <LSelect value={field.value} onValueChange={field.onChange}>
+                {["CN", "A", "B", "C", "D", "E", "F", "G", "H", "I", "K"].map(
+                  (v) => (
+                    <LSelectItem key={v} value={v}>
+                      Hạng {v}
+                    </LSelectItem>
+                  ),
+                )}
+              </LSelect>
+            )}
           />
         ) : (
-          <>
-            <Upload size={24} style={{ color: COLORS.textSecondary }} />
-            <p
-              className="text-[12px] font-semibold"
-              style={{ color: COLORS.textSecondary }}
-            >
-              Click để tải ảnh nền
-            </p>
-            <span className="text-[10px]" style={{ color: COLORS.textDim }}>
-              Khuyến nghị: 1920×1080px
-            </span>
-          </>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Phù hợp với các giải có người chơi trình độ rất cao hoặc các giải
+            đấu nội bộ không cần phân loại theo hạng chính thức.
+          </p>
         )}
-      </label>
-    </Field>
-    <Field label="Logo/Avatar giải đấu">
-      <input
-        type="file"
-        accept="image/*"
-        id="avatar-upload"
-        className="hidden"
-        onChange={(e) => handleFile("avatar", e.target.files?.[0] ?? null)}
-      />
-      <div className="flex items-center gap-4">
-        <label
-          htmlFor="avatar-upload"
-          className="flex flex-col items-center justify-center gap-1 w-28 h-28 flex-shrink-0 rounded-xl cursor-pointer overflow-hidden transition-all duration-150 hover:scale-105"
-          style={{ border: "2px dashed rgba(255,255,255,0.1)" }}
-        >
-          {form.avatarPreview ? (
-            <img
-              src={form.avatarPreview}
-              alt="logo"
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <>
-              <Upload size={20} style={{ color: COLORS.textSecondary }} />
-              <span className="text-[10px]" style={{ color: COLORS.textDim }}>
-                Click để tải logo
-              </span>
-            </>
-          )}
-        </label>
-        <p
-          className="text-[11px] leading-relaxed"
-          style={{ color: COLORS.textSecondary }}
-        >
-          Hiển thị trên toàn bộ trang.
-          <br />
-          <span className="text-[10px]" style={{ color: COLORS.textDim }}>
-            PNG · 512×512 · Transparent
-          </span>
-        </p>
-      </div>
-    </Field>
-    <Field label="Màu chủ đạo">
-      <div className="flex gap-3 items-center">
-        <input
-          type="color"
-          value={form.themeColor}
-          onChange={(e) => set("themeColor", e.target.value)}
-          className="w-10 h-10 rounded-lg cursor-pointer flex-shrink-0"
-          style={{
-            background: COLORS.surfaceAlt,
-            border: `1px solid ${COLORS.border}`,
-          }}
-        />
-        <LInput
-          type="text"
-          value={form.themeColor}
-          onChange={(e) => set("themeColor", e.target.value)}
-          className="font-mono max-w-[130px]"
-        />
-      </div>
-    </Field>
-    <div
-      className="rounded-xl p-4"
-      style={{
-        background: "rgba(255,255,255,0.03)",
-        border: `1px solid ${COLORS.borderFaint}`,
-      }}
-    >
-      <p
-        className="text-[10px] font-bold tracking-[0.16em] uppercase mb-3 flex items-center gap-2"
-        style={{ color: COLORS.textSecondary }}
-      >
-        <Palette size={12} /> Xem trước theme
-      </p>
-      <div className="flex items-center gap-3">
-        <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-          style={{
-            background: `linear-gradient(135deg, ${form.themeColor}, ${COLORS.purple})`,
-            boxShadow: `0 0 16px ${form.themeColor}44`,
-          }}
-        >
-          <Trophy size={18} color="white" />
-        </div>
-        <div>
-          <p
-            className="text-[14px] font-bold"
-            style={{
-              background: `linear-gradient(to right, ${form.themeColor}, ${COLORS.green})`,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            {form.name || "Tên giải đấu"}
-          </p>
-          <p className="text-[10px]" style={{ color: COLORS.textDim }}>
-            Tournament Platform
-          </p>
-        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
+// const MediaTab = ({
+//   control,
+//   register,
+//   watch,
+//   setValue,
+// }: {
+//   control: Control<Tournament, any, Tournament>;
+//   register: UseFormRegister<Tournament>;
+//   watch: UseFormWatch<Tournament>;
+//   setValue: UseFormSetValue<Tournament>;
+// }) => {
+//   const themeColor = watch("themeColor");
+//   const name = watch("name");
+//   const backgroundPreview = watch("backgroundPreview");
+//   const avatarPreview = watch("avatarPreview");
+
+//   const handleFile = (field, file) => {
+//     if (!file) return;
+//     const r = new FileReader();
+//     r.onloadend = () => setValue(`${field}Preview`, r.result);
+//     r.readAsDataURL(file);
+//   };
+
+//   return (
+//     <div className="flex flex-col gap-5">
+//       <SectionHeader
+//         icon={<ImageIcon size={18} />}
+//         title="Hình ảnh & Theme"
+//         accent={COLORS.red}
+//       />
+//       <Field label="Ảnh nền giải đấu">
+//         <input
+//           type="file"
+//           accept="image/*"
+//           id="bg-upload"
+//           className="hidden"
+//           onChange={(e) =>
+//             handleFile("background", e.target.files?.[0] ?? null)
+//           }
+//         />
+//         <label
+//           htmlFor="bg-upload"
+//           className="flex flex-col items-center justify-center gap-2 h-40 rounded-xl cursor-pointer overflow-hidden transition-all duration-200 hover:bg-white/[0.03]"
+//           style={{ border: "2px dashed rgba(255,255,255,0.1)" }}
+//         >
+//           {backgroundPreview ? (
+//             <img
+//               src={backgroundPreview}
+//               alt="bg"
+//               className="w-full h-full object-cover"
+//             />
+//           ) : (
+//             <>
+//               <Upload size={24} style={{ color: COLORS.textSecondary }} />
+//               <p
+//                 className="text-[12px] font-semibold"
+//                 style={{ color: COLORS.textSecondary }}
+//               >
+//                 Click để tải ảnh nền
+//               </p>
+//               <span className="text-[10px]" style={{ color: COLORS.textDim }}>
+//                 Khuyến nghị: 1920×1080px
+//               </span>
+//             </>
+//           )}
+//         </label>
+//       </Field>
+//       <Field label="Logo/Avatar giải đấu">
+//         <input
+//           type="file"
+//           accept="image/*"
+//           id="avatar-upload"
+//           className="hidden"
+//           onChange={(e) => handleFile("avatar", e.target.files?.[0] ?? null)}
+//         />
+//         <div className="flex items-center gap-4">
+//           <label
+//             htmlFor="avatar-upload"
+//             className="flex flex-col items-center justify-center gap-1 w-28 h-28 flex-shrink-0 rounded-xl cursor-pointer overflow-hidden transition-all duration-150 hover:scale-105"
+//             style={{ border: "2px dashed rgba(255,255,255,0.1)" }}
+//           >
+//             {avatarPreview ? (
+//               <img
+//                 src={avatarPreview}
+//                 alt="logo"
+//                 className="w-full h-full object-cover"
+//               />
+//             ) : (
+//               <>
+//                 <Upload size={20} style={{ color: COLORS.textSecondary }} />
+//                 <span className="text-[10px]" style={{ color: COLORS.textDim }}>
+//                   Click để tải logo
+//                 </span>
+//               </>
+//             )}
+//           </label>
+//           <p
+//             className="text-[11px] leading-relaxed"
+//             style={{ color: COLORS.textSecondary }}
+//           >
+//             Hiển thị trên toàn bộ trang.
+//             <br />
+//             <span className="text-[10px]" style={{ color: COLORS.textDim }}>
+//               PNG · 512×512 · Transparent
+//             </span>
+//           </p>
+//         </div>
+//       </Field>
+//       <Field label="Màu chủ đạo">
+//         <div className="flex gap-3 items-center">
+//           <Controller
+//             name="themeColor"
+//             control={control}
+//             render={({ field }) => (
+//               <input
+//                 type="color"
+//                 value={field.value}
+//                 onChange={field.onChange}
+//                 className="w-10 h-10 rounded-lg cursor-pointer flex-shrink-0"
+//                 style={{
+//                   background: COLORS.surfaceAlt,
+//                   border: `1px solid ${COLORS.border}`,
+//                 }}
+//               />
+//             )}
+//           />
+//           <LInput
+//             type="text"
+//             {...register("themeColor")}
+//             className="font-mono max-w-[130px]"
+//           />
+//         </div>
+//       </Field>
+//       <div
+//         className="rounded-xl p-4"
+//         style={{
+//           background: "rgba(255,255,255,0.03)",
+//           border: `1px solid ${COLORS.borderFaint}`,
+//         }}
+//       >
+//         <p
+//           className="text-[10px] font-bold tracking-[0.16em] uppercase mb-3 flex items-center gap-2"
+//           style={{ color: COLORS.textSecondary }}
+//         >
+//           <Palette size={12} /> Xem trước theme
+//         </p>
+//         <div className="flex items-center gap-3">
+//           <div
+//             className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+//             style={{
+//               background: `linear-gradient(135deg, ${themeColor}, ${COLORS.purple})`,
+//               boxShadow: `0 0 16px ${themeColor}44`,
+//             }}
+//           >
+//             <Trophy size={18} color="white" />
+//           </div>
+//           <div>
+//             <p
+//               className="text-[14px] font-bold"
+//               style={{
+//                 background: `linear-gradient(to right, ${themeColor}, ${COLORS.green})`,
+//                 WebkitBackgroundClip: "text",
+//                 WebkitTextFillColor: "transparent",
+//               }}
+//             >
+//               {name || "Tên giải đấu"}
+//             </p>
+//             <p className="text-[10px]" style={{ color: COLORS.textDim }}>
+//               Tournament Platform
+//             </p>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
 export const Setting = () => {
   const { tournament } = useTournamentStore();
-  console.log("tournament", tournament);
-  const [form, setForm] = useState(FORM_DEFAULTS);
+
+  const { control, register, watch, reset, handleSubmit } = useForm<Tournament>(
+    {
+      defaultValues: {} as Tournament,
+    },
+  );
 
   useEffect(() => {
-    setForm((prev) => ({ ...prev, ...tournament }));
-  }, [tournament]);
+    if (tournament) {
+      reset(tournament);
+    }
+  }, [tournament, reset]);
 
-  const set = (k, v) => setForm((p) => ({ ...p, [k]: v }));
-
-  const handleFile = (field, file) => {
-    if (!file) return;
-    const r = new FileReader();
-    r.onloadend = () =>
-      setForm((p) => ({ ...p, [`${field}Preview`]: r.result }));
-    r.readAsDataURL(file);
-  };
-
-  const PANELS = {
-    basic: <BasicTab form={form} set={set} />,
-    schedule: <ScheduleTab form={form} set={set} />,
-    finance: <FinanceTab form={form} set={set} />,
-    players: <PlayersTab form={form} set={set} />,
-    media: <MediaTab form={form} set={set} handleFile={handleFile} />,
+  const onSubmit = (data: Tournament) => {
+    console.log("form data", data);
   };
 
   return (
     <Dialog.Root>
-      {/* ── Trigger ── */}
       <Dialog.Trigger asChild>
         <button
           className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white cursor-pointer border-0 transition-all duration-200 hover:[border-color:rgba(255,255,255,0.2)]"
@@ -890,7 +1036,6 @@ export const Setting = () => {
               "0 0 0 1px rgba(255,255,255,0.03), 0 32px 80px rgba(0,0,0,0.7), 0 0 60px rgba(0,0,0,0.4)",
           }}
         >
-          {/* shine */}
           <div
             className="absolute top-0 left-[20%] right-[20%] h-px pointer-events-none"
             style={{
@@ -899,7 +1044,6 @@ export const Setting = () => {
             }}
           />
 
-          {/* ── Header ── */}
           <div
             className="flex-shrink-0 flex items-center justify-between px-6 py-4"
             style={{
@@ -908,7 +1052,6 @@ export const Setting = () => {
             }}
           >
             <div className="flex items-center gap-3.5">
-              {/* traffic lights */}
               <div className="flex items-center gap-1.5">
                 {[COLORS.red, COLORS.amber, COLORS.green].map((c) => (
                   <div
@@ -970,12 +1113,10 @@ export const Setting = () => {
             </Dialog.Close>
           </div>
 
-          {/* ── Body ── */}
           <Tabs.Root
             defaultValue="basic"
             className="flex flex-1 overflow-hidden"
           >
-            {/* Sidebar */}
             <div
               className="flex-shrink-0 flex flex-col overflow-y-auto"
               style={{
@@ -1033,24 +1174,56 @@ export const Setting = () => {
               </div>
             </div>
 
-            {/* Panels */}
             <div
               className="sys-scroll flex-1 overflow-y-auto"
               style={{ background: COLORS.surface }}
             >
-              {TAB_CONFIG.map((tab) => (
-                <Tabs.Content
-                  key={tab.value}
-                  value={tab.value}
-                  className="outline-none p-10 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
-                >
-                  {PANELS[tab.value]}
-                </Tabs.Content>
-              ))}
+              <Tabs.Content
+                value="basic"
+                className="outline-none p-10 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
+              >
+                <BasicTab control={control} register={register} />
+              </Tabs.Content>
+              <Tabs.Content
+                value="schedule"
+                className="outline-none p-10 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
+              >
+                <ScheduleTab register={register} />
+              </Tabs.Content>
+              <Tabs.Content
+                value="finance"
+                className="outline-none p-10 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
+              >
+                <FinanceTab
+                  control={control}
+                  register={register}
+                  watch={watch}
+                />
+              </Tabs.Content>
+              <Tabs.Content
+                value="players"
+                className="outline-none p-10 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
+              >
+                <PlayersTab
+                  control={control}
+                  register={register}
+                  watch={watch}
+                />
+              </Tabs.Content>
+              {/* <Tabs.Content
+                value="media"
+                className="outline-none p-10 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
+              >
+                <MediaTab
+                  control={control}
+                  register={register}
+                  watch={watch}
+                  setValue={setValue}
+                />
+              </Tabs.Content> */}
             </div>
           </Tabs.Root>
 
-          {/* ── Footer ── */}
           <div
             className="flex-shrink-0 flex items-center justify-between px-6 py-3.5"
             style={{
@@ -1080,6 +1253,8 @@ export const Setting = () => {
 
               <LTooltip content="Lưu tất cả thay đổi">
                 <button
+                  type="button"
+                  onClick={handleSubmit(onSubmit)}
                   className="px-5 py-2 rounded-lg text-[12px] font-semibold text-white cursor-pointer border-0 transition-all duration-150"
                   style={{
                     background: `linear-gradient(135deg, ${COLORS.green}, ${COLORS.greenDark})`,
