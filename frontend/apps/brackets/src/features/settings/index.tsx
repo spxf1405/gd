@@ -32,6 +32,7 @@ import {
 import { CalendarPicker } from "@/components/ui/calendar";
 import type { Message } from "@bufbuild/protobuf";
 import classnames from "classnames";
+import { PrizeDistributionTable } from "./tournament-settings/finance-distributiontable";
 
 const COLORS = {
   surface: "#13151f",
@@ -126,7 +127,13 @@ const PRIZE_DIST = {
   "40-25-20-15": [0.4, 0.25, 0.2, 0.15],
   "35-25-15-15-10": [0.35, 0.25, 0.15, 0.15, 0.1],
 };
-const PRIZE_RANK_NAMES = ["🥇 Nhất", "🥈 Nhì", "🥉 Ba", "④ Tư", "⑤ Năm"];
+const PRIZE_RANK_NAMES = [
+  "🥇 Vô địch",
+  "🥈 Á quân",
+  "🥉 Hạng Ba",
+  "Hạng 4",
+  "Top 8",
+];
 const PRIZE_RANK_COLORS = [
   COLORS.gold,
   COLORS.silver,
@@ -532,111 +539,68 @@ const ScheduleTab = ({ register }) => (
   </div>
 );
 
-const FinanceTab = ({ control, register, watch }) => {
+
+
+const INDIGO = "#6366f1";
+
+const FinanceTab = ({ control, register, watch, setValue }) => {
   const totalPrize = watch("totalPrize");
   const entryFee = watch("entryFee");
-  const prizeDistribution = watch("prizeDistribution");
-  const pcts = PRIZE_DIST[prizeDistribution] ?? PRIZE_DIST["50-30-20"];
+  const prizes = watch("prizes") ?? [];
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6">
       <SectionHeader
         icon={<DollarSign size={18} />}
         title="Tài chính"
-        accent={COLORS.indigo}
+        accent={INDIGO}
       />
+
       <Field label="Tổng giải thưởng (VNĐ)" required>
         <div className="relative">
           <DollarSign
-            size={15}
-            className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
-            style={{ color: COLORS.green }}
+            size={16}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+            style={{ color: INDIGO }}
           />
           <LInput
             type="number"
             {...register("totalPrize", { valueAsNumber: true })}
             placeholder="50000000"
-            className="!pl-9"
+            className="!pl-10 h-11 text-base"
           />
         </div>
         <CurrencyHint value={totalPrize} />
       </Field>
+
       <Field label="Lệ phí tham gia (VNĐ)">
         <LInput
           type="number"
           {...register("entryFee", { valueAsNumber: true })}
           placeholder="500000"
+          className="h-11 text-base"
         />
         <CurrencyHint value={entryFee} />
       </Field>
-      <Field label="Phân phối giải thưởng">
+
+      {(totalPrize > 0 || prizes.length > 0) && (
         <Controller
-          name="prizeDistribution"
+          name="prizes"
           control={control}
           render={({ field }) => (
-            <LSelect value={field.value} onValueChange={field.onChange}>
-              {OPTIONS.prizeDist.map(({ value, label }) => (
-                <LSelectItem key={value} value={value}>
-                  {label}
-                </LSelectItem>
-              ))}
-            </LSelect>
+            <PrizeDistributionTable
+              totalPrize={totalPrize || 0}
+              value={field.value ?? []}
+              onChange={field.onChange}
+            />
           )}
         />
-      </Field>
-      {totalPrize > 0 && (
-        <div
-          className="rounded-xl overflow-hidden"
-          style={{
-            border: `1px solid ${COLORS.indigo}33`,
-            background: `${COLORS.indigo}0a`,
-          }}
-        >
-          <div
-            className="px-5 py-2.5"
-            style={{
-              borderBottom: `1px solid ${COLORS.indigo}1f`,
-              background: `${COLORS.indigo}14`,
-            }}
-          >
-            <span
-              className="text-[10px] font-bold tracking-[0.18em] uppercase"
-              style={{ color: COLORS.indigo }}
-            >
-              Dự kiến giải thưởng
-            </span>
-          </div>
-          {pcts.map((p, i) => (
-            <div
-              key={i}
-              className="flex justify-between items-center px-5 py-3 hover:bg-white/[0.03] transition-colors"
-              style={{
-                borderBottom:
-                  i < pcts.length - 1
-                    ? `1px solid ${COLORS.borderFaint}`
-                    : "none",
-              }}
-            >
-              <span
-                className="text-[13px]"
-                style={{ color: COLORS.cancelText }}
-              >
-                {PRIZE_RANK_NAMES[i]}
-              </span>
-              <span
-                className="text-[13px] font-bold"
-                style={{ color: PRIZE_RANK_COLORS[i] }}
-              >
-                {(totalPrize * p).toLocaleString("vi-VN")} đ
-              </span>
-            </div>
-          ))}
-        </div>
       )}
     </div>
   );
 };
 
+export default FinanceTab;
 interface SwitchProps extends React.ComponentPropsWithoutRef<
   typeof Switch.Root
 > {
@@ -670,7 +634,8 @@ export const SwitchComp = ({
       className={classnames(
         "inline-flex shrink-0 cursor-pointer items-center rounded-full",
         "border-none outline-none transition-colors",
-        "bg-border focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
+        "focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
+        "data-[state=unchecked]:bg-gray-300",
         "data-[state=checked]:bg-blue-500",
         "disabled:cursor-not-allowed disabled:opacity-40",
         track,
@@ -690,6 +655,24 @@ export const SwitchComp = ({
   );
 };
 
+// PlayersTab.tsx — Redesigned
+// Aesthetic: Refined dark-card system with soft blue accents, structured grid layout
+// Dependencies: same as original (react-hook-form, lucide-react)
+
+const RANKING_CLASSES = [
+  "CN",
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "K",
+];
+
 const PlayersTab = ({
   control,
   register,
@@ -699,20 +682,31 @@ const PlayersTab = ({
   register: UseFormRegister<Tournament>;
   watch: UseFormWatch<Tournament>;
 }) => {
-  const minAge = watch("minAge");
   const hasRanking = watch("hasRanking");
 
   return (
-    <div className="flex flex-col gap-6">
-      <SectionHeader
-        icon={<Users size={18} />}
-        title="Cài đặt người chơi"
-        accent={COLORS.blue}
-      />
+    <div className="space-y-5">
+      {/* ── Header ── */}
+      <div className="flex items-center gap-3 pb-1">
+        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500">
+          <Users size={16} />
+        </div>
+        <div>
+          <h3 className="text-sm font-semibold text-foreground leading-none">
+            Cài đặt người chơi
+          </h3>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Điều kiện tham gia giải đấu
+          </p>
+        </div>
+      </div>
 
-      {/* Row 1: maxPlayers + gender */}
-      <div className="grid grid-cols-2 gap-4">
-        <Field label="Số lượng người chơi tối đa" required>
+      {/* ── Grid: maxPlayers + gender ── */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="group rounded-xl p-3.5 hover:border-blue-300/50 transition-all duration-200">
+          <label className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+            Số người tối đa <span className="text-rose-400">*</span>
+          </label>
           <Controller
             name="maxPlayers"
             control={control}
@@ -729,9 +723,12 @@ const PlayersTab = ({
               </LSelect>
             )}
           />
-        </Field>
+        </div>
 
-        <Field label="Giới tính">
+        <div className="group rounded-xl p-3.5 hover:border-blue-300/50 transition-all duration-200">
+          <label className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+            Giới tính
+          </label>
           <Controller
             name="gender"
             control={control}
@@ -745,28 +742,73 @@ const PlayersTab = ({
               </LSelect>
             )}
           />
-        </Field>
+        </div>
       </div>
 
-      {/* Row 2: minAge + skillLevel */}
-      <div className="grid grid-cols-2 gap-4">
-        <Field label="Độ tuổi tối thiểu">
+      {/* ── Độ tuổi ── */}
+      <div className="rounded-xl p-3.5 transition-all duration-200">
+        <label className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+          Độ tuổi tối thiểu
+        </label>
+        <div className="relative max-w-[160px]">
           <LInput
             type="number"
             {...register("minAge", { valueAsNumber: true })}
             min="0"
+            className="pr-10"
           />
-        </Field>
-
-       
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+            tuổi
+          </span>
+        </div>
       </div>
 
-      {/* Row 3: Phân hạng */}
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <Field label="Phân hạng" noMargin>
-            <></>
-          </Field>
+      {/* ── Phân hạng card ── */}
+      <div
+        className={`
+          rounded-xl border transition-all duration-300 overflow-hidden
+          ${
+            hasRanking
+              ? "border-blue-400/40 bg-blue-500/5"
+              : "[border-color:rgba(255,255,255,0.2)]"
+          }
+        `}
+      >
+        {/* Top row */}
+        <div className="flex items-center justify-between p-4">
+          <div className="flex items-center gap-3">
+            {/* Icon */}
+            <div
+              className={`
+                flex items-center justify-center w-9 h-9 rounded-lg transition-colors duration-300
+                ${hasRanking ? "bg-blue-500 text-white" : "bg-muted text-muted-foreground"}
+              `}
+            >
+              <Trophy size={16} />
+            </div>
+
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold text-foreground">
+                  Chế độ phân hạng
+                </span>
+                <span
+                  className={`
+                    inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider transition-all duration-300
+                    ${hasRanking ? "bg-blue-500 text-white" : "bg-muted text-muted-foreground"}
+                  `}
+                >
+                  {hasRanking ? "Bật" : "Tắt"}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5 max-w-[280px] leading-relaxed">
+                {hasRanking
+                  ? "Người chơi cần có hạng khi đăng ký tham gia giải."
+                  : "Phù hợp giải phong trào, nội bộ không cần phân loại."}
+              </p>
+            </div>
+          </div>
+
           <Controller
             name="hasRanking"
             control={control}
@@ -774,32 +816,50 @@ const PlayersTab = ({
               <SwitchComp
                 checked={!!field.value}
                 onCheckedChange={field.onChange}
+                className="data-[state=checked]:bg-blue-500"
               />
             )}
           />
         </div>
 
-        {hasRanking ? (
-          <Controller
-            name="rankingClass"
-            control={control}
-            render={({ field }) => (
-              <LSelect value={field.value} onValueChange={field.onChange}>
-                {["CN", "A", "B", "C", "D", "E", "F", "G", "H", "I", "K"].map(
-                  (v) => (
-                    <LSelectItem key={v} value={v}>
-                      Hạng {v}
-                    </LSelectItem>
-                  ),
+        {/* Expanded: hạng giới hạn */}
+        {hasRanking && (
+          <div className="px-4 pb-4 animate-in fade-in slide-in-from-top-1 duration-200">
+            <div className="h-px bg-blue-200/60 mb-4" />
+
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-semibold text-muted-foreground whitespace-nowrap shrink-0">
+                Hạng giới hạn
+              </span>
+
+              {/* Visual ranking strip */}
+              <Controller
+                name="rankingClass"
+                control={control}
+                render={({ field }) => (
+                  <div className="flex flex-wrap gap-1.5">
+                    {RANKING_CLASSES.map((v) => (
+                      <button
+                        key={v}
+                        type="button"
+                        onClick={() => field.onChange(v)}
+                        className={`
+                          w-8 h-8 rounded-lg text-xs font-bold transition-all duration-150
+                          ${
+                            field.value === v
+                              ? "bg-blue-500 text-white shadow-md shadow-blue-200 scale-110"
+                              : "bg-muted border border-border text-muted-foreground hover:border-blue-300 hover:text-blue-500"
+                          }
+                        `}
+                      >
+                        {v}
+                      </button>
+                    ))}
+                  </div>
                 )}
-              </LSelect>
-            )}
-          />
-        ) : (
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Phù hợp với các giải có người chơi trình độ rất cao hoặc các giải
-            đấu nội bộ không cần phân loại theo hạng chính thức.
-          </p>
+              />
+            </div>
+          </div>
         )}
       </div>
     </div>
@@ -986,7 +1046,7 @@ const PlayersTab = ({
 export const Setting = () => {
   const { tournament } = useTournamentStore();
 
-  const { control, register, watch, reset, handleSubmit } = useForm<Tournament>(
+  const { control, setValue, register, watch, reset, handleSubmit } = useForm<Tournament>(
     {
       defaultValues: {} as Tournament,
     },
@@ -1198,6 +1258,7 @@ export const Setting = () => {
                   control={control}
                   register={register}
                   watch={watch}
+                  setValue={setValue}
                 />
               </Tabs.Content>
               <Tabs.Content
