@@ -1,0 +1,106 @@
+{
+  "app": {
+    "name": "Elite Gamer",
+    "subtitle": "Tournament Platform"
+  },
+
+  "common": {
+    "delete": "Delete"
+  },
+
+  "layout": {
+    "pageTitle": "Tournament Management",
+    "pageSubtitle": "Tournament Management / Live Statistics",
+    "notifications": "Notifications",
+    "favorites": "Favorites",
+    "menu": {
+      "tournaments": "Tournaments",
+      "ladder": "Leaderboard",
+      "brackets": "Brackets",
+      "players": "Players",
+      "archive": "Archive",
+      "settings": "Settings"
+    }
+  },
+
+  "tournament": {
+    "columns": {
+      "name": "Tournament Name",
+      "status": "Status",
+      "type": "Type",
+      "format": "Format",
+      "location": "Location",
+      "createdAt": "Created At",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "registeredPlayers": "Players",
+      "totalPrize": "Total Prize",
+      "actions": "Actions"
+    },
+    "status": {
+      "unspecified": "Not opened",
+      "registering": "Registering",
+      "registrationClosed": "Registration closed",
+      "started": "Started",
+      "running": "Running",
+      "finished": "Finished",
+      "cancelled": "Cancelled"
+    },
+    "type": {
+      "single": "Single",
+      "team": "Team"
+    },
+    "format": {
+      "unknown": "Unknown",
+      "8ball": "8 Ball",
+      "9ball": "9 Ball",
+      "10ball": "10 Ball"
+    },
+    "actions": {
+      "viewDetails": "View Details",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "saveSuccess": "Saved successfully!",
+      "saveError": "Failed to save!"
+    }
+  },
+
+  "createTournament": {
+    "trigger": "Quick Create Tournament",
+    "title": "Quick Create Tournament",
+    "description": "Create a new tournament in seconds",
+    "hint": {
+      "label": "Note:",
+      "message": "You can edit all tournament details later in",
+      "settings": "Settings"
+    },
+    "form": {
+      "name": "Tournament Name",
+      "namePlaceholder": "Enter your tournament name",
+      "nameError": "Please enter a tournament name"
+    }
+  },
+
+  "deleteConfirm": {
+    "message": "Are you sure you want to {action} this item?"
+  },
+
+  "agGrid": {
+    "equals": "Equals",
+    "notEqual": "Not equal",
+    "contains": "Contains",
+    "notContains": "Does not contain",
+    "startsWith": "Starts with",
+    "endsWith": "Ends with",
+    "blank": "Blank",
+    "notBlank": "Not blank",
+    "filterOoo": "Filter...",
+    "applyFilter": "Apply",
+    "clearFilter": "Clear filter",
+    "andCondition": "AND",
+    "orCondition": "OR",
+    "pageSize": "Page size"
+  }
+}

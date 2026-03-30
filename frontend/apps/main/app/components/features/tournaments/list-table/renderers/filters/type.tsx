@@ -1,6 +1,6 @@
-import type { IFilterParams } from "ag-grid-community";
-import { TypeMap } from "../../consts/map";
 import { TournamentType } from "@gd/proto/tournament/v1/tournament_pb";
+import type { IFilterParams } from "ag-grid-community";
+import { useTournamentMaps } from "../../consts/map";
 
 export const TypeFilter = defineComponent({
   name: "TypeFilter",
@@ -11,6 +11,7 @@ export const TypeFilter = defineComponent({
     },
   },
   setup(props) {
+    const { TypeMap } = useTournamentMaps();
     const selected = ref<string[]>([]);
 
     function isFilterActive() {

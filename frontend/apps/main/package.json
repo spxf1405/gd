@@ -12,6 +12,7 @@
   "dependencies": {
     "@gd/proto": "workspace:*",
     "@iconify/vue": "^5.0.0",
+    "@nuxtjs/i18n": "10.2.4",
     "@primeuix/themes": "^2.0.3",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/vue-query": "^5.92.5",

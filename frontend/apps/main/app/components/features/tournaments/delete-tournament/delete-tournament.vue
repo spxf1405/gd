@@ -7,6 +7,8 @@ import {
 } from "radix-vue";
 import { Icon } from "@iconify/vue";
 
+const { t } = useI18n();
+
 const emit = defineEmits<{
   (e: "confirm"): void;
 }>();
@@ -18,15 +20,13 @@ const handleConfirm = () => {
 
 <template>
   <PopoverRoot>
-    <!-- Trigger -->
     <PopoverTrigger
       class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-bold text-white transition-all duration-200 shadow-lg inline-flex items-center"
     >
       <Icon icon="lucide:trash-2" class="w-5 h-5 mr-2" />
-      Xoá
+      {{ t("common.delete") }}
     </PopoverTrigger>
 
-    <!-- Popover Content -->
     <PopoverContent
       class="z-50 w-72 bg-gradient-to-br from-[#0A1628] to-[#0D1624] border border-red-500/30 rounded-xl shadow-xl p-5 data-[state=open]:animate-in data-[state=closed]:animate-out"
       align="center"
@@ -37,17 +37,24 @@ const handleConfirm = () => {
           icon="lucide:alert-triangle"
           class="w-5 h-5 text-red-400 mt-0.5"
         />
-        <div class="text-sm text-gray-300 leading-relaxed">
-          Bạn có chắc chắn muốn
-          <span class="text-red-400 font-semibold">xoá</span> mục này?
-        </div>
+        <i18n-t
+          keypath="deleteConfirm.message"
+          tag="div"
+          class="text-sm text-gray-300 leading-relaxed"
+        >
+          <template #action>
+            <span class="text-red-400 font-semibold">{{
+              t("common.delete").toLowerCase()
+            }}</span>
+          </template>
+        </i18n-t>
       </div>
 
       <div class="flex gap-3">
         <PopoverClose
           class="flex-1 bg-white/10 hover:bg-white/20 border border-white/20 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-white"
         >
-          Huỷ
+          {{ t("tournament.actions.cancel") }}
         </PopoverClose>
 
         <button
@@ -55,19 +62,18 @@ const handleConfirm = () => {
           class="flex-1 bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 px-4 py-2 rounded-lg text-sm font-bold text-white transition-all duration-200 shadow-lg hover:shadow-red-500/20 flex items-center justify-center"
         >
           <Icon icon="lucide:trash-2" class="w-4 h-4 mr-2" />
-          Xoá
+          {{ t("common.delete") }}
         </button>
       </div>
-      
     </PopoverContent>
   </PopoverRoot>
 </template>
 
 <style scoped>
-.data- \[state\=open\] \:animate-in[data-state="open"] {
+.data-\[state\=open\]\:animate-in[data-state="open"] {
   animation: fadeIn 0.2s ease-out;
 }
-.data- \[state\=closed\] \:animate-out[data-state="closed"] {
+.data-\[state\=closed\]\:animate-out[data-state="closed"] {
   animation: fadeOut 0.15s ease-in;
 }
 @keyframes fadeIn {

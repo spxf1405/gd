@@ -1,11 +1,9 @@
 <template>
   <div class="min-h-screen bg-[#0B0E1A] text-white">
-    <!-- Fixed Header -->
     <header
       class="fixed top-0 left-0 right-0 h-16 bg-[#0B1224]/95 backdrop-blur-md border-b border-cyan-500/20 z-50 px-4"
     >
       <div class="h-full flex items-center justify-between max-w-full">
-        <!-- Logo -->
         <div class="flex items-center gap-3">
           <button
             @click="toggleSidebar"
@@ -22,15 +20,14 @@
             <div
               class="text-lg font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent"
             >
-              Elite Gamer
+              {{ t('app.name') }}
             </div>
             <div class="text-[10px] text-gray-400 uppercase tracking-wider">
-              Tournament Platform
+              {{ t('app.subtitle') }}
             </div>
           </div>
         </div>
 
-        <!-- Right Actions -->
         <div class="flex items-center gap-2">
           <button
             class="relative p-2 hover:bg-cyan-500/10 rounded-lg transition-colors hidden md:flex"
@@ -55,7 +52,6 @@
       </div>
     </header>
 
-    <!-- Sidebar Desktop -->
     <aside
       class="hidden lg:block fixed left-0 top-16 bottom-0 w-64 bg-[#0B1224]/50 border-r border-cyan-500/10 z-40"
     >
@@ -74,16 +70,13 @@
           <Icon
             :icon="item.icon"
             class="w-5 h-5 transition-colors"
-            :class="
-              $route.path === item.path ? 'text-cyan-400' : 'text-gray-400'
-            "
+            :class="$route.path === item.path ? 'text-cyan-400' : 'text-gray-400'"
           />
-          <span class="text-sm font-medium">{{ item.label }}</span>
+          <span class="text-sm font-medium">{{ t(item.labelKey) }}</span>
         </NuxtLink>
       </nav>
     </aside>
 
-    <!-- Mobile Drawer -->
     <DialogRoot v-model:open="sidebarOpen">
       <DialogPortal>
         <DialogOverlay
@@ -93,7 +86,6 @@
           class="fixed left-0 top-0 bottom-0 w-80 bg-[#0B1224] border-r border-cyan-500/20 z-50 lg:hidden pt-20 overflow-y-auto"
         >
           <div class="p-4">
-            <!-- User Info -->
             <div
               class="flex items-center gap-3 mb-6 p-4 bg-cyan-500/5 rounded-lg border border-cyan-500/10"
             >
@@ -108,7 +100,6 @@
               </div>
             </div>
 
-            <!-- Mobile Navigation -->
             <nav class="space-y-2">
               <NuxtLink
                 v-for="item in menuItems"
@@ -125,23 +116,18 @@
                 <Icon
                   :icon="item.icon"
                   class="w-5 h-5"
-                  :class="
-                    $route.path === item.path
-                      ? 'text-cyan-400'
-                      : 'text-gray-400'
-                  "
+                  :class="$route.path === item.path ? 'text-cyan-400' : 'text-gray-400'"
                 />
-                <span class="text-sm font-medium">{{ item.label }}</span>
+                <span class="text-sm font-medium">{{ t(item.labelKey) }}</span>
               </NuxtLink>
             </nav>
 
-            <!-- Mobile Actions -->
             <div class="mt-6 space-y-2">
               <button
                 class="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-400 hover:bg-cyan-500/10 hover:text-white transition-all"
               >
                 <Icon icon="lucide:bell" class="w-5 h-5" />
-                <span class="text-sm">Notifications</span>
+                <span class="text-sm">{{ t('layout.notifications') }}</span>
                 <span
                   v-if="notificationCount > 0"
                   class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full"
@@ -153,7 +139,7 @@
                 class="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-gray-400 hover:bg-cyan-500/10 hover:text-white transition-all"
               >
                 <Icon icon="lucide:star" class="w-5 h-5" />
-                <span class="text-sm">Favorites</span>
+                <span class="text-sm">{{ t('layout.favorites') }}</span>
               </button>
             </div>
           </div>
@@ -161,7 +147,6 @@
       </DialogPortal>
     </DialogRoot>
 
-    <!-- Main Content -->
     <main class="lg:ml-64 pt-16 min-h-screen flex flex-col">
       <div class="flex flex-col">
         <div class="flex items-center gap-4 p-4 h-24">
@@ -172,12 +157,12 @@
             <h1
               class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-white via-cyan-400 to-purple-400 bg-clip-text text-transparent"
             >
-              Quản lý giải đấu
+              {{ t('layout.pageTitle') }}
             </h1>
             <p
               class="text-[10px] text-gray-500 uppercase text-white tracking-[0.3em] font-bold mt-1 opacity-70"
             >
-              Tournament Management / Live Statistics
+              {{ t('layout.pageSubtitle') }}
             </p>
           </div>
         </div>
@@ -200,7 +185,8 @@ import {
   DialogContent,
 } from "radix-vue";
 
-// Reactive state
+const { t } = useI18n();
+
 const sidebarOpen = ref(false);
 const notificationCount = ref(3);
 
@@ -210,77 +196,33 @@ const user = ref({
 });
 
 const menuItems = [
-  {
-    path: "/admin/tournaments",
-    label: "Giải đấu",
-    icon: "lucide:trophy",
-  },
-  {
-    path: "/admin/ladder",
-    label: "Bảng xếp hạng",
-    icon: "lucide:layout-dashboard",
-  },
-  {
-    path: "/admin/brackets",
-    label: "Nhánh đấu",
-    icon: "lucide:layers",
-  },
-  {
-    path: "/admin/players",
-    label: "Cơ thủ",
-    icon: "lucide:users",
-  },
-  {
-    path: "/admin/archive",
-    label: "Lưu trữ",
-    icon: "lucide:archive",
-  },
-  {
-    path: "/admin/settings",
-    label: "Cài đặt",
-    icon: "lucide:settings",
-  },
+  { path: "/admin/tournaments", labelKey: "layout.menu.tournaments", icon: "lucide:trophy" },
+  { path: "/admin/ladder",      labelKey: "layout.menu.ladder",      icon: "lucide:layout-dashboard" },
+  { path: "/admin/brackets",    labelKey: "layout.menu.brackets",    icon: "lucide:layers" },
+  { path: "/admin/players",     labelKey: "layout.menu.players",     icon: "lucide:users" },
+  { path: "/admin/archive",     labelKey: "layout.menu.archive",     icon: "lucide:archive" },
+  { path: "/admin/settings",    labelKey: "layout.menu.settings",    icon: "lucide:settings" },
 ];
 
 const toggleSidebar = () => {
   sidebarOpen.value = !sidebarOpen.value;
 };
 
-// Close sidebar on route change
 const route = useRoute();
 watch(
   () => route.path,
-  () => {
-    sidebarOpen.value = false;
-  },
+  () => { sidebarOpen.value = false; },
 );
-
 </script>
 
 <style scoped>
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(6, 182, 212, 0.05);
-}
-
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: rgba(6, 182, 212, 0.05); }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    180deg,
-    rgba(6, 182, 212, 0.6),
-    rgba(139, 92, 246, 0.6)
-  );
+  background: linear-gradient(180deg, rgba(6, 182, 212, 0.6), rgba(139, 92, 246, 0.6));
   border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    180deg,
-    rgba(6, 182, 212, 0.8),
-    rgba(139, 92, 246, 0.8)
-  );
+  background: linear-gradient(180deg, rgba(6, 182, 212, 0.8), rgba(139, 92, 246, 0.8));
 }
 </style>

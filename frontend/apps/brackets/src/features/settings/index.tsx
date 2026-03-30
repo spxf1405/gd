@@ -1,37 +1,33 @@
-import React, { useEffect } from "react";
-import {
-  useForm,
-  Controller,
-  type Control,
-  type UseFormWatch,
-  type UseFormRegister,
-  type UseFormSetValue,
-} from "react-hook-form";
-import { Dialog, Tabs, Select, Tooltip, Separator, Switch } from "radix-ui";
-import {
-  X,
-  Trophy,
-  Info,
-  Calendar,
-  MapPin,
-  DollarSign,
-  Users,
-  Image as ImageIcon,
-  Upload,
-  Palette,
-  Settings,
-  ChevronDown,
-  Check,
-} from "lucide-react";
+import { CalendarPicker } from "@/components/ui/calendar";
 import { useTournamentStore } from "@/store/match";
 import {
   TournamentFormat,
   TournamentType,
   type Tournament,
 } from "@gd/proto/tournament/v1/tournament_pb";
-import { CalendarPicker } from "@/components/ui/calendar";
-import type { Message } from "@bufbuild/protobuf";
 import classnames from "classnames";
+import {
+  Calendar,
+  Check,
+  ChevronDown,
+  DollarSign,
+  Image as ImageIcon,
+  Info,
+  MapPin,
+  Settings,
+  Trophy,
+  Users,
+  X,
+} from "lucide-react";
+import { Dialog, Select, Separator, Switch, Tabs, Tooltip } from "radix-ui";
+import React, { useEffect } from "react";
+import {
+  Controller,
+  useForm,
+  type Control,
+  type UseFormRegister,
+  type UseFormWatch,
+} from "react-hook-form";
 import { PrizeDistributionTable } from "./tournament-settings/finance-distributiontable";
 
 const COLORS = {
@@ -539,8 +535,6 @@ const ScheduleTab = ({ register }) => (
   </div>
 );
 
-
-
 const INDIGO = "#6366f1";
 
 const FinanceTab = ({ control, register, watch, setValue }) => {
@@ -748,14 +742,23 @@ const PlayersTab = ({
       {/* ── Độ tuổi ── */}
       <div className="rounded-xl p-3.5 transition-all duration-200">
         <label className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-          Độ tuổi tối thiểu
+          Độ tuổi tối đa (Phù hợp các giải đấu giới hạn độ tuổi, ví dụ các giải
+          U, giải Junior....)
         </label>
         <div className="relative max-w-[160px]">
-          <LInput
-            type="number"
-            {...register("minAge", { valueAsNumber: true })}
-            min="0"
-            className="pr-10"
+          <Controller
+            name="maxAge"
+            control={control}
+            render={({ field }) => (
+              <LInput
+                type="number"
+                value={field.value ? String(field.value) : ""}
+                onChange={(e) => {
+                  const num = Number(e.target.value);
+                  field.onChange(num === 0 ? undefined : num);
+                }}
+              />
+            )}
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
             tuổi
@@ -804,7 +807,7 @@ const PlayersTab = ({
               <p className="text-xs text-muted-foreground mt-0.5 max-w-[280px] leading-relaxed">
                 {hasRanking
                   ? "Người chơi cần có hạng khi đăng ký tham gia giải."
-                  : "Phù hợp giải phong trào, nội bộ không cần phân loại."}
+                  : "Không phân hạng, đồng cơ."}
               </p>
             </div>
           </div>
@@ -834,7 +837,7 @@ const PlayersTab = ({
 
               {/* Visual ranking strip */}
               <Controller
-                name="rankingClass"
+                name="maxRankingClass"
                 control={control}
                 render={({ field }) => (
                   <div className="flex flex-wrap gap-1.5">
@@ -1046,11 +1049,10 @@ const PlayersTab = ({
 export const Setting = () => {
   const { tournament } = useTournamentStore();
 
-  const { control, setValue, register, watch, reset, handleSubmit } = useForm<Tournament>(
-    {
+  const { control, setValue, register, watch, reset, handleSubmit } =
+    useForm<Tournament>({
       defaultValues: {} as Tournament,
-    },
-  );
+    });
 
   useEffect(() => {
     if (tournament) {

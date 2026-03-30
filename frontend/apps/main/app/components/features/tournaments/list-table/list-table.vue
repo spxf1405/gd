@@ -1,5 +1,4 @@
 <script setup lang="tsx">
-import { ref, computed, watchEffect, toRaw } from "vue";
 import { create } from "@bufbuild/protobuf";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import {
@@ -7,15 +6,15 @@ import {
   ModuleRegistry,
   colorSchemeDarkBlue,
   themeQuartz,
-  type ColDef,
   type DomLayoutType,
   type FilterChangedEvent,
   type FilterModel,
   type GridReadyEvent,
   type RowClickedEvent,
-  type SortChangedEvent,
+  type SortChangedEvent
 } from "ag-grid-community";
 import { AgGridVue } from "ag-grid-vue3";
+import { computed, ref, toRaw, watchEffect } from "vue";
 
 import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 import {
@@ -28,7 +27,7 @@ import {
   type Filter,
 } from "@gd/proto/tournament/v1/tournament_service_pb";
 
-import { TournamentColumnDefs } from "./column-defs/column-defs";
+import { useTournamentColumnDefs } from "./column-defs/column-defs";
 import { mapFieldToSort, mapFieldToTournamentFilterBy } from "./utils/utils";
 
 import CreateTournamentButton from "../create-tournament/create-tournament-button.vue";
@@ -44,25 +43,27 @@ definePageMeta({
 const toast = useToast();
 const queryClient = useQueryClient();
 
-const columnDefs = ref<ColDef<Tournament>[]>(TournamentColumnDefs);
+const columnDefs = useTournamentColumnDefs();
 const domLayout = ref<DomLayoutType>("normal");
 
-const localeText = {
-  equals: "Bằng",
-  notEqual: "Không bằng",
-  contains: "Chứa",
-  notContains: "Không chứa",
-  startsWith: "Bắt đầu với",
-  endsWith: "Kết thúc với",
-  blank: "Trống",
-  notBlank: "Không trống",
-  filterOoo: "Lọc...",
-  applyFilter: "Áp dụng",
-  clearFilter: "Xóa lọc",
-  andCondition: "Và",
-  orCondition: "Hoặc",
-  pageSize: "Số bản ghi một trang",
-};
+  const { t } = useI18n()
+
+const localeText = computed(() => ({
+  equals: t('agGrid.equals'),
+  notEqual: t('agGrid.notEqual'),
+  contains: t('agGrid.contains'),
+  notContains: t('agGrid.notContains'),
+  startsWith: t('agGrid.startsWith'),
+  endsWith: t('agGrid.endsWith'),
+  blank: t('agGrid.blank'),
+  notBlank: t('agGrid.notBlank'),
+  filterOoo: t('agGrid.filterOoo'),
+  applyFilter: t('agGrid.applyFilter'),
+  clearFilter: t('agGrid.clearFilter'),
+  andCondition: t('agGrid.andCondition'),
+  orCondition: t('agGrid.orCondition'),
+  pageSize: t('agGrid.pageSize'),
+}))
 
 const myTheme = themeQuartz.withPart(colorSchemeDarkBlue).withParams({
   headerBackgroundColor: "transparent",

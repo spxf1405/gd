@@ -1,5 +1,5 @@
 import type { ICellRendererParams } from "ag-grid-community";
-import { TypeMap } from "../../consts/map";
+import { useTournamentMaps } from "../../consts/map";
 import type { TournamentType } from "@gd/proto/tournament/v1/tournament_pb";
 
 export const TypeCell = defineComponent({
@@ -11,15 +11,20 @@ export const TypeCell = defineComponent({
     },
   },
 
+  setup() {
+    const { t } = useI18n();
+    const { TypeMap } = useTournamentMaps();
+    return { t, TypeMap };
+  },
+
   render() {
     const type = this.params.data?.type;
 
-    console.log("type", type)
-
     const label =
       typeof type === "number"
-        ? (TypeMap[type as TournamentType] ?? "Không xác định")
-        : "Không xác định";
+        ? (this.TypeMap[type as TournamentType] ??
+          this.t("tournament.format.unknown"))
+        : this.t("tournament.format.unknown");
 
     return <span>{label}</span>;
   },

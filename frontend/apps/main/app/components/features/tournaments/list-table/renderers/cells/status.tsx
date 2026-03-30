@@ -1,5 +1,5 @@
 import type { ICellRendererParams } from "ag-grid-community";
-import { StatusMap } from "../../consts/map";
+import { useTournamentMaps } from "../../consts/map";
 import type { TournamentStatus } from "@gd/proto/tournament/v1/tournament_pb";
 
 export const StatusCell = defineComponent({
@@ -13,17 +13,23 @@ export const StatusCell = defineComponent({
     },
   },
 
+  setup() {
+    const { t } = useI18n();
+    const { StatusMap } = useTournamentMaps();
+    return { t, StatusMap };
+  },
+
   render() {
     const status = this.params.data?.status;
 
     const defaultStatus = {
-      label: "Không xác định",
+      label: this.t("tournament.status.unspecified"),
       color: "bg-gray-100 text-gray-500",
     };
 
     const statusInfo =
       typeof status === "number"
-        ? (StatusMap[status] ?? defaultStatus)
+        ? (this.StatusMap[status] ?? defaultStatus)
         : defaultStatus;
 
     return (

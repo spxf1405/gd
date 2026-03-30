@@ -1,6 +1,6 @@
 import { TournamentFormat } from "@gd/proto/tournament/v1/tournament_pb";
 import type { IFilterParams } from "ag-grid-community";
-import { FormatMap } from "../../consts/map";
+import { useTournamentMaps } from "../../consts/map";
 
 export const FormatFilter = defineComponent({
   name: "FormatFilter",
@@ -12,6 +12,7 @@ export const FormatFilter = defineComponent({
   },
   setup(props) {
     const selected = ref<string[]>([]);
+    const { FormatMap } = useTournamentMaps();
 
     function isFilterActive() {
       return selected.value.length > 0;

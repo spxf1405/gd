@@ -1,6 +1,6 @@
 import type { TournamentStatus } from "@gd/proto/tournament/v1/tournament_pb";
 import type { IFilterParams } from "ag-grid-community";
-import { StatusMap } from "../../consts/map";
+import { useTournamentMaps } from "../../consts/map";
 
 export const StatusFilter = defineComponent({
   name: "StatusFilter",
@@ -13,6 +13,7 @@ export const StatusFilter = defineComponent({
   },
 
   setup(props) {
+    const { StatusMap } = useTournamentMaps();
     const selected = ref<number[]>([]);
 
     const options = Object.entries(StatusMap).map(([key, value]) => ({

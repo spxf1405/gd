@@ -180,6 +180,55 @@ func (TournamentFormat) EnumDescriptor() ([]byte, []int) {
 	return file_tournament_v1_tournament_proto_rawDescGZIP(), []int{2}
 }
 
+type Gender int32
+
+const (
+	Gender_MALE              Gender = 0
+	Gender_FEMALE            Gender = 1
+	Gender_PREFER_NOT_TO_SAY Gender = 2
+)
+
+// Enum value maps for Gender.
+var (
+	Gender_name = map[int32]string{
+		0: "MALE",
+		1: "FEMALE",
+		2: "PREFER_NOT_TO_SAY",
+	}
+	Gender_value = map[string]int32{
+		"MALE":              0,
+		"FEMALE":            1,
+		"PREFER_NOT_TO_SAY": 2,
+	}
+)
+
+func (x Gender) Enum() *Gender {
+	p := new(Gender)
+	*p = x
+	return p
+}
+
+func (x Gender) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (Gender) Descriptor() protoreflect.EnumDescriptor {
+	return file_tournament_v1_tournament_proto_enumTypes[3].Descriptor()
+}
+
+func (Gender) Type() protoreflect.EnumType {
+	return &file_tournament_v1_tournament_proto_enumTypes[3]
+}
+
+func (x Gender) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use Gender.Descriptor instead.
+func (Gender) EnumDescriptor() ([]byte, []int) {
+	return file_tournament_v1_tournament_proto_rawDescGZIP(), []int{3}
+}
+
 type Player struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -243,7 +292,6 @@ type Tournament struct {
 	StartDate         *wrapperspb.StringValue `protobuf:"bytes,6,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
 	EndDate           *wrapperspb.StringValue `protobuf:"bytes,7,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
 	Location          *wrapperspb.StringValue `protobuf:"bytes,8,opt,name=location,proto3" json:"location,omitempty"`
-	Tables            *wrapperspb.Int32Value  `protobuf:"bytes,9,opt,name=tables,proto3" json:"tables,omitempty"`
 	TotalPrize        *wrapperspb.StringValue `protobuf:"bytes,10,opt,name=total_prize,json=totalPrize,proto3" json:"total_prize,omitempty"`
 	EntryFee          *wrapperspb.StringValue `protobuf:"bytes,11,opt,name=entry_fee,json=entryFee,proto3" json:"entry_fee,omitempty"`
 	MaxPlayers        *wrapperspb.Int32Value  `protobuf:"bytes,12,opt,name=max_players,json=maxPlayers,proto3" json:"max_players,omitempty"`
@@ -252,7 +300,11 @@ type Tournament struct {
 	CreatedAt         string                  `protobuf:"bytes,15,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdateAt          string                  `protobuf:"bytes,16,opt,name=update_at,json=updateAt,proto3" json:"update_at,omitempty"`
 	Description       *wrapperspb.StringValue `protobuf:"bytes,17,opt,name=description,proto3" json:"description,omitempty"`
-	RegisteredPlayers []*Player               `protobuf:"bytes,18,rep,name=registered_players,json=registeredPlayers,proto3" json:"registered_players,omitempty"`
+	MaxAge            int32                   `protobuf:"varint,18,opt,name=max_age,json=maxAge,proto3" json:"max_age,omitempty"`
+	HasRanking        bool                    `protobuf:"varint,19,opt,name=has_ranking,json=hasRanking,proto3" json:"has_ranking,omitempty"`
+	MaxRankingClass   *wrapperspb.StringValue `protobuf:"bytes,20,opt,name=max_ranking_class,json=maxRankingClass,proto3" json:"max_ranking_class,omitempty"`
+	Gender            Gender                  `protobuf:"varint,21,opt,name=gender,proto3,enum=tournament.v1.Gender" json:"gender,omitempty"`
+	RegisteredPlayers []*Player               `protobuf:"bytes,22,rep,name=registered_players,json=registeredPlayers,proto3" json:"registered_players,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -343,13 +395,6 @@ func (x *Tournament) GetLocation() *wrapperspb.StringValue {
 	return nil
 }
 
-func (x *Tournament) GetTables() *wrapperspb.Int32Value {
-	if x != nil {
-		return x.Tables
-	}
-	return nil
-}
-
 func (x *Tournament) GetTotalPrize() *wrapperspb.StringValue {
 	if x != nil {
 		return x.TotalPrize
@@ -406,6 +451,34 @@ func (x *Tournament) GetDescription() *wrapperspb.StringValue {
 	return nil
 }
 
+func (x *Tournament) GetMaxAge() int32 {
+	if x != nil {
+		return x.MaxAge
+	}
+	return 0
+}
+
+func (x *Tournament) GetHasRanking() bool {
+	if x != nil {
+		return x.HasRanking
+	}
+	return false
+}
+
+func (x *Tournament) GetMaxRankingClass() *wrapperspb.StringValue {
+	if x != nil {
+		return x.MaxRankingClass
+	}
+	return nil
+}
+
+func (x *Tournament) GetGender() Gender {
+	if x != nil {
+		return x.Gender
+	}
+	return Gender_MALE
+}
+
 func (x *Tournament) GetRegisteredPlayers() []*Player {
 	if x != nil {
 		return x.RegisteredPlayers
@@ -420,7 +493,7 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\x1etournament/v1/tournament.proto\x12\rtournament.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\",\n" +
 	"\x06Player\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\"\xbd\a\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\"\xbb\b\n" +
 	"\n" +
 	"Tournament\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
@@ -431,8 +504,7 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\n" +
 	"start_date\x18\x06 \x01(\v2\x1c.google.protobuf.StringValueR\tstartDate\x127\n" +
 	"\bend_date\x18\a \x01(\v2\x1c.google.protobuf.StringValueR\aendDate\x128\n" +
-	"\blocation\x18\b \x01(\v2\x1c.google.protobuf.StringValueR\blocation\x123\n" +
-	"\x06tables\x18\t \x01(\v2\x1b.google.protobuf.Int32ValueR\x06tables\x12=\n" +
+	"\blocation\x18\b \x01(\v2\x1c.google.protobuf.StringValueR\blocation\x12=\n" +
 	"\vtotal_prize\x18\n" +
 	" \x01(\v2\x1c.google.protobuf.StringValueR\n" +
 	"totalPrize\x129\n" +
@@ -444,8 +516,13 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x0f \x01(\tR\tcreatedAt\x12\x1b\n" +
 	"\tupdate_at\x18\x10 \x01(\tR\bupdateAt\x12>\n" +
-	"\vdescription\x18\x11 \x01(\v2\x1c.google.protobuf.StringValueR\vdescription\x12D\n" +
-	"\x12registered_players\x18\x12 \x03(\v2\x15.tournament.v1.PlayerR\x11registeredPlayers*\x82\x02\n" +
+	"\vdescription\x18\x11 \x01(\v2\x1c.google.protobuf.StringValueR\vdescription\x12\x17\n" +
+	"\amax_age\x18\x12 \x01(\x05R\x06maxAge\x12\x1f\n" +
+	"\vhas_ranking\x18\x13 \x01(\bR\n" +
+	"hasRanking\x12H\n" +
+	"\x11max_ranking_class\x18\x14 \x01(\v2\x1c.google.protobuf.StringValueR\x0fmaxRankingClass\x12-\n" +
+	"\x06gender\x18\x15 \x01(\x0e2\x15.tournament.v1.GenderR\x06gender\x12D\n" +
+	"\x12registered_players\x18\x16 \x03(\v2\x15.tournament.v1.PlayerR\x11registeredPlayers*\x82\x02\n" +
 	"\x10TournamentStatus\x12!\n" +
 	"\x1dTOURNAMENT_STATUS_UNSPECIFIED\x10\x00\x12!\n" +
 	"\x1dTOURNAMENT_STATUS_REGISTERING\x10\x01\x12)\n" +
@@ -460,7 +537,12 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\x10TournamentFormat\x12\x1a\n" +
 	"\x16TOURNAMENT_TYPE_8_BALL\x10\x00\x12\x1a\n" +
 	"\x16TOURNAMENT_TYPE_9_BALL\x10\x01\x12\x1b\n" +
-	"\x17TOURNAMENT_TYPE_10_BALL\x10\x02B1Z/backend/internal/gen/tournament/v1;tournamentpbb\x06proto3"
+	"\x17TOURNAMENT_TYPE_10_BALL\x10\x02*5\n" +
+	"\x06Gender\x12\b\n" +
+	"\x04MALE\x10\x00\x12\n" +
+	"\n" +
+	"\x06FEMALE\x10\x01\x12\x15\n" +
+	"\x11PREFER_NOT_TO_SAY\x10\x02B1Z/backend/internal/gen/tournament/v1;tournamentpbb\x06proto3"
 
 var (
 	file_tournament_v1_tournament_proto_rawDescOnce sync.Once
@@ -474,37 +556,39 @@ func file_tournament_v1_tournament_proto_rawDescGZIP() []byte {
 	return file_tournament_v1_tournament_proto_rawDescData
 }
 
-var file_tournament_v1_tournament_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_tournament_v1_tournament_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
 var file_tournament_v1_tournament_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_tournament_v1_tournament_proto_goTypes = []any{
 	(TournamentStatus)(0),          // 0: tournament.v1.TournamentStatus
 	(TournamentType)(0),            // 1: tournament.v1.TournamentType
 	(TournamentFormat)(0),          // 2: tournament.v1.TournamentFormat
-	(*Player)(nil),                 // 3: tournament.v1.Player
-	(*Tournament)(nil),             // 4: tournament.v1.Tournament
-	(*wrapperspb.StringValue)(nil), // 5: google.protobuf.StringValue
-	(*wrapperspb.Int32Value)(nil),  // 6: google.protobuf.Int32Value
+	(Gender)(0),                    // 3: tournament.v1.Gender
+	(*Player)(nil),                 // 4: tournament.v1.Player
+	(*Tournament)(nil),             // 5: tournament.v1.Tournament
+	(*wrapperspb.StringValue)(nil), // 6: google.protobuf.StringValue
+	(*wrapperspb.Int32Value)(nil),  // 7: google.protobuf.Int32Value
 }
 var file_tournament_v1_tournament_proto_depIdxs = []int32{
 	1,  // 0: tournament.v1.Tournament.type:type_name -> tournament.v1.TournamentType
 	2,  // 1: tournament.v1.Tournament.format:type_name -> tournament.v1.TournamentFormat
-	5,  // 2: tournament.v1.Tournament.format_description:type_name -> google.protobuf.StringValue
-	5,  // 3: tournament.v1.Tournament.start_date:type_name -> google.protobuf.StringValue
-	5,  // 4: tournament.v1.Tournament.end_date:type_name -> google.protobuf.StringValue
-	5,  // 5: tournament.v1.Tournament.location:type_name -> google.protobuf.StringValue
-	6,  // 6: tournament.v1.Tournament.tables:type_name -> google.protobuf.Int32Value
-	5,  // 7: tournament.v1.Tournament.total_prize:type_name -> google.protobuf.StringValue
-	5,  // 8: tournament.v1.Tournament.entry_fee:type_name -> google.protobuf.StringValue
-	6,  // 9: tournament.v1.Tournament.max_players:type_name -> google.protobuf.Int32Value
-	0,  // 10: tournament.v1.Tournament.status:type_name -> tournament.v1.TournamentStatus
-	5,  // 11: tournament.v1.Tournament.organizer:type_name -> google.protobuf.StringValue
-	5,  // 12: tournament.v1.Tournament.description:type_name -> google.protobuf.StringValue
-	3,  // 13: tournament.v1.Tournament.registered_players:type_name -> tournament.v1.Player
-	14, // [14:14] is the sub-list for method output_type
-	14, // [14:14] is the sub-list for method input_type
-	14, // [14:14] is the sub-list for extension type_name
-	14, // [14:14] is the sub-list for extension extendee
-	0,  // [0:14] is the sub-list for field type_name
+	6,  // 2: tournament.v1.Tournament.format_description:type_name -> google.protobuf.StringValue
+	6,  // 3: tournament.v1.Tournament.start_date:type_name -> google.protobuf.StringValue
+	6,  // 4: tournament.v1.Tournament.end_date:type_name -> google.protobuf.StringValue
+	6,  // 5: tournament.v1.Tournament.location:type_name -> google.protobuf.StringValue
+	6,  // 6: tournament.v1.Tournament.total_prize:type_name -> google.protobuf.StringValue
+	6,  // 7: tournament.v1.Tournament.entry_fee:type_name -> google.protobuf.StringValue
+	7,  // 8: tournament.v1.Tournament.max_players:type_name -> google.protobuf.Int32Value
+	0,  // 9: tournament.v1.Tournament.status:type_name -> tournament.v1.TournamentStatus
+	6,  // 10: tournament.v1.Tournament.organizer:type_name -> google.protobuf.StringValue
+	6,  // 11: tournament.v1.Tournament.description:type_name -> google.protobuf.StringValue
+	6,  // 12: tournament.v1.Tournament.max_ranking_class:type_name -> google.protobuf.StringValue
+	3,  // 13: tournament.v1.Tournament.gender:type_name -> tournament.v1.Gender
+	4,  // 14: tournament.v1.Tournament.registered_players:type_name -> tournament.v1.Player
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_tournament_v1_tournament_proto_init() }
@@ -517,7 +601,7 @@ func file_tournament_v1_tournament_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tournament_v1_tournament_proto_rawDesc), len(file_tournament_v1_tournament_proto_rawDesc)),
-			NumEnums:      3,
+			NumEnums:      4,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,

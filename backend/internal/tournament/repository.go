@@ -161,10 +161,14 @@ func (r *TournamentRepository) getTournaments(
 			"t.entry_fee",
 			"t.max_players",
 			"t.status",
+			"t.organizer",
 			"t.created_at",
 			"t.updated_at",
-			"t.organizer",
 			"t.description",
+			"t.max_age",
+			"t.has_ranking",
+			"t.max_ranking_class",
+			"t.gender",
 			`COALESCE(
 				json_agg(
 					json_build_object(
@@ -191,10 +195,14 @@ func (r *TournamentRepository) getTournaments(
 			t.entry_fee,
 			t.max_players,
 			t.status,
+			t.organizer,
 			t.created_at,
 			t.updated_at,
-			t.organizer,
-			t.description
+			t.description,
+			t.max_age,
+			t.has_ranking,
+			t.max_ranking_class,
+			t.gender
 		`)
 
 	qb = qb.Where(sq.Eq{"deleted_at": nil})
@@ -250,10 +258,11 @@ func (r *TournamentRepository) getTournaments(
 	for rows.Next() {
 		t := &tournamentpb.Tournament{}
 
-		var location, totalPrize, organizer, formatDescription, description sql.NullString
+		var location, totalPrize, organizer, formatDescription, description, entryFee sql.NullString
 		var createdAt, updatedAt time.Time
 		var startDate sql.NullTime
-		var max_players sql.NullInt32
+		var maxPlayers sql.NullInt32
+		var maxRankingClass sql.NullString
 
 		err := rows.Scan(
 			&t.Id,
@@ -265,15 +274,20 @@ func (r *TournamentRepository) getTournaments(
 			&t.EndDate,
 			&location,
 			&totalPrize,
-			&t.EntryFee,
-			&max_players,
+			&entryFee,
+			&maxPlayers,
 			&t.Status,
+			&organizer,
 			&createdAt,
 			&updatedAt,
-			&organizer,
 			&description,
+			&t.MaxAge,
+			&t.HasRanking,
+			&maxRankingClass,
+			&t.Gender,
 			&t.RegisteredPlayers,
 		)
+
 		if err != nil {
 			fmt.Println(err)
 			return nil, err
@@ -302,12 +316,16 @@ func (r *TournamentRepository) getTournaments(
 			t.TotalPrize = wrapperspb.String(totalPrize.String)
 		}
 
-		if max_players.Valid {
-			t.MaxPlayers = wrapperspb.Int32(max_players.Int32)
+		if maxPlayers.Valid {
+			t.MaxPlayers = wrapperspb.Int32(maxPlayers.Int32)
 		}
 
 		if organizer.Valid {
 			t.Organizer = wrapperspb.String(organizer.String)
+		}
+
+		if entryFee.Valid {
+			t.EntryFee = wrapperspb.String(entryFee.String)
 		}
 
 		tournaments = append(tournaments, t)
@@ -332,10 +350,14 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		"t.entry_fee",
 		"t.max_players",
 		"t.status",
+		"t.organizer",
 		"t.created_at",
 		"t.updated_at",
-		"t.organizer",
 		"t.description",
+		"t.max_age",
+		"t.has_ranking",
+		"t.max_ranking_class",
+		"t.gender",
 		`COALESCE(
 				json_agg(
 					json_build_object(
@@ -362,10 +384,14 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 			t.entry_fee,
 			t.max_players,
 			t.status,
+			t.organizer,
 			t.created_at,
 			t.updated_at,
-			t.organizer,
-			t.description
+			t.description,
+			t.max_age,
+			t.has_ranking,
+			t.max_ranking_class,
+			t.gender
 		`).
 		Where(sq.Eq{"t.id": id})
 
@@ -380,10 +406,10 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 
 	tournament := &tournamentpb.Tournament{}
 
-	var location, totalPrize, organizer, formatDescription, description sql.NullString
+	var location, totalPrize, organizer, formatDescription, description, entryFee, maxRankingClass sql.NullString
 	var createdAt, updatedAt time.Time
 	var startDate sql.NullTime
-	var max_players sql.NullInt32
+	var maxPlayers sql.NullInt32
 
 	err = row.Scan(
 		&tournament.Id,
@@ -395,15 +421,20 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		&tournament.EndDate,
 		&location,
 		&totalPrize,
-		&tournament.EntryFee,
-		&max_players,
+		&entryFee,
+		&maxPlayers,
 		&tournament.Status,
+		&organizer,
 		&createdAt,
 		&updatedAt,
-		&organizer,
 		&description,
+		&tournament.MaxAge,
+		&tournament.HasRanking,
+		&maxRankingClass,
+		&tournament.Gender,
 		&tournament.RegisteredPlayers,
 	)
+
 	if err != nil {
 		fmt.Println("err", err)
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -438,8 +469,20 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		tournament.Organizer = wrapperspb.String(organizer.String)
 	}
 
-	if max_players.Valid {
-		tournament.MaxPlayers = wrapperspb.Int32(max_players.Int32)
+	if maxPlayers.Valid {
+		tournament.MaxPlayers = wrapperspb.Int32(maxPlayers.Int32)
+	}
+
+	if maxPlayers.Valid {
+		tournament.MaxPlayers = wrapperspb.Int32(maxPlayers.Int32)
+	}
+
+	if maxRankingClass.Valid {
+		tournament.MaxRankingClass = wrapperspb.String(maxRankingClass.String)
+	}
+
+	if entryFee.Valid {
+		tournament.EntryFee = wrapperspb.String(entryFee.String)
 	}
 
 	return tournament, nil

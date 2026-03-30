@@ -14,9 +14,8 @@ import {
   SelectViewport,
 } from "radix-vue";
 import { defineComponent, ref } from "vue";
-import { StatusMap } from "../../consts/map";
+import { useTournamentMaps } from "../../consts/map";
 
-// ── Transition rules ───────────────────────────────────────────────────────
 const StatusTransitions: Partial<Record<TournamentStatus, TournamentStatus[]>> =
   {
     [TournamentStatus.UNSPECIFIED]: [
@@ -41,7 +40,6 @@ const StatusTransitions: Partial<Record<TournamentStatus, TournamentStatus[]>> =
       TournamentStatus.FINISHED,
       TournamentStatus.CANCELLED,
     ],
-    // FINISHED & CANCELLED — không thể chuyển tiếp
     [TournamentStatus.FINISHED]: [],
     [TournamentStatus.CANCELLED]: [],
   };
@@ -55,12 +53,13 @@ export const StatusEditor = defineComponent({
   },
 
   setup(props) {
+    const { StatusMap } = useTournamentMaps();
+    
     const currentStatus = (props.params.value ??
       TournamentStatus.UNSPECIFIED) as TournamentStatus;
     const value = ref(String(currentStatus));
     const open = ref(false);
 
-    // Chỉ lấy các status được phép chuyển từ status hiện tại
     const allowedStatuses = StatusTransitions[currentStatus] ?? [];
     const options = allowedStatuses.map((s) => ({
       value: String(s),
@@ -68,19 +67,17 @@ export const StatusEditor = defineComponent({
     }));
 
     const getValue = () => Number(value.value);
-
     const onChange = (val: string) => {
       value.value = val;
     };
 
-    return { value, open, options, getValue, onChange };
+    return { value, open, options, getValue, onChange, StatusMap };
   },
 
   render() {
     const currentStatus = Number(this.params.value) as TournamentStatus;
-    const currentInfo = StatusMap[currentStatus];
+    const currentInfo = this.StatusMap[currentStatus];
 
-    // Nếu không có options (FINISHED / CANCELLED), không cho edit
     if (this.options.length === 0) {
       return (
         <div class="w-full h-full flex items-center px-3">
@@ -126,7 +123,6 @@ export const StatusEditor = defineComponent({
           </SelectIcon>
         </SelectTrigger>
 
-        {/* Dropdown */}
         <SelectPortal>
           <SelectContent
             position="popper"

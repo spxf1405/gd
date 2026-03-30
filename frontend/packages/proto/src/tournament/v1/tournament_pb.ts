@@ -11,7 +11,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file tournament/v1/tournament.proto.
  */
 export const file_tournament_v1_tournament: GenFile = /*@__PURE__*/
-  fileDesc("Ch50b3VybmFtZW50L3YxL3RvdXJuYW1lbnQucHJvdG8SDXRvdXJuYW1lbnQudjEiIgoGUGxheWVyEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkiggYKClRvdXJuYW1lbnQSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRIrCgR0eXBlGAMgASgOMh0udG91cm5hbWVudC52MS5Ub3VybmFtZW50VHlwZRIvCgZmb3JtYXQYBCABKA4yHy50b3VybmFtZW50LnYxLlRvdXJuYW1lbnRGb3JtYXQSOAoSZm9ybWF0X2Rlc2NyaXB0aW9uGAUgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEjAKCnN0YXJ0X2RhdGUYBiABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSLgoIZW5kX2RhdGUYByABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSLgoIbG9jYXRpb24YCCABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSKwoGdGFibGVzGAkgASgLMhsuZ29vZ2xlLnByb3RvYnVmLkludDMyVmFsdWUSMQoLdG90YWxfcHJpemUYCiABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSLwoJZW50cnlfZmVlGAsgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEjAKC21heF9wbGF5ZXJzGAwgASgLMhsuZ29vZ2xlLnByb3RvYnVmLkludDMyVmFsdWUSLwoGc3RhdHVzGA0gASgOMh8udG91cm5hbWVudC52MS5Ub3VybmFtZW50U3RhdHVzEi8KCW9yZ2FuaXplchgOIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRISCgpjcmVhdGVkX2F0GA8gASgJEhEKCXVwZGF0ZV9hdBgQIAEoCRIxCgtkZXNjcmlwdGlvbhgRIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRIxChJyZWdpc3RlcmVkX3BsYXllcnMYEiADKAsyFS50b3VybmFtZW50LnYxLlBsYXllciqCAgoQVG91cm5hbWVudFN0YXR1cxIhCh1UT1VSTkFNRU5UX1NUQVRVU19VTlNQRUNJRklFRBAAEiEKHVRPVVJOQU1FTlRfU1RBVFVTX1JFR0lTVEVSSU5HEAESKQolVE9VUk5BTUVOVF9TVEFUVVNfUkVHSVNUUkFUSU9OX0NMT1NFRBACEh0KGVRPVVJOQU1FTlRfU1RBVFVTX1NUQVJURUQQAxIdChlUT1VSTkFNRU5UX1NUQVRVU19SVU5OSU5HEAQSHgoaVE9VUk5BTUVOVF9TVEFUVVNfRklOSVNIRUQQBRIfChtUT1VSTkFNRU5UX1NUQVRVU19DQU5DRUxMRUQQBipGCg5Ub3VybmFtZW50VHlwZRIaChZUT1VSTkFNRU5UX1RZUEVfU0lOR0xFEAASGAoUVE9VUk5BTUVOVF9UWVBFX1RFQU0QASpnChBUb3VybmFtZW50Rm9ybWF0EhoKFlRPVVJOQU1FTlRfVFlQRV84X0JBTEwQABIaChZUT1VSTkFNRU5UX1RZUEVfOV9CQUxMEAESGwoXVE9VUk5BTUVOVF9UWVBFXzEwX0JBTEwQAkIxWi9iYWNrZW5kL2ludGVybmFsL2dlbi90b3VybmFtZW50L3YxO3RvdXJuYW1lbnRwYmIGcHJvdG8z", [file_google_protobuf_timestamp, file_google_protobuf_wrappers]);
+  fileDesc("Ch50b3VybmFtZW50L3YxL3RvdXJuYW1lbnQucHJvdG8SDXRvdXJuYW1lbnQudjEiIgoGUGxheWVyEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAki2wYKClRvdXJuYW1lbnQSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRIrCgR0eXBlGAMgASgOMh0udG91cm5hbWVudC52MS5Ub3VybmFtZW50VHlwZRIvCgZmb3JtYXQYBCABKA4yHy50b3VybmFtZW50LnYxLlRvdXJuYW1lbnRGb3JtYXQSOAoSZm9ybWF0X2Rlc2NyaXB0aW9uGAUgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEjAKCnN0YXJ0X2RhdGUYBiABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSLgoIZW5kX2RhdGUYByABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSLgoIbG9jYXRpb24YCCABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSMQoLdG90YWxfcHJpemUYCiABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSLwoJZW50cnlfZmVlGAsgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEjAKC21heF9wbGF5ZXJzGAwgASgLMhsuZ29vZ2xlLnByb3RvYnVmLkludDMyVmFsdWUSLwoGc3RhdHVzGA0gASgOMh8udG91cm5hbWVudC52MS5Ub3VybmFtZW50U3RhdHVzEi8KCW9yZ2FuaXplchgOIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRISCgpjcmVhdGVkX2F0GA8gASgJEhEKCXVwZGF0ZV9hdBgQIAEoCRIxCgtkZXNjcmlwdGlvbhgRIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRIPCgdtYXhfYWdlGBIgASgFEhMKC2hhc19yYW5raW5nGBMgASgIEjcKEW1heF9yYW5raW5nX2NsYXNzGBQgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEiUKBmdlbmRlchgVIAEoDjIVLnRvdXJuYW1lbnQudjEuR2VuZGVyEjEKEnJlZ2lzdGVyZWRfcGxheWVycxgWIAMoCzIVLnRvdXJuYW1lbnQudjEuUGxheWVyKoICChBUb3VybmFtZW50U3RhdHVzEiEKHVRPVVJOQU1FTlRfU1RBVFVTX1VOU1BFQ0lGSUVEEAASIQodVE9VUk5BTUVOVF9TVEFUVVNfUkVHSVNURVJJTkcQARIpCiVUT1VSTkFNRU5UX1NUQVRVU19SRUdJU1RSQVRJT05fQ0xPU0VEEAISHQoZVE9VUk5BTUVOVF9TVEFUVVNfU1RBUlRFRBADEh0KGVRPVVJOQU1FTlRfU1RBVFVTX1JVTk5JTkcQBBIeChpUT1VSTkFNRU5UX1NUQVRVU19GSU5JU0hFRBAFEh8KG1RPVVJOQU1FTlRfU1RBVFVTX0NBTkNFTExFRBAGKkYKDlRvdXJuYW1lbnRUeXBlEhoKFlRPVVJOQU1FTlRfVFlQRV9TSU5HTEUQABIYChRUT1VSTkFNRU5UX1RZUEVfVEVBTRABKmcKEFRvdXJuYW1lbnRGb3JtYXQSGgoWVE9VUk5BTUVOVF9UWVBFXzhfQkFMTBAAEhoKFlRPVVJOQU1FTlRfVFlQRV85X0JBTEwQARIbChdUT1VSTkFNRU5UX1RZUEVfMTBfQkFMTBACKjUKBkdlbmRlchIICgRNQUxFEAASCgoGRkVNQUxFEAESFQoRUFJFRkVSX05PVF9UT19TQVkQAkIxWi9iYWNrZW5kL2ludGVybmFsL2dlbi90b3VybmFtZW50L3YxO3RvdXJuYW1lbnRwYmIGcHJvdG8z", [file_google_protobuf_timestamp, file_google_protobuf_wrappers]);
 
 /**
  * @generated from message tournament.v1.Player
@@ -82,11 +82,6 @@ export type Tournament = Message<"tournament.v1.Tournament"> & {
   location?: string;
 
   /**
-   * @generated from field: google.protobuf.Int32Value tables = 9;
-   */
-  tables?: number;
-
-  /**
    * @generated from field: google.protobuf.StringValue total_prize = 10;
    */
   totalPrize?: string;
@@ -127,7 +122,27 @@ export type Tournament = Message<"tournament.v1.Tournament"> & {
   description?: string;
 
   /**
-   * @generated from field: repeated tournament.v1.Player registered_players = 18;
+   * @generated from field: int32 max_age = 18;
+   */
+  maxAge: number;
+
+  /**
+   * @generated from field: bool has_ranking = 19;
+   */
+  hasRanking: boolean;
+
+  /**
+   * @generated from field: google.protobuf.StringValue max_ranking_class = 20;
+   */
+  maxRankingClass?: string;
+
+  /**
+   * @generated from field: tournament.v1.Gender gender = 21;
+   */
+  gender: Gender;
+
+  /**
+   * @generated from field: repeated tournament.v1.Player registered_players = 22;
    */
   registeredPlayers: Player[];
 };
@@ -233,4 +248,30 @@ export enum TournamentFormat {
  */
 export const TournamentFormatSchema: GenEnum<TournamentFormat> = /*@__PURE__*/
   enumDesc(file_tournament_v1_tournament, 2);
+
+/**
+ * @generated from enum tournament.v1.Gender
+ */
+export enum Gender {
+  /**
+   * @generated from enum value: MALE = 0;
+   */
+  MALE = 0,
+
+  /**
+   * @generated from enum value: FEMALE = 1;
+   */
+  FEMALE = 1,
+
+  /**
+   * @generated from enum value: PREFER_NOT_TO_SAY = 2;
+   */
+  PREFER_NOT_TO_SAY = 2,
+}
+
+/**
+ * Describes the enum tournament.v1.Gender.
+ */
+export const GenderSchema: GenEnum<Gender> = /*@__PURE__*/
+  enumDesc(file_tournament_v1_tournament, 3);
 

@@ -14,7 +14,7 @@ import {
   SelectViewport,
 } from "radix-vue";
 import { defineComponent, ref } from "vue";
-import { FormatMap } from "../../consts/map";
+import { useTournamentMaps } from "../../consts/map";
 
 export const FormatEditor = defineComponent({
   props: {
@@ -25,18 +25,16 @@ export const FormatEditor = defineComponent({
   },
 
   setup(props) {
-    // number -> string
+    const { FormatMap } = useTournamentMaps();
     const value = ref(String(props.params.value ?? ""));
     const open = ref(false);
 
-    // 👇 build options từ FormatMap
     const options = Object.entries(FormatMap).map(([key, label]) => ({
       value: String(key),
       label,
     }));
 
     const getValue = () => Number(value.value);
-
     const onChange = (val: string) => {
       value.value = val;
     };
@@ -58,7 +56,6 @@ export const FormatEditor = defineComponent({
         onUpdate:modelValue={this.onChange}
         onUpdate:open={(v: boolean) => (this.open = v)}
       >
-        {/* Trigger */}
         <SelectTrigger
           class="w-full h-full flex items-center justify-between p-4 rounded-[8px] 
           bg-white/[0.05] border border-white/[0.08] text-[13px] text-white 
@@ -66,11 +63,9 @@ export const FormatEditor = defineComponent({
           hover:bg-white/[0.08] hover:border-white/[0.14]
           focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/20"
         >
-          {/* 👇 fix hiển thị label */}
           <SelectValue>
-            {this.options.find(o => o.value === this.value)?.label}
+            {this.options.find((o) => o.value === this.value)?.label}
           </SelectValue>
-
           <SelectIcon class="text-[#5a6475] ml-2">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
               <path
@@ -84,7 +79,6 @@ export const FormatEditor = defineComponent({
           </SelectIcon>
         </SelectTrigger>
 
-        {/* Dropdown */}
         <SelectPortal>
           <SelectContent
             position="popper"
@@ -118,7 +112,6 @@ export const FormatEditor = defineComponent({
                       />
                     </svg>
                   </SelectItemIndicator>
-
                   <SelectItemText>{opt.label}</SelectItemText>
                 </SelectItem>
               ))}

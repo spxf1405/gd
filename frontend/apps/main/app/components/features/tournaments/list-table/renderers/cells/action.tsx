@@ -11,6 +11,8 @@ export const ActionCell = defineComponent({
   },
 
   setup(props) {
+    const { t } = useI18n();
+    
     const data = props.params.data;
     if (!data) return null;
 
@@ -60,10 +62,10 @@ export const ActionCell = defineComponent({
         console.log("updatedData", updatedData);
         // await tournamentClient.updateTournament({ ...updatedData });
 
-        toast.success("Lưu thành công!");
+        toast.success(t("tournament.actions.saveSuccess"));
         // queryClient.invalidateQueries({ queryKey: ["tournaments"] });
       } catch (error) {
-        toast.error("Lưu không thành công!");
+        toast.error(t("tournament.actions.saveError"));
         props.params.api.stopEditing(true);
       } finally {
         isSaving.value = false;
@@ -81,6 +83,7 @@ export const ActionCell = defineComponent({
       onEdit,
       onSave,
       onCancel,
+      t
     };
   },
 
@@ -96,7 +99,7 @@ export const ActionCell = defineComponent({
             onClick={this.viewDetails}
           >
             <Icon icon="mdi:eye" class="w-4 h-4" />
-            Chi tiết
+            {this.t("tournament.actions.viewDetails")}
           </button>
         
         {/* TODO: Sửa lại khi có thời gian, hiện tại ưu tiên hoàn thiện các cell editor trước */}
