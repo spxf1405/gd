@@ -55,7 +55,7 @@ message Tournament {
   google.protobuf.Int32Value  max_players        = 12;
   TournamentStatus            status             = 13;
   google.protobuf.StringValue organizer          = 14;
-  string                      created_at         = 15;
+  string                      created_at         = 15;  
   string                      update_at          = 16;
   google.protobuf.StringValue description        = 17;
   int32                       max_age            = 18;
@@ -63,4 +63,5 @@ message Tournament {
   google.protobuf.StringValue max_ranking_class  = 20;
   Gender                      gender             = 21;
   repeated Player             registered_players = 22;
-}
+  // Deleted_at deleted_at = 
+} 

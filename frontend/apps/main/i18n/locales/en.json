@@ -3,11 +3,9 @@
     "name": "Elite Gamer",
     "subtitle": "Tournament Platform"
   },
-
   "common": {
     "delete": "Delete"
   },
-
   "layout": {
     "pageTitle": "Tournament Management",
     "pageSubtitle": "Tournament Management / Live Statistics",
@@ -22,7 +20,6 @@
       "settings": "Settings"
     }
   },
-
   "tournament": {
     "columns": {
       "name": "Tournament Name",
@@ -66,7 +63,6 @@
       "saveError": "Failed to save!"
     }
   },
-
   "createTournament": {
     "trigger": "Quick Create Tournament",
     "title": "Quick Create Tournament",
@@ -82,11 +78,9 @@
       "nameError": "Please enter a tournament name"
     }
   },
-
   "deleteConfirm": {
     "message": "Are you sure you want to {action} this item?"
   },
-
   "agGrid": {
     "equals": "Equals",
     "notEqual": "Not equal",
@@ -102,5 +96,87 @@
     "andCondition": "AND",
     "orCondition": "OR",
     "pageSize": "Page size"
+  },
+  "settings": {
+    "trigger": "Cài đặt giải đấu",
+    "title": "Cài đặt giải đấu",
+    "description": "Tùy chỉnh thông tin và cài đặt cho giải đấu của bạn",
+    "navigation": "Navigation",
+    "systemStatus": {
+      "label": "All Systems Online",
+      "uptime": "99.9% uptime · 30d"
+    },
+    "lastSaved": "LAST SAVED · 14:32:07",
+    "close": "Đóng",
+    "cancel": "Huỷ bỏ",
+    "save": "Lưu thay đổi",
+    "saveTooltip": "Lưu tất cả thay đổi",
+    "tabs": {
+      "basic": {
+        "label": "Thông tin cơ bản",
+        "sub": "Basic Info"
+      },
+      "schedule": {
+        "label": "Lịch trình & Địa điểm",
+        "sub": "Schedule"
+      },
+      "finance": {
+        "label": "Tài chính",
+        "sub": "Finance"
+      },
+      "players": {
+        "label": "Người chơi",
+        "sub": "Players"
+      },
+      "media": {
+        "label": "Hình ảnh & Theme",
+        "sub": "Media"
+      }
+    },
+    "schedule": {
+      "title": "Lịch trình & Địa điểm",
+      "createdDate": "Ngày tạo",
+      "startDate": "Ngày bắt đầu",
+      "location": "Địa điểm tổ chức",
+      "locationPlaceholder": "VD: CLB Billard Golden, Hà Nội"
+    },
+    "finance": {
+      "title": "Tài chính",
+      "totalPrize": "Tổng giải thưởng (VNĐ)",
+      "totalPrizePlaceholder": "50000000",
+      "entryFee": "Lệ phí tham gia (VNĐ)",
+      "entryFeePlaceholder": "500000"
+    },
+    "players": {
+      "title": "Cài đặt người chơi",
+      "subtitle": "Điều kiện tham gia giải đấu",
+      "maxPlayers": "Số người tối đa",
+      "maxPlayersUnit": "người",
+      "gender": "Giới tính",
+      "maxAge": "Độ tuổi tối đa (Phù hợp các giải đấu giới hạn độ tuổi, ví dụ các giải U, giải Junior....)",
+      "maxAgeUnit": "tuổi",
+      "ranking": {
+        "title": "Chế độ phân hạng",
+        "enabled": "Bật",
+        "disabled": "Tắt",
+        "descriptionOn": "Người chơi cần có hạng khi đăng ký tham gia giải.",
+        "descriptionOff": "Không phân hạng, đồng cơ.",
+        "rankLimit": "Hạng giới hạn"
+      }
+    },
+    "options": {
+      "gender": {
+        "all": "Tất cả",
+        "male": "Nam",
+        "female": "Nữ"
+      },
+      "skillLevel": {
+        "all": "Tất cả",
+        "beginner": "Mới bắt đầu",
+        "intermediate": "Trung bình",
+        "advanced": "Nâng cao",
+        "professional": "Chuyên nghiệp"
+      }
+    }
   }
 }

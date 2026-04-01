@@ -18,7 +18,7 @@ export default defineNuxtConfig({
       { code: "en", language: "en-US", file: "en.json" },
     ],
     defaultLocale: "en",
-    langDir: "locales/",
+    langDir: "../../../shared/i18n/locales/"
   },
   plugins: ["~/plugins/vue-query.ts"],
 });

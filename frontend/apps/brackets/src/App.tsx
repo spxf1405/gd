@@ -4,18 +4,18 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Setting } from "./features/settings";
-import { BracketFlow } from "./features/settings/bracket-flow";
-import { PlayerMatchHistory } from "./features/settings/player-history";
-import { PlayersDialog } from "./features/settings/players";
-import RoundSelect from "./features/settings/round-select";
-import GamingCommandMenu from "./features/settings/search-form";
+import { BracketFlow } from "./features/configurations/bracket-flow";
+import { PlayerMatchHistory } from "./features/configurations/player-history";
+import { PlayersDialog } from "./features/configurations/players";
+import RoundSelect from "./features/configurations/round-select";
+import GamingCommandMenu from "./features/configurations/search-form";
 import { EventBus } from "./helper/event-bus";
 import { tournamentClient } from "./helper/service-client";
 import { useTournamentStore } from "./store/match";
 
 import "@xyflow/react/dist/style.css";
 import "./App.css";
+import { Setting } from "./features/configurations/settings/settings";
 
 const queryClient = new QueryClient();
 const bus = new EventBus();

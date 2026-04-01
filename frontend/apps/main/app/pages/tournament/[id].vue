@@ -309,7 +309,7 @@ watchEffect(() => {
 
                   <!-- Tournament Name -->
                   <h1 class="text-4xl lg:text-5xl font-bold mb-4 leading-tight">
-                    {{ tournament.name }}
+                    {{ tournament?.name }}
                   </h1>
 
                   <!-- Tournament Meta -->

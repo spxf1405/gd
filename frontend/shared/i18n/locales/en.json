@@ -1,0 +1,182 @@
+{
+  "app": {
+    "name": "Elite Gamer",
+    "subtitle": "Tournament Platform"
+  },
+  "common": {
+    "delete": "Delete"
+  },
+  "layout": {
+    "pageTitle": "Tournament Management",
+    "pageSubtitle": "Tournament Management / Live Statistics",
+    "notifications": "Notifications",
+    "favorites": "Favorites",
+    "menu": {
+      "tournaments": "Tournaments",
+      "ladder": "Leaderboard",
+      "brackets": "Brackets",
+      "players": "Players",
+      "archive": "Archive",
+      "settings": "Settings"
+    }
+  },
+  "tournament": {
+    "columns": {
+      "name": "Tournament Name",
+      "status": "Status",
+      "type": "Type",
+      "format": "Format",
+      "location": "Location",
+      "createdAt": "Created At",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "registeredPlayers": "Players",
+      "totalPrize": "Total Prize",
+      "actions": "Actions"
+    },
+    "status": {
+      "unspecified": "Not Opened",
+      "registering": "Registering",
+      "registrationClosed": "Registration Closed",
+      "started": "Started",
+      "running": "Running",
+      "finished": "Finished",
+      "cancelled": "Cancelled"
+    },
+    "type": {
+      "single": "Single",
+      "team": "Team"
+    },
+    "format": {
+      "unknown": "Unknown",
+      "8ball": "8 Ball",
+      "9ball": "9 Ball",
+      "10ball": "10 Ball"
+    },
+    "actions": {
+      "viewDetails": "View Details",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "saveSuccess": "Saved successfully!",
+      "saveError": "Failed to save!"
+    }
+  },
+  "createTournament": {
+    "trigger": "Quick Create Tournament",
+    "title": "Quick Create Tournament",
+    "description": "Create a new tournament in seconds",
+    "hint": {
+      "label": "Note:",
+      "message": "You can edit all tournament details later in",
+      "settings": "Settings"
+    },
+    "form": {
+      "name": "Tournament Name",
+      "namePlaceholder": "Enter your tournament name",
+      "nameError": "Please enter a tournament name"
+    }
+  },
+  "deleteConfirm": {
+    "message": "Are you sure you want to {action} this item?"
+  },
+  "agGrid": {
+    "equals": "Equals",
+    "notEqual": "Not equal",
+    "contains": "Contains",
+    "notContains": "Does not contain",
+    "startsWith": "Starts with",
+    "endsWith": "Ends with",
+    "blank": "Blank",
+    "notBlank": "Not blank",
+    "filterOoo": "Filter...",
+    "applyFilter": "Apply",
+    "clearFilter": "Clear filter",
+    "andCondition": "AND",
+    "orCondition": "OR",
+    "pageSize": "Page size"
+  },
+  "settings": {
+    "trigger": "Tournament Settings",
+    "title": "Tournament Settings",
+    "description": "Customize information and settings for your tournament",
+    "navigation": "Navigation",
+    "systemStatus": {
+      "label": "All Systems Online",
+      "uptime": "99.9% uptime · 30d"
+    },
+    "lastSaved": "LAST SAVED · 14:32:07",
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save Changes",
+    "saveTooltip": "Save all changes",
+    "tabs": {
+      "basic": {
+        "label": "Basic Information",
+        "sub": "Basic Info"
+      },
+      "schedule": {
+        "label": "Schedule & Location",
+        "sub": "Schedule"
+      },
+      "finance": {
+        "label": "Finance",
+        "sub": "Finance"
+      },
+      "players": {
+        "label": "Players",
+        "sub": "Players"
+      },
+      "media": {
+        "label": "Images & Theme",
+        "sub": "Media"
+      }
+    },
+    "schedule": {
+      "title": "Schedule & Location",
+      "createdDate": "Created Date",
+      "startDate": "Start Date",
+      "location": "Venue",
+      "locationPlaceholder": "e.g. Golden Billiard Club, Hanoi"
+    },
+    "finance": {
+      "title": "Finance",
+      "totalPrize": "Total Prize Pool (VND)",
+      "totalPrizePlaceholder": "50000000",
+      "entryFee": "Entry Fee (VND)",
+      "entryFeePlaceholder": "500000"
+    },
+    "players": {
+      "title": "Player Settings",
+      "subtitle": "Tournament participation requirements",
+      "maxPlayers": "Maximum Players",
+      "maxPlayersUnit": "players",
+      "gender": "Gender",
+      "maxAge": "Maximum Age (Suitable for age-restricted tournaments, e.g. Under-age, Junior tournaments...)",
+      "maxAgeUnit": "years old",
+      "ranking": {
+        "title": "Ranking Mode",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "descriptionOn": "Players must have a rank to register for the tournament.",
+        "descriptionOff": "No ranking required, open to all levels.",
+        "rankLimit": "Rank Limit"
+      }
+    },
+    "options": {
+      "gender": {
+        "all": "All",
+        "male": "Male",
+        "female": "Female"
+      },
+      "skillLevel": {
+        "all": "All",
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced",
+        "professional": "Professional"
+      }
+    }
+  }
+}
