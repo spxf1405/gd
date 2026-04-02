@@ -134,7 +134,7 @@ export const PlayersTab = ({
             </div>
 
             <div>
-              <div className="flex items-center gap-2">`z`
+              <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-foreground">
                   {t("settings.players.ranking.title")}
                 </span>

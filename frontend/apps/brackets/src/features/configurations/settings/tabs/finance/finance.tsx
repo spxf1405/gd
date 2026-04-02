@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { COLORS } from "../../consts/color";
 import { CurrencyHint, Field, LInput } from "../../consts/input";
 import { SectionHeader } from "../../header/tab-header";
-import { PrizeDistributionTable } from "@/features/configurations/settings/tabs/finance/finance-distributiontable";
+import { PrizeDistributionTable } from "@/features/configurations/settings/tabs/finance/prize-distributiontable";
 import {
   Controller,
   type Control,
@@ -24,7 +24,9 @@ export const FinanceTab = ({
   const { t } = useTranslation();
   const totalPrize = watch("totalPrize");
   const entryFee = watch("entryFee");
-  const prizes = watch("prizes") ?? [];
+  const prizeDistribution = watch("prizeDistribution") ?? [];
+
+  const totalPrizeInNumber = typeof totalPrize === "number" ? totalPrize : parseFloat(totalPrize || "0");
 
   return (
     <div className="flex flex-col gap-6">
@@ -61,13 +63,13 @@ export const FinanceTab = ({
         <CurrencyHint value={entryFee} />
       </Field>
 
-      {(totalPrize > 0 || prizes.length > 0) && (
+      {(totalPrizeInNumber > 0 || prizeDistribution.length > 0) && (
         <Controller
-          name="prizes"
+          name="prizeDistribution"
           control={control}
           render={({ field }) => (
             <PrizeDistributionTable
-              totalPrize={totalPrize || 0}
+              totalPrize={totalPrizeInNumber}
               value={field.value ?? []}
               onChange={field.onChange}
             />

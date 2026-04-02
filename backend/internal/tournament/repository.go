@@ -358,41 +358,42 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		"t.has_ranking",
 		"t.max_ranking_class",
 		"t.gender",
-		`COALESCE(
-				json_agg(
-					json_build_object(
-						'id', p.id,
-						'name', p.name
+		`COALESCE (
+			(
+				SELECT (
+					json_agg(
+						json_build_object(
+							'id', p.id,
+							'name', p.name
+						)
 					)
-				) FILTER (WHERE p.id IS NOT NULL),
-				'[]'
-			) AS registered_players`,
+				)
+				FROM registrations as r
+				JOIN players as p ON p.id = r.player_id
+				WHERE r.tournament_id = t.id
+			),
+			'[]'::json
+		) AS registered_players`,
+		"t.deleted_at",
+		`COALESCE (
+			(
+				SELECT json_agg(
+					json_build_object(
+						'id', pd.id,
+						'tournament_id', pd.tournament_id,
+						'name', pd.name,
+						'amount', pd.amount,
+						'display_order', pd.display_order
+					) ORDER BY pd.display_order ASC
+				)
+				FROM gdvn_prize_distribution as pd
+				WHERE pd.tournament_id = t.id
+			),
+			'[]'::json
+		) AS prize_distribution`,
 	).
 		From("tournaments t").
-		LeftJoin("registrations r ON r.tournament_id = t.id").
-		LeftJoin("players p ON p.id = r.player_id").
-		GroupBy(`
-			t.id,
-			t.name,
-			t.type,
-			t.format,
-			t.format_description,
-			t.start_date,
-			t.end_date,
-			t.location,
-			t.total_prize,
-			t.entry_fee,
-			t.max_players,
-			t.status,
-			t.organizer,
-			t.created_at,
-			t.updated_at,
-			t.description,
-			t.max_age,
-			t.has_ranking,
-			t.max_ranking_class,
-			t.gender
-		`).
+		Where(sq.Eq{"deleted_at": nil}).
 		Where(sq.Eq{"t.id": id})
 
 	query, args, err := queryBuilder.ToSql()
@@ -408,7 +409,7 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 
 	var location, totalPrize, organizer, formatDescription, description, entryFee, maxRankingClass sql.NullString
 	var createdAt, updatedAt time.Time
-	var startDate sql.NullTime
+	var startDate, deletedAt sql.NullTime
 	var maxPlayers sql.NullInt32
 
 	err = row.Scan(
@@ -433,6 +434,8 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		&maxRankingClass,
 		&tournament.Gender,
 		&tournament.RegisteredPlayers,
+		&deletedAt,
+		&tournament.PrizeDistribution,
 	)
 
 	if err != nil {
@@ -473,16 +476,16 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		tournament.MaxPlayers = wrapperspb.Int32(maxPlayers.Int32)
 	}
 
-	if maxPlayers.Valid {
-		tournament.MaxPlayers = wrapperspb.Int32(maxPlayers.Int32)
-	}
-
 	if maxRankingClass.Valid {
 		tournament.MaxRankingClass = wrapperspb.String(maxRankingClass.String)
 	}
 
 	if entryFee.Valid {
 		tournament.EntryFee = wrapperspb.String(entryFee.String)
+	}
+
+	if deletedAt.Valid {
+		tournament.DeletedAt = wrapperspb.String(deletedAt.Time.Format(time.RFC3339))
 	}
 
 	return tournament, nil

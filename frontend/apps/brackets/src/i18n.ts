@@ -9,6 +9,10 @@ i18n.use(initReactI18next).init({
     vi: { translation: vi },
     en: { translation: en },
   },
+   interpolation: {
+    prefix: "{",
+    suffix: "}",
+  },
   lng: 'en',
   fallbackLng: 'vi',
 });

@@ -114,7 +114,20 @@
     "tabs": {
       "basic": {
         "label": "Basic Information",
-        "sub": "Basic Info"
+        "sub": "Basic Info",
+        "sectionTitle": "Basic Information",
+        "fields": {
+          "name": "Tournament Name",
+          "namePlaceholder": "E.g. Hanoi 8-Ball Championship 2026",
+          "type": "Type",
+          "format": "Format",
+          "formatDescription": "Format Description",
+          "formatDescriptionPlaceholder": "E.g. Round Robin - Winner Break - WPA Rules",
+          "organizer": "Organizer",
+          "organizerPlaceholder": "E.g. Golden Billiard Club",
+          "description": "Tournament Description",
+          "descriptionPlaceholder": "Detailed description of the tournament..."
+        }
       },
       "schedule": {
         "label": "Schedule & Location",
@@ -146,6 +159,28 @@
       "totalPrizePlaceholder": "50000000",
       "entryFee": "Entry Fee (VND)",
       "entryFeePlaceholder": "500000"
+    },
+    "prizeDistribution": {
+      "title": "Prize Structure",
+      "columns": {
+        "rank": "#",
+        "name": "Prize",
+        "amount": "Value",
+        "percent": "%"
+      },
+      "placeholderName": "Prize #{rank}",
+      "empty": "No prizes yet. Press + to add.",
+      "add": "Add Prize",
+      "total": "Total:",
+      "budget": {
+        "over": "Exceeded {amount}",
+        "exact": "Budget met ✓",
+        "remaining": "Remaining {amount}"
+      },
+      "errors": {
+        "numbersOnly": "Numbers only",
+        "invalid": "Invalid value"
+      }
     },
     "players": {
       "title": "Player Settings",

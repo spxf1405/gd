@@ -11,7 +11,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file tournament/v1/tournament.proto.
  */
 export const file_tournament_v1_tournament: GenFile = /*@__PURE__*/
-  fileDesc("Ch50b3VybmFtZW50L3YxL3RvdXJuYW1lbnQucHJvdG8SDXRvdXJuYW1lbnQudjEiIgoGUGxheWVyEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAki2wYKClRvdXJuYW1lbnQSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRIrCgR0eXBlGAMgASgOMh0udG91cm5hbWVudC52MS5Ub3VybmFtZW50VHlwZRIvCgZmb3JtYXQYBCABKA4yHy50b3VybmFtZW50LnYxLlRvdXJuYW1lbnRGb3JtYXQSOAoSZm9ybWF0X2Rlc2NyaXB0aW9uGAUgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEjAKCnN0YXJ0X2RhdGUYBiABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSLgoIZW5kX2RhdGUYByABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSLgoIbG9jYXRpb24YCCABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSMQoLdG90YWxfcHJpemUYCiABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSLwoJZW50cnlfZmVlGAsgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEjAKC21heF9wbGF5ZXJzGAwgASgLMhsuZ29vZ2xlLnByb3RvYnVmLkludDMyVmFsdWUSLwoGc3RhdHVzGA0gASgOMh8udG91cm5hbWVudC52MS5Ub3VybmFtZW50U3RhdHVzEi8KCW9yZ2FuaXplchgOIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRISCgpjcmVhdGVkX2F0GA8gASgJEhEKCXVwZGF0ZV9hdBgQIAEoCRIxCgtkZXNjcmlwdGlvbhgRIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRIPCgdtYXhfYWdlGBIgASgFEhMKC2hhc19yYW5raW5nGBMgASgIEjcKEW1heF9yYW5raW5nX2NsYXNzGBQgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEiUKBmdlbmRlchgVIAEoDjIVLnRvdXJuYW1lbnQudjEuR2VuZGVyEjEKEnJlZ2lzdGVyZWRfcGxheWVycxgWIAMoCzIVLnRvdXJuYW1lbnQudjEuUGxheWVyKoICChBUb3VybmFtZW50U3RhdHVzEiEKHVRPVVJOQU1FTlRfU1RBVFVTX1VOU1BFQ0lGSUVEEAASIQodVE9VUk5BTUVOVF9TVEFUVVNfUkVHSVNURVJJTkcQARIpCiVUT1VSTkFNRU5UX1NUQVRVU19SRUdJU1RSQVRJT05fQ0xPU0VEEAISHQoZVE9VUk5BTUVOVF9TVEFUVVNfU1RBUlRFRBADEh0KGVRPVVJOQU1FTlRfU1RBVFVTX1JVTk5JTkcQBBIeChpUT1VSTkFNRU5UX1NUQVRVU19GSU5JU0hFRBAFEh8KG1RPVVJOQU1FTlRfU1RBVFVTX0NBTkNFTExFRBAGKkYKDlRvdXJuYW1lbnRUeXBlEhoKFlRPVVJOQU1FTlRfVFlQRV9TSU5HTEUQABIYChRUT1VSTkFNRU5UX1RZUEVfVEVBTRABKmcKEFRvdXJuYW1lbnRGb3JtYXQSGgoWVE9VUk5BTUVOVF9UWVBFXzhfQkFMTBAAEhoKFlRPVVJOQU1FTlRfVFlQRV85X0JBTEwQARIbChdUT1VSTkFNRU5UX1RZUEVfMTBfQkFMTBACKjUKBkdlbmRlchIICgRNQUxFEAASCgoGRkVNQUxFEAESFQoRUFJFRkVSX05PVF9UT19TQVkQAkIxWi9iYWNrZW5kL2ludGVybmFsL2dlbi90b3VybmFtZW50L3YxO3RvdXJuYW1lbnRwYmIGcHJvdG8z", [file_google_protobuf_timestamp, file_google_protobuf_wrappers]);
+  fileDesc("Ch50b3VybmFtZW50L3YxL3RvdXJuYW1lbnQucHJvdG8SDXRvdXJuYW1lbnQudjEiIgoGUGxheWVyEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkiawoRUHJpemVEaXN0cmlidXRpb24SCgoCaWQYASABKAkSFQoNdG91cm5hbWVudF9pZBgCIAEoCRIMCgRuYW1lGAMgASgJEhUKDWRpc3BsYXlfb3JkZXIYBCABKAUSDgoGYW1vdW50GAUgASgFIssHCgpUb3VybmFtZW50EgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSKwoEdHlwZRgDIAEoDjIdLnRvdXJuYW1lbnQudjEuVG91cm5hbWVudFR5cGUSLwoGZm9ybWF0GAQgASgOMh8udG91cm5hbWVudC52MS5Ub3VybmFtZW50Rm9ybWF0EjgKEmZvcm1hdF9kZXNjcmlwdGlvbhgFIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRIwCgpzdGFydF9kYXRlGAYgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEi4KCGVuZF9kYXRlGAcgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEi4KCGxvY2F0aW9uGAggASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEjEKC3RvdGFsX3ByaXplGAogASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEi8KCWVudHJ5X2ZlZRgLIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRIwCgttYXhfcGxheWVycxgMIAEoCzIbLmdvb2dsZS5wcm90b2J1Zi5JbnQzMlZhbHVlEi8KBnN0YXR1cxgNIAEoDjIfLnRvdXJuYW1lbnQudjEuVG91cm5hbWVudFN0YXR1cxIvCglvcmdhbml6ZXIYDiABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSEgoKY3JlYXRlZF9hdBgPIAEoCRIRCgl1cGRhdGVfYXQYECABKAkSMQoLZGVzY3JpcHRpb24YESABKAsyHC5nb29nbGUucHJvdG9idWYuU3RyaW5nVmFsdWUSDwoHbWF4X2FnZRgSIAEoBRITCgtoYXNfcmFua2luZxgTIAEoCBI3ChFtYXhfcmFua2luZ19jbGFzcxgUIAEoCzIcLmdvb2dsZS5wcm90b2J1Zi5TdHJpbmdWYWx1ZRIlCgZnZW5kZXIYFSABKA4yFS50b3VybmFtZW50LnYxLkdlbmRlchIxChJyZWdpc3RlcmVkX3BsYXllcnMYFiADKAsyFS50b3VybmFtZW50LnYxLlBsYXllchIwCgpkZWxldGVkX2F0GBcgASgLMhwuZ29vZ2xlLnByb3RvYnVmLlN0cmluZ1ZhbHVlEjwKEnByaXplX2Rpc3RyaWJ1dGlvbhgYIAMoCzIgLnRvdXJuYW1lbnQudjEuUHJpemVEaXN0cmlidXRpb24qggIKEFRvdXJuYW1lbnRTdGF0dXMSIQodVE9VUk5BTUVOVF9TVEFUVVNfVU5TUEVDSUZJRUQQABIhCh1UT1VSTkFNRU5UX1NUQVRVU19SRUdJU1RFUklORxABEikKJVRPVVJOQU1FTlRfU1RBVFVTX1JFR0lTVFJBVElPTl9DTE9TRUQQAhIdChlUT1VSTkFNRU5UX1NUQVRVU19TVEFSVEVEEAMSHQoZVE9VUk5BTUVOVF9TVEFUVVNfUlVOTklORxAEEh4KGlRPVVJOQU1FTlRfU1RBVFVTX0ZJTklTSEVEEAUSHwobVE9VUk5BTUVOVF9TVEFUVVNfQ0FOQ0VMTEVEEAYqRgoOVG91cm5hbWVudFR5cGUSGgoWVE9VUk5BTUVOVF9UWVBFX1NJTkdMRRAAEhgKFFRPVVJOQU1FTlRfVFlQRV9URUFNEAEqZwoQVG91cm5hbWVudEZvcm1hdBIaChZUT1VSTkFNRU5UX1RZUEVfOF9CQUxMEAASGgoWVE9VUk5BTUVOVF9UWVBFXzlfQkFMTBABEhsKF1RPVVJOQU1FTlRfVFlQRV8xMF9CQUxMEAIqNQoGR2VuZGVyEggKBE1BTEUQABIKCgZGRU1BTEUQARIVChFQUkVGRVJfTk9UX1RPX1NBWRACQjFaL2JhY2tlbmQvaW50ZXJuYWwvZ2VuL3RvdXJuYW1lbnQvdjE7dG91cm5hbWVudHBiYgZwcm90bzM", [file_google_protobuf_timestamp, file_google_protobuf_wrappers]);
 
 /**
  * @generated from message tournament.v1.Player
@@ -34,6 +34,43 @@ export type Player = Message<"tournament.v1.Player"> & {
  */
 export const PlayerSchema: GenMessage<Player> = /*@__PURE__*/
   messageDesc(file_tournament_v1_tournament, 0);
+
+/**
+ * @generated from message tournament.v1.PrizeDistribution
+ */
+export type PrizeDistribution = Message<"tournament.v1.PrizeDistribution"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string tournament_id = 2;
+   */
+  tournamentId: string;
+
+  /**
+   * @generated from field: string name = 3;
+   */
+  name: string;
+
+  /**
+   * @generated from field: int32 display_order = 4;
+   */
+  displayOrder: number;
+
+  /**
+   * @generated from field: int32 amount = 5;
+   */
+  amount: number;
+};
+
+/**
+ * Describes the message tournament.v1.PrizeDistribution.
+ * Use `create(PrizeDistributionSchema)` to create a new message.
+ */
+export const PrizeDistributionSchema: GenMessage<PrizeDistribution> = /*@__PURE__*/
+  messageDesc(file_tournament_v1_tournament, 1);
 
 /**
  * Thông tin giải đấu
@@ -145,6 +182,16 @@ export type Tournament = Message<"tournament.v1.Tournament"> & {
    * @generated from field: repeated tournament.v1.Player registered_players = 22;
    */
   registeredPlayers: Player[];
+
+  /**
+   * @generated from field: google.protobuf.StringValue deleted_at = 23;
+   */
+  deletedAt?: string;
+
+  /**
+   * @generated from field: repeated tournament.v1.PrizeDistribution prize_distribution = 24;
+   */
+  prizeDistribution: PrizeDistribution[];
 };
 
 /**
@@ -152,7 +199,7 @@ export type Tournament = Message<"tournament.v1.Tournament"> & {
  * Use `create(TournamentSchema)` to create a new message.
  */
 export const TournamentSchema: GenMessage<Tournament> = /*@__PURE__*/
-  messageDesc(file_tournament_v1_tournament, 1);
+  messageDesc(file_tournament_v1_tournament, 2);
 
 /**
  * Trạng thái giải đấu
