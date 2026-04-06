@@ -12,10 +12,9 @@ import GamingCommandMenu from "./features/configurations/search-form";
 import { EventBus } from "./helper/event-bus";
 import { tournamentClient } from "./helper/service-client";
 import { useTournamentStore } from "./store/match";
-
+import { Setting } from "./features/configurations/settings/settings";
 import "@xyflow/react/dist/style.css";
 import "./App.css";
-import { Setting } from "./features/configurations/settings/settings";
 
 const queryClient = new QueryClient();
 const bus = new EventBus();

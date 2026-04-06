@@ -1,5 +1,6 @@
 "use client";
 
+import { create } from "@bufbuild/protobuf";
 import {
   closestCenter,
   DndContext,
@@ -15,7 +16,10 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { PrizeDistribution } from "@gd/proto/tournament/v1/tournament_pb";
+import {
+  PrizeDistributionSchema,
+  type PrizeDistribution,
+} from "@gd/proto/tournament/v1/tournament_pb";
 import {
   createColumnHelper,
   flexRender,
@@ -26,6 +30,7 @@ import {
 import { AlertCircle, GripVertical, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { v4 } from "uuid";
 
 const INDIGO = "#6366f1";
 
@@ -34,9 +39,6 @@ interface Props {
   value: PrizeDistribution[];
   onChange: (rows: PrizeDistribution[]) => void;
 }
-
-let _uid = 0;
-const uid = () => `prize-${++_uid}-${Date.now()}`;
 
 const formatVND = (n: number) =>
   n > 0 ? n.toLocaleString("vi-VN") + " đ" : "—";
@@ -137,11 +139,10 @@ function SortableRow({
   total: number;
   totalPrize: number;
   onChangeLabel: (id: string, v: string) => void;
-  onChangeAmount: (id: string, v: string) => void;
+  onChangeAmount: (id: string, v: number) => void;
   onRemove: (id: string) => void;
   amountError: string | null;
 }) {
-  const { t } = useTranslation();
 
   const {
     attributes,
@@ -196,7 +197,7 @@ function SortableRow({
             value={row.original.amount}
             onChange={(e) => {
               const raw = e.target.value.replace(/[^\d]/g, "");
-              onChangeAmount(row.original.id, raw);
+              onChangeAmount(row.original.id, parseInt(raw || "0", 10));
             }}
             placeholder="0"
             className={`
@@ -335,14 +336,23 @@ export function PrizeDistributionTable({ totalPrize, value, onChange }: Props) {
     onChange(arrayMove(value, oldIdx, newIdx));
   };
 
-  const handleAdd = () =>
-    onChange([...value, { id: uid(), label: "", amount: "" }]);
+  const createNew = () => {
+    return create(PrizeDistributionSchema, {
+      id: v4(),
+      name: "",
+      amount: 0,
+      displayOrder: value.length + 1,
+      tournamentId: value[0].tournamentId,
+    });
+  };
+
+  const handleAdd = () => onChange([...value, createNew()]);
   const handleRemove = (id: string) =>
     onChange(value.filter((r) => r.id !== id));
   const handleChangeLabel = (id: string, v: string) => {
     onChange(value.map((r) => (r.id === id ? { ...r, name: v } : r)));
   };
-  const handleChangeAmount = (id: string, v: string) =>
+  const handleChangeAmount = (id: string, v: number) =>
     onChange(value.map((r) => (r.id === id ? { ...r, amount: v } : r)));
 
   const budgetLabel = isOverBudget

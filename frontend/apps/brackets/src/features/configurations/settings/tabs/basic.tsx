@@ -118,7 +118,7 @@ export const BasicTab = ({
               name="type"
               control={control}
               render={({ field }) => (
-                <Select.Root value={field.value.toString()} onValueChange={field.onChange}>
+                <Select.Root value={field.value?.toString()} onValueChange={field.onChange}>
                   <Select.Trigger
                     className={`${INPUT_BASE_CLS} flex items-center justify-between gap-2 cursor-pointer`}
                     style={INPUT_STYLE}
@@ -177,7 +177,7 @@ export const BasicTab = ({
               name="format"
               control={control}
               render={({ field }) => (
-                <Select.Root value={field.value.toString()} onValueChange={field.onChange}>
+                <Select.Root value={field.value?.toString()} onValueChange={field.onChange}>
                   <Select.Trigger
                     className={`${INPUT_BASE_CLS} flex items-center justify-between gap-2 cursor-pointer`}
                     style={INPUT_STYLE}

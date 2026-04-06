@@ -3,6 +3,7 @@ import { type Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 import {
   Calendar,
   DollarSign,
+  Grid2X2,
   Image as ImageIcon,
   Info,
   Settings,
@@ -17,6 +18,10 @@ import { useTranslation } from "react-i18next";
 import { COLORS } from "./consts/color";
 import { LTooltip } from "./consts/input";
 import { FinanceTab, BasicTab, ScheduleTab, PlayersTab } from "./tabs/tabs";
+import { UpdateTournamentRequestSchema } from "@gd/proto/tournament/v1/tournament_service_pb";
+import { create } from "@bufbuild/protobuf";
+import { tournamentClient } from "@/helper/service-client";
+import { FormatTab } from "./tabs/format";
 
 const TAB_CONFIG = (t: (key: string) => string) => [
   {
@@ -25,6 +30,13 @@ const TAB_CONFIG = (t: (key: string) => string) => [
     sub: t("settings.tabs.basic.sub"),
     icon: Info,
     accent: COLORS.green,
+  },
+  {
+    value: "format",
+    label: t("settings.tabs.format.label"),
+    sub: t("settings.tabs.format.sub"),
+    icon: Grid2X2,
+    accent: COLORS.bronze,  
   },
   {
     value: "schedule",
@@ -142,8 +154,15 @@ export const Setting = () => {
     }
   }, [tournament, reset]);
 
-  const onSubmit = (data: Tournament) => {
+  const onSubmit = async (data: Tournament) => {
+    console.log("data", { ...tournament, ...data });
+    const request = create(UpdateTournamentRequestSchema, {
+      tournament: { ...tournament, ...data },
+    });
+
+    const response = await tournamentClient.updateTournament(request);
     console.log("form data", data);
+    console.log("response", response);
   };
 
   const tabs = TAB_CONFIG(t);
@@ -329,6 +348,12 @@ export const Setting = () => {
                 className="outline-none p-10 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
               >
                 <BasicTab control={control} register={register} />
+              </Tabs.Content>
+              <Tabs.Content
+                value="format"
+                className="outline-none p-10 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
+              >
+                <FormatTab control={control} register={register} />
               </Tabs.Content>
               <Tabs.Content
                 value="schedule"

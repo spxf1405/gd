@@ -21,8 +21,10 @@
     "@bufbuild/protobuf": "^2.6.3",
     "@connectrpc/connect": "^2.1.1",
     "@connectrpc/connect-web": "^2.1.1",
+    "@dnd-kit/modifiers": "^9.0.0",
     "ag-grid-community": "^35.0.0",
     "classnames": "^2.5.1",
-    "dayjs": "^1.11.20"
+    "dayjs": "^1.11.20",
+    "tailwind-merge": "^3.5.0"
   }
 }

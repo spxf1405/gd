@@ -20,6 +20,39 @@
       "settings": "Settings"
     }
   },
+  "calendar": {
+    "selectDate": "Select a date",
+    "today": "Today",
+    "clear": "Clear",
+    "back": "Back",
+    "pickerMode": {
+      "month": "Month",
+      "year": "Year"
+    },
+    "months": [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ],
+    "weekdays": [
+      "Su",
+      "Mo",
+      "Tu",
+      "We",
+      "Th",
+      "Fr",
+      "Sa"
+    ]
+  },
   "tournament": {
     "columns": {
       "name": "Tournament Name",
@@ -127,6 +160,30 @@
           "organizerPlaceholder": "E.g. Golden Billiard Club",
           "description": "Tournament Description",
           "descriptionPlaceholder": "Detailed description of the tournament..."
+        }
+      },
+      "format": {
+        "label": "Format & Bracket",
+        "sub": "Format",
+        "sectionTitle": "Format & Bracket",
+        "bracketSection": "Bracket",
+        "fields": {
+          "type": "Type",
+          "format": "Format",
+          "formatDescription": "Format Description",
+          "formatDescriptionPlaceholder": "E.g. Round Robin - Winner Break - WPA Rules",
+          "bracketType": "Bracket Type",
+          "bracketDoubleElim": "Winner & Loser Bracket",
+          "maxPlayers": "Max Players",
+          "playersUnit": "players",
+          "advanceTo": "Advance To",
+          "final": "Final"
+        },
+        "info": {
+          "prefix": "With",
+          "rounds": "the bracket has {count} rounds",
+          "from": "from",
+          "to": "to"
         }
       },
       "schedule": {

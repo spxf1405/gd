@@ -988,6 +988,86 @@ func (x *DeleteTournamentResponse) GetDeletedAt() string {
 	return ""
 }
 
+type UpdateTournamentRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tournament    *Tournament            `protobuf:"bytes,1,opt,name=tournament,proto3" json:"tournament,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateTournamentRequest) Reset() {
+	*x = UpdateTournamentRequest{}
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateTournamentRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateTournamentRequest) ProtoMessage() {}
+
+func (x *UpdateTournamentRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateTournamentRequest.ProtoReflect.Descriptor instead.
+func (*UpdateTournamentRequest) Descriptor() ([]byte, []int) {
+	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *UpdateTournamentRequest) GetTournament() *Tournament {
+	if x != nil {
+		return x.Tournament
+	}
+	return nil
+}
+
+type UpdateTournamentResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateTournamentResponse) Reset() {
+	*x = UpdateTournamentResponse{}
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateTournamentResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateTournamentResponse) ProtoMessage() {}
+
+func (x *UpdateTournamentResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_tournament_v1_tournament_service_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateTournamentResponse.ProtoReflect.Descriptor instead.
+func (*UpdateTournamentResponse) Descriptor() ([]byte, []int) {
+	return file_tournament_v1_tournament_service_proto_rawDescGZIP(), []int{14}
+}
+
 var File_tournament_v1_tournament_service_proto protoreflect.FileDescriptor
 
 const file_tournament_v1_tournament_service_proto_rawDesc = "" +
@@ -1036,7 +1116,12 @@ const file_tournament_v1_tournament_service_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"9\n" +
 	"\x18DeleteTournamentResponse\x12\x1d\n" +
 	"\n" +
-	"deleted_at\x18\x01 \x01(\tR\tdeletedAt*\x82\x02\n" +
+	"deleted_at\x18\x01 \x01(\tR\tdeletedAt\"T\n" +
+	"\x17UpdateTournamentRequest\x129\n" +
+	"\n" +
+	"tournament\x18\x01 \x01(\v2\x19.tournament.v1.TournamentR\n" +
+	"tournament\"\x1a\n" +
+	"\x18UpdateTournamentResponse*\x82\x02\n" +
 	"\x12TournamentFilterBy\x12$\n" +
 	" TOURNAMENT_FILTER_BY_UNSPECIFIED\x10\x00\x12\x1d\n" +
 	"\x19TOURNAMENT_FILTER_BY_NAME\x10\x01\x12\x1d\n" +
@@ -1072,10 +1157,11 @@ const file_tournament_v1_tournament_service_proto_rawDesc = "" +
 	"\aBETWEEN\x10\v\x12\v\n" +
 	"\aIS_NULL\x10\f\x12\x0f\n" +
 	"\vIS_NOT_NULL\x10\r\x12\a\n" +
-	"\x03SET\x10\x0e2\xab\x03\n" +
+	"\x03SET\x10\x0e2\x90\x04\n" +
 	"\x11TournamentService\x12d\n" +
 	"\x0eGetTournaments\x12+.tournament.v1.GetTournamentsRequestWrapper\x1a%.tournament.v1.GetTournamentsResponse\x12f\n" +
 	"\x11GetTournamentByID\x12'.tournament.v1.GetTournamentByIDRequest\x1a(.tournament.v1.GetTournamentByIDResponse\x12c\n" +
+	"\x10UpdateTournament\x12&.tournament.v1.UpdateTournamentRequest\x1a'.tournament.v1.UpdateTournamentResponse\x12c\n" +
 	"\x10CreateTournament\x12&.tournament.v1.CreateTournamentRequest\x1a'.tournament.v1.CreateTournamentResponse\x12c\n" +
 	"\x10DeleteTournament\x12&.tournament.v1.DeleteTournamentRequest\x1a'.tournament.v1.DeleteTournamentResponseB1Z/backend/internal/gen/tournament/v1;tournamentpbb\x06proto3"
 
@@ -1092,7 +1178,7 @@ func file_tournament_v1_tournament_service_proto_rawDescGZIP() []byte {
 }
 
 var file_tournament_v1_tournament_service_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_tournament_v1_tournament_service_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_tournament_v1_tournament_service_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_tournament_v1_tournament_service_proto_goTypes = []any{
 	(TournamentFilterBy)(0),              // 0: tournament.v1.TournamentFilterBy
 	(TournamentSortBy)(0),                // 1: tournament.v1.TournamentSortBy
@@ -1111,8 +1197,10 @@ var file_tournament_v1_tournament_service_proto_goTypes = []any{
 	(*CreateTournamentResponse)(nil),     // 14: tournament.v1.CreateTournamentResponse
 	(*DeleteTournamentRequest)(nil),      // 15: tournament.v1.DeleteTournamentRequest
 	(*DeleteTournamentResponse)(nil),     // 16: tournament.v1.DeleteTournamentResponse
-	(*Tournament)(nil),                   // 17: tournament.v1.Tournament
-	(*emptypb.Empty)(nil),                // 18: google.protobuf.Empty
+	(*UpdateTournamentRequest)(nil),      // 17: tournament.v1.UpdateTournamentRequest
+	(*UpdateTournamentResponse)(nil),     // 18: tournament.v1.UpdateTournamentResponse
+	(*Tournament)(nil),                   // 19: tournament.v1.Tournament
+	(*emptypb.Empty)(nil),                // 20: google.protobuf.Empty
 }
 var file_tournament_v1_tournament_service_proto_depIdxs = []int32{
 	4,  // 0: tournament.v1.FilterValue.string_list:type_name -> tournament.v1.StringList
@@ -1123,23 +1211,26 @@ var file_tournament_v1_tournament_service_proto_depIdxs = []int32{
 	7,  // 5: tournament.v1.GetTournamentsRequest.filters:type_name -> tournament.v1.Filter
 	1,  // 6: tournament.v1.GetTournamentsRequest.sort_by:type_name -> tournament.v1.TournamentSortBy
 	2,  // 7: tournament.v1.GetTournamentsRequest.sort_order:type_name -> tournament.v1.SortOrder
-	17, // 8: tournament.v1.GetTournamentsResponse.tournaments:type_name -> tournament.v1.Tournament
-	18, // 9: tournament.v1.GetTournamentsRequestWrapper.empty:type_name -> google.protobuf.Empty
+	19, // 8: tournament.v1.GetTournamentsResponse.tournaments:type_name -> tournament.v1.Tournament
+	20, // 9: tournament.v1.GetTournamentsRequestWrapper.empty:type_name -> google.protobuf.Empty
 	8,  // 10: tournament.v1.GetTournamentsRequestWrapper.query:type_name -> tournament.v1.GetTournamentsRequest
-	17, // 11: tournament.v1.GetTournamentByIDResponse.tournament:type_name -> tournament.v1.Tournament
-	10, // 12: tournament.v1.TournamentService.GetTournaments:input_type -> tournament.v1.GetTournamentsRequestWrapper
-	11, // 13: tournament.v1.TournamentService.GetTournamentByID:input_type -> tournament.v1.GetTournamentByIDRequest
-	13, // 14: tournament.v1.TournamentService.CreateTournament:input_type -> tournament.v1.CreateTournamentRequest
-	15, // 15: tournament.v1.TournamentService.DeleteTournament:input_type -> tournament.v1.DeleteTournamentRequest
-	9,  // 16: tournament.v1.TournamentService.GetTournaments:output_type -> tournament.v1.GetTournamentsResponse
-	12, // 17: tournament.v1.TournamentService.GetTournamentByID:output_type -> tournament.v1.GetTournamentByIDResponse
-	14, // 18: tournament.v1.TournamentService.CreateTournament:output_type -> tournament.v1.CreateTournamentResponse
-	16, // 19: tournament.v1.TournamentService.DeleteTournament:output_type -> tournament.v1.DeleteTournamentResponse
-	16, // [16:20] is the sub-list for method output_type
-	12, // [12:16] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	19, // 11: tournament.v1.GetTournamentByIDResponse.tournament:type_name -> tournament.v1.Tournament
+	19, // 12: tournament.v1.UpdateTournamentRequest.tournament:type_name -> tournament.v1.Tournament
+	10, // 13: tournament.v1.TournamentService.GetTournaments:input_type -> tournament.v1.GetTournamentsRequestWrapper
+	11, // 14: tournament.v1.TournamentService.GetTournamentByID:input_type -> tournament.v1.GetTournamentByIDRequest
+	17, // 15: tournament.v1.TournamentService.UpdateTournament:input_type -> tournament.v1.UpdateTournamentRequest
+	13, // 16: tournament.v1.TournamentService.CreateTournament:input_type -> tournament.v1.CreateTournamentRequest
+	15, // 17: tournament.v1.TournamentService.DeleteTournament:input_type -> tournament.v1.DeleteTournamentRequest
+	9,  // 18: tournament.v1.TournamentService.GetTournaments:output_type -> tournament.v1.GetTournamentsResponse
+	12, // 19: tournament.v1.TournamentService.GetTournamentByID:output_type -> tournament.v1.GetTournamentByIDResponse
+	18, // 20: tournament.v1.TournamentService.UpdateTournament:output_type -> tournament.v1.UpdateTournamentResponse
+	14, // 21: tournament.v1.TournamentService.CreateTournament:output_type -> tournament.v1.CreateTournamentResponse
+	16, // 22: tournament.v1.TournamentService.DeleteTournament:output_type -> tournament.v1.DeleteTournamentResponse
+	18, // [18:23] is the sub-list for method output_type
+	13, // [13:18] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_tournament_v1_tournament_service_proto_init() }
@@ -1163,7 +1254,7 @@ func file_tournament_v1_tournament_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tournament_v1_tournament_service_proto_rawDesc), len(file_tournament_v1_tournament_service_proto_rawDesc)),
 			NumEnums:      4,
-			NumMessages:   13,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

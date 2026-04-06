@@ -68,10 +68,10 @@ export const ScheduleTab = ({
       />
       <div className="grid grid-cols-2 gap-4">
         <Field label={t("settings.schedule.createdDate")} required>
-          <CalendarPicker />
+          <CalendarPicker iconClassName="text-amber-500" />
         </Field>
         <Field label={t("settings.schedule.startDate")} required>
-          <CalendarPicker />
+          <CalendarPicker iconClassName="text-amber-500" />
         </Field>
       </div>
       <Field label={t("settings.schedule.location")} required>

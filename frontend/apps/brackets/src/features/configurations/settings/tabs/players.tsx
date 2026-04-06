@@ -132,7 +132,6 @@ export const PlayersTab = ({
             >
               <Trophy size={16} />
             </div>
-
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-foreground">
@@ -149,7 +148,7 @@ export const PlayersTab = ({
                     : t("settings.players.ranking.disabled")}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground mt-0.5 max-w-[280px] leading-relaxed">
+              <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
                 {hasRanking
                   ? t("settings.players.ranking.descriptionOn")
                   : t("settings.players.ranking.descriptionOff")}
@@ -173,38 +172,58 @@ export const PlayersTab = ({
         {hasRanking && (
           <div className="px-4 pb-4 animate-in fade-in slide-in-from-top-1 duration-200">
             <div className="h-px bg-blue-200/60 mb-4" />
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-4">
+              {t("settings.players.ranking.rankLimit")}
+            </p>
+            <Controller
+              name="maxRankingClass"
+              control={control}
+              render={({ field }) => {
+                const index = RANKING_CLASSES.indexOf(
+                  field.value ?? RANKING_CLASSES[0]
+                );
+                const currentIndex = index === -1 ? 0 : index;
 
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-semibold text-muted-foreground whitespace-nowrap shrink-0">
-                {t("settings.players.ranking.rankLimit")}
-              </span>
-
-              <Controller
-                name="maxRankingClass"
-                control={control}
-                render={({ field }) => (
-                  <div className="flex flex-wrap gap-1.5">
-                    {RANKING_CLASSES.map((v) => (
-                      <button
-                        key={v}
-                        type="button"
-                        onClick={() => field.onChange(v)}
-                        className={`
-                          w-8 h-8 rounded-lg text-xs font-bold transition-all duration-150
-                          ${
-                            field.value === v
-                              ? "bg-blue-500 text-white shadow-md shadow-blue-200 scale-110"
-                              : "bg-muted border border-border text-muted-foreground hover:border-blue-300 hover:text-blue-500"
-                          }
-                        `}
-                      >
-                        {v}
-                      </button>
-                    ))}
+                return (
+                  <div className="space-y-3">
+                    <input
+                      type="range"
+                      min={0}
+                      max={RANKING_CLASSES.length - 1}
+                      step={1}
+                      value={currentIndex}
+                      onChange={(e) =>
+                        field.onChange(RANKING_CLASSES[Number(e.target.value)])
+                      }
+                      className="w-full accent-blue-600 cursor-pointer"
+                    />
+                    <div className="flex justify-between">
+                      {RANKING_CLASSES.map((v) => (
+                        <span
+                          key={v}
+                          className={`text-[11px] font-medium transition-colors ${
+                            v === field.value
+                              ? "text-blue-500"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {v}
+                        </span>
+                      ))}
+                    </div>
+                    {field.value && (
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/30 text-blue-500 text-xs font-semibold">
+                        <span>≤</span>
+                        <span>{field.value}</span>
+                        <span className="text-blue-400 font-normal">
+                          rank required
+                        </span>
+                      </div>
+                    )}
                   </div>
-                )}
-              />
-            </div>
+                );
+              }}
+            />
           </div>
         )}
       </div>

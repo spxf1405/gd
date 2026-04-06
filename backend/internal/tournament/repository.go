@@ -368,8 +368,8 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 						)
 					)
 				)
-				FROM registrations as r
-				JOIN players as p ON p.id = r.player_id
+				FROM gd_registrations as r
+				JOIN gd_players as p ON p.id = r.player_id
 				WHERE r.tournament_id = t.id
 			),
 			'[]'::json
@@ -386,13 +386,13 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 						'display_order', pd.display_order
 					) ORDER BY pd.display_order ASC
 				)
-				FROM gdvn_prize_distribution as pd
+				FROM gd_prize_distributions as pd
 				WHERE pd.tournament_id = t.id
 			),
 			'[]'::json
-		) AS prize_distribution`,
+		) AS prize_distributions`,
 	).
-		From("tournaments t").
+		From("gd_tournaments t").
 		Where(sq.Eq{"deleted_at": nil}).
 		Where(sq.Eq{"t.id": id})
 
@@ -435,7 +435,7 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		&tournament.Gender,
 		&tournament.RegisteredPlayers,
 		&deletedAt,
-		&tournament.PrizeDistribution,
+		&tournament.PrizeDistributions,
 	)
 
 	if err != nil {
@@ -495,12 +495,11 @@ func (r *TournamentRepository) createTournament(
 	ctx context.Context,
 	name string,
 ) (uuid.UUID, error) {
-
 	if r.DB == nil || r.DB.Pool == nil {
 		panic("DB pool is nil")
 	}
 
-	query := `INSERT INTO tournaments (name) VALUES ($1) RETURNING id`
+	query := `INSERT INTO gd_tournaments (name) VALUES ($1) RETURNING id`
 
 	var id uuid.UUID
 	err := r.DB.Pool.QueryRow(ctx, query, name).Scan(&id)
@@ -509,6 +508,130 @@ func (r *TournamentRepository) createTournament(
 	}
 
 	return id, nil
+}
+
+func (r *TournamentRepository) UpdateTournament(
+	ctx context.Context,
+	tournament *tournamentpb.Tournament,
+) error {
+	if r.DB == nil || r.DB.Pool == nil {
+		return errors.New("DB pool is nil")
+	}
+
+	sd, err := time.Parse(time.RFC3339, tournament.StartDate.Value)
+	if err != nil {
+		return fmt.Errorf("invalid start_date: %w", err)
+	}
+
+	tx, err := r.DB.Pool.Begin(ctx)
+	if err != nil {
+		return fmt.Errorf("begin tx: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	const query = `
+		UPDATE gd_tournaments
+		SET
+			name               = $1,
+			type               = $2,
+			format             = $3,
+			format_description = $4,
+			start_date         = $5,
+			location           = $6,
+			total_prize        = $7,
+			entry_fee          = $8,
+			max_players        = $9,
+			status             = $10,
+			organizer          = $11,
+			updated_at         = NOW(),
+			description        = $12,
+			max_age            = $13,
+			has_ranking        = $14,
+			max_ranking_class  = $15,
+			gender             = $16
+		WHERE id = $17
+	`
+
+	tag, err := tx.Exec(
+		ctx, query,
+		tournament.Name,
+		tournament.Type,
+		tournament.Format,
+		tournament.FormatDescription.Value,
+		sd,
+		tournament.Location.Value,
+		tournament.TotalPrize.Value,
+		tournament.EntryFee.Value,
+		tournament.MaxPlayers.Value,
+		tournament.Status,
+		tournament.Organizer.Value,
+		tournament.Description.Value,
+		tournament.MaxAge,
+		tournament.HasRanking,
+		tournament.MaxRankingClass.Value,
+		tournament.Gender,
+		tournament.Id,
+	)
+	if err != nil {
+		return fmt.Errorf("update tournament: %w", err)
+	}
+	if tag.RowsAffected() == 0 {
+		return errors.New("tournament not found")
+	}
+
+	// Prize Distribution
+	batch := &pgx.Batch{}
+
+	for index, prize := range tournament.PrizeDistributions {
+		batch.Queue(`
+			INSERT INTO gd_prize_distributions(id, tournament_id, name, amount, display_order)
+			VALUES ($1, $2, $3, $4, $5)
+			ON CONFLICT (id)
+			DO UPDATE SET
+				id            = EXCLUDED.id,
+				name		  = EXCLUDED.name,
+				amount        = EXCLUDED.amount,
+				display_order = EXCLUDED.display_order
+		`, prize.Id, tournament.Id, prize.Name, prize.Amount, index)
+	}
+
+	prizeIds := make([]string, len(tournament.PrizeDistributions))
+	for i, prize := range tournament.PrizeDistributions {
+		prizeIds[i] = prize.Id
+	}
+
+	batch.Queue(
+		`DELETE FROM gd_prize_distributions WHERE tournament_id = $1 AND id NOT IN (SELECT UNNEST($2::uuid[]))`,
+		tournament.Id, prizeIds,
+	)
+
+	br := tx.SendBatch(ctx, batch)
+
+	for index, prize := range tournament.PrizeDistributions {
+		tag, err := br.Exec()
+		if err != nil {
+			br.Close()
+			return fmt.Errorf("prize upsert failed at index %d (id=%s, name=%s, amount=%v): %w",
+				index, prize.Id, prize.Name, prize.Amount, err)
+		}
+		fmt.Printf("[DEBUG] prize upsert index=%d id=%s rows_affected=%d\n",
+			index, prize.Id, tag.RowsAffected())
+	}
+
+	deleteTag, err := br.Exec()
+	if err != nil {
+		br.Close()
+		return fmt.Errorf("prize delete failed (tournament_id=%s, keeping_ids=%v): %w",
+			tournament.Id, prizeIds, err)
+	}
+	fmt.Printf("[DEBUG] prize delete tournament_id=%s rows_affected=%d\n",
+		tournament.Id, deleteTag.RowsAffected())
+
+	if err := br.Close(); err != nil {
+		return fmt.Errorf("batch close: %w", err)
+	}
+
+	return tx.Commit(ctx)
 }
 
 func (r *TournamentRepository) deleteTournament(
@@ -520,7 +643,7 @@ func (r *TournamentRepository) deleteTournament(
 		panic("DB pool is nil")
 	}
 
-	query := `UPDATE tournaments SET deleted_at = NOW() WHERE id = $1`
+	query := `UPDATE gd_tournaments SET deleted_at = NOW() WHERE id = $1`
 
 	var deletedAt time.Time
 	err := r.DB.Pool.QueryRow(ctx, query, id).Scan(&deletedAt)

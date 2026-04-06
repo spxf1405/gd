@@ -116,9 +116,16 @@ message DeleteTournamentResponse {
   string deleted_at = 1;
 }
 
+message UpdateTournamentRequest {
+  Tournament tournament = 1;
+}
+
+message UpdateTournamentResponse {}
+
 service TournamentService {
   rpc GetTournaments(GetTournamentsRequestWrapper) returns (GetTournamentsResponse);
   rpc GetTournamentByID(GetTournamentByIDRequest) returns (GetTournamentByIDResponse);
+  rpc UpdateTournament(UpdateTournamentRequest) returns (UpdateTournamentResponse);
   rpc CreateTournament(CreateTournamentRequest) returns (CreateTournamentResponse);
   rpc DeleteTournament(DeleteTournamentRequest) returns (DeleteTournamentResponse);
 }

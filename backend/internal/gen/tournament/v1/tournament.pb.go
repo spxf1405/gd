@@ -359,32 +359,32 @@ func (x *PrizeDistribution) GetAmount() int32 {
 
 // Thông tin giải đấu
 type Tournament struct {
-	state             protoimpl.MessageState  `protogen:"open.v1"`
-	Id                string                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name              string                  `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Type              TournamentType          `protobuf:"varint,3,opt,name=type,proto3,enum=tournament.v1.TournamentType" json:"type,omitempty"`
-	Format            TournamentFormat        `protobuf:"varint,4,opt,name=format,proto3,enum=tournament.v1.TournamentFormat" json:"format,omitempty"`
-	FormatDescription *wrapperspb.StringValue `protobuf:"bytes,5,opt,name=format_description,json=formatDescription,proto3" json:"format_description,omitempty"`
-	StartDate         *wrapperspb.StringValue `protobuf:"bytes,6,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
-	EndDate           *wrapperspb.StringValue `protobuf:"bytes,7,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
-	Location          *wrapperspb.StringValue `protobuf:"bytes,8,opt,name=location,proto3" json:"location,omitempty"`
-	TotalPrize        *wrapperspb.StringValue `protobuf:"bytes,10,opt,name=total_prize,json=totalPrize,proto3" json:"total_prize,omitempty"`
-	EntryFee          *wrapperspb.StringValue `protobuf:"bytes,11,opt,name=entry_fee,json=entryFee,proto3" json:"entry_fee,omitempty"`
-	MaxPlayers        *wrapperspb.Int32Value  `protobuf:"bytes,12,opt,name=max_players,json=maxPlayers,proto3" json:"max_players,omitempty"`
-	Status            TournamentStatus        `protobuf:"varint,13,opt,name=status,proto3,enum=tournament.v1.TournamentStatus" json:"status,omitempty"`
-	Organizer         *wrapperspb.StringValue `protobuf:"bytes,14,opt,name=organizer,proto3" json:"organizer,omitempty"`
-	CreatedAt         string                  `protobuf:"bytes,15,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdateAt          string                  `protobuf:"bytes,16,opt,name=update_at,json=updateAt,proto3" json:"update_at,omitempty"`
-	Description       *wrapperspb.StringValue `protobuf:"bytes,17,opt,name=description,proto3" json:"description,omitempty"`
-	MaxAge            int32                   `protobuf:"varint,18,opt,name=max_age,json=maxAge,proto3" json:"max_age,omitempty"`
-	HasRanking        bool                    `protobuf:"varint,19,opt,name=has_ranking,json=hasRanking,proto3" json:"has_ranking,omitempty"`
-	MaxRankingClass   *wrapperspb.StringValue `protobuf:"bytes,20,opt,name=max_ranking_class,json=maxRankingClass,proto3" json:"max_ranking_class,omitempty"`
-	Gender            Gender                  `protobuf:"varint,21,opt,name=gender,proto3,enum=tournament.v1.Gender" json:"gender,omitempty"`
-	RegisteredPlayers []*Player               `protobuf:"bytes,22,rep,name=registered_players,json=registeredPlayers,proto3" json:"registered_players,omitempty"`
-	DeletedAt         *wrapperspb.StringValue `protobuf:"bytes,23,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
-	PrizeDistribution []*PrizeDistribution    `protobuf:"bytes,24,rep,name=prize_distribution,json=prizeDistribution,proto3" json:"prize_distribution,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	state              protoimpl.MessageState  `protogen:"open.v1"`
+	Id                 string                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name               string                  `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Type               TournamentType          `protobuf:"varint,3,opt,name=type,proto3,enum=tournament.v1.TournamentType" json:"type,omitempty"`
+	Format             TournamentFormat        `protobuf:"varint,4,opt,name=format,proto3,enum=tournament.v1.TournamentFormat" json:"format,omitempty"`
+	FormatDescription  *wrapperspb.StringValue `protobuf:"bytes,5,opt,name=format_description,json=formatDescription,proto3" json:"format_description,omitempty"`
+	StartDate          *wrapperspb.StringValue `protobuf:"bytes,6,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
+	EndDate            *wrapperspb.StringValue `protobuf:"bytes,7,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
+	Location           *wrapperspb.StringValue `protobuf:"bytes,8,opt,name=location,proto3" json:"location,omitempty"`
+	TotalPrize         *wrapperspb.StringValue `protobuf:"bytes,10,opt,name=total_prize,json=totalPrize,proto3" json:"total_prize,omitempty"`
+	EntryFee           *wrapperspb.StringValue `protobuf:"bytes,11,opt,name=entry_fee,json=entryFee,proto3" json:"entry_fee,omitempty"`
+	MaxPlayers         *wrapperspb.Int32Value  `protobuf:"bytes,12,opt,name=max_players,json=maxPlayers,proto3" json:"max_players,omitempty"`
+	Status             TournamentStatus        `protobuf:"varint,13,opt,name=status,proto3,enum=tournament.v1.TournamentStatus" json:"status,omitempty"`
+	Organizer          *wrapperspb.StringValue `protobuf:"bytes,14,opt,name=organizer,proto3" json:"organizer,omitempty"`
+	CreatedAt          string                  `protobuf:"bytes,15,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdateAt           string                  `protobuf:"bytes,16,opt,name=update_at,json=updateAt,proto3" json:"update_at,omitempty"`
+	Description        *wrapperspb.StringValue `protobuf:"bytes,17,opt,name=description,proto3" json:"description,omitempty"`
+	MaxAge             int32                   `protobuf:"varint,18,opt,name=max_age,json=maxAge,proto3" json:"max_age,omitempty"`
+	HasRanking         bool                    `protobuf:"varint,19,opt,name=has_ranking,json=hasRanking,proto3" json:"has_ranking,omitempty"`
+	MaxRankingClass    *wrapperspb.StringValue `protobuf:"bytes,20,opt,name=max_ranking_class,json=maxRankingClass,proto3" json:"max_ranking_class,omitempty"`
+	Gender             Gender                  `protobuf:"varint,21,opt,name=gender,proto3,enum=tournament.v1.Gender" json:"gender,omitempty"`
+	RegisteredPlayers  []*Player               `protobuf:"bytes,22,rep,name=registered_players,json=registeredPlayers,proto3" json:"registered_players,omitempty"`
+	DeletedAt          *wrapperspb.StringValue `protobuf:"bytes,23,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
+	PrizeDistributions []*PrizeDistribution    `protobuf:"bytes,24,rep,name=prize_distributions,json=prizeDistributions,proto3" json:"prize_distributions,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *Tournament) Reset() {
@@ -571,9 +571,9 @@ func (x *Tournament) GetDeletedAt() *wrapperspb.StringValue {
 	return nil
 }
 
-func (x *Tournament) GetPrizeDistribution() []*PrizeDistribution {
+func (x *Tournament) GetPrizeDistributions() []*PrizeDistribution {
 	if x != nil {
-		return x.PrizeDistribution
+		return x.PrizeDistributions
 	}
 	return nil
 }
@@ -591,7 +591,7 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\rtournament_id\x18\x02 \x01(\tR\ftournamentId\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12#\n" +
 	"\rdisplay_order\x18\x04 \x01(\x05R\fdisplayOrder\x12\x16\n" +
-	"\x06amount\x18\x05 \x01(\x05R\x06amount\"\xc9\t\n" +
+	"\x06amount\x18\x05 \x01(\x05R\x06amount\"\xcb\t\n" +
 	"\n" +
 	"Tournament\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
@@ -622,8 +622,8 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\x06gender\x18\x15 \x01(\x0e2\x15.tournament.v1.GenderR\x06gender\x12D\n" +
 	"\x12registered_players\x18\x16 \x03(\v2\x15.tournament.v1.PlayerR\x11registeredPlayers\x12;\n" +
 	"\n" +
-	"deleted_at\x18\x17 \x01(\v2\x1c.google.protobuf.StringValueR\tdeletedAt\x12O\n" +
-	"\x12prize_distribution\x18\x18 \x03(\v2 .tournament.v1.PrizeDistributionR\x11prizeDistribution*\x82\x02\n" +
+	"deleted_at\x18\x17 \x01(\v2\x1c.google.protobuf.StringValueR\tdeletedAt\x12Q\n" +
+	"\x13prize_distributions\x18\x18 \x03(\v2 .tournament.v1.PrizeDistributionR\x12prizeDistributions*\x82\x02\n" +
 	"\x10TournamentStatus\x12!\n" +
 	"\x1dTOURNAMENT_STATUS_UNSPECIFIED\x10\x00\x12!\n" +
 	"\x1dTOURNAMENT_STATUS_REGISTERING\x10\x01\x12)\n" +
@@ -687,7 +687,7 @@ var file_tournament_v1_tournament_proto_depIdxs = []int32{
 	3,  // 13: tournament.v1.Tournament.gender:type_name -> tournament.v1.Gender
 	4,  // 14: tournament.v1.Tournament.registered_players:type_name -> tournament.v1.Player
 	7,  // 15: tournament.v1.Tournament.deleted_at:type_name -> google.protobuf.StringValue
-	5,  // 16: tournament.v1.Tournament.prize_distribution:type_name -> tournament.v1.PrizeDistribution
+	5,  // 16: tournament.v1.Tournament.prize_distributions:type_name -> tournament.v1.PrizeDistribution
 	17, // [17:17] is the sub-list for method output_type
 	17, // [17:17] is the sub-list for method input_type
 	17, // [17:17] is the sub-list for extension type_name

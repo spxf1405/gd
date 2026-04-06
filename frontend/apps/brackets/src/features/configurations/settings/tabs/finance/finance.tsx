@@ -24,7 +24,7 @@ export const FinanceTab = ({
   const { t } = useTranslation();
   const totalPrize = watch("totalPrize");
   const entryFee = watch("entryFee");
-  const prizeDistribution = watch("prizeDistribution") ?? [];
+  const prizeDistributions = watch("prizeDistributions") ?? [];
 
   const totalPrizeInNumber = typeof totalPrize === "number" ? totalPrize : parseFloat(totalPrize || "0");
 
@@ -63,9 +63,9 @@ export const FinanceTab = ({
         <CurrencyHint value={entryFee} />
       </Field>
 
-      {(totalPrizeInNumber > 0 || prizeDistribution.length > 0) && (
+      {(totalPrizeInNumber > 0 || prizeDistributions.length > 0) && (
         <Controller
-          name="prizeDistribution"
+          name="prizeDistributions"
           control={control}
           render={({ field }) => (
             <PrizeDistributionTable

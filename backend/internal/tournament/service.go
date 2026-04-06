@@ -31,6 +31,14 @@ func (s *Service) getTournamentByID(ctx context.Context, id string) (*tournament
 	return tournament, nil
 }
 
+func (s *Service) UpdateTournament(ctx context.Context, tournament *tournamentpb.Tournament) error {
+	err := s.repo.UpdateTournament(ctx, tournament)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (s *Service) createTournament(ctx context.Context, name string) (uuid.UUID, error) {
 	id, err := s.repo.createTournament(ctx, name)
 	if err != nil {

@@ -56,27 +56,14 @@ watch([width, height], () => {
 <template>
   <NuxtLayout name="no-side-admin">
     <div ref="el" class="h-full">
-      <CollapsibleRoot v-model:open="open">
-        <div class="flex justify-between items-center">
-          <CollapsibleTrigger class="bg-red-500">
-            <Icon v-if="open" icon="radix-icons:cross-2" class="h-3.5 w-3.5" />
-            <Icon v-else icon="radix-icons:row-spacing" class="h-3.5 w-3.5" />
-          </CollapsibleTrigger>
-        </div>
-
-        <CollapsibleContent
-          class="data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden text-white w-full"
-        >
-          <ClientOnly>
-            <iframe
-              ref="iframeWrapper"
-              src="http://localhost:5173/"
-              style="border: none; display: block; width: 100%"
-              :style="{ width: width + 'px', height: height + 'px' }"
-            />
-          </ClientOnly>
-        </CollapsibleContent>
-      </CollapsibleRoot>
+      <ClientOnly>
+        <iframe
+          ref="iframeWrapper"
+          src="http://localhost:5173/"
+          style="border: none; display: block; width: 100%"
+          :style="{ width: width + 'px', height: height + 'px', }"
+        />
+      </ClientOnly>
     </div>
   </NuxtLayout>
 </template>

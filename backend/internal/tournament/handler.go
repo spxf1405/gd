@@ -62,7 +62,6 @@ func (h *Hanlder) GetTournaments(
 
 func (h *Hanlder) GetTournamentByID(ctx context.Context, req *connect.Request[tournamentpb.GetTournamentByIDRequest]) (*connect.Response[tournamentpb.GetTournamentByIDResponse], error) {
 	tournament, err := h.service.getTournamentByID(ctx, req.Msg.Id)
-
 	if err != nil {
 		return nil, connect.NewError(
 			connect.CodeInternal,
@@ -75,7 +74,23 @@ func (h *Hanlder) GetTournamentByID(ctx context.Context, req *connect.Request[to
 	})
 
 	return res, nil
+}
 
+func (h *Hanlder) UpdateTournament(
+	ctx context.Context,
+	req *connect.Request[tournamentpb.UpdateTournamentRequest],
+) (*connect.Response[tournamentpb.UpdateTournamentResponse], error) {
+	err := h.service.UpdateTournament(ctx, req.Msg.Tournament)
+	if err != nil {
+		return nil, connect.NewError(
+			connect.CodeInternal,
+			errors.New("internal server error"),
+		)
+	}
+
+	res := connect.NewResponse(&tournamentpb.UpdateTournamentResponse{})
+
+	return res, nil
 }
 
 func (h *Hanlder) CreateTournament(

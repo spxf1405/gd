@@ -50,27 +50,27 @@ message PrizeDistribution {
 
 // Thông tin giải đấu
 message Tournament {
-  string                      id                 = 1;
-  string                      name               = 2;
-  TournamentType              type               = 3;
-  TournamentFormat            format             = 4;
-  google.protobuf.StringValue format_description = 5;
-  google.protobuf.StringValue start_date         = 6;
-  google.protobuf.StringValue end_date           = 7;
-  google.protobuf.StringValue location           = 8;
-  google.protobuf.StringValue total_prize        = 10;
-  google.protobuf.StringValue entry_fee          = 11;
-  google.protobuf.Int32Value  max_players        = 12;
-  TournamentStatus            status             = 13;
-  google.protobuf.StringValue organizer          = 14;
-  string                      created_at         = 15;
-  string                      update_at          = 16;
-  google.protobuf.StringValue description        = 17;
-  int32                       max_age            = 18;
-  bool                        has_ranking        = 19;
-  google.protobuf.StringValue max_ranking_class  = 20;
-  Gender                      gender             = 21;
-  repeated Player             registered_players = 22;
-  google.protobuf.StringValue deleted_at         = 23;
-  repeated PrizeDistribution  prize_distribution = 24;
+  string                      id                  = 1;
+  string                      name                = 2;
+  TournamentType              type                = 3;
+  TournamentFormat            format              = 4;
+  google.protobuf.StringValue format_description  = 5;
+  google.protobuf.StringValue start_date          = 6;
+  google.protobuf.StringValue end_date            = 7;
+  google.protobuf.StringValue location            = 8;
+  google.protobuf.StringValue total_prize         = 10;
+  google.protobuf.StringValue entry_fee           = 11;
+  google.protobuf.Int32Value  max_players         = 12;
+  TournamentStatus            status              = 13;
+  google.protobuf.StringValue organizer           = 14;
+  string                      created_at          = 15;
+  string                      update_at           = 16;
+  google.protobuf.StringValue description         = 17;
+  int32                       max_age             = 18;
+  bool                        has_ranking         = 19;
+  google.protobuf.StringValue max_ranking_class   = 20;
+  Gender                      gender              = 21;
+  repeated Player             registered_players  = 22;
+  google.protobuf.StringValue deleted_at          = 23;
+  repeated PrizeDistribution  prize_distributions = 24;
 }
