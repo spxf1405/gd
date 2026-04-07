@@ -3,7 +3,11 @@
  *   npm install @tanstack/react-table @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities @dnd-kit/modifiers
  */
 
-import { TournamentFormat, TournamentType, type Tournament } from "@gd/proto/tournament/v1/tournament_pb";
+import {
+  TournamentFormat,
+  TournamentType,
+  type Tournament,
+} from "@gd/proto/tournament/v1/tournament_pb";
 import {
   DndContext,
   type DragEndEvent,
@@ -29,18 +33,33 @@ import {
   useReactTable,
   type Row,
 } from "@tanstack/react-table";
-import { AlertTriangle, Check, ChevronDown, Grid2X2, GripVertical, Plus, Trash2, X } from "lucide-react";
+import {
+  AlertTriangle,
+  Check,
+  ChevronDown,
+  Grid2X2,
+  GripVertical,
+  Lock,
+  Plus,
+  Trash2,
+  X,
+} from "lucide-react";
 import { Select } from "radix-ui";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Controller, useWatch, type Control, type UseFormRegister } from "react-hook-form";
+import {
+  Controller,
+  useWatch,
+  type Control,
+  type UseFormRegister,
+} from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { COLORS } from "../consts/color";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const ACCENT = {
-  main:   COLORS.bronze,
-  dim:    "rgba(251,146,60,0.12)",
+  main: COLORS.bronze,
+  dim: "rgba(251,146,60,0.12)",
   border: "rgba(251,146,60,0.25)",
 };
 
@@ -54,8 +73,15 @@ const INPUT_STYLE = {
 
 // ─── Shared UI ────────────────────────────────────────────────────────────────
 
-const LInput = ({ className = "", ...p }: React.InputHTMLAttributes<HTMLInputElement>) => (
-  <input className={`${INPUT_BASE_CLS} ${className}`} style={INPUT_STYLE} {...p} />
+const LInput = ({
+  className = "",
+  ...p
+}: React.InputHTMLAttributes<HTMLInputElement>) => (
+  <input
+    className={`${INPUT_BASE_CLS} ${className}`}
+    style={INPUT_STYLE}
+    {...p}
+  />
 );
 
 const Field = ({
@@ -94,7 +120,10 @@ const SectionHeader = ({ title }: { title: string }) => (
     >
       <Grid2X2 size={17} />
     </div>
-    <h3 className="text-[17px] font-bold text-white" style={{ letterSpacing: "-0.02em" }}>
+    <h3
+      className="text-[17px] font-bold text-white"
+      style={{ letterSpacing: "-0.02em" }}
+    >
       {title}
     </h3>
   </div>
@@ -114,14 +143,21 @@ function SelectField<T extends string>({
   disabled?: boolean;
 }) {
   return (
-    <Select.Root value={value?.toString()} onValueChange={(v) => onChange(v as T)} disabled={disabled}>
+    <Select.Root
+      value={value?.toString()}
+      onValueChange={(v) => onChange(v as T)}
+      disabled={disabled}
+    >
       <Select.Trigger
         className={`${INPUT_BASE_CLS} flex items-center justify-between gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed`}
         style={INPUT_STYLE}
       >
         <Select.Value />
         <Select.Icon asChild>
-          <ChevronDown size={14} style={{ color: COLORS.iconGray, flexShrink: 0 }} />
+          <ChevronDown
+            size={14}
+            style={{ color: COLORS.iconGray, flexShrink: 0 }}
+          />
         </Select.Icon>
       </Select.Trigger>
       <Select.Portal>
@@ -132,7 +168,8 @@ function SelectField<T extends string>({
             background: COLORS.surfaceAlt,
             border: `1px solid ${COLORS.border}`,
             borderRadius: 14,
-            boxShadow: "0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)",
+            boxShadow:
+              "0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)",
             overflow: "hidden",
             zIndex: 9999,
             minWidth: "var(--radix-select-trigger-width)",
@@ -151,7 +188,10 @@ function SelectField<T extends string>({
               >
                 <Select.ItemText>{label}</Select.ItemText>
                 <Select.ItemIndicator>
-                  <Check size={13} style={{ color: COLORS.bronze, flexShrink: 0 }} />
+                  <Check
+                    size={13}
+                    style={{ color: COLORS.bronze, flexShrink: 0 }}
+                  />
                 </Select.ItemIndicator>
               </Select.Item>
             ))}
@@ -169,11 +209,24 @@ function SelectField<T extends string>({
 
 type RoundFormat = "double_elim" | "single_elim";
 
-interface RoundConfig {
+/** Used by RoundConfigTable (drag-drop rows) */
+interface RoundRowConfig {
   id: string;
   roundName: string;
   format: RoundFormat;
   raceTo: number;
+}
+
+type BracketMode = "double" | "single";
+
+/** Used by BracketConfigField (bracket rounds) — canonical RoundConfig */
+interface RoundConfig {
+  n: number;
+  label: string;
+  mode: BracketMode;
+  winRace: number;
+  loseRace: number;
+  singleRace: number;
 }
 
 // ─── Warning Banner ───────────────────────────────────────────────────────────
@@ -206,15 +259,15 @@ function SingleElimWarning({
           to   { opacity: 1; transform: translateY(0); }
         }
       `}</style>
-      <AlertTriangle size={15} style={{ color: "#facc15", flexShrink: 0, marginTop: 1 }} />
+      <AlertTriangle
+        size={15}
+        style={{ color: "#facc15", flexShrink: 0, marginTop: 1 }}
+      />
       <span className="flex-1">
         Bạn đã chọn{" "}
-        <strong style={{ color: "#fef08a" }}>
-          {roundName || "vòng này"}
-        </strong>{" "}
-        có thể thức{" "}
-        <strong style={{ color: "#fef08a" }}>Loại trực tiếp</strong>,{" "}
-        các vòng đấu tiếp theo cho đến hết giải sẽ sử dụng thể thức này!
+        <strong style={{ color: "#fef08a" }}>{roundName || "vòng này"}</strong>{" "}
+        có thể thức <strong style={{ color: "#fef08a" }}>Loại trực tiếp</strong>
+        , các vòng đấu tiếp theo cho đến hết giải sẽ sử dụng thể thức này!
       </span>
       <button
         type="button"
@@ -246,7 +299,7 @@ function SortableRow({
   onRoundNameChange,
   onDelete,
 }: {
-  row: Row<RoundConfig>;
+  row: Row<RoundRowConfig>;
   isForced: boolean;
   isEven: boolean;
   onFormatChange: (id: string, value: RoundFormat) => void;
@@ -254,8 +307,14 @@ function SortableRow({
   onRoundNameChange: (id: string, value: string) => void;
   onDelete: (id: string) => void;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: row.original.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: row.original.id });
 
   const trStyle: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
@@ -266,8 +325,8 @@ function SortableRow({
     background: isDragging
       ? "rgba(251,146,60,0.07)"
       : isEven
-      ? "transparent"
-      : "rgba(255,255,255,0.015)",
+        ? "transparent"
+        : "rgba(255,255,255,0.015)",
     borderBottom: "1px solid rgba(255,255,255,0.04)",
     boxShadow: isDragging ? "0 4px 20px rgba(0,0,0,0.5)" : "none",
   };
@@ -330,7 +389,10 @@ function SortableRow({
       {/* Race to */}
       <td className={tdCls}>
         <div className="flex items-center gap-1.5">
-          <span className="text-[12px] whitespace-nowrap" style={{ color: COLORS.textSecondary }}>
+          <span
+            className="text-[12px] whitespace-nowrap"
+            style={{ color: COLORS.textSecondary }}
+          >
             Race to
           </span>
           <input
@@ -338,7 +400,9 @@ function SortableRow({
             min={1}
             max={99}
             value={row.original.raceTo}
-            onChange={(e) => onRaceToChange(row.original.id, parseInt(e.target.value) || 1)}
+            onChange={(e) =>
+              onRaceToChange(row.original.id, parseInt(e.target.value) || 1)
+            }
             className="w-14 px-2 py-2 text-[13px] text-white text-center rounded-lg outline-none transition-all duration-150 focus:ring-1 focus:ring-[#fb923c]/30"
             style={{
               background: "rgba(255,255,255,0.04)",
@@ -365,7 +429,7 @@ function SortableRow({
 
 // ─── Column Helper ────────────────────────────────────────────────────────────
 
-const columnHelper = createColumnHelper<RoundConfig>();
+const columnHelper = createColumnHelper<RoundRowConfig>();
 
 // ─── Round Config Table ───────────────────────────────────────────────────────
 
@@ -373,20 +437,24 @@ function RoundConfigTable({
   rounds,
   onChange,
 }: {
-  rounds: RoundConfig[];
-  onChange: (rounds: RoundConfig[]) => void;
+  rounds: RoundRowConfig[];
+  onChange: (rounds: RoundRowConfig[]) => void;
 }) {
-  const [warning, setWarning] = useState<{ roundName: string; key: number } | null>(null);
+  const [warning, setWarning] = useState<{
+    roundName: string;
+    key: number;
+  } | null>(null);
   const warningKeyRef = useRef(0);
 
-  const firstSingleElimIndex = rounds.findIndex((r) => r.format === "single_elim");
+  const firstSingleElimIndex = rounds.findIndex(
+    (r) => r.format === "single_elim",
+  );
 
-  // Cascade helper: after any mutation, re-enforce single_elim constraint
-  const cascadeSingleElim = (list: RoundConfig[]): RoundConfig[] => {
+  const cascadeSingleElim = (list: RoundRowConfig[]): RoundRowConfig[] => {
     const firstIdx = list.findIndex((r) => r.format === "single_elim");
     if (firstIdx === -1) return list;
     return list.map((r, i) =>
-      i > firstIdx ? { ...r, format: "single_elim" as RoundFormat } : r
+      i > firstIdx ? { ...r, format: "single_elim" as RoundFormat } : r,
     );
   };
 
@@ -399,13 +467,16 @@ function RoundConfigTable({
       (firstSingleElimIndex === -1 || idx < firstSingleElimIndex);
 
     const updated = rounds.map((r, i) =>
-      i === idx ? { ...r, format: value } : r
+      i === idx ? { ...r, format: value } : r,
     );
     onChange(cascadeSingleElim(updated));
 
     if (isNewSingleElim) {
       warningKeyRef.current += 1;
-      setWarning({ roundName: rounds[idx].roundName, key: warningKeyRef.current });
+      setWarning({
+        roundName: rounds[idx].roundName,
+        key: warningKeyRef.current,
+      });
     }
   };
 
@@ -422,7 +493,8 @@ function RoundConfigTable({
   };
 
   const handleAdd = () => {
-    const lastFormat = rounds.length > 0 ? rounds[rounds.length - 1].format : "double_elim";
+    const lastFormat =
+      rounds.length > 0 ? rounds[rounds.length - 1].format : "double_elim";
     onChange([
       ...rounds,
       {
@@ -434,16 +506,15 @@ function RoundConfigTable({
     ]);
   };
 
-  // TanStack Table
   const columns = useMemo(
     () => [
-      columnHelper.display({ id: "drag",   header: ""            }),
-      columnHelper.accessor("roundName",   { header: "Tên vòng đấu" }),
-      columnHelper.accessor("format",      { header: "Thể thức"  }),
-      columnHelper.accessor("raceTo",      { header: "Chạm mấy"  }),
-      columnHelper.display({ id: "delete", header: "Xoá"         }),
+      columnHelper.display({ id: "drag", header: "" }),
+      columnHelper.accessor("roundName", { header: "Tên vòng đấu" }),
+      columnHelper.accessor("format", { header: "Thể thức" }),
+      columnHelper.accessor("raceTo", { header: "Chạm mấy" }),
+      columnHelper.display({ id: "delete", header: "Xoá" }),
     ],
-    []
+    [],
   );
 
   const table = useReactTable({
@@ -453,10 +524,11 @@ function RoundConfigTable({
     getRowId: (row) => row.id,
   });
 
-  // DnD Kit
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -472,7 +544,6 @@ function RoundConfigTable({
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Section divider */}
       <div className="flex items-center gap-3 mt-1">
         <span
           className="text-[11px] font-semibold uppercase tracking-[0.09em] whitespace-nowrap"
@@ -483,7 +554,6 @@ function RoundConfigTable({
         <div className="flex-1 h-px" style={{ background: ACCENT.border }} />
       </div>
 
-      {/* Warning banner */}
       {warning && (
         <SingleElimWarning
           key={warning.key}
@@ -492,7 +562,6 @@ function RoundConfigTable({
         />
       )}
 
-      {/* Table */}
       <div
         className="rounded-xl overflow-hidden"
         style={{
@@ -509,7 +578,10 @@ function RoundConfigTable({
           <table className="w-full border-collapse">
             <thead>
               {table.getHeaderGroups().map((hg) => (
-                <tr key={hg.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                <tr
+                  key={hg.id}
+                  style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+                >
                   {hg.headers.map((header) => (
                     <th
                       key={header.id}
@@ -519,7 +591,10 @@ function RoundConfigTable({
                         textAlign: header.id === "delete" ? "center" : "left",
                       }}
                     >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                     </th>
                   ))}
                 </tr>
@@ -545,7 +620,9 @@ function RoundConfigTable({
                   <SortableRow
                     key={row.original.id}
                     row={row}
-                    isForced={firstSingleElimIndex !== -1 && idx > firstSingleElimIndex}
+                    isForced={
+                      firstSingleElimIndex !== -1 && idx > firstSingleElimIndex
+                    }
                     isEven={idx % 2 === 0}
                     onFormatChange={handleFormatChange}
                     onRaceToChange={handleRaceToChange}
@@ -559,7 +636,6 @@ function RoundConfigTable({
         </DndContext>
       </div>
 
-      {/* Add row */}
       <button
         type="button"
         onClick={handleAdd}
@@ -589,14 +665,26 @@ export const FormatTab = ({
   const { t } = useTranslation();
 
   const TournamentTypeList = [
-    { value: TournamentType.SINGLE.toString(), label: t("tournament.type.single") },
-    { value: TournamentType.TEAM.toString(),   label: t("tournament.type.team") },
+    {
+      value: TournamentType.SINGLE.toString(),
+      label: t("tournament.type.single"),
+    },
+    { value: TournamentType.TEAM.toString(), label: t("tournament.type.team") },
   ];
 
   const TournamentFormatList = [
-    { value: TournamentFormat.TOURNAMENT_TYPE_8_BALL.toString(),  label: t("tournament.format.8ball") },
-    { value: TournamentFormat.TOURNAMENT_TYPE_9_BALL.toString(),  label: t("tournament.format.9ball") },
-    { value: TournamentFormat.TOURNAMENT_TYPE_10_BALL.toString(), label: t("tournament.format.10ball") },
+    {
+      value: TournamentFormat.TOURNAMENT_TYPE_8_BALL.toString(),
+      label: t("tournament.format.8ball"),
+    },
+    {
+      value: TournamentFormat.TOURNAMENT_TYPE_9_BALL.toString(),
+      label: t("tournament.format.9ball"),
+    },
+    {
+      value: TournamentFormat.TOURNAMENT_TYPE_10_BALL.toString(),
+      label: t("tournament.format.10ball"),
+    },
   ];
 
   const maxPlayersOptions = MAX_PLAYER_OPTIONS.map((n) => ({
@@ -604,7 +692,7 @@ export const FormatTab = ({
     label: `${n} ${t("settings.tabs.format.fields.playersUnit")}`,
   }));
 
-  const [rounds, setRounds] = useState<RoundConfig[]>([]);
+  const [rows, setRows] = useState<RoundRowConfig[]>([]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -647,7 +735,9 @@ export const FormatTab = ({
           <Field label={t("settings.tabs.format.fields.formatDescription")}>
             <LInput
               {...register("formatDescription")}
-              placeholder={t("settings.tabs.format.fields.formatDescriptionPlaceholder")}
+              placeholder={t(
+                "settings.tabs.format.fields.formatDescriptionPlaceholder",
+              )}
             />
           </Field>
         </div>
@@ -669,7 +759,392 @@ export const FormatTab = ({
         </Field>
       </div>
 
-      <RoundConfigTable rounds={rounds} onChange={setRounds} />
+      <BracketConfigSection control={control} />
     </div>
   );
 };
+
+// ─── Bracket Config ───────────────────────────────────────────────────────────
+
+const RACE_OPTIONS = Array.from({ length: 15 }, (_, i) => i + 1);
+
+const INPUT_BASE =
+  "text-[13px] text-white rounded-xl outline-none transition-all duration-150 focus:ring-2 focus:ring-white/10 placeholder-[#4a5568]";
+
+function getRoundLabel(n: number): string {
+  if (n === 2) return "Final";
+  if (n === 4) return "Semifinal";
+  if (n === 8) return "Quarterfinal";
+  return `Round of ${n}`;
+}
+
+function buildRounds(max: number): RoundConfig[] {
+  const rounds: RoundConfig[] = [];
+  let n = max;
+  while (n >= 2) {
+    rounds.push({
+      n,
+      label: getRoundLabel(n),
+      mode: "double",
+      winRace: 7,
+      loseRace: 5,
+      singleRace: 7,
+    });
+    n = n / 2;
+  }
+  return rounds;
+}
+
+function RaceSelect({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <Select.Root
+      value={value.toString()}
+      onValueChange={(v) => onChange(parseInt(v))}
+    >
+      <Select.Trigger
+        className={`${INPUT_BASE} w-16 px-2.5 py-1.5 flex items-center justify-between gap-1 cursor-pointer`}
+        style={INPUT_STYLE}
+      >
+        <Select.Value />
+        <Select.Icon asChild>
+          <ChevronDown
+            size={12}
+            style={{ color: COLORS.iconGray, flexShrink: 0 }}
+          />
+        </Select.Icon>
+      </Select.Trigger>
+      <Select.Portal>
+        <Select.Content
+          position="popper"
+          sideOffset={5}
+          style={{
+            background: COLORS.surfaceAlt,
+            border: `1px solid ${COLORS.border}`,
+            borderRadius: 12,
+            boxShadow: "0 16px 48px rgba(0,0,0,0.6)",
+            overflow: "hidden",
+            zIndex: 9999,
+            minWidth: "var(--radix-select-trigger-width)",
+            maxHeight: "220px",
+          }}
+        >
+          <Select.ScrollUpButton className="flex items-center justify-center h-6 bg-white/[0.03]">
+            <ChevronDown
+              size={11}
+              className="rotate-180"
+              style={{ color: COLORS.iconGray }}
+            />
+          </Select.ScrollUpButton>
+          <Select.Viewport className="p-1">
+            {RACE_OPTIONS.map((v) => (
+              <Select.Item
+                key={v}
+                value={v.toString()}
+                className="flex items-center justify-between gap-2 px-3 py-2 rounded-[8px] text-[13px] text-[#b0bac8] cursor-pointer outline-none select-none transition-colors hover:bg-white/[0.07] hover:text-white data-[state=checked]:bg-[rgba(251,146,60,0.1)] data-[state=checked]:text-[#fb923c]"
+              >
+                <Select.ItemText>{v}</Select.ItemText>
+                <Select.ItemIndicator>
+                  <Check size={12} style={{ color: COLORS.bronze }} />
+                </Select.ItemIndicator>
+              </Select.Item>
+            ))}
+          </Select.Viewport>
+          <Select.ScrollDownButton className="flex items-center justify-center h-6 bg-white/[0.03]">
+            <ChevronDown size={11} style={{ color: COLORS.iconGray }} />
+          </Select.ScrollDownButton>
+        </Select.Content>
+      </Select.Portal>
+    </Select.Root>
+  );
+}
+
+function ModeSelect({
+  value,
+  onChange,
+  disabled,
+}: {
+  value: BracketMode;
+  onChange: (v: BracketMode) => void;
+  disabled: boolean;
+}) {
+  const items = [
+    { value: "double", label: "Double elim" },
+    { value: "single", label: "Single elim" },
+  ];
+  return (
+    <Select.Root
+      value={value}
+      onValueChange={(v) => onChange(v as BracketMode)}
+      disabled={disabled}
+    >
+      <Select.Trigger
+        className={`${INPUT_BASE} w-36 px-2.5 py-1.5 flex items-center justify-between gap-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed`}
+        style={INPUT_STYLE}
+      >
+        <Select.Value />
+        <Select.Icon asChild>
+          <ChevronDown
+            size={12}
+            style={{ color: COLORS.iconGray, flexShrink: 0 }}
+          />
+        </Select.Icon>
+      </Select.Trigger>
+      <Select.Portal>
+        <Select.Content
+          position="popper"
+          sideOffset={5}
+          style={{
+            background: COLORS.surfaceAlt,
+            border: `1px solid ${COLORS.border}`,
+            borderRadius: 12,
+            boxShadow: "0 16px 48px rgba(0,0,0,0.6)",
+            overflow: "hidden",
+            zIndex: 9999,
+            minWidth: "var(--radix-select-trigger-width)",
+          }}
+        >
+          <Select.Viewport className="p-1">
+            {items.map((item) => (
+              <Select.Item
+                key={item.value}
+                value={item.value}
+                className="flex items-center justify-between gap-2 px-3 py-2 rounded-[8px] text-[13px] text-[#b0bac8] cursor-pointer outline-none select-none transition-colors hover:bg-white/[0.07] hover:text-white data-[state=checked]:bg-[rgba(251,146,60,0.1)] data-[state=checked]:text-[#fb923c]"
+              >
+                <Select.ItemText>{item.label}</Select.ItemText>
+                <Select.ItemIndicator>
+                  <Check size={12} style={{ color: COLORS.bronze }} />
+                </Select.ItemIndicator>
+              </Select.Item>
+            ))}
+          </Select.Viewport>
+        </Select.Content>
+      </Select.Portal>
+    </Select.Root>
+  );
+}
+
+function RoundRow({
+  round,
+  isLocked,
+  onModeChange,
+  onRaceChange,
+}: {
+  round: RoundConfig;
+  isLocked: boolean;
+  onModeChange: (mode: BracketMode) => void;
+  onRaceChange: (
+    field: "winRace" | "loseRace" | "singleRace",
+    value: number,
+  ) => void;
+}) {
+  const effectiveMode: BracketMode = isLocked ? "single" : round.mode;
+
+  return (
+    <div
+      className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-150"
+      style={{
+        background: isLocked ? "rgba(255,255,255,0.02)" : COLORS.inputBg,
+        border: `1px solid ${isLocked ? COLORS.borderFaint : COLORS.inputBorder}`,
+        opacity: isLocked ? 0.75 : 1,
+      }}
+    >
+      {isLocked && (
+        <Lock size={13} style={{ color: COLORS.textMuted, flexShrink: 0 }} />
+      )}
+
+      <span
+        className="text-[13px] font-medium w-28 flex-shrink-0"
+        style={{ color: isLocked ? COLORS.textMuted : COLORS.textSecondary }}
+      >
+        {round.label}
+      </span>
+
+      <ModeSelect
+        value={effectiveMode}
+        onChange={onModeChange}
+        disabled={isLocked}
+      />
+
+      {effectiveMode === "double" ? (
+        <div className="flex items-center gap-2">
+          <span
+            className="text-[12px] font-medium"
+            style={{ color: "#16a34a" }}
+          >
+            W race to
+          </span>
+          <RaceSelect
+            value={round.winRace}
+            onChange={(v) => onRaceChange("winRace", v)}
+          />
+          <span className="text-[12px]" style={{ color: COLORS.textDim }}>
+            /
+          </span>
+          <span
+            className="text-[12px] font-medium"
+            style={{ color: "#dc2626" }}
+          >
+            L race to
+          </span>
+          <RaceSelect
+            value={round.loseRace}
+            onChange={(v) => onRaceChange("loseRace", v)}
+          />
+        </div>
+      ) : (
+        <div className="flex items-center gap-2">
+          <span className="text-[12px]" style={{ color: COLORS.textSecondary }}>
+            Race to
+          </span>
+          <RaceSelect
+            value={round.singleRace}
+            onChange={(v) => onRaceChange("singleRace", v)}
+          />
+        </div>
+      )}
+
+      {isLocked && (
+        <span
+          className="ml-auto text-[11px] px-2 py-0.5 rounded-full flex items-center gap-1"
+          style={{
+            color: COLORS.textMuted,
+            border: `1px solid ${COLORS.borderFaint}`,
+          }}
+        >
+          <Lock size={9} />
+          single elim
+        </span>
+      )}
+    </div>
+  );
+}
+
+export function BracketConfigField({
+  maxPlayers,
+  value,
+  onChange,
+}: {
+  maxPlayers: number;
+  value: RoundConfig[];
+  onChange: (rounds: RoundConfig[]) => void;
+}) {
+  const lockFrom = useMemo(() => {
+    const idx = value.findIndex((r) => r.mode === "single");
+    return idx === -1 ? null : idx;
+  }, [value]);
+
+  const handleModeChange = (idx: number, mode: BracketMode) => {
+    onChange(value.map((r, i) => (i === idx ? { ...r, mode } : r)));
+  };
+
+  const handleRaceChange = (
+    idx: number,
+    field: "winRace" | "loseRace" | "singleRace",
+    val: number,
+  ) => {
+    onChange(value.map((r, i) => (i === idx ? { ...r, [field]: val } : r)));
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      {value.map((round, i) => (
+        <RoundRow
+          key={round.n}
+          round={round}
+          isLocked={lockFrom !== null && i > lockFrom}
+          onModeChange={(mode) => handleModeChange(i, mode)}
+          onRaceChange={(field, val) => handleRaceChange(i, field, val)}
+        />
+      ))}
+
+      {lockFrom !== null && (
+        <p className="text-[12px] mt-1" style={{ color: COLORS.textMuted }}>
+          From{" "}
+          <span style={{ color: COLORS.textSecondary }}>
+            {value[lockFrom].label}
+          </span>{" "}
+          onwards — single elimination. Race to vẫn có thể chỉnh per round.
+        </p>
+      )}
+    </div>
+  );
+}
+
+export function BracketConfigSection({ control }: { control: any }) {
+  const [maxPlayers, setMaxPlayers] = useState(64);
+  const [rounds, setRounds] = useState<RoundConfig[]>(() => buildRounds(64));
+
+  const handleMaxPlayersChange = (val: number) => {
+    setMaxPlayers(val);
+    setRounds(buildRounds(val));
+  };
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-3">
+        <span
+          className="text-[11px] font-semibold uppercase tracking-[0.09em]"
+          style={{ color: COLORS.textSecondary }}
+        >
+          Max players
+        </span>
+        <Select.Root
+          value={maxPlayers.toString()}
+          onValueChange={(v) => handleMaxPlayersChange(parseInt(v))}
+        >
+          <Select.Trigger
+            className={`${INPUT_BASE} w-28 px-2.5 py-1.5 flex items-center justify-between gap-1 cursor-pointer`}
+            style={INPUT_STYLE}
+          >
+            <Select.Value />
+            <Select.Icon asChild>
+              <ChevronDown size={12} style={{ color: COLORS.iconGray }} />
+            </Select.Icon>
+          </Select.Trigger>
+          <Select.Portal>
+            <Select.Content
+              position="popper"
+              sideOffset={5}
+              style={{
+                background: COLORS.surfaceAlt,
+                border: `1px solid ${COLORS.border}`,
+                borderRadius: 12,
+                boxShadow: "0 16px 48px rgba(0,0,0,0.6)",
+                overflow: "hidden",
+                zIndex: 9999,
+                minWidth: "var(--radix-select-trigger-width)",
+              }}
+            >
+              <Select.Viewport className="p-1">
+                {MAX_PLAYER_OPTIONS.map((n) => (
+                  <Select.Item
+                    key={n}
+                    value={n.toString()}
+                    className="flex items-center justify-between gap-2 px-3 py-2 rounded-[8px] text-[13px] text-[#b0bac8] cursor-pointer outline-none select-none transition-colors hover:bg-white/[0.07] hover:text-white data-[state=checked]:bg-[rgba(251,146,60,0.1)] data-[state=checked]:text-[#fb923c]"
+                  >
+                    <Select.ItemText>{n} players</Select.ItemText>
+                    <Select.ItemIndicator>
+                      <Check size={12} style={{ color: COLORS.bronze }} />
+                    </Select.ItemIndicator>
+                  </Select.Item>  
+                ))}
+              </Select.Viewport>
+            </Select.Content>
+          </Select.Portal>
+        </Select.Root>
+      </div>
+
+      <BracketConfigField
+        maxPlayers={maxPlayers}
+        value={rounds}
+        onChange={setRounds}
+      />
+    </div>
+  );
+}
