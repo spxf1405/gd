@@ -334,6 +334,82 @@ func (r *TournamentRepository) getTournaments(
 	return tournaments, nil
 }
 
+func (r *TournamentRepository) getTournamentByID1(ctx context.Context, id string) (*tournamentpb.Tournament, error) {
+	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
+
+	qb := psql.
+		Select(
+			"t.id",
+			"t.name",
+			"t.type",
+			"t.format",
+			"t.format_description",
+			"t.start_date",
+			"t.end_date",
+			"t.location",
+			"t.total_prize",
+			"t.entry_fee",
+			"t.max_players",
+			"t.status",
+			"t.organizer",
+			"t.created_at",
+			"t.updated_at",
+			"t.description",
+			"t.max_age",
+			"t.has_ranking",
+			"t.max_ranking_class",
+			"t.gender",
+			"t.deleted_at",
+		).
+		From("gd_tournaments tournament").
+		Where(sq.Eq{"tournament": id})
+
+	query, args, err := qb.ToSql()
+
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	row := r.DB.Pool.QueryRow(ctx, query, args...)
+
+	tournament := &tournamentpb.Tournament{}
+
+	var location, totalPrize, organizer, formatDescription, description, entryFee, maxRankingClass sql.NullString
+	var createdAt, updatedAt time.Time
+	var startDate, deletedAt sql.NullTime
+	var maxPlayers sql.NullInt32
+
+	err = row.Scan(
+		&tournament.Id,
+		&tournament.Name,
+		&tournament.Type,
+		&tournament.Format,
+		&formatDescription,
+		&startDate,
+		&tournament.EndDate,
+		&location,
+		&totalPrize,
+		&entryFee,
+		&maxPlayers,
+		&tournament.Status,
+		&organizer,
+		&createdAt,
+		&updatedAt,
+		&description,
+		&tournament.MaxAge,
+		&tournament.HasRanking,
+		&maxRankingClass,
+		&tournament.Gender,
+		&tournament.RegisteredPlayers,
+		&deletedAt,
+		&tournament.PrizeDistributions,
+		&tournament.Brackets,
+	)
+
+	return tournament, nil
+}
+
 func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string) (*tournamentpb.Tournament, error) {
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
@@ -391,6 +467,58 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 			),
 			'[]'::json
 		) AS prize_distributions`,
+		`COALESCE (
+			(
+				SELECT json_agg(
+					json_build_object(
+						'id', bracket.id,
+						'name', bracket.name,
+						'rounds', (
+							SELECT json_agg(
+								json_build_object(
+									'id', round.id,
+									'name', round.name,
+									'match', (
+										SELECT json_agg(
+											json_build_object(
+												'id', match.id,
+												'name', match.name,
+												'participants', (
+													SELECT json_agg(
+														json_build_object(
+															'id', paritcipant.id,
+															'users', (
+																SELECT json_agg(
+																	json_build_object(
+																		'id', user.id,
+																		'display_name', user.display_name
+																	)
+																)
+																FROM gd_users as user
+																WHERE paritcipant.user_id = user.id
+															)
+														)
+													)
+													FROM gd_participants as paritcipant
+													WHERE paritcipant.match_id = match.id
+												) 
+											)
+										)
+										FROM gd_matches as match
+										WHERE match.round_id = round.id
+									)
+								)
+							)
+							FROM gd_rounds as round
+							WHERE bracket_id = bracket.id
+						) 
+					)
+				)
+				FROM gd_brackets as bracket
+				WHERE bracket.tournament_id = t.id
+			),
+			'[]'::json
+		) AS brackets`,
 	).
 		From("gd_tournaments t").
 		Where(sq.Eq{"deleted_at": nil}).
@@ -436,7 +564,10 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		&tournament.RegisteredPlayers,
 		&deletedAt,
 		&tournament.PrizeDistributions,
+		&tournament.Brackets,
 	)
+
+	fmt.Println('1', tournament.Brackets)
 
 	if err != nil {
 		fmt.Println("err", err)

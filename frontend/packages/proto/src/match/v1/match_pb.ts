@@ -2,58 +2,115 @@
 // @generated from file match/v1/match.proto (package match.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
-import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { Participant } from "../../participant/v1/participant_pb";
+import { file_participant_v1_participant } from "../../participant/v1/participant_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file match/v1/match.proto.
  */
 export const file_match_v1_match: GenFile = /*@__PURE__*/
-  fileDesc("ChRtYXRjaC92MS9tYXRjaC5wcm90bxIIbWF0Y2gudjEiJgoKUGxheWVySW5mbxIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJIjsKBlBsYXllchIiCgRpbmZvGAEgASgLMhQubWF0Y2gudjEuUGxheWVySW5mbxINCgVzY29yZRgCIAEoBSIgCghQb3NpdGlvbhIJCgF4GAEgASgFEgkKAXkYAiABKAUiPwoETWV0YRITCgtzY2hlZHVsZWRBdBgBIAEoCRIPCgdyZWZlcmVlGAIgASgJEhEKCXN0cmVhbVVybBgDIAEoCSKGAgoFTWF0Y2gSCgoCaWQYASABKAUSIgoHYnJhY2tldBgCIAEoDjIRLm1hdGNoLnYxLkJyYWNrZXQSDwoHbmV4dFdpbhgDIAEoCRIQCghuZXh0TG9zZRgEIAEoCRIgCgZzdGF0dXMYBSABKA4yEC5tYXRjaC52MS5TdGF0dXMSIQoHcGxheWVyMRgGIAEoCzIQLm1hdGNoLnYxLlBsYXllchIhCgdwbGF5ZXIyGAcgASgLMhAubWF0Y2gudjEuUGxheWVyEiQKCHBvc2l0aW9uGAggASgLMhIubWF0Y2gudjEuUG9zaXRpb24SHAoEbWV0YRgJIAEoCzIOLm1hdGNoLnYxLk1ldGEqRQoHQnJhY2tldBITCg9CUkFDS0VUX1VOS05PV04QABISCg5CUkFDS0VUX1dJTk5FUhABEhEKDUJSQUNLRVRfTE9TRVIQAipFCgZTdGF0dXMSEgoOU1RBVFVTX1VOS05PV04QABISCg5TVEFUVVNfUEVORElORxABEhMKD1NUQVRVU19GSU5JU0hFRBACQidaJWJhY2tlbmQvaW50ZXJuYWwvZ2VuL21hdGNoL3YxO21hdGNocGJiBnByb3RvMw");
+  fileDesc("ChRtYXRjaC92MS9tYXRjaC5wcm90bxIIbWF0Y2gudjEiygIKBU1hdGNoEgoKAmlkGAEgASgJEhUKDWRpc3BsYXlfb3JkZXIYAiABKAUSEwoLbWF0Y2hfaW5kZXgYAyABKAUSDQoFcm91bmQYBCABKAUSFAoMdG90YWxfcm91bmRzGAUgASgFEgwKBHNpZGUYBiABKAkSDwoHcGxheWVycxgHIAMoCRIOCgZ3aW5uZXIYCCABKAkSEwoLaXNfYXV0b193aW4YCSABKAgSEgoKaXNfc2tpcHBlZBgKIAEoCBIhCgRkYXRhGAsgASgLMhMubWF0Y2gudjEuTWF0Y2hEYXRhEiQKCHBvc2l0aW9uGAwgASgLMhIubWF0Y2gudjEuUG9zaXRpb24SEAoIcm91bmRfaWQYDSABKAkSMQoMcGFydGljaXBhbnRzGA4gAygLMhsucGFydGljaXBhbnQudjEuUGFydGljaXBhbnQiGgoJTWF0Y2hEYXRhEg0KBWxhYmVsGAEgASgJIiAKCFBvc2l0aW9uEgkKAXgYASABKAUSCQoBeRgCIAEoBUInWiViYWNrZW5kL2ludGVybmFsL2dlbi9tYXRjaC92MTttYXRjaHBiYgZwcm90bzM", [file_participant_v1_participant]);
 
 /**
- * @generated from message match.v1.PlayerInfo
+ * @generated from message match.v1.Match
  */
-export type PlayerInfo = Message<"match.v1.PlayerInfo"> & {
+export type Match = Message<"match.v1.Match"> & {
   /**
    * @generated from field: string id = 1;
    */
   id: string;
 
   /**
-   * @generated from field: string name = 2;
+   * @generated from field: int32 display_order = 2;
    */
-  name: string;
+  displayOrder: number;
+
+  /**
+   * @generated from field: int32 match_index = 3;
+   */
+  matchIndex: number;
+
+  /**
+   * @generated from field: int32 round = 4;
+   */
+  round: number;
+
+  /**
+   * @generated from field: int32 total_rounds = 5;
+   */
+  totalRounds: number;
+
+  /**
+   * @generated from field: string side = 6;
+   */
+  side: string;
+
+  /**
+   * @generated from field: repeated string players = 7;
+   */
+  players: string[];
+
+  /**
+   * @generated from field: string winner = 8;
+   */
+  winner: string;
+
+  /**
+   * @generated from field: bool is_auto_win = 9;
+   */
+  isAutoWin: boolean;
+
+  /**
+   * @generated from field: bool is_skipped = 10;
+   */
+  isSkipped: boolean;
+
+  /**
+   * @generated from field: match.v1.MatchData data = 11;
+   */
+  data?: MatchData;
+
+  /**
+   * @generated from field: match.v1.Position position = 12;
+   */
+  position?: Position;
+
+  /**
+   * @generated from field: string round_id = 13;
+   */
+  roundId: string;
+
+  /**
+   * @generated from field: repeated participant.v1.Participant participants = 14;
+   */
+  participants: Participant[];
 };
 
 /**
- * Describes the message match.v1.PlayerInfo.
- * Use `create(PlayerInfoSchema)` to create a new message.
+ * Describes the message match.v1.Match.
+ * Use `create(MatchSchema)` to create a new message.
  */
-export const PlayerInfoSchema: GenMessage<PlayerInfo> = /*@__PURE__*/
+export const MatchSchema: GenMessage<Match> = /*@__PURE__*/
   messageDesc(file_match_v1_match, 0);
 
 /**
- * @generated from message match.v1.Player
+ * @generated from message match.v1.MatchData
  */
-export type Player = Message<"match.v1.Player"> & {
+export type MatchData = Message<"match.v1.MatchData"> & {
   /**
-   * @generated from field: match.v1.PlayerInfo info = 1;
+   * @generated from field: string label = 1;
    */
-  info?: PlayerInfo;
-
-  /**
-   * @generated from field: int32 score = 2;
-   */
-  score: number;
+  label: string;
 };
 
 /**
- * Describes the message match.v1.Player.
- * Use `create(PlayerSchema)` to create a new message.
+ * Describes the message match.v1.MatchData.
+ * Use `create(MatchDataSchema)` to create a new message.
  */
-export const PlayerSchema: GenMessage<Player> = /*@__PURE__*/
+export const MatchDataSchema: GenMessage<MatchData> = /*@__PURE__*/
   messageDesc(file_match_v1_match, 1);
 
 /**
@@ -77,140 +134,4 @@ export type Position = Message<"match.v1.Position"> & {
  */
 export const PositionSchema: GenMessage<Position> = /*@__PURE__*/
   messageDesc(file_match_v1_match, 2);
-
-/**
- * @generated from message match.v1.Meta
- */
-export type Meta = Message<"match.v1.Meta"> & {
-  /**
-   * @generated from field: string scheduledAt = 1;
-   */
-  scheduledAt: string;
-
-  /**
-   * @generated from field: string referee = 2;
-   */
-  referee: string;
-
-  /**
-   * @generated from field: string streamUrl = 3;
-   */
-  streamUrl: string;
-};
-
-/**
- * Describes the message match.v1.Meta.
- * Use `create(MetaSchema)` to create a new message.
- */
-export const MetaSchema: GenMessage<Meta> = /*@__PURE__*/
-  messageDesc(file_match_v1_match, 3);
-
-/**
- * @generated from message match.v1.Match
- */
-export type Match = Message<"match.v1.Match"> & {
-  /**
-   * @generated from field: int32 id = 1;
-   */
-  id: number;
-
-  /**
-   * @generated from field: match.v1.Bracket bracket = 2;
-   */
-  bracket: Bracket;
-
-  /**
-   * @generated from field: string nextWin = 3;
-   */
-  nextWin: string;
-
-  /**
-   * @generated from field: string nextLose = 4;
-   */
-  nextLose: string;
-
-  /**
-   * @generated from field: match.v1.Status status = 5;
-   */
-  status: Status;
-
-  /**
-   * @generated from field: match.v1.Player player1 = 6;
-   */
-  player1?: Player;
-
-  /**
-   * @generated from field: match.v1.Player player2 = 7;
-   */
-  player2?: Player;
-
-  /**
-   * @generated from field: match.v1.Position position = 8;
-   */
-  position?: Position;
-
-  /**
-   * @generated from field: match.v1.Meta meta = 9;
-   */
-  meta?: Meta;
-};
-
-/**
- * Describes the message match.v1.Match.
- * Use `create(MatchSchema)` to create a new message.
- */
-export const MatchSchema: GenMessage<Match> = /*@__PURE__*/
-  messageDesc(file_match_v1_match, 4);
-
-/**
- * @generated from enum match.v1.Bracket
- */
-export enum Bracket {
-  /**
-   * @generated from enum value: BRACKET_UNKNOWN = 0;
-   */
-  UNKNOWN = 0,
-
-  /**
-   * @generated from enum value: BRACKET_WINNER = 1;
-   */
-  WINNER = 1,
-
-  /**
-   * @generated from enum value: BRACKET_LOSER = 2;
-   */
-  LOSER = 2,
-}
-
-/**
- * Describes the enum match.v1.Bracket.
- */
-export const BracketSchema: GenEnum<Bracket> = /*@__PURE__*/
-  enumDesc(file_match_v1_match, 0);
-
-/**
- * @generated from enum match.v1.Status
- */
-export enum Status {
-  /**
-   * @generated from enum value: STATUS_UNKNOWN = 0;
-   */
-  UNKNOWN = 0,
-
-  /**
-   * @generated from enum value: STATUS_PENDING = 1;
-   */
-  PENDING = 1,
-
-  /**
-   * @generated from enum value: STATUS_FINISHED = 2;
-   */
-  FINISHED = 2,
-}
-
-/**
- * Describes the enum match.v1.Status.
- */
-export const StatusSchema: GenEnum<Status> = /*@__PURE__*/
-  enumDesc(file_match_v1_match, 1);
 

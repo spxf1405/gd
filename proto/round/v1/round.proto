@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package round.v1;
+
+option go_package = "backend/internal/gen/round/v1;roundpb";
+
+import "match/v1/match.proto";
+
+message Round {
+  string                  id         = 1;
+  string                  name       = 2;
+  repeated match.v1.Match matches    = 3;
+  string                  bracket_id = 4;
+}

@@ -54,9 +54,9 @@ function App() {
       <div className="p-2 flex gap-2">
         <Setting />
         <PlayersDialog />
-        <RoundSelect />
+        {/* <RoundSelect />
         <PlayerMatchHistory />
-        <GamingCommandMenu />
+        <GamingCommandMenu /> */}
       </div>
       <BracketFlow />
     </div>

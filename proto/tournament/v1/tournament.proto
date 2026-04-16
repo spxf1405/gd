@@ -6,6 +6,8 @@ option go_package = "backend/internal/gen/tournament/v1;tournamentpb";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
+import "match/v1/match.proto";
+import "bracket/v1/bracket.proto";
 
 // Trạng thái giải đấu
 enum TournamentStatus {
@@ -48,6 +50,12 @@ message PrizeDistribution {
   int32  amount        = 5 ;
 }
 
+message Round {
+  string                  id      = 1;
+  string                  name    = 2;
+  repeated match.v1.Match matches = 3;
+}
+
 // Thông tin giải đấu
 message Tournament {
   string                      id                  = 1;
@@ -73,4 +81,5 @@ message Tournament {
   repeated Player             registered_players  = 22;
   google.protobuf.StringValue deleted_at          = 23;
   repeated PrizeDistribution  prize_distributions = 24;
+  repeated bracket.v1.Bracket brackets            = 25;
 }

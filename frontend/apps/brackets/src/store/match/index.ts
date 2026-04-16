@@ -109,6 +109,8 @@ export const useTournamentStore = create<TourState>()(
           totalRounds: wbTotalRounds,
         });
 
+        console.log("wbNodes", wbNodes)
+
         const { nodes: lbNodes, edges: lbEdges } = createLBFlow({
           wbPlayers,
           wbTotalBracketSlots,

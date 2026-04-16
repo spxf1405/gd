@@ -4,7 +4,7 @@
 
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
-import { file_google_protobuf_wrappers } from "@bufbuild/protobuf/wkt";
+import { file_google_protobuf_wrappers } from "../../google/protobuf/wrappers_pb";
 import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
 import type { Message } from "@bufbuild/protobuf";
 

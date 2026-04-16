@@ -7,6 +7,8 @@
 package tournamentpb
 
 import (
+	v11 "backend/internal/gen/bracket/v1"
+	v1 "backend/internal/gen/match/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
@@ -357,6 +359,66 @@ func (x *PrizeDistribution) GetAmount() int32 {
 	return 0
 }
 
+type Round struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Matches       []*v1.Match            `protobuf:"bytes,3,rep,name=matches,proto3" json:"matches,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Round) Reset() {
+	*x = Round{}
+	mi := &file_tournament_v1_tournament_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Round) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Round) ProtoMessage() {}
+
+func (x *Round) ProtoReflect() protoreflect.Message {
+	mi := &file_tournament_v1_tournament_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Round.ProtoReflect.Descriptor instead.
+func (*Round) Descriptor() ([]byte, []int) {
+	return file_tournament_v1_tournament_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Round) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Round) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Round) GetMatches() []*v1.Match {
+	if x != nil {
+		return x.Matches
+	}
+	return nil
+}
+
 // Thông tin giải đấu
 type Tournament struct {
 	state              protoimpl.MessageState  `protogen:"open.v1"`
@@ -383,13 +445,14 @@ type Tournament struct {
 	RegisteredPlayers  []*Player               `protobuf:"bytes,22,rep,name=registered_players,json=registeredPlayers,proto3" json:"registered_players,omitempty"`
 	DeletedAt          *wrapperspb.StringValue `protobuf:"bytes,23,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
 	PrizeDistributions []*PrizeDistribution    `protobuf:"bytes,24,rep,name=prize_distributions,json=prizeDistributions,proto3" json:"prize_distributions,omitempty"`
+	Brackets           []*v11.Bracket          `protobuf:"bytes,25,rep,name=brackets,proto3" json:"brackets,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
 
 func (x *Tournament) Reset() {
 	*x = Tournament{}
-	mi := &file_tournament_v1_tournament_proto_msgTypes[2]
+	mi := &file_tournament_v1_tournament_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -401,7 +464,7 @@ func (x *Tournament) String() string {
 func (*Tournament) ProtoMessage() {}
 
 func (x *Tournament) ProtoReflect() protoreflect.Message {
-	mi := &file_tournament_v1_tournament_proto_msgTypes[2]
+	mi := &file_tournament_v1_tournament_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -414,7 +477,7 @@ func (x *Tournament) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Tournament.ProtoReflect.Descriptor instead.
 func (*Tournament) Descriptor() ([]byte, []int) {
-	return file_tournament_v1_tournament_proto_rawDescGZIP(), []int{2}
+	return file_tournament_v1_tournament_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Tournament) GetId() string {
@@ -578,11 +641,18 @@ func (x *Tournament) GetPrizeDistributions() []*PrizeDistribution {
 	return nil
 }
 
+func (x *Tournament) GetBrackets() []*v11.Bracket {
+	if x != nil {
+		return x.Brackets
+	}
+	return nil
+}
+
 var File_tournament_v1_tournament_proto protoreflect.FileDescriptor
 
 const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\n" +
-	"\x1etournament/v1/tournament.proto\x12\rtournament.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\",\n" +
+	"\x1etournament/v1/tournament.proto\x12\rtournament.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x14match/v1/match.proto\x1a\x18bracket/v1/bracket.proto\",\n" +
 	"\x06Player\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\"\x99\x01\n" +
@@ -591,7 +661,11 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\rtournament_id\x18\x02 \x01(\tR\ftournamentId\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12#\n" +
 	"\rdisplay_order\x18\x04 \x01(\x05R\fdisplayOrder\x12\x16\n" +
-	"\x06amount\x18\x05 \x01(\x05R\x06amount\"\xcb\t\n" +
+	"\x06amount\x18\x05 \x01(\x05R\x06amount\"V\n" +
+	"\x05Round\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12)\n" +
+	"\amatches\x18\x03 \x03(\v2\x0f.match.v1.MatchR\amatches\"\xfc\t\n" +
 	"\n" +
 	"Tournament\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
@@ -623,7 +697,8 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\x12registered_players\x18\x16 \x03(\v2\x15.tournament.v1.PlayerR\x11registeredPlayers\x12;\n" +
 	"\n" +
 	"deleted_at\x18\x17 \x01(\v2\x1c.google.protobuf.StringValueR\tdeletedAt\x12Q\n" +
-	"\x13prize_distributions\x18\x18 \x03(\v2 .tournament.v1.PrizeDistributionR\x12prizeDistributions*\x82\x02\n" +
+	"\x13prize_distributions\x18\x18 \x03(\v2 .tournament.v1.PrizeDistributionR\x12prizeDistributions\x12/\n" +
+	"\bbrackets\x18\x19 \x03(\v2\x13.bracket.v1.BracketR\bbrackets*\x82\x02\n" +
 	"\x10TournamentStatus\x12!\n" +
 	"\x1dTOURNAMENT_STATUS_UNSPECIFIED\x10\x00\x12!\n" +
 	"\x1dTOURNAMENT_STATUS_REGISTERING\x10\x01\x12)\n" +
@@ -658,7 +733,7 @@ func file_tournament_v1_tournament_proto_rawDescGZIP() []byte {
 }
 
 var file_tournament_v1_tournament_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_tournament_v1_tournament_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_tournament_v1_tournament_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_tournament_v1_tournament_proto_goTypes = []any{
 	(TournamentStatus)(0),          // 0: tournament.v1.TournamentStatus
 	(TournamentType)(0),            // 1: tournament.v1.TournamentType
@@ -666,33 +741,38 @@ var file_tournament_v1_tournament_proto_goTypes = []any{
 	(Gender)(0),                    // 3: tournament.v1.Gender
 	(*Player)(nil),                 // 4: tournament.v1.Player
 	(*PrizeDistribution)(nil),      // 5: tournament.v1.PrizeDistribution
-	(*Tournament)(nil),             // 6: tournament.v1.Tournament
-	(*wrapperspb.StringValue)(nil), // 7: google.protobuf.StringValue
-	(*wrapperspb.Int32Value)(nil),  // 8: google.protobuf.Int32Value
+	(*Round)(nil),                  // 6: tournament.v1.Round
+	(*Tournament)(nil),             // 7: tournament.v1.Tournament
+	(*v1.Match)(nil),               // 8: match.v1.Match
+	(*wrapperspb.StringValue)(nil), // 9: google.protobuf.StringValue
+	(*wrapperspb.Int32Value)(nil),  // 10: google.protobuf.Int32Value
+	(*v11.Bracket)(nil),            // 11: bracket.v1.Bracket
 }
 var file_tournament_v1_tournament_proto_depIdxs = []int32{
-	1,  // 0: tournament.v1.Tournament.type:type_name -> tournament.v1.TournamentType
-	2,  // 1: tournament.v1.Tournament.format:type_name -> tournament.v1.TournamentFormat
-	7,  // 2: tournament.v1.Tournament.format_description:type_name -> google.protobuf.StringValue
-	7,  // 3: tournament.v1.Tournament.start_date:type_name -> google.protobuf.StringValue
-	7,  // 4: tournament.v1.Tournament.end_date:type_name -> google.protobuf.StringValue
-	7,  // 5: tournament.v1.Tournament.location:type_name -> google.protobuf.StringValue
-	7,  // 6: tournament.v1.Tournament.total_prize:type_name -> google.protobuf.StringValue
-	7,  // 7: tournament.v1.Tournament.entry_fee:type_name -> google.protobuf.StringValue
-	8,  // 8: tournament.v1.Tournament.max_players:type_name -> google.protobuf.Int32Value
-	0,  // 9: tournament.v1.Tournament.status:type_name -> tournament.v1.TournamentStatus
-	7,  // 10: tournament.v1.Tournament.organizer:type_name -> google.protobuf.StringValue
-	7,  // 11: tournament.v1.Tournament.description:type_name -> google.protobuf.StringValue
-	7,  // 12: tournament.v1.Tournament.max_ranking_class:type_name -> google.protobuf.StringValue
-	3,  // 13: tournament.v1.Tournament.gender:type_name -> tournament.v1.Gender
-	4,  // 14: tournament.v1.Tournament.registered_players:type_name -> tournament.v1.Player
-	7,  // 15: tournament.v1.Tournament.deleted_at:type_name -> google.protobuf.StringValue
-	5,  // 16: tournament.v1.Tournament.prize_distributions:type_name -> tournament.v1.PrizeDistribution
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	8,  // 0: tournament.v1.Round.matches:type_name -> match.v1.Match
+	1,  // 1: tournament.v1.Tournament.type:type_name -> tournament.v1.TournamentType
+	2,  // 2: tournament.v1.Tournament.format:type_name -> tournament.v1.TournamentFormat
+	9,  // 3: tournament.v1.Tournament.format_description:type_name -> google.protobuf.StringValue
+	9,  // 4: tournament.v1.Tournament.start_date:type_name -> google.protobuf.StringValue
+	9,  // 5: tournament.v1.Tournament.end_date:type_name -> google.protobuf.StringValue
+	9,  // 6: tournament.v1.Tournament.location:type_name -> google.protobuf.StringValue
+	9,  // 7: tournament.v1.Tournament.total_prize:type_name -> google.protobuf.StringValue
+	9,  // 8: tournament.v1.Tournament.entry_fee:type_name -> google.protobuf.StringValue
+	10, // 9: tournament.v1.Tournament.max_players:type_name -> google.protobuf.Int32Value
+	0,  // 10: tournament.v1.Tournament.status:type_name -> tournament.v1.TournamentStatus
+	9,  // 11: tournament.v1.Tournament.organizer:type_name -> google.protobuf.StringValue
+	9,  // 12: tournament.v1.Tournament.description:type_name -> google.protobuf.StringValue
+	9,  // 13: tournament.v1.Tournament.max_ranking_class:type_name -> google.protobuf.StringValue
+	3,  // 14: tournament.v1.Tournament.gender:type_name -> tournament.v1.Gender
+	4,  // 15: tournament.v1.Tournament.registered_players:type_name -> tournament.v1.Player
+	9,  // 16: tournament.v1.Tournament.deleted_at:type_name -> google.protobuf.StringValue
+	5,  // 17: tournament.v1.Tournament.prize_distributions:type_name -> tournament.v1.PrizeDistribution
+	11, // 18: tournament.v1.Tournament.brackets:type_name -> bracket.v1.Bracket
+	19, // [19:19] is the sub-list for method output_type
+	19, // [19:19] is the sub-list for method input_type
+	19, // [19:19] is the sub-list for extension type_name
+	19, // [19:19] is the sub-list for extension extendee
+	0,  // [0:19] is the sub-list for field type_name
 }
 
 func init() { file_tournament_v1_tournament_proto_init() }
@@ -706,7 +786,7 @@ func file_tournament_v1_tournament_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_tournament_v1_tournament_proto_rawDesc), len(file_tournament_v1_tournament_proto_rawDesc)),
 			NumEnums:      4,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

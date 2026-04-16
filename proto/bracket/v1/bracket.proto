@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package bracket.v1;
+
+option go_package = "backend/internal/gen/bracket/v1;bracketpb";
+
+import "round/v1/round.proto";
+
+message Bracket {
+  string                  id     = 1;
+  string                  name   = 2;
+  repeated round.v1.Round rounds = 3;
+}

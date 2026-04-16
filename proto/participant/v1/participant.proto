@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package participant.v1;
+
+option go_package = "backend/internal/gen/participant/v1;participantpb";
+
+message Participant {
+  string id           = 1;
+  string display_name = 2;
+  string match_id     = 3;
+  int32  slot         = 4;
+  int32  score        = 5;
+}

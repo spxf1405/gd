@@ -7,6 +7,7 @@
 package matchpb
 
 import (
+	v1 "backend/internal/gen/participant/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -21,126 +22,40 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Bracket int32
-
-const (
-	Bracket_BRACKET_UNKNOWN Bracket = 0
-	Bracket_BRACKET_WINNER  Bracket = 1
-	Bracket_BRACKET_LOSER   Bracket = 2
-)
-
-// Enum value maps for Bracket.
-var (
-	Bracket_name = map[int32]string{
-		0: "BRACKET_UNKNOWN",
-		1: "BRACKET_WINNER",
-		2: "BRACKET_LOSER",
-	}
-	Bracket_value = map[string]int32{
-		"BRACKET_UNKNOWN": 0,
-		"BRACKET_WINNER":  1,
-		"BRACKET_LOSER":   2,
-	}
-)
-
-func (x Bracket) Enum() *Bracket {
-	p := new(Bracket)
-	*p = x
-	return p
-}
-
-func (x Bracket) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (Bracket) Descriptor() protoreflect.EnumDescriptor {
-	return file_match_v1_match_proto_enumTypes[0].Descriptor()
-}
-
-func (Bracket) Type() protoreflect.EnumType {
-	return &file_match_v1_match_proto_enumTypes[0]
-}
-
-func (x Bracket) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use Bracket.Descriptor instead.
-func (Bracket) EnumDescriptor() ([]byte, []int) {
-	return file_match_v1_match_proto_rawDescGZIP(), []int{0}
-}
-
-type Status int32
-
-const (
-	Status_STATUS_UNKNOWN  Status = 0
-	Status_STATUS_PENDING  Status = 1
-	Status_STATUS_FINISHED Status = 2
-)
-
-// Enum value maps for Status.
-var (
-	Status_name = map[int32]string{
-		0: "STATUS_UNKNOWN",
-		1: "STATUS_PENDING",
-		2: "STATUS_FINISHED",
-	}
-	Status_value = map[string]int32{
-		"STATUS_UNKNOWN":  0,
-		"STATUS_PENDING":  1,
-		"STATUS_FINISHED": 2,
-	}
-)
-
-func (x Status) Enum() *Status {
-	p := new(Status)
-	*p = x
-	return p
-}
-
-func (x Status) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (Status) Descriptor() protoreflect.EnumDescriptor {
-	return file_match_v1_match_proto_enumTypes[1].Descriptor()
-}
-
-func (Status) Type() protoreflect.EnumType {
-	return &file_match_v1_match_proto_enumTypes[1]
-}
-
-func (x Status) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use Status.Descriptor instead.
-func (Status) EnumDescriptor() ([]byte, []int) {
-	return file_match_v1_match_proto_rawDescGZIP(), []int{1}
-}
-
-type PlayerInfo struct {
+type Match struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	DisplayOrder  int32                  `protobuf:"varint,2,opt,name=display_order,json=displayOrder,proto3" json:"display_order,omitempty"`
+	MatchIndex    int32                  `protobuf:"varint,3,opt,name=match_index,json=matchIndex,proto3" json:"match_index,omitempty"`
+	Round         int32                  `protobuf:"varint,4,opt,name=round,proto3" json:"round,omitempty"`
+	TotalRounds   int32                  `protobuf:"varint,5,opt,name=total_rounds,json=totalRounds,proto3" json:"total_rounds,omitempty"`
+	Side          string                 `protobuf:"bytes,6,opt,name=side,proto3" json:"side,omitempty"`
+	Players       []string               `protobuf:"bytes,7,rep,name=players,proto3" json:"players,omitempty"`
+	Winner        string                 `protobuf:"bytes,8,opt,name=winner,proto3" json:"winner,omitempty"`
+	IsAutoWin     bool                   `protobuf:"varint,9,opt,name=is_auto_win,json=isAutoWin,proto3" json:"is_auto_win,omitempty"`
+	IsSkipped     bool                   `protobuf:"varint,10,opt,name=is_skipped,json=isSkipped,proto3" json:"is_skipped,omitempty"`
+	Data          *MatchData             `protobuf:"bytes,11,opt,name=data,proto3" json:"data,omitempty"`
+	Position      *Position              `protobuf:"bytes,12,opt,name=position,proto3" json:"position,omitempty"`
+	RoundId       string                 `protobuf:"bytes,13,opt,name=round_id,json=roundId,proto3" json:"round_id,omitempty"`
+	Participants  []*v1.Participant      `protobuf:"bytes,14,rep,name=participants,proto3" json:"participants,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *PlayerInfo) Reset() {
-	*x = PlayerInfo{}
+func (x *Match) Reset() {
+	*x = Match{}
 	mi := &file_match_v1_match_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *PlayerInfo) String() string {
+func (x *Match) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PlayerInfo) ProtoMessage() {}
+func (*Match) ProtoMessage() {}
 
-func (x *PlayerInfo) ProtoReflect() protoreflect.Message {
+func (x *Match) ProtoReflect() protoreflect.Message {
 	mi := &file_match_v1_match_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -152,47 +67,130 @@ func (x *PlayerInfo) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use PlayerInfo.ProtoReflect.Descriptor instead.
-func (*PlayerInfo) Descriptor() ([]byte, []int) {
+// Deprecated: Use Match.ProtoReflect.Descriptor instead.
+func (*Match) Descriptor() ([]byte, []int) {
 	return file_match_v1_match_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *PlayerInfo) GetId() string {
+func (x *Match) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *PlayerInfo) GetName() string {
+func (x *Match) GetDisplayOrder() int32 {
 	if x != nil {
-		return x.Name
+		return x.DisplayOrder
+	}
+	return 0
+}
+
+func (x *Match) GetMatchIndex() int32 {
+	if x != nil {
+		return x.MatchIndex
+	}
+	return 0
+}
+
+func (x *Match) GetRound() int32 {
+	if x != nil {
+		return x.Round
+	}
+	return 0
+}
+
+func (x *Match) GetTotalRounds() int32 {
+	if x != nil {
+		return x.TotalRounds
+	}
+	return 0
+}
+
+func (x *Match) GetSide() string {
+	if x != nil {
+		return x.Side
 	}
 	return ""
 }
 
-type Player struct {
+func (x *Match) GetPlayers() []string {
+	if x != nil {
+		return x.Players
+	}
+	return nil
+}
+
+func (x *Match) GetWinner() string {
+	if x != nil {
+		return x.Winner
+	}
+	return ""
+}
+
+func (x *Match) GetIsAutoWin() bool {
+	if x != nil {
+		return x.IsAutoWin
+	}
+	return false
+}
+
+func (x *Match) GetIsSkipped() bool {
+	if x != nil {
+		return x.IsSkipped
+	}
+	return false
+}
+
+func (x *Match) GetData() *MatchData {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+func (x *Match) GetPosition() *Position {
+	if x != nil {
+		return x.Position
+	}
+	return nil
+}
+
+func (x *Match) GetRoundId() string {
+	if x != nil {
+		return x.RoundId
+	}
+	return ""
+}
+
+func (x *Match) GetParticipants() []*v1.Participant {
+	if x != nil {
+		return x.Participants
+	}
+	return nil
+}
+
+type MatchData struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Info          *PlayerInfo            `protobuf:"bytes,1,opt,name=info,proto3" json:"info,omitempty"`
-	Score         int32                  `protobuf:"varint,2,opt,name=score,proto3" json:"score,omitempty"`
+	Label         string                 `protobuf:"bytes,1,opt,name=label,proto3" json:"label,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Player) Reset() {
-	*x = Player{}
+func (x *MatchData) Reset() {
+	*x = MatchData{}
 	mi := &file_match_v1_match_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Player) String() string {
+func (x *MatchData) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Player) ProtoMessage() {}
+func (*MatchData) ProtoMessage() {}
 
-func (x *Player) ProtoReflect() protoreflect.Message {
+func (x *MatchData) ProtoReflect() protoreflect.Message {
 	mi := &file_match_v1_match_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -204,23 +202,16 @@ func (x *Player) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Player.ProtoReflect.Descriptor instead.
-func (*Player) Descriptor() ([]byte, []int) {
+// Deprecated: Use MatchData.ProtoReflect.Descriptor instead.
+func (*MatchData) Descriptor() ([]byte, []int) {
 	return file_match_v1_match_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Player) GetInfo() *PlayerInfo {
+func (x *MatchData) GetLabel() string {
 	if x != nil {
-		return x.Info
+		return x.Label
 	}
-	return nil
-}
-
-func (x *Player) GetScore() int32 {
-	if x != nil {
-		return x.Score
-	}
-	return 0
+	return ""
 }
 
 type Position struct {
@@ -275,211 +266,34 @@ func (x *Position) GetY() int32 {
 	return 0
 }
 
-type Meta struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ScheduledAt   string                 `protobuf:"bytes,1,opt,name=scheduledAt,proto3" json:"scheduledAt,omitempty"`
-	Referee       string                 `protobuf:"bytes,2,opt,name=referee,proto3" json:"referee,omitempty"`
-	StreamUrl     string                 `protobuf:"bytes,3,opt,name=streamUrl,proto3" json:"streamUrl,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Meta) Reset() {
-	*x = Meta{}
-	mi := &file_match_v1_match_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Meta) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Meta) ProtoMessage() {}
-
-func (x *Meta) ProtoReflect() protoreflect.Message {
-	mi := &file_match_v1_match_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Meta.ProtoReflect.Descriptor instead.
-func (*Meta) Descriptor() ([]byte, []int) {
-	return file_match_v1_match_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *Meta) GetScheduledAt() string {
-	if x != nil {
-		return x.ScheduledAt
-	}
-	return ""
-}
-
-func (x *Meta) GetReferee() string {
-	if x != nil {
-		return x.Referee
-	}
-	return ""
-}
-
-func (x *Meta) GetStreamUrl() string {
-	if x != nil {
-		return x.StreamUrl
-	}
-	return ""
-}
-
-type Match struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Bracket       Bracket                `protobuf:"varint,2,opt,name=bracket,proto3,enum=match.v1.Bracket" json:"bracket,omitempty"`
-	NextWin       string                 `protobuf:"bytes,3,opt,name=nextWin,proto3" json:"nextWin,omitempty"`
-	NextLose      string                 `protobuf:"bytes,4,opt,name=nextLose,proto3" json:"nextLose,omitempty"`
-	Status        Status                 `protobuf:"varint,5,opt,name=status,proto3,enum=match.v1.Status" json:"status,omitempty"`
-	Player1       *Player                `protobuf:"bytes,6,opt,name=player1,proto3" json:"player1,omitempty"`
-	Player2       *Player                `protobuf:"bytes,7,opt,name=player2,proto3" json:"player2,omitempty"`
-	Position      *Position              `protobuf:"bytes,8,opt,name=position,proto3" json:"position,omitempty"`
-	Meta          *Meta                  `protobuf:"bytes,9,opt,name=meta,proto3" json:"meta,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Match) Reset() {
-	*x = Match{}
-	mi := &file_match_v1_match_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Match) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Match) ProtoMessage() {}
-
-func (x *Match) ProtoReflect() protoreflect.Message {
-	mi := &file_match_v1_match_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Match.ProtoReflect.Descriptor instead.
-func (*Match) Descriptor() ([]byte, []int) {
-	return file_match_v1_match_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *Match) GetId() int32 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-func (x *Match) GetBracket() Bracket {
-	if x != nil {
-		return x.Bracket
-	}
-	return Bracket_BRACKET_UNKNOWN
-}
-
-func (x *Match) GetNextWin() string {
-	if x != nil {
-		return x.NextWin
-	}
-	return ""
-}
-
-func (x *Match) GetNextLose() string {
-	if x != nil {
-		return x.NextLose
-	}
-	return ""
-}
-
-func (x *Match) GetStatus() Status {
-	if x != nil {
-		return x.Status
-	}
-	return Status_STATUS_UNKNOWN
-}
-
-func (x *Match) GetPlayer1() *Player {
-	if x != nil {
-		return x.Player1
-	}
-	return nil
-}
-
-func (x *Match) GetPlayer2() *Player {
-	if x != nil {
-		return x.Player2
-	}
-	return nil
-}
-
-func (x *Match) GetPosition() *Position {
-	if x != nil {
-		return x.Position
-	}
-	return nil
-}
-
-func (x *Match) GetMeta() *Meta {
-	if x != nil {
-		return x.Meta
-	}
-	return nil
-}
-
 var File_match_v1_match_proto protoreflect.FileDescriptor
 
 const file_match_v1_match_proto_rawDesc = "" +
 	"\n" +
-	"\x14match/v1/match.proto\x12\bmatch.v1\"0\n" +
+	"\x14match/v1/match.proto\x12\bmatch.v1\x1a participant/v1/participant.proto\"\xd0\x03\n" +
+	"\x05Match\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12#\n" +
+	"\rdisplay_order\x18\x02 \x01(\x05R\fdisplayOrder\x12\x1f\n" +
+	"\vmatch_index\x18\x03 \x01(\x05R\n" +
+	"matchIndex\x12\x14\n" +
+	"\x05round\x18\x04 \x01(\x05R\x05round\x12!\n" +
+	"\ftotal_rounds\x18\x05 \x01(\x05R\vtotalRounds\x12\x12\n" +
+	"\x04side\x18\x06 \x01(\tR\x04side\x12\x18\n" +
+	"\aplayers\x18\a \x03(\tR\aplayers\x12\x16\n" +
+	"\x06winner\x18\b \x01(\tR\x06winner\x12\x1e\n" +
+	"\vis_auto_win\x18\t \x01(\bR\tisAutoWin\x12\x1d\n" +
 	"\n" +
-	"PlayerInfo\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\"H\n" +
-	"\x06Player\x12(\n" +
-	"\x04info\x18\x01 \x01(\v2\x14.match.v1.PlayerInfoR\x04info\x12\x14\n" +
-	"\x05score\x18\x02 \x01(\x05R\x05score\"&\n" +
+	"is_skipped\x18\n" +
+	" \x01(\bR\tisSkipped\x12'\n" +
+	"\x04data\x18\v \x01(\v2\x13.match.v1.MatchDataR\x04data\x12.\n" +
+	"\bposition\x18\f \x01(\v2\x12.match.v1.PositionR\bposition\x12\x19\n" +
+	"\bround_id\x18\r \x01(\tR\aroundId\x12?\n" +
+	"\fparticipants\x18\x0e \x03(\v2\x1b.participant.v1.ParticipantR\fparticipants\"!\n" +
+	"\tMatchData\x12\x14\n" +
+	"\x05label\x18\x01 \x01(\tR\x05label\"&\n" +
 	"\bPosition\x12\f\n" +
 	"\x01x\x18\x01 \x01(\x05R\x01x\x12\f\n" +
-	"\x01y\x18\x02 \x01(\x05R\x01y\"`\n" +
-	"\x04Meta\x12 \n" +
-	"\vscheduledAt\x18\x01 \x01(\tR\vscheduledAt\x12\x18\n" +
-	"\areferee\x18\x02 \x01(\tR\areferee\x12\x1c\n" +
-	"\tstreamUrl\x18\x03 \x01(\tR\tstreamUrl\"\xd0\x02\n" +
-	"\x05Match\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x05R\x02id\x12+\n" +
-	"\abracket\x18\x02 \x01(\x0e2\x11.match.v1.BracketR\abracket\x12\x18\n" +
-	"\anextWin\x18\x03 \x01(\tR\anextWin\x12\x1a\n" +
-	"\bnextLose\x18\x04 \x01(\tR\bnextLose\x12(\n" +
-	"\x06status\x18\x05 \x01(\x0e2\x10.match.v1.StatusR\x06status\x12*\n" +
-	"\aplayer1\x18\x06 \x01(\v2\x10.match.v1.PlayerR\aplayer1\x12*\n" +
-	"\aplayer2\x18\a \x01(\v2\x10.match.v1.PlayerR\aplayer2\x12.\n" +
-	"\bposition\x18\b \x01(\v2\x12.match.v1.PositionR\bposition\x12\"\n" +
-	"\x04meta\x18\t \x01(\v2\x0e.match.v1.MetaR\x04meta*E\n" +
-	"\aBracket\x12\x13\n" +
-	"\x0fBRACKET_UNKNOWN\x10\x00\x12\x12\n" +
-	"\x0eBRACKET_WINNER\x10\x01\x12\x11\n" +
-	"\rBRACKET_LOSER\x10\x02*E\n" +
-	"\x06Status\x12\x12\n" +
-	"\x0eSTATUS_UNKNOWN\x10\x00\x12\x12\n" +
-	"\x0eSTATUS_PENDING\x10\x01\x12\x13\n" +
-	"\x0fSTATUS_FINISHED\x10\x02B'Z%backend/internal/gen/match/v1;matchpbb\x06proto3"
+	"\x01y\x18\x02 \x01(\x05R\x01yB'Z%backend/internal/gen/match/v1;matchpbb\x06proto3"
 
 var (
 	file_match_v1_match_proto_rawDescOnce sync.Once
@@ -493,30 +307,22 @@ func file_match_v1_match_proto_rawDescGZIP() []byte {
 	return file_match_v1_match_proto_rawDescData
 }
 
-var file_match_v1_match_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_match_v1_match_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_match_v1_match_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_match_v1_match_proto_goTypes = []any{
-	(Bracket)(0),       // 0: match.v1.Bracket
-	(Status)(0),        // 1: match.v1.Status
-	(*PlayerInfo)(nil), // 2: match.v1.PlayerInfo
-	(*Player)(nil),     // 3: match.v1.Player
-	(*Position)(nil),   // 4: match.v1.Position
-	(*Meta)(nil),       // 5: match.v1.Meta
-	(*Match)(nil),      // 6: match.v1.Match
+	(*Match)(nil),          // 0: match.v1.Match
+	(*MatchData)(nil),      // 1: match.v1.MatchData
+	(*Position)(nil),       // 2: match.v1.Position
+	(*v1.Participant)(nil), // 3: participant.v1.Participant
 }
 var file_match_v1_match_proto_depIdxs = []int32{
-	2, // 0: match.v1.Player.info:type_name -> match.v1.PlayerInfo
-	0, // 1: match.v1.Match.bracket:type_name -> match.v1.Bracket
-	1, // 2: match.v1.Match.status:type_name -> match.v1.Status
-	3, // 3: match.v1.Match.player1:type_name -> match.v1.Player
-	3, // 4: match.v1.Match.player2:type_name -> match.v1.Player
-	4, // 5: match.v1.Match.position:type_name -> match.v1.Position
-	5, // 6: match.v1.Match.meta:type_name -> match.v1.Meta
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	1, // 0: match.v1.Match.data:type_name -> match.v1.MatchData
+	2, // 1: match.v1.Match.position:type_name -> match.v1.Position
+	3, // 2: match.v1.Match.participants:type_name -> participant.v1.Participant
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_match_v1_match_proto_init() }
@@ -529,14 +335,13 @@ func file_match_v1_match_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_match_v1_match_proto_rawDesc), len(file_match_v1_match_proto_rawDesc)),
-			NumEnums:      2,
-			NumMessages:   5,
+			NumEnums:      0,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_match_v1_match_proto_goTypes,
 		DependencyIndexes: file_match_v1_match_proto_depIdxs,
-		EnumInfos:         file_match_v1_match_proto_enumTypes,
 		MessageInfos:      file_match_v1_match_proto_msgTypes,
 	}.Build()
 	File_match_v1_match_proto = out.File
