@@ -5,6 +5,7 @@ import (
 	bracketpb "backend/internal/gen/bracket/v1"
 	"backend/internal/repository"
 	"context"
+	"fmt"
 
 	sq "github.com/Masterminds/squirrel"
 )
@@ -31,8 +32,10 @@ func (r *BracketRepository) getBracketsByTournamentID(ctx context.Context, tourn
 		Where(sq.Eq{"b.tournament_id": tournamentId})
 
 	query, args, err := qb.ToSql()
+	fmt.Println(query)
 
 	if err != nil {
+		fmt.Println("err", err)
 		return nil, err
 	}
 

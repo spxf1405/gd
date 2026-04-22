@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 	"time"
 
 	"backend/internal/db"
@@ -361,8 +362,8 @@ func (r *TournamentRepository) getTournamentByID1(ctx context.Context, id string
 			"t.gender",
 			"t.deleted_at",
 		).
-		From("gd_tournaments tournament").
-		Where(sq.Eq{"tournament": id})
+		From("gd_tournaments t").
+		Where(sq.Eq{"t.id": id})
 
 	query, args, err := qb.ToSql()
 
@@ -401,11 +402,12 @@ func (r *TournamentRepository) getTournamentByID1(ctx context.Context, id string
 		&tournament.HasRanking,
 		&maxRankingClass,
 		&tournament.Gender,
-		&tournament.RegisteredPlayers,
 		&deletedAt,
-		&tournament.PrizeDistributions,
-		&tournament.Brackets,
 	)
+
+	if err != nil {
+		log.Println("err", err)
+	}
 
 	return tournament, nil
 }

@@ -13,8 +13,8 @@ func NewService(repo *RoundRepository) *Service {
 	return &Service{repo: repo}
 }
 
-func (s *Service) GetRoundsByBracketIDs(ctx context.Context, bracketIds []string) ([]*roundpb.Round, error) {
-	rounds, err := s.repo.GetRoundsByBracketIDs(ctx, bracketIds)
+func (s *Service) GetRoundsByBracketIDs(ctx context.Context, bracketIDs []string) ([]*roundpb.Round, error) {
+	rounds, err := s.repo.GetRoundsByBracketIDs(ctx, bracketIDs)
 
 	if err != nil {
 		return nil, err

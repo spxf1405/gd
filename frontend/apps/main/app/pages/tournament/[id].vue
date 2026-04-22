@@ -278,7 +278,7 @@ watchEffect(() => {
                 >
                 <i class="fas fa-chevron-right text-xs"></i>
                 <a href="#" class="hover:text-white transition-colors"
-                  >League of Legends</a
+                  >League of </a
                 >
                 <i class="fas fa-chevron-right text-xs"></i>
                 <span class="text-white">Winter 2025 Championship</span>
@@ -336,6 +336,12 @@ watchEffect(() => {
                     >
                       <i class="fas fa-globe mr-2"></i
                       >{{ tournamentInfo.region }}
+                    </span>
+                    <span
+                      class="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg text-sm border border-white/20 flex items-center"
+                    >
+                      <Icon icon="lucide:globe" class="w-4 h-4 mr-2" />
+                      Đăng kí
                     </span>
                     <NuxtLink
                       class="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg text-sm border border-white/20"

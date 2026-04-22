@@ -1,34 +1,22 @@
 package tournament
 
 import (
-	"backend/internal/bracket"
-	matchpb "backend/internal/gen/match/v1"
-	participantpb "backend/internal/gen/participant/v1"
-	roundpb "backend/internal/gen/round/v1"
 	tournamentpb "backend/internal/gen/tournament/v1"
-	"backend/internal/match"
-	"backend/internal/participant"
-	"backend/internal/round"
 	"context"
+	"log"
 
 	"github.com/google/uuid"
 )
 
 type Service struct {
-	repo               *TournamentRepository
-	bracketService     *bracket.Service
-	roundService       *round.Service
-	matchService       *match.Service
-	participantService *participant.Service
+	repo        *TournamentRepository
+	assembleSvc *AssembleService
 }
 
-func NewService(repo *TournamentRepository, bracketService *bracket.Service, roundService *round.Service, matchService *match.Service, participantService *participant.Service) *Service {
+func NewService(repo *TournamentRepository, assembleSvc *AssembleService) *Service {
 	return &Service{
-		repo:               repo,
-		bracketService:     bracketService,
-		roundService:       roundService,
-		matchService:       matchService,
-		participantService: participantService,
+		repo:        repo,
+		assembleSvc: assembleSvc,
 	}
 }
 
@@ -40,13 +28,13 @@ func (s *Service) getTournaments(ctx context.Context, params *tournamentpb.GetTo
 	return tournaments, nil
 }
 
-func (s *Service) getTournamentByID(ctx context.Context, id string) (*tournamentpb.Tournament, error) {
-	tournament, err := s.repo.getTournamentByID(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return tournament, nil
-}
+// func (s *Service) getTournamentByID(ctx context.Context, id string) (*tournamentpb.Tournament, error) {
+// 	tournament, err := s.repo.getTournamentByID(ctx, id)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return tournament, nil
+// }
 
 func (s *Service) UpdateTournament(ctx context.Context, tournament *tournamentpb.Tournament) error {
 	err := s.repo.UpdateTournament(ctx, tournament)
@@ -92,57 +80,18 @@ func extractIDs[T interface{ GetId() string }](items []T) []string {
 	return ids
 }
 
-func (s *Service) getTournamentByID1(ctx context.Context, id string) (*tournamentpb.Tournament, error) {
+func (s *Service) getTournamentByID(ctx context.Context, id string) (*tournamentpb.Tournament, error) {
+	log.Println("id", id)
 	tournament, err := s.repo.getTournamentByID1(ctx, id)
+
 	if err != nil {
+		log.Println("getTournament error:", err)
 		return nil, err
 	}
+	brackets, err := s.assembleSvc.AssembleTournament(ctx, tournament.GetId())
 
-	brackets, err := s.bracketService.GetBracketsByTournamentID(ctx, tournament.GetId())
 	if err != nil {
 		return nil, err
-	}
-
-	bracketIDs := extractIDs(brackets)
-
-	rounds, err := s.roundService.GetRoundsByBracketIDs(ctx, bracketIDs)
-	if err != nil {
-		return nil, err
-	}
-
-	roundIDs := extractIDs(rounds)
-
-	matches, err := s.matchService.GetMatchesByRoundIDs(ctx, roundIDs)
-	if err != nil {
-		return nil, err
-	}
-
-	matchIDs := extractIDs(matches)
-
-	participants, err := s.participantService.GetParticipantsByMatchIDs(ctx, matchIDs)
-	if err != nil {
-		return nil, err
-	}
-
-	participantPerMatchID := make(map[string][]*participantpb.Participant, len(matchIDs))
-	for _, p := range participants {
-		participantPerMatchID[p.MatchId] = append(participantPerMatchID[p.MatchId], p)
-	}
-
-	matchesPerRoundID := make(map[string][]*matchpb.Match, len(roundIDs))
-	for _, m := range matches {
-		m.Participants = participantPerMatchID[m.Id]
-		matchesPerRoundID[m.RoundId] = append(matchesPerRoundID[m.RoundId], m)
-	}
-
-	roundsPerBracketID := make(map[string][]*roundpb.Round, len(bracketIDs))
-	for _, r := range rounds {
-		r.Matches = matchesPerRoundID[r.Id]
-		roundsPerBracketID[r.BracketId] = append(roundsPerBracketID[r.BracketId], r)
-	}
-
-	for _, b := range brackets {
-		b.Rounds = roundsPerBracketID[b.Id]
 	}
 
 	tournament.Brackets = brackets

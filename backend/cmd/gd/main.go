@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/internal/app"
+	"backend/internal/logger"
 	"backend/internal/tournament"
 	"context"
 	"fmt"
@@ -15,6 +16,9 @@ import (
 
 func main() {
 	prefix := "[backend]"
+
+	logger.Init()
+	defer logger.Sync()
 
 	ctx := context.Background()
 

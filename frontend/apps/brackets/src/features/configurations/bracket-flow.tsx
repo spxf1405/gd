@@ -57,6 +57,7 @@ function BracketFlow() {
     };
   }, [tourInfo]);
 
+
   useEffect(() => {
     if (currentRound === "Last 16") {
       initTourInfo(Array.from({ length: 16 }, (_, i) => String(i + 1)));

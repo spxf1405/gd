@@ -5,6 +5,9 @@ import (
 	matchpb "backend/internal/gen/match/v1"
 	"backend/internal/repository"
 	"context"
+	"database/sql"
+	"fmt"
+	"log"
 
 	"github.com/google/uuid"
 )
@@ -31,9 +34,10 @@ func (r *MatchRepository) GetMatchesByRoundIDs(ctx context.Context, roundIds []s
 	}
 
 	query := `
-		SELECT (id, round_id, position_x, position_y) FROM gd_matches WHERE id = ANY($1)
+		SELECT id, round_id, position_x, position_y FROM gd_matches WHERE round_id = ANY($1)
 	`
 
+	log.Println()
 	rows, err := r.DB.Pool.Query(ctx, query, roundIds)
 
 	if err != nil {
@@ -46,17 +50,27 @@ func (r *MatchRepository) GetMatchesByRoundIDs(ctx context.Context, roundIds []s
 
 	for rows.Next() {
 		match := &matchpb.Match{}
+
+		var positionX, positionY sql.NullInt32
+
 		err := rows.Scan(
 			&match.Id,
 			&match.RoundId,
-			&match.Position.X,
-			&match.Position.Y,
+			&positionX,
+			&positionY,
 		)
-
 		if err != nil {
 			return nil, err
 		}
 
+		if !positionX.Valid || !positionY.Valid {
+			return nil, fmt.Errorf("position is NULL: match_id=%s", match.Id)
+		}
+
+		match.Position = &matchpb.Position{
+			X: positionX.Int32,
+			Y: positionY.Int32,
+		}
 		matches = append(matches, match)
 	}
 

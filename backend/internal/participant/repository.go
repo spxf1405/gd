@@ -5,6 +5,7 @@ import (
 	participantpb "backend/internal/gen/participant/v1"
 	"backend/internal/repository"
 	"context"
+	"log"
 )
 
 type ParticipantRepository struct {
@@ -21,25 +22,30 @@ func (r *ParticipantRepository) GetParticipantsByMatchIDs(ctx context.Context, m
 	query := `
 		SELECT
 			p.id,
-			p.display_name,
+			u.name,
 			mp.match_id,
-			mp.slot,
-			mp.score,
+			mp.position,
+			mp.score
 		FROM
 			gd_match_participants mp
 		JOIN
 			gd_participants p
-			ON
+			ON 
 				mp.participant_id = p.id
+		JOIN
+			gd_users u
+			ON
+				p.user_id = u.id
 		WHERE
 			mp.match_id = ANY($1)
 		ORDER BY
-			mp.slot
+			mp.position
 	`
 
 	rows, err := r.DB.Pool.Query(ctx, query, matchIDs)
 
 	if err != nil {
+		log.Println("err", err)
 		return nil, err
 	}
 
@@ -49,6 +55,7 @@ func (r *ParticipantRepository) GetParticipantsByMatchIDs(ctx context.Context, m
 
 	for rows.Next() {
 		participant := &participantpb.Participant{}
+
 		err := rows.Scan(
 			&participant.Id,
 			&participant.DisplayName,
