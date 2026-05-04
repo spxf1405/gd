@@ -157,6 +157,12 @@ importers:
 
   apps/main:
     dependencies:
+      '@firebase/app':
+        specifier: ^0.14.11
+        version: 0.14.11
+      '@firebase/auth':
+        specifier: ^1.13.0
+        version: 1.13.0(@firebase/app@0.14.11)
       '@gd/proto':
         specifier: workspace:*
         version: link:../../packages/proto
@@ -811,6 +817,32 @@ packages:
   '@eslint/plugin-kit@0.4.1':
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@firebase/app@0.14.11':
+    resolution: {integrity: sha512-yxADFW35LYkP8oSGobGsYIrI42I+GPCvKTNHx4meT9Yq3C950IVz1eANoBk822I9tbKv1wyv9P4Bv1G5TpucFw==}
+    engines: {node: '>=20.0.0'}
+
+  '@firebase/auth@1.13.0':
+    resolution: {integrity: sha512-mKkSLNym3UbnnZ06dAmtqzp5EpPGCANGCZDJbkoR135aoUdKG6Aizwcnp29RzsQpwH0nmy5nay17Sfbsh9oY8A==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      '@firebase/app': 0.x
+      '@react-native-async-storage/async-storage': ^2.2.0 || ^3.0.0
+    peerDependenciesMeta:
+      '@react-native-async-storage/async-storage':
+        optional: true
+
+  '@firebase/component@0.7.2':
+    resolution: {integrity: sha512-iyVDGc6Vjx7Rm0cAdccLH/NG6fADsgJak/XW9IA2lPf8AjIlsemOpFGKczYyPHxm4rnKdR8z6sK4+KEC7NwmEg==}
+    engines: {node: '>=20.0.0'}
+
+  '@firebase/logger@0.5.0':
+    resolution: {integrity: sha512-cGskaAvkrnh42b3BA3doDWeBmuHFO/Mx5A83rbRDYakPjO9bJtRL3dX7javzc2Rr/JHZf4HlterTW2lUkfeN4g==}
+    engines: {node: '>=20.0.0'}
+
+  '@firebase/util@1.15.0':
+    resolution: {integrity: sha512-AmWf3cHAOMbrCPG4xdPKQaj5iHnyYfyLKZxwz+Xf55bqKbpAmcYifB4jQinT2W9XhDRHISOoPyBOariJpCG6FA==}
+    engines: {node: '>=20.0.0'}
 
   '@floating-ui/core@1.7.3':
     resolution: {integrity: sha512-sGnvb5dmrJaKEZ+LDIpguvdX3bDlEllmv4/ClQ9awcmCZrlx5jQyyMWFM5kBI+EyNOCDDiKk8il0zeuX3Zlg/w==}
@@ -4068,6 +4100,9 @@ packages:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
 
+  idb@7.1.1:
+    resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
+
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
 
@@ -6651,6 +6686,35 @@ snapshots:
     dependencies:
       '@eslint/core': 0.17.0
       levn: 0.4.1
+
+  '@firebase/app@0.14.11':
+    dependencies:
+      '@firebase/component': 0.7.2
+      '@firebase/logger': 0.5.0
+      '@firebase/util': 1.15.0
+      idb: 7.1.1
+      tslib: 2.8.1
+
+  '@firebase/auth@1.13.0(@firebase/app@0.14.11)':
+    dependencies:
+      '@firebase/app': 0.14.11
+      '@firebase/component': 0.7.2
+      '@firebase/logger': 0.5.0
+      '@firebase/util': 1.15.0
+      tslib: 2.8.1
+
+  '@firebase/component@0.7.2':
+    dependencies:
+      '@firebase/util': 1.15.0
+      tslib: 2.8.1
+
+  '@firebase/logger@0.5.0':
+    dependencies:
+      tslib: 2.8.1
+
+  '@firebase/util@1.15.0':
+    dependencies:
+      tslib: 2.8.1
 
   '@floating-ui/core@1.7.3':
     dependencies:
@@ -10162,6 +10226,8 @@ snapshots:
   iconv-lite@0.4.24:
     dependencies:
       safer-buffer: 2.1.2
+
+  idb@7.1.1: {}
 
   ieee754@1.2.1: {}
 

@@ -10,6 +10,8 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@firebase/app": "^0.14.11",
+    "@firebase/auth": "^1.13.0",
     "@gd/proto": "workspace:*",
     "@iconify/vue": "^5.0.0",
     "@nuxtjs/i18n": "10.2.4",

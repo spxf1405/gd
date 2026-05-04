@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package auth.v1;
+
+option go_package = "backend/internal/gen/auth/v1;authpb";
+
+message User {
+  string id         = 1;
+  string email      = 2;
+  string guid       = 3;
+  string created_at = 4;
+  bool   isNewUser  = 5;
+}

@@ -22,7 +22,7 @@ export const getClient = <T extends GenServiceMethods>(
 };
 
 export const userClient = getClient(UserService);
-export const authClient = getClient(AuthService);
 export const playerClient = getClient(PlayerService);
 export const matchClient = getClient(MatchService);
 export const tournamentClient = getClient(TournamentService);
+export const AuthClient = getClient(AuthService);

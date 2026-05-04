@@ -5,18 +5,29 @@ import (
 	"context"
 	"net/http"
 
+	"buf.build/go/protovalidate"
 	"connectrpc.com/connect"
 )
 
-type AuthServiceHandler struct{}
+type Hanlder struct {
+	service   *Service
+	validator protovalidate.Validator
+}
 
-func (s *AuthServiceHandler) Login(ctx context.Context,
-	req *connect.Request[authpb.LoginRequest]) (*connect.Response[authpb.LoginResponse], error) {
+func NewHandler(service *Service, validator protovalidate.Validator) *Hanlder {
+	return &Hanlder{
+		service:   service,
+		validator: validator,
+	}
+}
 
-	var csrf_token = "1"
+func (h *Hanlder) LoginWithGoogle(ctx context.Context,
+	req *connect.Request[authpb.AuthWithGoogleRequest]) (*connect.Response[authpb.AuthwithGoogleResponse], error) {
 
-	res := connect.NewResponse(&authpb.LoginResponse{
-		CsrfToken: csrf_token,
+	var IdToken = req.Msg.IdToken
+
+	res := connect.NewResponse(&authpb.AuthwithGoogleResponse{
+		csrf_token: csrf_token,
 	})
 
 	var cookie = &http.Cookie{

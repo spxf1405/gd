@@ -4,14 +4,17 @@ option go_package = "backend/internal/gen/auth/v1;authpb";
 
 package auth.v1;
 
-message LoginRequest {
-    string user = 1;
+message AuthWithGoogleRequest {
+  string id_token = 1;
+
 }
 
-message LoginResponse {
-    string csrf_token = 1;
+message AuthwithGoogleResponse {
+  string access_token  = 1;
+  string refresh_token = 2;
+  bool   is_new_user   = 3;
 }
 
 service AuthService {
-    rpc Login(LoginRequest) returns (LoginResponse);
+  rpc AuthWithGoogle(AuthWithGoogleRequest) returns (AuthwithGoogleResponse);
 }

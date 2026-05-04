@@ -10,40 +10,50 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file auth/v1/auth_service.proto.
  */
 export const file_auth_v1_auth_service: GenFile = /*@__PURE__*/
-  fileDesc("ChphdXRoL3YxL2F1dGhfc2VydmljZS5wcm90bxIHYXV0aC52MSIcCgxMb2dpblJlcXVlc3QSDAoEdXNlchgBIAEoCSIjCg1Mb2dpblJlc3BvbnNlEhIKCmNzcmZfdG9rZW4YASABKAkyRQoLQXV0aFNlcnZpY2USNgoFTG9naW4SFS5hdXRoLnYxLkxvZ2luUmVxdWVzdBoWLmF1dGgudjEuTG9naW5SZXNwb25zZUIlWiNiYWNrZW5kL2ludGVybmFsL2dlbi9hdXRoL3YxO2F1dGhwYmIGcHJvdG8z");
+  fileDesc("ChphdXRoL3YxL2F1dGhfc2VydmljZS5wcm90bxIHYXV0aC52MSIpChVBdXRoV2l0aEdvb2dsZVJlcXVlc3QSEAoIaWRfdG9rZW4YASABKAkiWgoWQXV0aHdpdGhHb29nbGVSZXNwb25zZRIUCgxhY2Nlc3NfdG9rZW4YASABKAkSFQoNcmVmcmVzaF90b2tlbhgCIAEoCRITCgtpc19uZXdfdXNlchgDIAEoCDJgCgtBdXRoU2VydmljZRJRCg5BdXRoV2l0aEdvb2dsZRIeLmF1dGgudjEuQXV0aFdpdGhHb29nbGVSZXF1ZXN0Gh8uYXV0aC52MS5BdXRod2l0aEdvb2dsZVJlc3BvbnNlQiVaI2JhY2tlbmQvaW50ZXJuYWwvZ2VuL2F1dGgvdjE7YXV0aHBiYgZwcm90bzM");
 
 /**
- * @generated from message auth.v1.LoginRequest
+ * @generated from message auth.v1.AuthWithGoogleRequest
  */
-export type LoginRequest = Message<"auth.v1.LoginRequest"> & {
+export type AuthWithGoogleRequest = Message<"auth.v1.AuthWithGoogleRequest"> & {
   /**
-   * @generated from field: string user = 1;
+   * @generated from field: string id_token = 1;
    */
-  user: string;
+  idToken: string;
 };
 
 /**
- * Describes the message auth.v1.LoginRequest.
- * Use `create(LoginRequestSchema)` to create a new message.
+ * Describes the message auth.v1.AuthWithGoogleRequest.
+ * Use `create(AuthWithGoogleRequestSchema)` to create a new message.
  */
-export const LoginRequestSchema: GenMessage<LoginRequest> = /*@__PURE__*/
+export const AuthWithGoogleRequestSchema: GenMessage<AuthWithGoogleRequest> = /*@__PURE__*/
   messageDesc(file_auth_v1_auth_service, 0);
 
 /**
- * @generated from message auth.v1.LoginResponse
+ * @generated from message auth.v1.AuthwithGoogleResponse
  */
-export type LoginResponse = Message<"auth.v1.LoginResponse"> & {
+export type AuthwithGoogleResponse = Message<"auth.v1.AuthwithGoogleResponse"> & {
   /**
-   * @generated from field: string csrf_token = 1;
+   * @generated from field: string access_token = 1;
    */
-  csrfToken: string;
+  accessToken: string;
+
+  /**
+   * @generated from field: string refresh_token = 2;
+   */
+  refreshToken: string;
+
+  /**
+   * @generated from field: bool is_new_user = 3;
+   */
+  isNewUser: boolean;
 };
 
 /**
- * Describes the message auth.v1.LoginResponse.
- * Use `create(LoginResponseSchema)` to create a new message.
+ * Describes the message auth.v1.AuthwithGoogleResponse.
+ * Use `create(AuthwithGoogleResponseSchema)` to create a new message.
  */
-export const LoginResponseSchema: GenMessage<LoginResponse> = /*@__PURE__*/
+export const AuthwithGoogleResponseSchema: GenMessage<AuthwithGoogleResponse> = /*@__PURE__*/
   messageDesc(file_auth_v1_auth_service, 1);
 
 /**
@@ -51,12 +61,12 @@ export const LoginResponseSchema: GenMessage<LoginResponse> = /*@__PURE__*/
  */
 export const AuthService: GenService<{
   /**
-   * @generated from rpc auth.v1.AuthService.Login
+   * @generated from rpc auth.v1.AuthService.AuthWithGoogle
    */
-  login: {
+  authWithGoogle: {
     methodKind: "unary";
-    input: typeof LoginRequestSchema;
-    output: typeof LoginResponseSchema;
+    input: typeof AuthWithGoogleRequestSchema;
+    output: typeof AuthwithGoogleResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_auth_v1_auth_service, 0);
