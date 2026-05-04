@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package session.v1;
+
+option go_package = "backend/internal/gen/session/v1;sessionpb";
+
+import "google/protobuf/timestamp.proto";
+
+message Session {
+  string id = 1;
+
+  string user_id = 2;
+
+  string refresh_token_hash = 3;
+
+  string token_family_id = 4;
+
+  string expires_at = 5;
+  string absolute_expires_at = 6;
+
+  string created_at = 7;
+  string rotated_at = 8;
+  string last_used_at = 9;
+
+  bool revoked = 10;
+  bool is_compromised = 11;
+}

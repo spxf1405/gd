@@ -3,7 +3,9 @@ package auth
 import (
 	"backend/internal/config"
 	authpb "backend/internal/gen/auth/v1"
+	sessionpb "backend/internal/gen/session/v1"
 	"backend/internal/logger"
+	"backend/internal/session"
 	"context"
 	"errors"
 
@@ -12,7 +14,8 @@ import (
 )
 
 type Service struct {
-	repo *AuthRepository
+	repo           *AuthRepository
+	sessionService *session.Service
 }
 
 func NewService(repo *AuthRepository) *Service {
@@ -20,7 +23,7 @@ func NewService(repo *AuthRepository) *Service {
 }
 
 func verifyIDToken(ctx context.Context, token string) (*idtoken.Payload, error) {
-	clientID := config.LoadConfig().GoogleClientID
+	clientID := config.LoadConfig().OAuth.GoogleClientID
 
 	logger.Info("Loaded Google Client ID",
 		zap.String("clientID", clientID),
@@ -33,7 +36,7 @@ func verifyIDToken(ctx context.Context, token string) (*idtoken.Payload, error) 
 	return payload, nil
 }
 
-func (s *Service) loginWithGoogle(ctx context.Context, idToken string) (*authpb.User, error) {
+func (s *Service) loginWithGoogle(ctx context.Context, idToken string) (*authpb.User, *sessionpb.Session, error) {
 	userPayload, err := verifyIDToken(ctx, idToken)
 
 	if err != nil {
@@ -83,9 +86,17 @@ func (s *Service) loginWithGoogle(ctx context.Context, idToken string) (*authpb.
 
 	user, err := s.repo.createUser(ctx, email, guid)
 
+	createSessionInput := &session.CreateSessionInput{
+		User:        user.Id,
+		TTL:         config.LoadConfig().Auth.AccessTTL,
+		AbsoluteTTL: config.LoadConfig().Auth.AbsoluteSessionTTL,
+	}
+
+	session, err := s.sessionService.CreateSession(ctx, *createSessionInput)
+
 	if err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	return user, session, nil
 }
