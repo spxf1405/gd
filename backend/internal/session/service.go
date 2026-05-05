@@ -32,7 +32,7 @@ func generateSecureToken() string {
 }
 
 type CreateSessionInput struct {
-	User        string
+	UserID      string
 	TTL         time.Duration
 	AbsoluteTTL time.Duration
 }
@@ -44,7 +44,7 @@ func (s *Service) CreateSession(ctx context.Context, input CreateSessionInput) (
 	now := time.Now()
 
 	session := &sessionpb.Session{
-		UserId: input.User,
+		UserId: input.UserID,
 
 		RefreshTokenHash: refreshHash,
 		TokenFamilyId:    uuid.New().String(),

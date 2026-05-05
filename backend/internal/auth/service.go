@@ -43,7 +43,7 @@ func (s *Service) loginWithGoogle(ctx context.Context, idToken string) (*authpb.
 		logger.Error("verify idToken failed",
 			zap.Error(err),
 		)
-		return nil, err
+		return nil, nil, err
 	}
 
 	emailVerified, ok := userPayload.Claims["email_verified"].(bool)
@@ -56,7 +56,7 @@ func (s *Service) loginWithGoogle(ctx context.Context, idToken string) (*authpb.
 			zap.Error(err),
 		)
 
-		return nil, err
+		return nil, nil, err
 	}
 
 	if !emailVerified {
@@ -67,7 +67,7 @@ func (s *Service) loginWithGoogle(ctx context.Context, idToken string) (*authpb.
 			zap.Any("email", userPayload.Claims["email"]),
 		)
 
-		return nil, err
+		return nil, nil, err
 	}
 
 	guid := userPayload.Subject
@@ -81,13 +81,13 @@ func (s *Service) loginWithGoogle(ctx context.Context, idToken string) (*authpb.
 			zap.Error(err),
 		)
 
-		return nil, err
+		return nil, nil, err
 	}
 
 	user, err := s.repo.createUser(ctx, email, guid)
 
 	createSessionInput := &session.CreateSessionInput{
-		User:        user.Id,
+		UserID:      user.Id,
 		TTL:         config.LoadConfig().Auth.AccessTTL,
 		AbsoluteTTL: config.LoadConfig().Auth.AbsoluteSessionTTL,
 	}
@@ -95,7 +95,7 @@ func (s *Service) loginWithGoogle(ctx context.Context, idToken string) (*authpb.
 	session, err := s.sessionService.CreateSession(ctx, *createSessionInput)
 
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	return user, session, nil
