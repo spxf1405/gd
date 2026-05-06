@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/internal/app"
+	"backend/internal/auth"
 	"backend/internal/logger"
 	"backend/internal/tournament"
 	"context"
@@ -73,6 +74,7 @@ func main() {
 	infra := app.NewInfra(ctx)
 
 	tournament.Mount(r, infra)
+	auth.Mount(r, infra)
 
 	addr := ":5000"
 	fmt.Fprintln(os.Stdout, prefix, "Starting server on", addr)

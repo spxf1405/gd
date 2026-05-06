@@ -440,7 +440,7 @@ const toastMessage = ref('')
 const toastError   = ref(false)
 
 // ── Onboarding state ──────────────────────────────────────────
-const showOnboarding = ref(true)
+const showOnboarding = ref(false)
 const onboardingName = ref('')
 
 const form   = ref({ fullName: '', dob: '', idLast4: '', phone: '' })
@@ -497,11 +497,12 @@ async function handleGoogle() {
   try {
     const result  = await signInWithPopup(auth, provider)
     const idToken = await result.user.getIdToken()
+
     console.log('idToken', idToken)
 
-    // const authReq  = create(AuthWithGoogleRequestSchema, { idToken })
-    // const authData = await AuthClient.authWithGoogle(authReq)
-
+    const authReq  = create(AuthWithGoogleRequestSchema, { idToken })
+    const authData = await AuthClient.authWithGoogle(authReq)
+    console.log("authData", authData)
     if (idToken) {
       // onboardingName.value  = authData.displayName || result.user.displayName || ''
       // form.value.fullName   = onboardingName.value

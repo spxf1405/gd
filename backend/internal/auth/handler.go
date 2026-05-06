@@ -2,11 +2,12 @@ package auth
 
 import (
 	authpb "backend/internal/gen/auth/v1"
+	"backend/internal/logger"
 	"context"
-	"net/http"
 
 	"buf.build/go/protovalidate"
 	"connectrpc.com/connect"
+	"go.uber.org/zap"
 )
 
 type Hanlder struct {
@@ -22,19 +23,25 @@ func NewHandler(service *Service, validator protovalidate.Validator) *Hanlder {
 }
 
 func (h *Hanlder) LoginWithGoogle(ctx context.Context,
-	req *connect.Request[authpb.AuthWithGoogleRequest]) (*connect.Response[authpb.AuthwithGoogleResponse], error) {
+	req *connect.Request[authpb.AuthWithGoogleRequest]) (*connect.Response[authpb.AuthWithGoogleResponse], error) {
 
-	var IdToken = req.Msg.IdToken
+	var idToken = req.Msg.IdToken
 
-	res := connect.NewResponse(&authpb.AuthwithGoogleResponse{
-		csrf_token: csrf_token,
-	})
+	loginInfo, err := h.service.loginWithGoogle(ctx, idToken)
 
-	var cookie = &http.Cookie{
-		Name:  "session_id",
-		Value: "ABC123123213",
+	if err != nil {
+		logger.Error("loginWithGoogle failed",
+			zap.Error(err),
+		)
+
+		return nil, connect.NewError(connect.CodeUnauthenticated, err)
 	}
 
-	res.Header().Add("Set-Cookie", cookie.String())
+	res := connect.NewResponse(&authpb.AuthWithGoogleResponse{
+		User:         loginInfo.User,
+		AccessToken:  loginInfo.AccessToken,
+		RefreshToken: loginInfo.RefreshToken,
+	})
+
 	return res, nil
 }

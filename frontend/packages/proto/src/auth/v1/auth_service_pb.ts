@@ -4,13 +4,15 @@
 
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { User } from "./auth_pb";
+import { file_auth_v1_auth } from "./auth_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file auth/v1/auth_service.proto.
  */
 export const file_auth_v1_auth_service: GenFile = /*@__PURE__*/
-  fileDesc("ChphdXRoL3YxL2F1dGhfc2VydmljZS5wcm90bxIHYXV0aC52MSIpChVBdXRoV2l0aEdvb2dsZVJlcXVlc3QSEAoIaWRfdG9rZW4YASABKAkiWgoWQXV0aHdpdGhHb29nbGVSZXNwb25zZRIUCgxhY2Nlc3NfdG9rZW4YASABKAkSFQoNcmVmcmVzaF90b2tlbhgCIAEoCRITCgtpc19uZXdfdXNlchgDIAEoCDJgCgtBdXRoU2VydmljZRJRCg5BdXRoV2l0aEdvb2dsZRIeLmF1dGgudjEuQXV0aFdpdGhHb29nbGVSZXF1ZXN0Gh8uYXV0aC52MS5BdXRod2l0aEdvb2dsZVJlc3BvbnNlQiVaI2JhY2tlbmQvaW50ZXJuYWwvZ2VuL2F1dGgvdjE7YXV0aHBiYgZwcm90bzM");
+  fileDesc("ChphdXRoL3YxL2F1dGhfc2VydmljZS5wcm90bxIHYXV0aC52MSIpChVBdXRoV2l0aEdvb2dsZVJlcXVlc3QSEAoIaWRfdG9rZW4YASABKAkiYgoWQXV0aFdpdGhHb29nbGVSZXNwb25zZRIUCgxhY2Nlc3NfdG9rZW4YASABKAkSFQoNcmVmcmVzaF90b2tlbhgCIAEoCRIbCgR1c2VyGAMgASgLMg0uYXV0aC52MS5Vc2VyMmEKC0F1dGhTZXJ2aWNlElIKD0xvZ2luV2l0aEdvb2dsZRIeLmF1dGgudjEuQXV0aFdpdGhHb29nbGVSZXF1ZXN0Gh8uYXV0aC52MS5BdXRoV2l0aEdvb2dsZVJlc3BvbnNlQiVaI2JhY2tlbmQvaW50ZXJuYWwvZ2VuL2F1dGgvdjE7YXV0aHBiYgZwcm90bzM", [file_auth_v1_auth]);
 
 /**
  * @generated from message auth.v1.AuthWithGoogleRequest
@@ -30,9 +32,9 @@ export const AuthWithGoogleRequestSchema: GenMessage<AuthWithGoogleRequest> = /*
   messageDesc(file_auth_v1_auth_service, 0);
 
 /**
- * @generated from message auth.v1.AuthwithGoogleResponse
+ * @generated from message auth.v1.AuthWithGoogleResponse
  */
-export type AuthwithGoogleResponse = Message<"auth.v1.AuthwithGoogleResponse"> & {
+export type AuthWithGoogleResponse = Message<"auth.v1.AuthWithGoogleResponse"> & {
   /**
    * @generated from field: string access_token = 1;
    */
@@ -44,16 +46,16 @@ export type AuthwithGoogleResponse = Message<"auth.v1.AuthwithGoogleResponse"> &
   refreshToken: string;
 
   /**
-   * @generated from field: bool is_new_user = 3;
+   * @generated from field: auth.v1.User user = 3;
    */
-  isNewUser: boolean;
+  user?: User;
 };
 
 /**
- * Describes the message auth.v1.AuthwithGoogleResponse.
- * Use `create(AuthwithGoogleResponseSchema)` to create a new message.
+ * Describes the message auth.v1.AuthWithGoogleResponse.
+ * Use `create(AuthWithGoogleResponseSchema)` to create a new message.
  */
-export const AuthwithGoogleResponseSchema: GenMessage<AuthwithGoogleResponse> = /*@__PURE__*/
+export const AuthWithGoogleResponseSchema: GenMessage<AuthWithGoogleResponse> = /*@__PURE__*/
   messageDesc(file_auth_v1_auth_service, 1);
 
 /**
@@ -61,12 +63,12 @@ export const AuthwithGoogleResponseSchema: GenMessage<AuthwithGoogleResponse> = 
  */
 export const AuthService: GenService<{
   /**
-   * @generated from rpc auth.v1.AuthService.AuthWithGoogle
+   * @generated from rpc auth.v1.AuthService.LoginWithGoogle
    */
-  authWithGoogle: {
+  loginWithGoogle: {
     methodKind: "unary";
     input: typeof AuthWithGoogleRequestSchema;
-    output: typeof AuthwithGoogleResponseSchema;
+    output: typeof AuthWithGoogleResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_auth_v1_auth_service, 0);

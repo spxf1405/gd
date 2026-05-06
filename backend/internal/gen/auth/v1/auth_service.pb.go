@@ -65,29 +65,29 @@ func (x *AuthWithGoogleRequest) GetIdToken() string {
 	return ""
 }
 
-type AuthwithGoogleResponse struct {
+type AuthWithGoogleResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	AccessToken   string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
 	RefreshToken  string                 `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
-	IsNewUser     bool                   `protobuf:"varint,3,opt,name=is_new_user,json=isNewUser,proto3" json:"is_new_user,omitempty"`
+	User          *User                  `protobuf:"bytes,3,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AuthwithGoogleResponse) Reset() {
-	*x = AuthwithGoogleResponse{}
+func (x *AuthWithGoogleResponse) Reset() {
+	*x = AuthWithGoogleResponse{}
 	mi := &file_auth_v1_auth_service_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AuthwithGoogleResponse) String() string {
+func (x *AuthWithGoogleResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AuthwithGoogleResponse) ProtoMessage() {}
+func (*AuthWithGoogleResponse) ProtoMessage() {}
 
-func (x *AuthwithGoogleResponse) ProtoReflect() protoreflect.Message {
+func (x *AuthWithGoogleResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_auth_v1_auth_service_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -99,45 +99,45 @@ func (x *AuthwithGoogleResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AuthwithGoogleResponse.ProtoReflect.Descriptor instead.
-func (*AuthwithGoogleResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use AuthWithGoogleResponse.ProtoReflect.Descriptor instead.
+func (*AuthWithGoogleResponse) Descriptor() ([]byte, []int) {
 	return file_auth_v1_auth_service_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AuthwithGoogleResponse) GetAccessToken() string {
+func (x *AuthWithGoogleResponse) GetAccessToken() string {
 	if x != nil {
 		return x.AccessToken
 	}
 	return ""
 }
 
-func (x *AuthwithGoogleResponse) GetRefreshToken() string {
+func (x *AuthWithGoogleResponse) GetRefreshToken() string {
 	if x != nil {
 		return x.RefreshToken
 	}
 	return ""
 }
 
-func (x *AuthwithGoogleResponse) GetIsNewUser() bool {
+func (x *AuthWithGoogleResponse) GetUser() *User {
 	if x != nil {
-		return x.IsNewUser
+		return x.User
 	}
-	return false
+	return nil
 }
 
 var File_auth_v1_auth_service_proto protoreflect.FileDescriptor
 
 const file_auth_v1_auth_service_proto_rawDesc = "" +
 	"\n" +
-	"\x1aauth/v1/auth_service.proto\x12\aauth.v1\"2\n" +
+	"\x1aauth/v1/auth_service.proto\x12\aauth.v1\x1a\x12auth/v1/auth.proto\"2\n" +
 	"\x15AuthWithGoogleRequest\x12\x19\n" +
-	"\bid_token\x18\x01 \x01(\tR\aidToken\"\x80\x01\n" +
-	"\x16AuthwithGoogleResponse\x12!\n" +
+	"\bid_token\x18\x01 \x01(\tR\aidToken\"\x83\x01\n" +
+	"\x16AuthWithGoogleResponse\x12!\n" +
 	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12#\n" +
-	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\x12\x1e\n" +
-	"\vis_new_user\x18\x03 \x01(\bR\tisNewUser2`\n" +
-	"\vAuthService\x12Q\n" +
-	"\x0eAuthWithGoogle\x12\x1e.auth.v1.AuthWithGoogleRequest\x1a\x1f.auth.v1.AuthwithGoogleResponseB%Z#backend/internal/gen/auth/v1;authpbb\x06proto3"
+	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\x12!\n" +
+	"\x04user\x18\x03 \x01(\v2\r.auth.v1.UserR\x04user2a\n" +
+	"\vAuthService\x12R\n" +
+	"\x0fLoginWithGoogle\x12\x1e.auth.v1.AuthWithGoogleRequest\x1a\x1f.auth.v1.AuthWithGoogleResponseB%Z#backend/internal/gen/auth/v1;authpbb\x06proto3"
 
 var (
 	file_auth_v1_auth_service_proto_rawDescOnce sync.Once
@@ -154,16 +154,18 @@ func file_auth_v1_auth_service_proto_rawDescGZIP() []byte {
 var file_auth_v1_auth_service_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_auth_v1_auth_service_proto_goTypes = []any{
 	(*AuthWithGoogleRequest)(nil),  // 0: auth.v1.AuthWithGoogleRequest
-	(*AuthwithGoogleResponse)(nil), // 1: auth.v1.AuthwithGoogleResponse
+	(*AuthWithGoogleResponse)(nil), // 1: auth.v1.AuthWithGoogleResponse
+	(*User)(nil),                   // 2: auth.v1.User
 }
 var file_auth_v1_auth_service_proto_depIdxs = []int32{
-	0, // 0: auth.v1.AuthService.AuthWithGoogle:input_type -> auth.v1.AuthWithGoogleRequest
-	1, // 1: auth.v1.AuthService.AuthWithGoogle:output_type -> auth.v1.AuthwithGoogleResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: auth.v1.AuthWithGoogleResponse.user:type_name -> auth.v1.User
+	0, // 1: auth.v1.AuthService.LoginWithGoogle:input_type -> auth.v1.AuthWithGoogleRequest
+	1, // 2: auth.v1.AuthService.LoginWithGoogle:output_type -> auth.v1.AuthWithGoogleResponse
+	2, // [2:3] is the sub-list for method output_type
+	1, // [1:2] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_auth_v1_auth_service_proto_init() }
@@ -171,6 +173,7 @@ func file_auth_v1_auth_service_proto_init() {
 	if File_auth_v1_auth_service_proto != nil {
 		return
 	}
+	file_auth_v1_auth_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

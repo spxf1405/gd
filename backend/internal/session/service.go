@@ -37,7 +37,7 @@ type CreateSessionInput struct {
 	AbsoluteTTL time.Duration
 }
 
-func (s *Service) CreateSession(ctx context.Context, input CreateSessionInput) (*sessionpb.Session, error) {
+func (s *Service) CreateSession(ctx context.Context, input CreateSessionInput) (*sessionpb.Session, string, error) {
 	refreshToken := generateSecureToken()
 	refreshHash := hashToken(refreshToken)
 
@@ -61,8 +61,8 @@ func (s *Service) CreateSession(ctx context.Context, input CreateSessionInput) (
 	session, err := s.repo.Insert(ctx, session)
 
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
-	return session, nil
+	return session, refreshToken, nil
 }

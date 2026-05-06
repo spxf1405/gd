@@ -33,14 +33,14 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// AuthServiceAuthWithGoogleProcedure is the fully-qualified name of the AuthService's
-	// AuthWithGoogle RPC.
-	AuthServiceAuthWithGoogleProcedure = "/auth.v1.AuthService/AuthWithGoogle"
+	// AuthServiceLoginWithGoogleProcedure is the fully-qualified name of the AuthService's
+	// LoginWithGoogle RPC.
+	AuthServiceLoginWithGoogleProcedure = "/auth.v1.AuthService/LoginWithGoogle"
 )
 
 // AuthServiceClient is a client for the auth.v1.AuthService service.
 type AuthServiceClient interface {
-	AuthWithGoogle(context.Context, *connect.Request[v1.AuthWithGoogleRequest]) (*connect.Response[v1.AuthwithGoogleResponse], error)
+	LoginWithGoogle(context.Context, *connect.Request[v1.AuthWithGoogleRequest]) (*connect.Response[v1.AuthWithGoogleResponse], error)
 }
 
 // NewAuthServiceClient constructs a client for the auth.v1.AuthService service. By default, it uses
@@ -54,10 +54,10 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 	baseURL = strings.TrimRight(baseURL, "/")
 	authServiceMethods := v1.File_auth_v1_auth_service_proto.Services().ByName("AuthService").Methods()
 	return &authServiceClient{
-		authWithGoogle: connect.NewClient[v1.AuthWithGoogleRequest, v1.AuthwithGoogleResponse](
+		loginWithGoogle: connect.NewClient[v1.AuthWithGoogleRequest, v1.AuthWithGoogleResponse](
 			httpClient,
-			baseURL+AuthServiceAuthWithGoogleProcedure,
-			connect.WithSchema(authServiceMethods.ByName("AuthWithGoogle")),
+			baseURL+AuthServiceLoginWithGoogleProcedure,
+			connect.WithSchema(authServiceMethods.ByName("LoginWithGoogle")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -65,17 +65,17 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 
 // authServiceClient implements AuthServiceClient.
 type authServiceClient struct {
-	authWithGoogle *connect.Client[v1.AuthWithGoogleRequest, v1.AuthwithGoogleResponse]
+	loginWithGoogle *connect.Client[v1.AuthWithGoogleRequest, v1.AuthWithGoogleResponse]
 }
 
-// AuthWithGoogle calls auth.v1.AuthService.AuthWithGoogle.
-func (c *authServiceClient) AuthWithGoogle(ctx context.Context, req *connect.Request[v1.AuthWithGoogleRequest]) (*connect.Response[v1.AuthwithGoogleResponse], error) {
-	return c.authWithGoogle.CallUnary(ctx, req)
+// LoginWithGoogle calls auth.v1.AuthService.LoginWithGoogle.
+func (c *authServiceClient) LoginWithGoogle(ctx context.Context, req *connect.Request[v1.AuthWithGoogleRequest]) (*connect.Response[v1.AuthWithGoogleResponse], error) {
+	return c.loginWithGoogle.CallUnary(ctx, req)
 }
 
 // AuthServiceHandler is an implementation of the auth.v1.AuthService service.
 type AuthServiceHandler interface {
-	AuthWithGoogle(context.Context, *connect.Request[v1.AuthWithGoogleRequest]) (*connect.Response[v1.AuthwithGoogleResponse], error)
+	LoginWithGoogle(context.Context, *connect.Request[v1.AuthWithGoogleRequest]) (*connect.Response[v1.AuthWithGoogleResponse], error)
 }
 
 // NewAuthServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -85,16 +85,16 @@ type AuthServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	authServiceMethods := v1.File_auth_v1_auth_service_proto.Services().ByName("AuthService").Methods()
-	authServiceAuthWithGoogleHandler := connect.NewUnaryHandler(
-		AuthServiceAuthWithGoogleProcedure,
-		svc.AuthWithGoogle,
-		connect.WithSchema(authServiceMethods.ByName("AuthWithGoogle")),
+	authServiceLoginWithGoogleHandler := connect.NewUnaryHandler(
+		AuthServiceLoginWithGoogleProcedure,
+		svc.LoginWithGoogle,
+		connect.WithSchema(authServiceMethods.ByName("LoginWithGoogle")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/auth.v1.AuthService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case AuthServiceAuthWithGoogleProcedure:
-			authServiceAuthWithGoogleHandler.ServeHTTP(w, r)
+		case AuthServiceLoginWithGoogleProcedure:
+			authServiceLoginWithGoogleHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -104,6 +104,6 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 // UnimplementedAuthServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedAuthServiceHandler struct{}
 
-func (UnimplementedAuthServiceHandler) AuthWithGoogle(context.Context, *connect.Request[v1.AuthWithGoogleRequest]) (*connect.Response[v1.AuthwithGoogleResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.AuthService.AuthWithGoogle is not implemented"))
+func (UnimplementedAuthServiceHandler) LoginWithGoogle(context.Context, *connect.Request[v1.AuthWithGoogleRequest]) (*connect.Response[v1.AuthWithGoogleResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.AuthService.LoginWithGoogle is not implemented"))
 }
