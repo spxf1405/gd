@@ -58,7 +58,7 @@ func (s *Service) CreateSession(ctx context.Context, input CreateSessionInput) (
 		IsCompromised: false,
 	}
 
-	session, err := s.repo.Insert(ctx, session)
+	session, err := s.repo.CreateSession(ctx, session)
 
 	if err != nil {
 		return nil, "", err

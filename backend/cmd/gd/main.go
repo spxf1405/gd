@@ -3,6 +3,7 @@ package main
 import (
 	"backend/internal/app"
 	"backend/internal/auth"
+	"backend/internal/firebase"
 	"backend/internal/logger"
 	"backend/internal/tournament"
 	"context"
@@ -13,14 +14,18 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	godotenv.Load()
+
 	prefix := "[backend]"
 
 	logger.Init()
 	defer logger.Sync()
 
+	firebase.InitFirebase()
 	ctx := context.Background()
 
 	r := chi.NewRouter()

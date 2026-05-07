@@ -43,7 +43,7 @@ func LoadConfig() *Config {
 		Auth: AuthConfig{
 			AccessTTL:          mustParseDuration("ACCESS_TTL"),
 			RefreshTTL:         mustParseDuration("REFRESH_TTL"),
-			AbsoluteSessionTTL: mustParseDuration("ABS_SESSION_TTL"),
+			AbsoluteSessionTTL: mustParseDuration("ABSOLUTE_SESSION_TTL"),
 			JWTSecret:          os.Getenv("JWT_SECRET"),
 		},
 

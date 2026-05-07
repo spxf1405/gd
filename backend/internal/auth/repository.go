@@ -5,6 +5,7 @@ import (
 	authpb "backend/internal/gen/auth/v1"
 	"backend/internal/repository"
 	"context"
+	"time"
 )
 
 type AuthRepository struct {
@@ -17,7 +18,7 @@ func NewRepository(db *db.DB) *AuthRepository {
 	}
 }
 
-func (r *AuthRepository) createUser(ctx context.Context, email string, googleUID string) (*authpb.User, error) {
+func (r *AuthRepository) checkExistOrCreateUser(ctx context.Context, email string, googleUID string) (*authpb.User, error) {
 	query := `
 		INSERT INTO gd_users(email, google_uid)
 		VALUES ($1, $2)
@@ -27,15 +28,20 @@ func (r *AuthRepository) createUser(ctx context.Context, email string, googleUID
 	`
 
 	user := &authpb.User{}
+
 	var isNew bool
+	var createdAt time.Time
 
 	err := r.DB.Pool.QueryRow(ctx, query, email, googleUID).Scan(
 		&user.Id,
 		&user.Email,
 		&user.Guid,
-		&user.CreatedAt,
+		&createdAt,
 		&isNew,
 	)
+
+	user.CreatedAt = createdAt.Format(time.RFC3339)
+
 	if err != nil {
 		return nil, err
 	}
