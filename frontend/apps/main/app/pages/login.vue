@@ -382,7 +382,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { create } from '@bufbuild/protobuf'
-import { initializeApp } from '@firebase/app'
+import { getApp, getApps, initializeApp } from '@firebase/app'
 import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup } from '@firebase/auth'
 import { AuthWithGoogleRequestSchema } from '@gd/proto/auth/v1/auth_service_pb'
 
@@ -415,16 +415,18 @@ import {
 
 // ── Firebase ──────────────────────────────────────────────────
 const firebaseConfig = {
-  apiKey: 'AIzaSyBWixitHjAjG4pz8q3ENVUq5wGwnEoogoo',
-  authDomain: 'gdvn-840be.firebaseapp.com',
-  projectId: 'gdvn-840be',
-  storageBucket: 'gdvn-840be.firebasestorage.app',
-  messagingSenderId: '620563142499',
-  appId: '1:620563142499:web:5935ee9d006c7055816556',
-  measurementId: 'G-RBEX10LKLD',
-}
-const app = initializeApp(firebaseConfig)
-const auth = getAuth(app)
+  apiKey: "AIzaSyC4WuR_r9yFuI54OTjbbey0o0JGrmpg4Ok",
+  authDomain: "tournament-32bd1.firebaseapp.com",
+  projectId: "tournament-32bd1",
+  storageBucket: "tournament-32bd1.firebasestorage.app",
+  messagingSenderId: "855153835725",
+  appId: "1:855153835725:web:3bbc280b5553e88f52f384",
+  measurementId: "G-JNP6RMKMH8"
+};
+
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+const auth = getAuth(app);
+
 const provider = new GoogleAuthProvider()
 
 const router = useRouter()
@@ -501,7 +503,8 @@ async function handleGoogle() {
     console.log('idToken', idToken)
 
     const authReq  = create(AuthWithGoogleRequestSchema, { idToken })
-    const authData = await AuthClient.authWithGoogle(authReq)
+    const authData = await AuthClient.loginWithGoogle(authReq)
+    
     console.log("authData", authData)
     if (idToken) {
       // onboardingName.value  = authData.displayName || result.user.displayName || ''
