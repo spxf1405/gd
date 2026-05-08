@@ -14,7 +14,6 @@ func Mount(r chi.Router, infra *app.Infra) {
 
 	cfg := config.LoadConfig()
 
-	// TODO: remove this
 	sessionService := session.NewService(session.NewRepository(infra.DB))
 
 	authService := NewService(repo, sessionService, cfg)
