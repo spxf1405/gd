@@ -14,10 +14,9 @@ func Mount(r chi.Router, infra *app.Infra) {
 
 	cfg := config.LoadConfig()
 
-	// TODO: remove comments
-	sessionService := session.NewService(session.NewRepository(infra.DB))
+	sessionService := session.NewService(session.NewRepository(infra.DB), cfg)
 
-	authService := NewService(repo, sessionService, cfg)
+	authService := NewService(repo, sessionService)
 
 	handler := NewHandler(authService, infra.Validator)
 

@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"backend/internal/config"
 	"backend/internal/firebase"
 	authpb "backend/internal/gen/auth/v1"
 	"backend/internal/logger"
@@ -17,11 +16,10 @@ import (
 type Service struct {
 	repo           *AuthRepository
 	sessionService *session.Service
-	cfg            *config.Config
 }
 
-func NewService(repo *AuthRepository, sessionService *session.Service, cfg *config.Config) *Service {
-	return &Service{repo: repo, sessionService: sessionService, cfg: cfg}
+func NewService(repo *AuthRepository, sessionService *session.Service) *Service {
+	return &Service{repo: repo, sessionService: sessionService}
 }
 
 func (s *Service) verifyIDToken(ctx context.Context, token string) (*auth.Token, error) {
@@ -111,14 +109,7 @@ func (s *Service) loginWithGoogle(
 		return nil, err
 	}
 
-	_, refreshToken, err := s.sessionService.CreateSession(
-		ctx,
-		session.CreateSessionInput{
-			UserID:      user.Id,
-			TTL:         s.cfg.Auth.RefreshTTL,
-			AbsoluteTTL: s.cfg.Auth.AbsoluteSessionTTL,
-		},
-	)
+	_, refreshToken, err := s.sessionService.CreateSession(ctx, user.Id)
 
 	if err != nil {
 		logger.Error("create session failed",

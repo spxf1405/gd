@@ -78,8 +78,8 @@ func main() {
 
 	infra := app.NewInfra(ctx)
 
-	tournament.Mount(r, infra)
 	auth.Mount(r, infra)
+	tournament.Mount(r, infra)
 
 	addr := ":5000"
 	fmt.Fprintln(os.Stdout, prefix, "Starting server on", addr)

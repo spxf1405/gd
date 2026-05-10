@@ -111,13 +111,14 @@ func (r *SessionRepository) RefreshToken(ctx context.Context, tokenRaw string, n
 	}
 	defer tx.Rollback(ctx)
 
-	var id, userId, refreshTokenHash string
+	var id, userId, refreshTokenHash, tokenFamilyID string
 	var revoked bool
+	var expiresAt time.Time
 
 	err = tx.QueryRow(ctx,
-		`SELECT id, user_id, refresh_token_hash, revoked FROM gd_sessions WHERE refresh_token_hash = $1 FOR UPDATE`,
+		`SELECT id, user_id, refresh_token_hash, revoked, expires_at, token_family_id FROM gd_sessions WHERE refresh_token_hash = $1 FOR UPDATE`,
 		hashToken(tokenRaw),
-	).Scan(&id, &userId, &refreshTokenHash, &revoked)
+	).Scan(&id, &userId, &refreshTokenHash, &revoked, &expiresAt, &tokenFamilyID)
 
 	if err != nil {
 		logger.Error("Session not found", zap.Error(err))
@@ -125,11 +126,18 @@ func (r *SessionRepository) RefreshToken(ctx context.Context, tokenRaw string, n
 	}
 
 	if revoked {
-		logger.Info("Attempted reuse of revoked token", zap.String("session_id", id), zap.String("user_id", userId))
-		return nil, errors.New("token has been revoked")
+		logger.Warn(
+			"Refresh token reuse detected",
+			zap.String("user_id", userId),
+			zap.String("family_id", tokenFamilyID),
+		)
+		_, err = tx.Exec(ctx, "UPDATE gd_sessions SET revoked = TRUE, is_compromised = TRUE WHERE token_family_id = $1", tokenFamilyID)
+		return nil, errors.New("Refresh token reuse detected!")
 	}
 
-	_, err = tx.Exec(ctx, "UPDATE gd_sessions SET revoked = TRUE WHERE id = $1", id)
+	// test
+	_, err = tx.Exec(ctx, "UPDATE gd_sessions SET revoked = TRUE, WHERE id = $1", id)
+
 	if err != nil {
 		logger.Error("Failed to revoke old session", zap.String("session_id", id), zap.Error(err))
 		return nil, err
