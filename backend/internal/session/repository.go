@@ -116,7 +116,7 @@ func (r *SessionRepository) RefreshToken(ctx context.Context, tokenRaw string, n
 	var expiresAt time.Time
 
 	err = tx.QueryRow(ctx,
-		`SELECT id, user_id, refresh_token_hash, revoked, expires_at, token_family_id FROM gd_sessions WHERE refresh_token_hash = $1 FOR UPDATE`,
+		`SELECT id, user_id, refresh_token_hash, revoked, expires_at, token_family_id FROM gd_sessions WHERE refresh_token_hash = $1 AND revoked IS FALSE FOR UPDATE`,
 		hashToken(tokenRaw),
 	).Scan(&id, &userId, &refreshTokenHash, &revoked, &expiresAt, &tokenFamilyID)
 
