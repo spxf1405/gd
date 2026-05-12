@@ -5,7 +5,6 @@ import (
 	authpb "backend/internal/gen/auth/v1"
 	"backend/internal/logger"
 	"backend/internal/session"
-	"backend/internal/token"
 	"context"
 	"errors"
 
@@ -119,11 +118,11 @@ func (s *Service) loginWithGoogle(
 		return nil, err
 	}
 
-	accessToken, err := token.GenerateAccessToken(
-		user.Id,
-		s.cfg.Auth.JWTSecret,
-		s.cfg.Auth.AccessTTL,
-	)
+	// accessToken, err := token.GenerateAccessToken(
+	// 	user.Id,
+	// 	s.cfg.Auth.JWTSecret,
+	// 	s.cfg.Auth.AccessTTL,
+	// )
 
 	if err != nil {
 		logger.Error("generate access token failed",
@@ -141,6 +140,14 @@ func (s *Service) loginWithGoogle(
 	return &LoginWithGoogleResult{
 		User:         user,
 		RefreshToken: refreshToken,
-		AccessToken:  accessToken,
+		AccessToken:  "",
 	}, nil
+}
+
+func (s *Service) refreshToken(
+	ctx context.Context,
+) (string, error) {
+	accessToken := "1"
+
+	return accessToken, nil
 }

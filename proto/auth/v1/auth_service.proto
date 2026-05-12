@@ -4,6 +4,8 @@ option go_package = "backend/internal/gen/auth/v1;authpb";
 
 package auth.v1;
 
+import "google/protobuf/empty.proto";
+import "buf/validate/validate.proto";
 import "auth/v1/auth.proto";
 
 message AuthWithGoogleRequest {
@@ -16,6 +18,16 @@ message AuthWithGoogleResponse {
   User   user          = 3;
 }
 
+message TestRefreshTokenReq {
+  string test = 1 [(buf.validate.field).required = true];
+}
+
+
+message AccessToken {
+  string access_token  = 1;
+}
+
 service AuthService {
   rpc LoginWithGoogle(AuthWithGoogleRequest) returns (AuthWithGoogleResponse);
+  rpc RefreshToken(TestRefreshTokenReq) returns (AccessToken);
 }

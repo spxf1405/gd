@@ -36,11 +36,15 @@ const (
 	// AuthServiceLoginWithGoogleProcedure is the fully-qualified name of the AuthService's
 	// LoginWithGoogle RPC.
 	AuthServiceLoginWithGoogleProcedure = "/auth.v1.AuthService/LoginWithGoogle"
+	// AuthServiceRefreshTokenProcedure is the fully-qualified name of the AuthService's RefreshToken
+	// RPC.
+	AuthServiceRefreshTokenProcedure = "/auth.v1.AuthService/RefreshToken"
 )
 
 // AuthServiceClient is a client for the auth.v1.AuthService service.
 type AuthServiceClient interface {
 	LoginWithGoogle(context.Context, *connect.Request[v1.AuthWithGoogleRequest]) (*connect.Response[v1.AuthWithGoogleResponse], error)
+	RefreshToken(context.Context, *connect.Request[v1.TestRefreshTokenReq]) (*connect.Response[v1.AccessToken], error)
 }
 
 // NewAuthServiceClient constructs a client for the auth.v1.AuthService service. By default, it uses
@@ -60,12 +64,19 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(authServiceMethods.ByName("LoginWithGoogle")),
 			connect.WithClientOptions(opts...),
 		),
+		refreshToken: connect.NewClient[v1.TestRefreshTokenReq, v1.AccessToken](
+			httpClient,
+			baseURL+AuthServiceRefreshTokenProcedure,
+			connect.WithSchema(authServiceMethods.ByName("RefreshToken")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // authServiceClient implements AuthServiceClient.
 type authServiceClient struct {
 	loginWithGoogle *connect.Client[v1.AuthWithGoogleRequest, v1.AuthWithGoogleResponse]
+	refreshToken    *connect.Client[v1.TestRefreshTokenReq, v1.AccessToken]
 }
 
 // LoginWithGoogle calls auth.v1.AuthService.LoginWithGoogle.
@@ -73,9 +84,15 @@ func (c *authServiceClient) LoginWithGoogle(ctx context.Context, req *connect.Re
 	return c.loginWithGoogle.CallUnary(ctx, req)
 }
 
+// RefreshToken calls auth.v1.AuthService.RefreshToken.
+func (c *authServiceClient) RefreshToken(ctx context.Context, req *connect.Request[v1.TestRefreshTokenReq]) (*connect.Response[v1.AccessToken], error) {
+	return c.refreshToken.CallUnary(ctx, req)
+}
+
 // AuthServiceHandler is an implementation of the auth.v1.AuthService service.
 type AuthServiceHandler interface {
 	LoginWithGoogle(context.Context, *connect.Request[v1.AuthWithGoogleRequest]) (*connect.Response[v1.AuthWithGoogleResponse], error)
+	RefreshToken(context.Context, *connect.Request[v1.TestRefreshTokenReq]) (*connect.Response[v1.AccessToken], error)
 }
 
 // NewAuthServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -91,10 +108,18 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(authServiceMethods.ByName("LoginWithGoogle")),
 		connect.WithHandlerOptions(opts...),
 	)
+	authServiceRefreshTokenHandler := connect.NewUnaryHandler(
+		AuthServiceRefreshTokenProcedure,
+		svc.RefreshToken,
+		connect.WithSchema(authServiceMethods.ByName("RefreshToken")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/auth.v1.AuthService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case AuthServiceLoginWithGoogleProcedure:
 			authServiceLoginWithGoogleHandler.ServeHTTP(w, r)
+		case AuthServiceRefreshTokenProcedure:
+			authServiceRefreshTokenHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -106,4 +131,8 @@ type UnimplementedAuthServiceHandler struct{}
 
 func (UnimplementedAuthServiceHandler) LoginWithGoogle(context.Context, *connect.Request[v1.AuthWithGoogleRequest]) (*connect.Response[v1.AuthWithGoogleResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.AuthService.LoginWithGoogle is not implemented"))
+}
+
+func (UnimplementedAuthServiceHandler) RefreshToken(context.Context, *connect.Request[v1.TestRefreshTokenReq]) (*connect.Response[v1.AccessToken], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.AuthService.RefreshToken is not implemented"))
 }

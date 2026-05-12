@@ -4,10 +4,14 @@ import (
 	authpb "backend/internal/gen/auth/v1"
 	"backend/internal/logger"
 	"context"
+	"errors"
+	"net/http"
 
 	"buf.build/go/protovalidate"
 	"connectrpc.com/connect"
+	"github.com/google/uuid"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type Hanlder struct {
@@ -42,6 +46,55 @@ func (h *Hanlder) LoginWithGoogle(ctx context.Context,
 		AccessToken:  loginInfo.AccessToken,
 		RefreshToken: loginInfo.RefreshToken,
 	})
+
+	return res, nil
+}
+
+func (h *Hanlder) RefreshToken(ctx context.Context,
+	req *connect.Request[emptypb.Empty]) (*connect.Response[authpb.AccessToken], error) {
+	logger.Info("String", zap.Any("Received!", req.Msg))
+
+	if err := h.validator.Validate(req.Msg); err != nil {
+		logger.Debug("Wrong request type", zap.Any("Error", zap.Error(err)))
+
+		return nil, connect.NewError(
+			connect.CodeInvalidArgument,
+			errors.New(""),
+		)
+	}
+
+	accessToken, err := h.service.refreshToken(ctx)
+
+	if err != nil {
+		logger.Error(
+			"refreshToken failed",
+			zap.Error(err),
+		)
+
+		return nil, connect.NewError(
+			connect.CodeUnauthenticated,
+			err,
+		)
+	}
+
+	cookie := &http.Cookie{
+		Name:  "refresh_token",
+		Value: uuid.NewString(),
+
+		Path: "/",
+
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+	}
+
+	res := connect.NewResponse(&authpb.AccessToken{
+		AccessToken: accessToken,
+	})
+
+	res.Header().Add(
+		"Set-Cookie",
+		cookie.String(),
+	)
 
 	return res, nil
 }

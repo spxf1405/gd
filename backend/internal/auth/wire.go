@@ -21,5 +21,6 @@ func Mount(r chi.Router, infra *app.Infra) {
 	handler := NewHandler(authService, infra.Validator)
 
 	path, h := authpbconnect.NewAuthServiceHandler(handler)
+
 	r.Mount(path, h)
 }

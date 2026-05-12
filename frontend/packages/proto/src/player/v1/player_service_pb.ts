@@ -4,10 +4,9 @@
 
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import { file_google_protobuf_timestamp } from "../../google/protobuf/timestamp_pb";
+import type { EmptySchema } from "@bufbuild/protobuf/wkt";
+import { file_google_protobuf_empty, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_wrappers } from "../../google/protobuf/wrappers_pb";
-import type { EmptySchema } from "../../google/protobuf/empty_pb";
-import { file_google_protobuf_empty } from "../../google/protobuf/empty_pb";
 import type { Player } from "./player_pb";
 import { file_player_v1_player } from "./player_pb";
 import type { Message } from "@bufbuild/protobuf";

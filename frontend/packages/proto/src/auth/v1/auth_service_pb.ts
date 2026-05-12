@@ -4,6 +4,8 @@
 
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import { file_google_protobuf_empty } from "../../google/protobuf/empty_pb";
+import { file_buf_validate_validate } from "../../buf/validate/validate_pb";
 import type { User } from "./auth_pb";
 import { file_auth_v1_auth } from "./auth_pb";
 import type { Message } from "@bufbuild/protobuf";
@@ -12,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file auth/v1/auth_service.proto.
  */
 export const file_auth_v1_auth_service: GenFile = /*@__PURE__*/
-  fileDesc("ChphdXRoL3YxL2F1dGhfc2VydmljZS5wcm90bxIHYXV0aC52MSIpChVBdXRoV2l0aEdvb2dsZVJlcXVlc3QSEAoIaWRfdG9rZW4YASABKAkiYgoWQXV0aFdpdGhHb29nbGVSZXNwb25zZRIUCgxhY2Nlc3NfdG9rZW4YASABKAkSFQoNcmVmcmVzaF90b2tlbhgCIAEoCRIbCgR1c2VyGAMgASgLMg0uYXV0aC52MS5Vc2VyMmEKC0F1dGhTZXJ2aWNlElIKD0xvZ2luV2l0aEdvb2dsZRIeLmF1dGgudjEuQXV0aFdpdGhHb29nbGVSZXF1ZXN0Gh8uYXV0aC52MS5BdXRoV2l0aEdvb2dsZVJlc3BvbnNlQiVaI2JhY2tlbmQvaW50ZXJuYWwvZ2VuL2F1dGgvdjE7YXV0aHBiYgZwcm90bzM", [file_auth_v1_auth]);
+  fileDesc("ChphdXRoL3YxL2F1dGhfc2VydmljZS5wcm90bxIHYXV0aC52MSIpChVBdXRoV2l0aEdvb2dsZVJlcXVlc3QSEAoIaWRfdG9rZW4YASABKAkiYgoWQXV0aFdpdGhHb29nbGVSZXNwb25zZRIUCgxhY2Nlc3NfdG9rZW4YASABKAkSFQoNcmVmcmVzaF90b2tlbhgCIAEoCRIbCgR1c2VyGAMgASgLMg0uYXV0aC52MS5Vc2VyIisKE1Rlc3RSZWZyZXNoVG9rZW5SZXESFAoEdGVzdBgBIAEoCUIGukgDyAEBIiMKC0FjY2Vzc1Rva2VuEhQKDGFjY2Vzc190b2tlbhgBIAEoCTKlAQoLQXV0aFNlcnZpY2USUgoPTG9naW5XaXRoR29vZ2xlEh4uYXV0aC52MS5BdXRoV2l0aEdvb2dsZVJlcXVlc3QaHy5hdXRoLnYxLkF1dGhXaXRoR29vZ2xlUmVzcG9uc2USQgoMUmVmcmVzaFRva2VuEhwuYXV0aC52MS5UZXN0UmVmcmVzaFRva2VuUmVxGhQuYXV0aC52MS5BY2Nlc3NUb2tlbkIlWiNiYWNrZW5kL2ludGVybmFsL2dlbi9hdXRoL3YxO2F1dGhwYmIGcHJvdG8z", [file_google_protobuf_empty, file_buf_validate_validate, file_auth_v1_auth]);
 
 /**
  * @generated from message auth.v1.AuthWithGoogleRequest
@@ -59,6 +61,40 @@ export const AuthWithGoogleResponseSchema: GenMessage<AuthWithGoogleResponse> = 
   messageDesc(file_auth_v1_auth_service, 1);
 
 /**
+ * @generated from message auth.v1.TestRefreshTokenReq
+ */
+export type TestRefreshTokenReq = Message<"auth.v1.TestRefreshTokenReq"> & {
+  /**
+   * @generated from field: string test = 1;
+   */
+  test: string;
+};
+
+/**
+ * Describes the message auth.v1.TestRefreshTokenReq.
+ * Use `create(TestRefreshTokenReqSchema)` to create a new message.
+ */
+export const TestRefreshTokenReqSchema: GenMessage<TestRefreshTokenReq> = /*@__PURE__*/
+  messageDesc(file_auth_v1_auth_service, 2);
+
+/**
+ * @generated from message auth.v1.AccessToken
+ */
+export type AccessToken = Message<"auth.v1.AccessToken"> & {
+  /**
+   * @generated from field: string access_token = 1;
+   */
+  accessToken: string;
+};
+
+/**
+ * Describes the message auth.v1.AccessToken.
+ * Use `create(AccessTokenSchema)` to create a new message.
+ */
+export const AccessTokenSchema: GenMessage<AccessToken> = /*@__PURE__*/
+  messageDesc(file_auth_v1_auth_service, 3);
+
+/**
  * @generated from service auth.v1.AuthService
  */
 export const AuthService: GenService<{
@@ -69,6 +105,14 @@ export const AuthService: GenService<{
     methodKind: "unary";
     input: typeof AuthWithGoogleRequestSchema;
     output: typeof AuthWithGoogleResponseSchema;
+  },
+  /**
+   * @generated from rpc auth.v1.AuthService.RefreshToken
+   */
+  refreshToken: {
+    methodKind: "unary";
+    input: typeof TestRefreshTokenReqSchema;
+    output: typeof AccessTokenSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_auth_v1_auth_service, 0);

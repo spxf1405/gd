@@ -79,7 +79,7 @@ func (s *Service) CreateSession(ctx context.Context, userID string) (*sessionpb.
 }
 
 func (s *Service) RefreshToken(ctx context.Context, clientRefreshToken string) (*sessionpb.Session, string, error) {
-	newSession, refreshToken := generateNewSession("", s.cfg)
+	newSession, refreshTokenRaw := generateNewSession("", s.cfg)
 
 	session, err := s.repo.RefreshToken(ctx, clientRefreshToken, newSession)
 
@@ -87,5 +87,5 @@ func (s *Service) RefreshToken(ctx context.Context, clientRefreshToken string) (
 		return nil, "", err
 	}
 
-	return session, refreshToken, nil
+	return session, refreshTokenRaw, nil
 }
