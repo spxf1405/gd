@@ -18,16 +18,11 @@ message AuthWithGoogleResponse {
   User   user          = 3;
 }
 
-message TestRefreshTokenReq {
-  string test = 1 [(buf.validate.field).required = true];
-}
-
-
 message AccessToken {
   string access_token  = 1;
 }
 
 service AuthService {
   rpc LoginWithGoogle(AuthWithGoogleRequest) returns (AuthWithGoogleResponse);
-  rpc RefreshToken(TestRefreshTokenReq) returns (AccessToken);
+  rpc RefreshToken(google.protobuf.Empty) returns (AccessToken);
 }

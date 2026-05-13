@@ -641,7 +641,7 @@ import {
   onAuthStateChanged,
   signInWithPopup,
 } from "@firebase/auth";
-import { AuthWithGoogleRequestSchema } from "@gd/proto/auth/v1/auth_service_pb";
+import { AuthWithGoogleRequestSchema, TestRefreshTokenReqSchema } from "@gd/proto/auth/v1/auth_service_pb";
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -758,10 +758,7 @@ function showToast(message: string, error = false) {
 }
 
 async function handleLoginTest() {
-  const req = create(AuthWithGoogleRequestSchema, { idToken: "123"})
-  const accessToken = await AuthClient.refreshToken({
-    test: 123
-  });
+  const accessToken = await AuthClient.refreshToken({});
   console.log("accessToken", accessToken)
 }
 

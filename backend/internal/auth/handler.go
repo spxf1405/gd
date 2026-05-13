@@ -52,6 +52,11 @@ func (h *Hanlder) LoginWithGoogle(ctx context.Context,
 
 func (h *Hanlder) RefreshToken(ctx context.Context,
 	req *connect.Request[emptypb.Empty]) (*connect.Response[authpb.AccessToken], error) {
+	return nil, connect.NewError(
+		connect.CodeUnauthenticated,
+		errors.New("test"),
+	)
+
 	logger.Info("String", zap.Any("Received!", req.Msg))
 
 	if err := h.validator.Validate(req.Msg); err != nil {

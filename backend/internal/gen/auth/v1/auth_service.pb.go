@@ -10,7 +10,7 @@ import (
 	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/emptypb"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -127,50 +127,6 @@ func (x *AuthWithGoogleResponse) GetUser() *User {
 	return nil
 }
 
-type TestRefreshTokenReq struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Test          string                 `protobuf:"bytes,1,opt,name=test,proto3" json:"test,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *TestRefreshTokenReq) Reset() {
-	*x = TestRefreshTokenReq{}
-	mi := &file_auth_v1_auth_service_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *TestRefreshTokenReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TestRefreshTokenReq) ProtoMessage() {}
-
-func (x *TestRefreshTokenReq) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_v1_auth_service_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TestRefreshTokenReq.ProtoReflect.Descriptor instead.
-func (*TestRefreshTokenReq) Descriptor() ([]byte, []int) {
-	return file_auth_v1_auth_service_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *TestRefreshTokenReq) GetTest() string {
-	if x != nil {
-		return x.Test
-	}
-	return ""
-}
-
 type AccessToken struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	AccessToken   string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
@@ -180,7 +136,7 @@ type AccessToken struct {
 
 func (x *AccessToken) Reset() {
 	*x = AccessToken{}
-	mi := &file_auth_v1_auth_service_proto_msgTypes[3]
+	mi := &file_auth_v1_auth_service_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -192,7 +148,7 @@ func (x *AccessToken) String() string {
 func (*AccessToken) ProtoMessage() {}
 
 func (x *AccessToken) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_v1_auth_service_proto_msgTypes[3]
+	mi := &file_auth_v1_auth_service_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -205,7 +161,7 @@ func (x *AccessToken) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AccessToken.ProtoReflect.Descriptor instead.
 func (*AccessToken) Descriptor() ([]byte, []int) {
-	return file_auth_v1_auth_service_proto_rawDescGZIP(), []int{3}
+	return file_auth_v1_auth_service_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *AccessToken) GetAccessToken() string {
@@ -225,14 +181,12 @@ const file_auth_v1_auth_service_proto_rawDesc = "" +
 	"\x16AuthWithGoogleResponse\x12!\n" +
 	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12#\n" +
 	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\x12!\n" +
-	"\x04user\x18\x03 \x01(\v2\r.auth.v1.UserR\x04user\"1\n" +
-	"\x13TestRefreshTokenReq\x12\x1a\n" +
-	"\x04test\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x04test\"0\n" +
+	"\x04user\x18\x03 \x01(\v2\r.auth.v1.UserR\x04user\"0\n" +
 	"\vAccessToken\x12!\n" +
-	"\faccess_token\x18\x01 \x01(\tR\vaccessToken2\xa5\x01\n" +
+	"\faccess_token\x18\x01 \x01(\tR\vaccessToken2\x9f\x01\n" +
 	"\vAuthService\x12R\n" +
-	"\x0fLoginWithGoogle\x12\x1e.auth.v1.AuthWithGoogleRequest\x1a\x1f.auth.v1.AuthWithGoogleResponse\x12B\n" +
-	"\fRefreshToken\x12\x1c.auth.v1.TestRefreshTokenReq\x1a\x14.auth.v1.AccessTokenB%Z#backend/internal/gen/auth/v1;authpbb\x06proto3"
+	"\x0fLoginWithGoogle\x12\x1e.auth.v1.AuthWithGoogleRequest\x1a\x1f.auth.v1.AuthWithGoogleResponse\x12<\n" +
+	"\fRefreshToken\x12\x16.google.protobuf.Empty\x1a\x14.auth.v1.AccessTokenB%Z#backend/internal/gen/auth/v1;authpbb\x06proto3"
 
 var (
 	file_auth_v1_auth_service_proto_rawDescOnce sync.Once
@@ -246,20 +200,20 @@ func file_auth_v1_auth_service_proto_rawDescGZIP() []byte {
 	return file_auth_v1_auth_service_proto_rawDescData
 }
 
-var file_auth_v1_auth_service_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_auth_v1_auth_service_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_auth_v1_auth_service_proto_goTypes = []any{
 	(*AuthWithGoogleRequest)(nil),  // 0: auth.v1.AuthWithGoogleRequest
 	(*AuthWithGoogleResponse)(nil), // 1: auth.v1.AuthWithGoogleResponse
-	(*TestRefreshTokenReq)(nil),    // 2: auth.v1.TestRefreshTokenReq
-	(*AccessToken)(nil),            // 3: auth.v1.AccessToken
-	(*User)(nil),                   // 4: auth.v1.User
+	(*AccessToken)(nil),            // 2: auth.v1.AccessToken
+	(*User)(nil),                   // 3: auth.v1.User
+	(*emptypb.Empty)(nil),          // 4: google.protobuf.Empty
 }
 var file_auth_v1_auth_service_proto_depIdxs = []int32{
-	4, // 0: auth.v1.AuthWithGoogleResponse.user:type_name -> auth.v1.User
+	3, // 0: auth.v1.AuthWithGoogleResponse.user:type_name -> auth.v1.User
 	0, // 1: auth.v1.AuthService.LoginWithGoogle:input_type -> auth.v1.AuthWithGoogleRequest
-	2, // 2: auth.v1.AuthService.RefreshToken:input_type -> auth.v1.TestRefreshTokenReq
+	4, // 2: auth.v1.AuthService.RefreshToken:input_type -> google.protobuf.Empty
 	1, // 3: auth.v1.AuthService.LoginWithGoogle:output_type -> auth.v1.AuthWithGoogleResponse
-	3, // 4: auth.v1.AuthService.RefreshToken:output_type -> auth.v1.AccessToken
+	2, // 4: auth.v1.AuthService.RefreshToken:output_type -> auth.v1.AccessToken
 	3, // [3:5] is the sub-list for method output_type
 	1, // [1:3] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -279,7 +233,7 @@ func file_auth_v1_auth_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_auth_v1_auth_service_proto_rawDesc), len(file_auth_v1_auth_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
