@@ -33,7 +33,14 @@ const publicTransport = createConnectTransport({
   fetch: withCredentials,
 });
 
-export const PublicAuthClient = createClient(AuthService, publicTransport);
+const getPublicClient = <T extends GenServiceMethods>(service: GenService<T>) =>
+  createClient(service, publicTransport);
+
+const getPrivateClient = <T extends GenServiceMethods>(
+  service: GenService<T>,
+) => createClient(service, privateTransport);
+
+export const PublicAuthClient = getPublicClient(AuthService);
 
 const refreshOnce = (): Promise<void> => {
   refreshPromise ??= PublicAuthClient.refreshToken({})
@@ -52,6 +59,7 @@ const authInterceptor: Interceptor = (next) => async (req) => {
   try {
     return await next(req);
   } catch (err) {
+    console.log("PublicAuthClient", err);
     if (!(err instanceof ConnectError) || err.code !== Code.Unauthenticated) {
       throw err;
     }
@@ -81,14 +89,7 @@ const privateTransport = createConnectTransport({
   fetch: withCredentials,
 });
 
-const getPublicClient = <T extends GenServiceMethods>(service: GenService<T>) =>
-  createClient(service, publicTransport);
-
-const getPrivateClient = <T extends GenServiceMethods>(
-  service: GenService<T>,
-) => createClient(service, privateTransport);
-
-export const AuthClient = getPublicClient(AuthService);
+export const AuthClient = getPrivateClient(AuthService);
 export const UserClient = getPrivateClient(UserService);
 export const PlayerClient = getPrivateClient(PlayerService);
 export const MatchClient = getPrivateClient(MatchService);

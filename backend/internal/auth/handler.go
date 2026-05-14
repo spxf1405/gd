@@ -50,21 +50,44 @@ func (h *Hanlder) LoginWithGoogle(ctx context.Context,
 	return res, nil
 }
 
-func (h *Hanlder) RefreshToken(ctx context.Context,
-	req *connect.Request[emptypb.Empty]) (*connect.Response[authpb.AccessToken], error) {
-	return nil, connect.NewError(
-		connect.CodeUnauthenticated,
-		errors.New("test"),
+func (h *Hanlder) RefreshToken(
+	ctx context.Context,
+	req *connect.Request[emptypb.Empty],
+) (*connect.Response[authpb.AccessToken], error) {
+	cookieHeader := req.Header().Get("Cookie")
+
+	httpReq := &http.Request{
+		Header: http.Header{
+			"Cookie": []string{cookieHeader},
+		},
+	}
+
+	refreshTokenCookie, err := httpReq.Cookie("refresh_token")
+
+	logger.Info("Refresh Token", zap.Any("Token", refreshTokenCookie))
+
+	if err != nil {
+		logger.Info("Refresh Token", zap.Error(err))
+		return nil, connect.NewError(
+			connect.CodeUnauthenticated,
+			errors.New("missing refresh token"),
+		)
+	}
+
+	logger.Info(
+		"refresh token received",
+		zap.String("refresh_token", refreshTokenCookie.Value),
 	)
 
-	logger.Info("String", zap.Any("Received!", req.Msg))
-
 	if err := h.validator.Validate(req.Msg); err != nil {
-		logger.Debug("Wrong request type", zap.Any("Error", zap.Error(err)))
+		logger.Debug(
+			"Wrong request type",
+			zap.Error(err),
+		)
 
 		return nil, connect.NewError(
 			connect.CodeInvalidArgument,
-			errors.New(""),
+			errors.New("invalid request"),
 		)
 	}
 
@@ -92,9 +115,11 @@ func (h *Hanlder) RefreshToken(ctx context.Context,
 		SameSite: http.SameSiteLaxMode,
 	}
 
-	res := connect.NewResponse(&authpb.AccessToken{
-		AccessToken: accessToken,
-	})
+	res := connect.NewResponse(
+		&authpb.AccessToken{
+			AccessToken: accessToken,
+		},
+	)
 
 	res.Header().Add(
 		"Set-Cookie",
