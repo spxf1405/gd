@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package common.v1;
+
+option go_package = "backend/internal/gen/common/v1;commonpb";
+
+enum AuthErrorReason {
+  AUTH_ERROR_REASON_UNSPECIFIED = 0;
+
+  AUTH_ERROR_REASON_INVALID_ACCESS_TOKEN = 1;
+  AUTH_ERROR_REASON_INVALID_REFRESH_TOKEN = 2;
+
+  AUTH_ERROR_REASON_SESSION_EXPIRED = 3;
+  AUTH_ERROR_REASON_SESSION_REVOKED = 4;
+
+  AUTH_ERROR_REASON_REFRESH_TOKEN_REUSED = 5;
+  AUTH_ERROR_REASON_SESSION_COMPROMISED = 6;
+
+  AUTH_ERROR_REASON_DEVICE_MISMATCH = 7;
+}
+
+message AuthErrorDetail {
+  AuthErrorReason reason = 1;
+
+  bool force_logout = 2;
+  bool revoke_all_sessions = 3;
+}
