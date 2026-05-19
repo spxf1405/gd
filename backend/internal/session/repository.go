@@ -6,6 +6,7 @@ import (
 	"backend/internal/logger"
 	"backend/internal/repository"
 	"context"
+	"database/sql"
 	"errors"
 	"time"
 
@@ -34,12 +35,12 @@ func (r *SessionRepository) insertSession(ctx context.Context, db interface {
 			expires_at,
 			absolute_expires_at,
 			revoked,
-			is_compromised
+			is_reused
 		) VALUES ($1,$2,$3,$4,$5,$6,$7)
 		RETURNING 
 			id, user_id, refresh_token_hash, token_family_id,
 			expires_at, absolute_expires_at, rotated_at, last_used_at,
-			revoked, is_compromised, created_at
+			revoked, is_reused, created_at
 	`
 
 	row := db.QueryRow(ctx, query,
@@ -49,7 +50,7 @@ func (r *SessionRepository) insertSession(ctx context.Context, db interface {
 		session.ExpiresAt,
 		session.AbsoluteExpiresAt,
 		session.Revoked,
-		session.IsCompromised,
+		session.IsReused,
 	)
 
 	if err := scanSession(row, session); err != nil {
@@ -73,7 +74,7 @@ func scanSession(row pgx.Row, session *sessionpb.Session) error {
 		&rotatedAt,
 		&lastUsedAt,
 		&session.Revoked,
-		&session.IsCompromised,
+		&session.IsReused,
 		&createdAt,
 	)
 	if err != nil {
@@ -103,59 +104,136 @@ func (r *SessionRepository) CreateSession(ctx context.Context, session *sessionp
 	return result, nil
 }
 
-func (r *SessionRepository) RefreshToken(ctx context.Context, tokenRaw string, newSession *sessionpb.Session) (*sessionpb.Session, error) {
+func (r *SessionRepository) GetRefreshToken(
+	ctx context.Context,
+	tokenRaw string,
+) (*sessionpb.Session, error) {
+
+	var (
+		id                string
+		refreshTokenHash  string
+		userID            string
+		tokenFamilyID     string
+		revoked           bool
+		isReused          bool
+		expiresAt         time.Time
+		absoluteExpiresAt time.Time
+		revokedReason     sql.NullInt32
+	)
+
+	query := `
+		SELECT
+			id,
+			user_id,
+			refresh_token_hash,
+			revoked,
+			expires_at,
+			token_family_id,
+			is_reused,
+			absolute_expires_at,
+			revoked_reason
+		FROM gd_sessions
+		WHERE refresh_token_hash = $1
+	`
+
+	hashed := hashToken(tokenRaw)
+
+	err := r.DB.Pool.QueryRow(ctx, query, hashed).Scan(
+		&id,
+		&userID,
+		&refreshTokenHash,
+		&revoked,
+		&expiresAt,
+		&tokenFamilyID,
+		&isReused,
+		&absoluteExpiresAt,
+		&revokedReason,
+	)
+
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			logger.Debug(
+				"Refresh token not found",
+				zap.String("RefreshTokenHash", hashed),
+			)
+
+			return nil, nil
+		}
+
+		logger.Error(
+			"Failed to get refresh token",
+			zap.Error(err),
+			zap.String("RefreshTokenHash", hashed),
+		)
+
+		return nil, err
+	}
+
+	logger.Debug(
+		"Refresh token retrieved",
+		zap.String("SessionID", id),
+		zap.String("UserID", userID),
+	)
+
+	return &sessionpb.Session{
+		Id:                id,
+		UserId:            userID,
+		RefreshTokenHash:  refreshTokenHash,
+		Revoked:           revoked,
+		TokenFamilyId:     tokenFamilyID,
+		IsReused:          isReused,
+		ExpiresAt:         expiresAt.Format(time.RFC3339),
+		AbsoluteExpiresAt: absoluteExpiresAt.Format(time.RFC3339),
+	}, nil
+}
+
+func (r *SessionRepository) RotateSession(
+	ctx context.Context,
+	sessionID string,
+	newSession *sessionpb.Session,
+) (*sessionpb.Session, error) {
+
 	tx, err := r.DB.Pool.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
 		logger.Error("Failed to begin transaction", zap.Error(err))
 		return nil, err
 	}
-	defer tx.Rollback(ctx)
 
-	var id, userId, refreshTokenHash, tokenFamilyID string
-	var revoked bool
-	var expiresAt time.Time
+	defer func() {
+		_ = tx.Rollback(ctx)
+	}()
 
-	err = tx.QueryRow(ctx,
-		`SELECT id, user_id, refresh_token_hash, revoked, expires_at, token_family_id FROM gd_sessions WHERE refresh_token_hash = $1 AND revoked IS FALSE FOR UPDATE`,
-		hashToken(tokenRaw),
-	).Scan(&id, &userId, &refreshTokenHash, &revoked, &expiresAt, &tokenFamilyID)
+	query := `
+		UPDATE gd_sessions
+		SET revoked = true,
+			revoked_reason = 1
+		WHERE id = $1
+	`
 
+	cmdT, err := tx.Exec(ctx, query, sessionID)
 	if err != nil {
+		logger.Error("Failed to revoke session", zap.Error(err))
+		return nil, err
+	}
+
+	if cmdT.RowsAffected() == 0 {
+		err = errors.New("session not found")
+
 		logger.Error("Session not found", zap.Error(err))
+
 		return nil, err
 	}
 
-	if revoked {
-		logger.Warn(
-			"Refresh token reuse detected",
-			zap.String("user_id", userId),
-			zap.String("family_id", tokenFamilyID),
-		)
-		_, err = tx.Exec(ctx, "UPDATE gd_sessions SET revoked = TRUE, is_compromised = TRUE WHERE token_family_id = $1", tokenFamilyID)
-		return nil, errors.New("Refresh token reuse detected!")
-	}
-
-	// test
-	_, err = tx.Exec(ctx, "UPDATE gd_sessions SET revoked = TRUE, WHERE id = $1", id)
-
+	session, err := r.insertSession(ctx, tx, newSession)
 	if err != nil {
-		logger.Error("Failed to revoke old session", zap.String("session_id", id), zap.Error(err))
+		logger.Error("Failed to insert session", zap.Error(err))
 		return nil, err
 	}
 
-	newSession.UserId = userId
-	result, err := r.insertSession(ctx, tx, newSession)
-	if err != nil {
-		logger.Error("Failed to insert new session", zap.String("user_id", userId), zap.Error(err))
+	if err := tx.Commit(ctx); err != nil {
+		logger.Error("Failed to commit transaction", zap.Error(err))
 		return nil, err
 	}
 
-	if err = tx.Commit(ctx); err != nil {
-		logger.Error("Failed to commit transaction", zap.String("user_id", userId), zap.Error(err))
-		return nil, err
-	}
-
-	logger.Info("Token refreshed successfully", zap.String("user_id", userId), zap.String("new_session_id", result.Id))
-
-	return result, nil
+	return session, nil
 }

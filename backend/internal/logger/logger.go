@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var l *zap.Logger
+var l = zap.NewNop()
 
 func Init() {
 	var err error
@@ -15,13 +15,11 @@ func Init() {
 	env := os.Getenv("ENV")
 
 	if env == "production" {
-		// ===== PRODUCTION =====
 		l, err = zap.NewProduction(
 			zap.AddCaller(),
 			zap.AddCallerSkip(1),
 		)
 	} else {
-		// ===== DEVELOPMENT (có màu) =====
 		cfg := zap.NewDevelopmentConfig()
 
 		cfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
@@ -43,26 +41,30 @@ func Sync() {
 	_ = l.Sync()
 }
 
-//
-// ===== Wrapper =====
-//
-
-func Info(msg string, fields ...zap.Field) {
-	l.Info(msg, fields...)
-}
-
-func Error(msg string, fields ...zap.Field) {
-	l.Error(msg, fields...)
+func Logger() *zap.Logger {
+	return l
 }
 
 func Debug(msg string, fields ...zap.Field) {
 	l.Debug(msg, fields...)
 }
 
+func Info(msg string, fields ...zap.Field) {
+	l.Info(msg, fields...)
+}
+
 func Warn(msg string, fields ...zap.Field) {
 	l.Warn(msg, fields...)
 }
 
-func Err(msg string, err error, fields ...zap.Field) {
-	l.Error(msg, append(fields, zap.Error(err))...)
+func Error(msg string, fields ...zap.Field) {
+	l.Error(msg, fields...)
+}
+
+func Panic(msg string, fields ...zap.Field) {
+	l.Panic(msg, fields...)
+}
+
+func Fatal(msg string, fields ...zap.Field) {
+	l.Fatal(msg, fields...)
 }

@@ -34,7 +34,8 @@ type Session struct {
 	RotatedAt         string                 `protobuf:"bytes,8,opt,name=rotated_at,json=rotatedAt,proto3" json:"rotated_at,omitempty"`
 	LastUsedAt        string                 `protobuf:"bytes,9,opt,name=last_used_at,json=lastUsedAt,proto3" json:"last_used_at,omitempty"`
 	Revoked           bool                   `protobuf:"varint,10,opt,name=revoked,proto3" json:"revoked,omitempty"`
-	IsCompromised     bool                   `protobuf:"varint,11,opt,name=is_compromised,json=isCompromised,proto3" json:"is_compromised,omitempty"`
+	IsReused          bool                   `protobuf:"varint,11,opt,name=is_reused,json=isReused,proto3" json:"is_reused,omitempty"`
+	RevokedReason     int32                  `protobuf:"varint,12,opt,name=revoked_reason,json=revokedReason,proto3" json:"revoked_reason,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -139,11 +140,18 @@ func (x *Session) GetRevoked() bool {
 	return false
 }
 
-func (x *Session) GetIsCompromised() bool {
+func (x *Session) GetIsReused() bool {
 	if x != nil {
-		return x.IsCompromised
+		return x.IsReused
 	}
 	return false
+}
+
+func (x *Session) GetRevokedReason() int32 {
+	if x != nil {
+		return x.RevokedReason
+	}
+	return 0
 }
 
 var File_session_v1_session_proto protoreflect.FileDescriptor
@@ -151,7 +159,7 @@ var File_session_v1_session_proto protoreflect.FileDescriptor
 const file_session_v1_session_proto_rawDesc = "" +
 	"\n" +
 	"\x18session/v1/session.proto\x12\n" +
-	"session.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf8\x02\n" +
+	"session.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x95\x03\n" +
 	"\aSession\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12,\n" +
@@ -167,8 +175,9 @@ const file_session_v1_session_proto_rawDesc = "" +
 	"\flast_used_at\x18\t \x01(\tR\n" +
 	"lastUsedAt\x12\x18\n" +
 	"\arevoked\x18\n" +
-	" \x01(\bR\arevoked\x12%\n" +
-	"\x0eis_compromised\x18\v \x01(\bR\risCompromisedB+Z)backend/internal/gen/session/v1;sessionpbb\x06proto3"
+	" \x01(\bR\arevoked\x12\x1b\n" +
+	"\tis_reused\x18\v \x01(\bR\bisReused\x12%\n" +
+	"\x0erevoked_reason\x18\f \x01(\x05R\rrevokedReasonB+Z)backend/internal/gen/session/v1;sessionpbb\x06proto3"
 
 var (
 	file_session_v1_session_proto_rawDescOnce sync.Once

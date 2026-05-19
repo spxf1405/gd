@@ -11,7 +11,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file session/v1/session.proto.
  */
 export const file_session_v1_session: GenFile = /*@__PURE__*/
-  fileDesc("ChhzZXNzaW9uL3YxL3Nlc3Npb24ucHJvdG8SCnNlc3Npb24udjEi8wEKB1Nlc3Npb24SCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRIaChJyZWZyZXNoX3Rva2VuX2hhc2gYAyABKAkSFwoPdG9rZW5fZmFtaWx5X2lkGAQgASgJEhIKCmV4cGlyZXNfYXQYBSABKAkSGwoTYWJzb2x1dGVfZXhwaXJlc19hdBgGIAEoCRISCgpjcmVhdGVkX2F0GAcgASgJEhIKCnJvdGF0ZWRfYXQYCCABKAkSFAoMbGFzdF91c2VkX2F0GAkgASgJEg8KB3Jldm9rZWQYCiABKAgSFgoOaXNfY29tcHJvbWlzZWQYCyABKAhCK1opYmFja2VuZC9pbnRlcm5hbC9nZW4vc2Vzc2lvbi92MTtzZXNzaW9ucGJiBnByb3RvMw", [file_google_protobuf_timestamp]);
+  fileDesc("ChhzZXNzaW9uL3YxL3Nlc3Npb24ucHJvdG8SCnNlc3Npb24udjEihgIKB1Nlc3Npb24SCgoCaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCRIaChJyZWZyZXNoX3Rva2VuX2hhc2gYAyABKAkSFwoPdG9rZW5fZmFtaWx5X2lkGAQgASgJEhIKCmV4cGlyZXNfYXQYBSABKAkSGwoTYWJzb2x1dGVfZXhwaXJlc19hdBgGIAEoCRISCgpjcmVhdGVkX2F0GAcgASgJEhIKCnJvdGF0ZWRfYXQYCCABKAkSFAoMbGFzdF91c2VkX2F0GAkgASgJEg8KB3Jldm9rZWQYCiABKAgSEQoJaXNfcmV1c2VkGAsgASgIEhYKDnJldm9rZWRfcmVhc29uGAwgASgFQitaKWJhY2tlbmQvaW50ZXJuYWwvZ2VuL3Nlc3Npb24vdjE7c2Vzc2lvbnBiYgZwcm90bzM", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message session.v1.Session
@@ -68,9 +68,14 @@ export type Session = Message<"session.v1.Session"> & {
   revoked: boolean;
 
   /**
-   * @generated from field: bool is_compromised = 11;
+   * @generated from field: bool is_reused = 11;
    */
-  isCompromised: boolean;
+  isReused: boolean;
+
+  /**
+   * @generated from field: int32 revoked_reason = 12;
+   */
+  revokedReason: number;
 };
 
 /**
