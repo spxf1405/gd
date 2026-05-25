@@ -64,8 +64,6 @@ func (h *Hanlder) RefreshToken(
 
 	refreshTokenCookie, err := httpReq.Cookie("refresh_token")
 
-	logger.Info("Refresh Token", zap.Any("Token", refreshTokenCookie))
-
 	if err != nil {
 		logger.Info("Refresh Token", zap.Error(err))
 		return nil, connect.NewError(
@@ -79,19 +77,7 @@ func (h *Hanlder) RefreshToken(
 		zap.String("refresh_token", refreshTokenCookie.Value),
 	)
 
-	if err := h.validator.Validate(req.Msg); err != nil {
-		logger.Debug(
-			"Wrong request type",
-			zap.Error(err),
-		)
-
-		return nil, connect.NewError(
-			connect.CodeInvalidArgument,
-			errors.New("invalid request"),
-		)
-	}
-
-	accessToken, err := h.service.refreshToken(ctx)
+	refreshTokenResult, err := h.service.sessionService.RefreshToken(ctx, refreshTokenCookie.Value)
 
 	if err != nil {
 		logger.Error(
@@ -117,7 +103,7 @@ func (h *Hanlder) RefreshToken(
 
 	res := connect.NewResponse(
 		&authpb.AccessToken{
-			AccessToken: accessToken,
+			AccessToken: refreshTokenResult.AccessToken,
 		},
 	)
 

@@ -121,8 +121,8 @@ func (s *Service) loginWithGoogle(
 
 	accessToken, err := jwtoken.GenerateAccessToken(
 		user.Id,
-		s.cfg.Auth.JWTSecret,
-		s.cfg.Auth.AccessTTL,
+		s.sessionService.
+			s.cfg.Auth.AccessTTL,
 	)
 
 	if err != nil {

@@ -21,11 +21,10 @@ import (
 
 type Service struct {
 	repo *SessionRepository
-	cfg  *config.Config
 }
 
-func NewService(repo *SessionRepository, cfg *config.Config) *Service {
-	return &Service{repo: repo, cfg: cfg}
+func NewService(repo *SessionRepository) *Service {
+	return &Service{repo: repo}
 }
 
 func hashToken(token string) string {
@@ -45,7 +44,8 @@ type CreateSessionInput struct {
 	AbsoluteTTL time.Duration
 }
 
-func generateNewSession(userID string, cfg *config.Config) (*sessionpb.Session, string) {
+func generateNewSession(userID string) (*sessionpb.Session, string) {
+	cfg := config.LoadConfig()
 	refreshToken := generateSecureToken()
 	refreshHash := hashToken(refreshToken)
 
@@ -70,7 +70,7 @@ func generateNewSession(userID string, cfg *config.Config) (*sessionpb.Session, 
 }
 
 func (s *Service) CreateSession(ctx context.Context, userID string) (*sessionpb.Session, string, error) {
-	newSession, refreshTokenRaw := generateNewSession(userID, s.cfg)
+	newSession, refreshTokenRaw := generateNewSession(userID)
 	session, err := s.repo.CreateSession(ctx, newSession)
 
 	if err != nil {
@@ -87,7 +87,8 @@ type RefreshTokenResult struct {
 }
 
 func (s *Service) RefreshToken(ctx context.Context, clientRefreshToken string) (result *RefreshTokenResult, err error) {
-	newSession, refreshTokenRaw := generateNewSession("", s.cfg)
+	cfg := config.LoadConfig()
+	newSession, refreshTokenRaw := generateNewSession("")
 
 	session, err := s.repo.GetRefreshToken(ctx, clientRefreshToken)
 
@@ -134,7 +135,7 @@ func (s *Service) RefreshToken(ctx context.Context, clientRefreshToken string) (
 
 	rotatedSession, _ := s.repo.RotateSession(ctx, session.Id, newSession)
 
-	accessToken, _ := jwtoken.GenerateAccessToken(session.Id, s.cfg.Auth.JWTSecret, s.cfg.Auth.AccessTTL)
+	accessToken, _ := jwtoken.GenerateAccessToken(session.Id, cfg.Auth.JWTSecret, cfg.Auth.AccessTTL)
 
 	refreshTokenResult := &RefreshTokenResult{
 		Session:         rotatedSession,

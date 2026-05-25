@@ -2,7 +2,6 @@ package auth
 
 import (
 	"backend/internal/app"
-	"backend/internal/config"
 	"backend/internal/gen/auth/v1/authpbconnect"
 	"backend/internal/session"
 
@@ -12,9 +11,7 @@ import (
 func Mount(r chi.Router, infra *app.Infra) {
 	repo := NewRepository(infra.DB)
 
-	cfg := config.LoadConfig()
-
-	sessionService := session.NewService(session.NewRepository(infra.DB), cfg)
+	sessionService := session.NewService(session.NewRepository(infra.DB))
 
 	authService := NewService(repo, sessionService)
 
