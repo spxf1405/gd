@@ -62,6 +62,7 @@ func (s *AssembleService) AssembleTournament(ctx context.Context, tournamentID s
 	roundIDs := extractIDs(rounds)
 
 	matches, err := s.matchSvc.GetMatchesByRoundIDs(ctx, roundIDs)
+
 	if err != nil {
 		logger.Error("Failed to get matches",
 			zap.Error(err),

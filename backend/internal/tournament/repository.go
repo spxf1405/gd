@@ -10,11 +10,13 @@ import (
 
 	"backend/internal/db"
 	tournamentpb "backend/internal/gen/tournament/v1"
+	"backend/internal/logger"
 	"backend/internal/repository"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
@@ -180,9 +182,9 @@ func (r *TournamentRepository) getTournaments(
 				'[]'
 			) AS registered_players`,
 		).
-		From("tournaments t").
-		LeftJoin("registrations r ON r.tournament_id = t.id").
-		LeftJoin("players p ON p.id = r.player_id").
+		From("gd_tournaments t").
+		LeftJoin("gd_registrations r ON r.tournament_id = t.id").
+		LeftJoin("gd_players p ON p.id = r.player_id").
 		GroupBy(`
 			t.id,
 			t.name,
@@ -244,12 +246,14 @@ func (r *TournamentRepository) getTournaments(
 	query, args, err := qb.ToSql()
 
 	if err != nil {
+		logger.Error("Error:", zap.Any("Err", err))
 		return nil, err
 	}
 
 	rows, err := r.DB.Pool.Query(ctx, query, args...)
 
 	if err != nil {
+		logger.Error("Error:", zap.Any("Err", err))
 		return nil, err
 	}
 	defer rows.Close()

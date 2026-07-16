@@ -10,7 +10,7 @@ import { PlayersDialog } from "./features/configurations/players";
 import RoundSelect from "./features/configurations/round-select";
 import GamingCommandMenu from "./features/configurations/search-form";
 import { EventBus } from "./helper/event-bus";
-import { tournamentClient } from "./helper/service-client";
+import { TournamentClient } from "./helper/service-client";
 import { useTournamentStore } from "./store/match";
 import { Setting } from "./features/configurations/settings/settings";
 import "@xyflow/react/dist/style.css";
@@ -24,7 +24,7 @@ function App() {
   const { initTournamentInfo } = useTournamentStore();
 
   const getTournamentByID = async () => {
-    const res = await tournamentClient.getTournamentByID({
+    const res = await TournamentClient.getTournamentByID({
       id: id,
     });
     console.log("res.tournament", res.tournament)

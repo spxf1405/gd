@@ -143,7 +143,7 @@ async function getTournaments() {
   });
 
   try {
-    const res = await tournamentClient.getTournaments({
+    const res = await TournamentClient.getTournaments({
       request: {
         case: "query",
         value: req,
@@ -169,7 +169,7 @@ const { data: tournaments, isFetching } = useQuery({
 });
 
 const handleSubmitCreateTournament = async (name: string) => {
-  const id = await tournamentClient.createTournament({ name });
+  const id = await TournamentClient.createTournament({ name });
   if (id) {
     queryClient.invalidateQueries({ queryKey: ["tournaments"] });
   }

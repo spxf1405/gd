@@ -20,7 +20,7 @@ import { LTooltip } from "./consts/input";
 import { FinanceTab, BasicTab, ScheduleTab, PlayersTab } from "./tabs/tabs";
 import { UpdateTournamentRequestSchema } from "@gd/proto/tournament/v1/tournament_service_pb";
 import { create } from "@bufbuild/protobuf";
-import { tournamentClient } from "@/helper/service-client";
+import { TournamentClient } from "@/helper/service-client";
 import { FormatTab } from "./tabs/format";
 
 const TAB_CONFIG = (t: (key: string) => string) => [
@@ -160,7 +160,7 @@ export const Setting = () => {
       tournament: { ...tournament, ...data },
     });
 
-    const response = await tournamentClient.updateTournament(request);
+    const response = await TournamentClient.updateTournament(request);
     console.log("form data", data);
     console.log("response", response);
   };

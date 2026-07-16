@@ -641,7 +641,7 @@ import {
   onAuthStateChanged,
   signInWithPopup,
 } from "@firebase/auth";
-import { AuthWithGoogleRequestSchema, TestRefreshTokenReqSchema } from "@gd/proto/auth/v1/auth_service_pb";
+import { AuthWithGoogleRequestSchema } from "@gd/proto/auth/v1/auth_service_pb";
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -665,7 +665,6 @@ import {
 
 // Toast: notification accessible — tự handle live region ARIA,
 //        swipe-to-dismiss, auto-dismiss timer, animation states
-import { EmptySchema } from "@bufbuild/protobuf/wkt";
 import {
   ToastDescription,
   ToastProvider,
@@ -674,18 +673,20 @@ import {
 } from "radix-vue";
 
 // ── Firebase ──────────────────────────────────────────────────
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-};
+// const firebaseConfig = {
+//   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+//   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+//   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+//   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+//   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+//   appId: import.meta.env.VITE_FIREBASE_APP_ID,
+//   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+// };
 
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app);
+// const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+// const auth = getAuth(app);
+
+const { $firebaseAuth, $firebaseApp } = useNuxtApp()
 
 const provider = new GoogleAuthProvider();
 
@@ -766,8 +767,9 @@ async function handleLoginTest() {
 async function handleGoogle() {
   if (isLoading.value) return;
   isLoading.value = true;
+  
   try {
-    const result = await signInWithPopup(auth, provider);
+    const result = await signInWithPopup($firebaseAuth, provider);
     const idToken = await result.user.getIdToken();
 
 
@@ -893,7 +895,7 @@ async function handleSubmit() {
 
 // ── Auth state listener ───────────────────────────────────────
 onMounted(() => {
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged($firebaseAuth, (user) => {
     if (user && !showOnboarding.value) {
       // const redirect = route.query.redirect as string
       // router.push(redirect || '/dashboard')

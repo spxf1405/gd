@@ -3,9 +3,12 @@ package participant
 import (
 	"backend/internal/db"
 	participantpb "backend/internal/gen/participant/v1"
+	"backend/internal/logger"
 	"backend/internal/repository"
 	"context"
 	"log"
+
+	"go.uber.org/zap"
 )
 
 type ParticipantRepository struct {
@@ -19,28 +22,30 @@ func NewRepository(db *db.DB) *ParticipantRepository {
 }
 
 func (r *ParticipantRepository) GetParticipantsByMatchIDs(ctx context.Context, matchIDs []string) ([]*participantpb.Participant, error) {
+	logger.Info("List match", zap.Strings("Match Ids:", matchIDs))
+
 	query := `
-		SELECT
-			p.id,
-			u.name,
-			mp.match_id,
-			mp.position,
-			mp.score
-		FROM
-			gd_match_participants mp
-		JOIN
-			gd_participants p
-			ON 
-				mp.participant_id = p.id
-		JOIN
-			gd_users u
-			ON
-				p.user_id = u.id
-		WHERE
-			mp.match_id = ANY($1)
-		ORDER BY
-			mp.position
-	`
+        SELECT
+            participant.id,
+            player.name,
+            mp.match_id,
+            mp.position,
+            mp.score
+        FROM
+            gd_match_participants mp
+        JOIN
+            gd_participants participant
+            ON 
+                mp.participant_id = participant.id
+        JOIN  
+            gd_players player
+            ON
+                participant.player_id = player.id
+        WHERE
+            mp.match_id = ANY($1)
+        ORDER BY
+            mp.position
+    `
 
 	rows, err := r.DB.Pool.Query(ctx, query, matchIDs)
 

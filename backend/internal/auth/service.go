@@ -3,7 +3,6 @@ package auth
 import (
 	"backend/internal/firebase"
 	authpb "backend/internal/gen/auth/v1"
-	"backend/internal/jwtoken"
 	"backend/internal/logger"
 	"backend/internal/session"
 	"context"
@@ -119,11 +118,11 @@ func (s *Service) loginWithGoogle(
 		return nil, err
 	}
 
-	accessToken, err := jwtoken.GenerateAccessToken(
-		user.Id,
-		s.sessionService.
-			s.cfg.Auth.AccessTTL,
-	)
+	// accessToken, err := jwtoken.GenerateAccessToken(
+	// 	user.Id,
+	// 	s.sessionService.
+	// 		s.cfg.Auth.AccessTTL,
+	// )
 
 	if err != nil {
 		logger.Error("generate access token failed",
