@@ -34,7 +34,7 @@ interface CalendarPickerProps {
   iconClassName?: string;
 }
 
-export function CalendarPicker({ iconClassName }: CalendarPickerProps) {
+export function CalendarPicker({ iconClassName, defaultValue}: CalendarPickerProps) {
   const { t } = useTranslation();
 
   const MONTHS: string[] = t("calendar.months", { returnObjects: true }) as string[];
@@ -42,7 +42,7 @@ export function CalendarPicker({ iconClassName }: CalendarPickerProps) {
 
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState<Dayjs>(dayjs());
-  const [selected, setSelected] = useState<Dayjs | null>(null);
+  const [selected, setSelected] = useState<Dayjs | null>(defaultValue);
   const [pickerMode, setMode] = useState<PickerMode>("day");
   const [animDir, setAnimDir] = useState<AnimDir>(null);
   const [animKey, setAnimKey] = useState(0);

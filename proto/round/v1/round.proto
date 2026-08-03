@@ -7,8 +7,11 @@ option go_package = "backend/internal/gen/round/v1;roundpb";
 import "match/v1/match.proto";
 
 message Round {
-  string                  id         = 1;
-  string                  name       = 2;
-  repeated match.v1.Match matches    = 3;
-  string                  bracket_id = 4;
+  string                  id               = 1;
+  string                  name             = 2;
+  repeated match.v1.Match matches          = 3;
+  string                  bracket_id       = 4;
+  int32                   race_to          = 5;
+  string                  elimination_type = 6;
+  int32                   order_index      = 7;
 }

@@ -167,7 +167,7 @@ const id = route.params.id;
 
 const getTournamentByID = async () => {
   if (!id || typeof id !== "string") return;
-  console.log("id", id);
+  
   const res = await TournamentClient.getTournamentByID({
     id: id,
   });
@@ -1403,12 +1403,3 @@ const handleTournamentRegister = () => {};
     </body>
   </ClientOnly>
 </template>
-
-<style scoped>
-body {
-  background: linear-gradient(180deg, #061322 0%, #071022 30%, #0d1624 100%);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-family: "IBM Plex Sans", sans-serif;
-}
-</style>

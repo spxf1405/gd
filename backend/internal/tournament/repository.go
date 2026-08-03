@@ -413,6 +413,51 @@ func (r *TournamentRepository) getTournamentByID1(ctx context.Context, id string
 		log.Println("err", err)
 	}
 
+	if location.Valid {
+		tournament.Location = wrapperspb.String(location.String)
+	}
+
+	if formatDescription.Valid {
+		tournament.FormatDescription = wrapperspb.String(formatDescription.String)
+	}
+
+	if description.Valid {
+		tournament.Description = wrapperspb.String(description.String)
+	}
+
+	tournament.CreatedAt = createdAt.Format(time.RFC3339)
+	tournament.UpdateAt = updatedAt.Format(time.RFC3339)
+
+	if startDate.Valid {
+		tournament.StartDate = wrapperspb.String(startDate.Time.Format(time.RFC3339))
+	}
+
+	if totalPrize.Valid {
+		tournament.TotalPrize = wrapperspb.String(totalPrize.String)
+	}
+
+	if organizer.Valid {
+		tournament.Organizer = wrapperspb.String(organizer.String)
+	}
+
+	if maxPlayers.Valid {
+		tournament.MaxPlayers = wrapperspb.Int32(maxPlayers.Int32)
+	}
+
+	if maxRankingClass.Valid {
+		tournament.MaxRankingClass = wrapperspb.String(maxRankingClass.String)
+	}
+
+	if entryFee.Valid {
+		tournament.EntryFee = wrapperspb.String(entryFee.String)
+	}
+
+	if deletedAt.Valid {
+		tournament.DeletedAt = wrapperspb.String(deletedAt.Time.Format(time.RFC3339))
+	}
+
+	logger.Dump(tournament)
+
 	return tournament, nil
 }
 

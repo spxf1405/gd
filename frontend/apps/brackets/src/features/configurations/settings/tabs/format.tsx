@@ -54,6 +54,8 @@ import {
 } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { COLORS } from "../consts/color";
+import type { Round } from "@gd/proto/round/v1/round_pb";
+import { RoundsList } from "./format1/row";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -697,68 +699,6 @@ export const FormatTab = ({
   return (
     <div className="flex flex-col gap-5">
       <SectionHeader title={t("settings.tabs.format.sectionTitle")} />
-
-      <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-2">
-          <Field label={t("settings.tabs.format.fields.type")} required>
-            <Controller
-              name="type"
-              control={control}
-              render={({ field }) => (
-                <SelectField
-                  value={field.value?.toString()}
-                  onChange={field.onChange}
-                  items={TournamentTypeList}
-                />
-              )}
-            />
-          </Field>
-        </div>
-
-        <div className="col-span-2">
-          <Field label={t("settings.tabs.format.fields.format")} required>
-            <Controller
-              name="format"
-              control={control}
-              render={({ field }) => (
-                <SelectField
-                  value={field.value?.toString()}
-                  onChange={field.onChange}
-                  items={TournamentFormatList}
-                />
-              )}
-            />
-          </Field>
-        </div>
-
-        <div className="col-span-8">
-          <Field label={t("settings.tabs.format.fields.formatDescription")}>
-            <LInput
-              {...register("formatDescription")}
-              placeholder={t(
-                "settings.tabs.format.fields.formatDescriptionPlaceholder",
-              )}
-            />
-          </Field>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <Field label={t("settings.tabs.format.fields.maxPlayers")} required>
-          <Controller
-            name={"maxPlayers" as any}
-            control={control}
-            render={({ field }) => (
-              <SelectField
-                value={field.value?.toString()}
-                onChange={(v) => field.onChange(parseInt(v))}
-                items={maxPlayersOptions}
-              />
-            )}
-          />
-        </Field>
-      </div>
-
       <BracketConfigSection control={control} />
     </div>
   );
@@ -874,8 +814,8 @@ function ModeSelect({
   disabled: boolean;
 }) {
   const items = [
-    { value: "double", label: "Double elim" },
-    { value: "single", label: "Single elim" },
+    { value: "SINGLE", label: "Double elim" },
+    { value: "DOUBLE", label: "Single elim" },
   ];
   return (
     <Select.Root
@@ -884,7 +824,7 @@ function ModeSelect({
       disabled={disabled}
     >
       <Select.Trigger
-        className={`${INPUT_BASE} w-36 px-2.5 py-1.5 flex items-center justify-between gap-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed`}
+        className={`${INPUT_BASE} w-36 px-2.5 py-3 flex items-center justify-between gap-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed`}
         style={INPUT_STYLE}
       >
         <Select.Value />
@@ -1076,18 +1016,12 @@ export function BracketConfigField({
   );
 }
 
-export function BracketConfigSection({ control }: { control: any }) {
-  const [maxPlayers, setMaxPlayers] = useState(64);
-  const [rounds, setRounds] = useState<RoundConfig[]>(() => buildRounds(64));
-
-  const handleMaxPlayersChange = (val: number) => {
-    setMaxPlayers(val);
-    setRounds(buildRounds(val));
-  };
+export function BracketConfigSection() {
+  
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-3">
+      {/* <div className="flex items-center gap-3">
         <span
           className="text-[11px] font-semibold uppercase tracking-[0.09em]"
           style={{ color: COLORS.textSecondary }}
@@ -1132,19 +1066,67 @@ export function BracketConfigSection({ control }: { control: any }) {
                     <Select.ItemIndicator>
                       <Check size={12} style={{ color: COLORS.bronze }} />
                     </Select.ItemIndicator>
-                  </Select.Item>  
+                  </Select.Item>
                 ))}
               </Select.Viewport>
             </Select.Content>
           </Select.Portal>
         </Select.Root>
-      </div>
+      </div> */}
 
-      <BracketConfigField
+      {/* <BracketConfigField
         maxPlayers={maxPlayers}
         value={rounds}
         onChange={setRounds}
+      /> */}
+      <RoundsList />
+    </div>
+  );
+}
+
+export function Row() {
+  const round: Round = {
+    name: "Last 32",
+  };
+
+  return (
+    <div className="flex items-center py-3 px-3 gap-3 bg-zinc-900 border border-zinc-800 rounded-lg">
+      <div className="flex-1 text-sm font-medium text-zinc-100 truncate">
+        {round.name}
+      </div>
+
+      <div className="">
+        Thể thức
+      </div>
+
+      <ModeSelect
+        value={round.eliminationType}
+        onChange={() => {
+          console.log("1");
+        }}
       />
+
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-green-400 whitespace-nowrap">
+          Winner Bracket: Race to
+        </span>
+        <input
+          defaultValue={"7"}
+          className="w-12 text-center text-sm bg-zinc-800 text-zinc-100 border border-zinc-700 rounded-md py-2
+                 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+        />
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-red-400 whitespace-nowrap">
+          Loser Bracket: Race to
+        </span>
+        <input
+          defaultValue={"7"}
+          className="w-12 text-center text-sm bg-zinc-800 text-zinc-100 border border-zinc-700 rounded-md py-2
+                 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+        />
+      </div>
     </div>
   );
 }

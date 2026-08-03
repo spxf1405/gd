@@ -643,7 +643,7 @@ export const FinalOfFinalNode = () => {
                   Thể thức
                 </p>
                 <p className="text-white font-bold text-lg italic uppercase">
-                  {/* 9-Ball International */}9 bi Quốc tế - Xếp cao - Thắng phá
+                  9 bi Quốc tế - Xếp cao - Thắng phá
                 </p>
               </div>
               <div className="text-center border-x border-white/10">

@@ -1,5 +1,9 @@
+import { TournamentClient } from "@/helper/service-client";
 import { useTournamentStore } from "@/store/match";
+import { create } from "@bufbuild/protobuf";
 import { type Tournament } from "@gd/proto/tournament/v1/tournament_pb";
+import { UpdateTournamentRequestSchema } from "@gd/proto/tournament/v1/tournament_service_pb";
+import { Form, Modal } from "antd";
 import {
   Calendar,
   DollarSign,
@@ -11,17 +15,15 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { Dialog, Separator, Tabs } from "radix-ui";
-import { useEffect } from "react";
+import { Separator, Tabs } from "radix-ui";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { COLORS } from "./consts/color";
 import { LTooltip } from "./consts/input";
-import { FinanceTab, BasicTab, ScheduleTab, PlayersTab } from "./tabs/tabs";
-import { UpdateTournamentRequestSchema } from "@gd/proto/tournament/v1/tournament_service_pb";
-import { create } from "@bufbuild/protobuf";
-import { TournamentClient } from "@/helper/service-client";
 import { FormatTab } from "./tabs/format";
+import { BasicTab, FinanceTab, PlayersTab, ScheduleTab } from "./tabs/tabs";
+import { AntdThemeConfig } from "@/components/ui/antd-config";
 
 const TAB_CONFIG = (t: (key: string) => string) => [
   {
@@ -36,7 +38,7 @@ const TAB_CONFIG = (t: (key: string) => string) => [
     label: t("settings.tabs.format.label"),
     sub: t("settings.tabs.format.sub"),
     icon: Grid2X2,
-    accent: COLORS.bronze,  
+    accent: COLORS.bronze,
   },
   {
     value: "schedule",
@@ -68,7 +70,7 @@ const TAB_CONFIG = (t: (key: string) => string) => [
   },
 ];
 
-const SidebarTab = ({ tab }) => {
+const SidebarTab = ({ tab }: { tab: any }) => {
   const Icon = tab.icon;
   return (
     <Tabs.Trigger
@@ -141,20 +143,17 @@ const SidebarTab = ({ tab }) => {
 export const Setting = () => {
   const { t } = useTranslation();
   const { tournament } = useTournamentStore();
+  const [open, setOpen] = useState(false);
 
-  const { control, register, watch, reset, handleSubmit } = useForm<Tournament>(
-    {
-      defaultValues: {} as Tournament,
-    },
-  );
+  const [form] = Form.useForm<Tournament>();
 
   useEffect(() => {
     if (tournament) {
-      reset(tournament);
+      form.setFieldsValue(tournament);
     }
-  }, [tournament, reset]);
+  }, [tournament, form]);
 
-  const onSubmit = async (data: Tournament) => {
+  const onFinish = async (data: Tournament) => {
     console.log("data", { ...tournament, ...data });
     const request = create(UpdateTournamentRequestSchema, {
       tournament: { ...tournament, ...data },
@@ -163,121 +162,117 @@ export const Setting = () => {
     const response = await TournamentClient.updateTournament(request);
     console.log("form data", data);
     console.log("response", response);
+    setOpen(false);
+  };
+
+  const handleSave = () => {
+    form.submit();
   };
 
   const tabs = TAB_CONFIG(t);
 
   return (
-    <Dialog.Root>
-      <Dialog.Trigger asChild>
-        <button
-          className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white cursor-pointer border-0 transition-all duration-200 hover:[border-color:rgba(255,255,255,0.2)]"
+    <AntdThemeConfig>
+      <button
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white cursor-pointer border-0 transition-all duration-200 hover:[border-color:rgba(255,255,255,0.2)]"
+        style={{
+          background: "linear-gradient(135deg, #1a1d27, #22263a)",
+          border: `1px solid ${COLORS.border}`,
+          boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+        }}
+      >
+        <Settings size={14} style={{ color: COLORS.green }} />
+        {t("settings.trigger")}
+      </button>
+
+      <Modal
+        open={open}
+        onCancel={() => setOpen(false)}
+        footer={null}
+        closable={false}
+        centered
+        width="72vw"
+        styles={{
+          container: {
+            padding: 0,
+          },
+        }}
+      >
+        <div
+          className="flex-shrink-0 flex items-center justify-between px-6 py-4"
           style={{
-            background: "linear-gradient(135deg, #1a1d27, #22263a)",
-            border: `1px solid ${COLORS.border}`,
-            boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+            borderBottom: `1px solid ${COLORS.borderSubtle}`,
+            background: "rgba(255,255,255,0.015)",
           }}
         >
-          <Settings size={14} style={{ color: COLORS.green }} />
-          {t("settings.trigger")}
-        </button>
-      </Dialog.Trigger>
-
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/40 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 duration-200" />
-
-        <Dialog.Content
-          className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col outline-none
-            data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-bottom-1
-            data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 duration-200"
-          style={{
-            width: "72vw",
-            height: "82vh",
-            borderRadius: 20,
-            overflow: "hidden",
-            background: COLORS.surface,
-            border: `1px solid ${COLORS.border}`,
-            boxShadow:
-              "0 0 0 1px rgba(255,255,255,0.03), 0 32px 80px rgba(0,0,0,0.7), 0 0 60px rgba(0,0,0,0.4)",
-          }}
-        >
-          <div
-            className="absolute top-0 left-[20%] right-[20%] h-px pointer-events-none"
-            style={{
-              background:
-                "linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent)",
-            }}
-          />
-
-          <div
-            className="flex-shrink-0 flex items-center justify-between px-6 py-4"
-            style={{
-              borderBottom: `1px solid ${COLORS.borderSubtle}`,
-              background: "rgba(255,255,255,0.015)",
-            }}
-          >
-            <div className="flex items-center gap-3.5">
-              <div className="flex items-center gap-1.5">
-                {[COLORS.red, COLORS.amber, COLORS.green].map((c) => (
-                  <div
-                    key={c}
-                    className="w-3 h-3 rounded-full"
-                    style={{ background: c }}
-                  />
-                ))}
-              </div>
-
-              <Separator.Root
-                orientation="vertical"
-                className="w-px h-5"
-                style={{ background: "rgba(255,255,255,0.08)" }}
-              />
-
-              <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3.5">
+            <div className="flex items-center gap-1.5">
+              {[COLORS.red, COLORS.amber, COLORS.green].map((c) => (
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center"
-                  style={{
-                    background: `linear-gradient(135deg, ${COLORS.green}4d, ${COLORS.indigo}33)`,
-                    border: `1px solid ${COLORS.green}4d`,
-                  }}
-                >
-                  <Trophy size={17} style={{ color: COLORS.green }} />
-                </div>
-                <div>
-                  <Dialog.Title
-                    className="text-[14px] font-bold text-white"
-                    style={{ letterSpacing: "-0.01em" }}
-                  >
-                    {t("settings.title")}
-                  </Dialog.Title>
-                  <Dialog.Description
-                    className="text-[10px] mt-0.5"
-                    style={{
-                      color: COLORS.textSecondary,
-                      letterSpacing: "0.06em",
-                    }}
-                  >
-                    {t("settings.description")}
-                  </Dialog.Description>
-                </div>
-              </div>
+                  key={c}
+                  className="w-3 h-3 rounded-full"
+                  style={{ background: c }}
+                />
+              ))}
             </div>
 
-            <Dialog.Close asChild>
-              <LTooltip content={t("settings.close")}>
-                <button
-                  className="w-7 h-7 rounded-lg flex items-center justify-center cursor-pointer border-0 transition-all duration-150 hover:bg-[rgba(239,68,68,0.15)] hover:text-[#ef4444]"
+            <Separator.Root
+              orientation="vertical"
+              className="w-px h-5"
+              style={{ background: "rgba(255,255,255,0.08)" }}
+            />
+
+            <div className="flex items-center gap-3">
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.green}4d, ${COLORS.indigo}33)`,
+                  border: `1px solid ${COLORS.green}4d`,
+                }}
+              >
+                <Trophy size={17} style={{ color: COLORS.green }} />
+              </div>
+              <div>
+                <h4
+                  className="text-[14px] font-bold text-white m-0"
+                  style={{ letterSpacing: "-0.01em" }}
+                >
+                  {t("settings.title")}
+                </h4>
+                <p
+                  className="text-[10px] mt-0.5 mb-0"
                   style={{
-                    background: "rgba(255,255,255,0.05)",
-                    color: COLORS.closeBtnColor,
+                    color: COLORS.textSecondary,
+                    letterSpacing: "0.06em",
                   }}
                 >
-                  <X size={13} />
-                </button>
-              </LTooltip>
-            </Dialog.Close>
+                  {t("settings.description")}
+                </p>
+              </div>
+            </div>
           </div>
 
+          <LTooltip content={t("settings.close")}>
+            <button
+              onClick={() => setOpen(false)}
+              className="w-7 h-7 rounded-lg flex items-center justify-center cursor-pointer border-0 transition-all duration-150 hover:bg-[rgba(239,68,68,0.15)] hover:text-[#ef4444]"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                color: COLORS.closeBtnColor,
+              }}
+            >
+              <X size={13} />
+            </button>
+          </LTooltip>
+        </div>
+
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={tournament ?? ({} as Tournament)}
+        >
           <Tabs.Root
             defaultValue="basic"
             className="flex flex-1 overflow-hidden"
@@ -323,13 +318,13 @@ export const Setting = () => {
                   />
                   <div>
                     <p
-                      className="text-[10px] font-semibold"
+                      className="text-[10px] font-semibold m-0"
                       style={{ color: COLORS.green }}
                     >
                       {t("settings.systemStatus.label")}
                     </p>
                     <p
-                      className="text-[9px] mt-px"
+                      className="text-[9px] mt-px mb-0"
                       style={{ color: COLORS.greenMuted }}
                     >
                       {t("settings.systemStatus.uptime")}
@@ -347,89 +342,84 @@ export const Setting = () => {
                 value="basic"
                 className="outline-none p-10 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
               >
-                <BasicTab control={control} register={register} />
+                <BasicTab />
               </Tabs.Content>
               <Tabs.Content
                 value="format"
                 className="outline-none p-10 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
               >
-                <FormatTab control={control} register={register} />
+                <FormatTab />
               </Tabs.Content>
               <Tabs.Content
                 value="schedule"
                 className="outline-none p-10 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
               >
-                <ScheduleTab register={register} />
+                <ScheduleTab />
               </Tabs.Content>
               <Tabs.Content
                 value="finance"
                 className="outline-none p-10 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
               >
-                <FinanceTab
-                  control={control}
-                  register={register}
-                  watch={watch}
-                />
+                <FinanceTab />
               </Tabs.Content>
               <Tabs.Content
                 value="players"
                 className="outline-none p-10 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
               >
-                <PlayersTab control={control} watch={watch} />
+                <PlayersTab />
               </Tabs.Content>
             </div>
           </Tabs.Root>
+        </Form>
 
-          <div
-            className="flex-shrink-0 flex items-center justify-between px-6 py-3.5"
-            style={{
-              borderTop: `1px solid ${COLORS.borderSubtle}`,
-              background: COLORS.overlayDark,
-            }}
+        <div
+          className="flex-shrink-0 flex items-center justify-between px-6 py-3.5"
+          style={{
+            borderTop: `1px solid ${COLORS.borderSubtle}`,
+            background: COLORS.overlayDark,
+          }}
+        >
+          <p
+            className="text-[10px] tracking-[0.06em] m-0"
+            style={{ color: COLORS.closeBtnColor }}
           >
-            <p
-              className="text-[10px] tracking-[0.06em]"
-              style={{ color: COLORS.closeBtnColor }}
+            {t("settings.lastSaved")}
+          </p>
+          <div className="flex gap-2.5">
+            <button
+              onClick={() => setOpen(false)}
+              className="px-4 py-2 rounded-lg text-[12px] font-medium cursor-pointer border-0 transition-all duration-150 hover:bg-white/[0.09]"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                color: COLORS.cancelText,
+                border: `1px solid ${COLORS.borderFaint}`,
+              }}
             >
-              {t("settings.lastSaved")}
-            </p>
-            <div className="flex gap-2.5">
-              <Dialog.Close asChild>
-                <button
-                  className="px-4 py-2 rounded-lg text-[12px] font-medium cursor-pointer border-0 transition-all duration-150 hover:bg-white/[0.09]"
-                  style={{
-                    background: "rgba(255,255,255,0.05)",
-                    color: COLORS.cancelText,
-                    border: `1px solid ${COLORS.borderFaint}`,
-                  }}
-                >
-                  {t("settings.cancel")}
-                </button>
-              </Dialog.Close>
+              {t("settings.cancel")}
+            </button>
 
-              <LTooltip content={t("settings.saveTooltip")}>
-                <button
-                  type="button"
-                  onClick={handleSubmit(onSubmit)}
-                  className="px-5 py-2 rounded-lg text-[12px] font-semibold text-white cursor-pointer border-0 transition-all duration-150"
-                  style={{
-                    background: `linear-gradient(135deg, ${COLORS.green}, ${COLORS.greenDark})`,
-                    boxShadow: `0 0 20px ${COLORS.green}40, 0 4px 12px rgba(0,0,0,0.3)`,
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.boxShadow = `0 0 28px ${COLORS.green}66, 0 4px 12px rgba(0,0,0,0.3)`)
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.boxShadow = `0 0 20px ${COLORS.green}40, 0 4px 12px rgba(0,0,0,0.3)`)
-                  }
-                >
-                  {t("settings.save")}
-                </button>
-              </LTooltip>
-            </div>
+            <LTooltip content={t("settings.saveTooltip")}>
+              <button
+                type="button"
+                onClick={handleSave}
+                className="px-5 py-2 rounded-lg text-[12px] font-semibold text-white cursor-pointer border-0 transition-all duration-150"
+                style={{
+                  background: `linear-gradient(135deg, ${COLORS.green}, ${COLORS.greenDark})`,
+                  boxShadow: `0 0 20px ${COLORS.green}40, 0 4px 12px rgba(0,0,0,0.3)`,
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.boxShadow = `0 0 28px ${COLORS.green}66, 0 4px 12px rgba(0,0,0,0.3)`)
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.boxShadow = `0 0 20px ${COLORS.green}40, 0 4px 12px rgba(0,0,0,0.3)`)
+                }
+              >
+                {t("settings.save")}
+              </button>
+            </LTooltip>
           </div>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+        </div>
+      </Modal>
+    </AntdThemeConfig>
   );
 };

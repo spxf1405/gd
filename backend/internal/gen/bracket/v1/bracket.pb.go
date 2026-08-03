@@ -27,6 +27,7 @@ type Bracket struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Rounds        []*v1.Round            `protobuf:"bytes,3,rep,name=rounds,proto3" json:"rounds,omitempty"`
+	Side          string                 `protobuf:"bytes,4,opt,name=side,proto3" json:"side,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -82,16 +83,24 @@ func (x *Bracket) GetRounds() []*v1.Round {
 	return nil
 }
 
+func (x *Bracket) GetSide() string {
+	if x != nil {
+		return x.Side
+	}
+	return ""
+}
+
 var File_bracket_v1_bracket_proto protoreflect.FileDescriptor
 
 const file_bracket_v1_bracket_proto_rawDesc = "" +
 	"\n" +
 	"\x18bracket/v1/bracket.proto\x12\n" +
-	"bracket.v1\x1a\x14round/v1/round.proto\"V\n" +
+	"bracket.v1\x1a\x14round/v1/round.proto\"j\n" +
 	"\aBracket\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12'\n" +
-	"\x06rounds\x18\x03 \x03(\v2\x0f.round.v1.RoundR\x06roundsB+Z)backend/internal/gen/bracket/v1;bracketpbb\x06proto3"
+	"\x06rounds\x18\x03 \x03(\v2\x0f.round.v1.RoundR\x06rounds\x12\x12\n" +
+	"\x04side\x18\x04 \x01(\tR\x04sideB+Z)backend/internal/gen/bracket/v1;bracketpbb\x06proto3"
 
 var (
 	file_bracket_v1_bracket_proto_rawDescOnce sync.Once

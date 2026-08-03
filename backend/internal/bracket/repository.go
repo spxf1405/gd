@@ -27,6 +27,7 @@ func (r *BracketRepository) getBracketsByTournamentID(ctx context.Context, tourn
 		Select(
 			"b.id",
 			"b.name",
+			"b.side",
 		).
 		From("gd_brackets b").
 		Where(sq.Eq{"b.tournament_id": tournamentId})
@@ -54,6 +55,7 @@ func (r *BracketRepository) getBracketsByTournamentID(ctx context.Context, tourn
 		err := rows.Scan(
 			&bracket.Id,
 			&bracket.Name,
+			&bracket.Side,
 		)
 
 		if err != nil {

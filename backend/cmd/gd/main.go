@@ -7,15 +7,51 @@ import (
 	"backend/internal/logger"
 	"backend/internal/tournament"
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
+
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 )
+
+func debugUnknownStruct(unknownData interface{}) {
+	// 1. Nếu là Protobuf Message, convert ké qua Map trước
+	if protoMessage, ok := unknownData.(proto.Message); ok {
+		// Chuyển Protobuf thành chuỗi JSON thô (chưa cần format)
+		marshaler := protojson.MarshalOptions{
+			EmitUnpopulated: true, // Hiện cả các trường rỗng/mặc định
+		}
+		bytes, err := marshaler.Marshal(protoMessage)
+		if err != nil {
+			fmt.Printf("❌ Lỗi format Protobuf: %v\n", err)
+			return
+		}
+
+		// Parse ngược chuỗi JSON đó vào một map trung gian
+		var intermediateMap map[string]interface{}
+		if err := json.Unmarshal(bytes, &intermediateMap); err != nil {
+			fmt.Printf("❌ Lỗi Unmarshal sang Map: %v\n", err)
+			return
+		}
+
+		// Giờ ném cái map sạch sẽ này vào spew.Dump để nó in từng dòng có màu sắc xịn sò
+		fmt.Printf("\n--- [Protobuf Dump via Spew: %T] ---\n", protoMessage)
+		spew.Dump(intermediateMap)
+		fmt.Println("--------------------------------")
+		return
+	}
+
+	// 2. Nếu là struct thường, vẫn dùng spew.Dump trực tiếp như cũ
+	spew.Dump(unknownData)
+}
 
 func main() {
 	godotenv.Load()

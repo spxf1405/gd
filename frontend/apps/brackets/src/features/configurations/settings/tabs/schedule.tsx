@@ -1,19 +1,14 @@
-import { CalendarPicker } from "@/components/ui/calendar";
-import {
-    type Tournament
-} from "@gd/proto/tournament/v1/tournament_pb";
-import {
-    Calendar,
-    MapPin
-} from "lucide-react";
+import { AntdThemeConfig } from "@/components/ui/antd-config";
+import { useTournamentStore } from "@/store/match";
+import { type Tournament } from "@gd/proto/tournament/v1/tournament_pb";
+import { ConfigProvider, DatePicker, Input, theme } from "antd";
+import dayjs from "dayjs";
+import { Calendar, MapPin } from "lucide-react";
 import React from "react";
-import {
-    type UseFormRegister
-} from "react-hook-form";
+import { type UseFormRegister } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { COLORS } from "../consts/color";
 import { SectionHeader } from "../header/tab-header";
-
 
 const INPUT_BASE_CLS =
   "w-full px-3.5 py-2.5 text-[13px] text-white rounded-xl outline-none transition-all duration-150 focus:ring-2 focus:ring-white/10 placeholder-[#4a5568]";
@@ -29,7 +24,6 @@ const LInput = ({ className = "", ...p }) => (
     {...p}
   />
 );
-
 
 const Field = ({
   label,
@@ -52,42 +46,66 @@ const Field = ({
   </div>
 );
 
-export const ScheduleTab = ({
-  register,
-}: {
-  register: UseFormRegister<Tournament>;
-}) => {
+export const ScheduleTab = () => {
   const { t } = useTranslation();
 
+  const { tournament } = useTournamentStore();
+
+  const createdAt = dayjs(tournament?.createdAt);
+  const startDate = dayjs(tournament?.startDate);
+
   return (
-    <div className="flex flex-col gap-5">
-      <SectionHeader
-        icon={<Calendar size={18} />}
-        title={t("settings.schedule.title")}
-        accent={COLORS.amber}
-      />
-      <div className="grid grid-cols-2 gap-4">
-        <Field label={t("settings.schedule.createdDate")} required>
-          <CalendarPicker iconClassName="text-amber-500" />
-        </Field>
-        <Field label={t("settings.schedule.startDate")} required>
-          <CalendarPicker iconClassName="text-amber-500" />
-        </Field>
-      </div>
-      <Field label={t("settings.schedule.location")} required>
-        <div className="relative">
-          <MapPin
-            size={15}
-            className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
-            style={{ color: COLORS.amber }}
+    <AntdThemeConfig>
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: "#f59e0b",
+            colorInfo: "#f59e0b",
+          },
+        }}
+      >
+        <div className="flex flex-col gap-5">
+          <SectionHeader
+            icon={<Calendar size={18} />}
+            title={t("settings.schedule.title")}
+            accent={COLORS.amber}
           />
-          <LInput
-            {...register("location")}
-            placeholder={t("settings.schedule.locationPlaceholder")}
-            className="!pl-9"
-          />
+          <div className="grid grid-cols-2 gap-4">
+            <Field label={t("settings.schedule.createdDate")} required>
+              <DatePicker
+                size="large"
+                className="font-bold"
+                value={createdAt}
+              />
+            </Field>
+            <Field label={t("settings.schedule.startDate")} required>
+              <DatePicker
+                size="large"
+                className="font-bold"
+                value={startDate}
+              />
+            </Field>
+          </div>
+          <Field label={t("settings.schedule.location")} required>
+            <SearchInput />
+          </Field>
         </div>
-      </Field>
-    </div>
+      </ConfigProvider>
+    </AntdThemeConfig>
+  );
+};
+
+const SearchInput = () => {
+  const { useToken } = theme;
+
+  const { t } = useTranslation();
+  const { token } = useToken();
+
+  return (
+    <Input
+      placeholder={t("settings.schedule.locationPlaceholder")}
+      size="large"
+      prefix={<MapPin size={16} style={{ color: token.colorPrimary }} />}
+    />
   );
 };

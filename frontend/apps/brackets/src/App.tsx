@@ -13,6 +13,7 @@ import { EventBus } from "./helper/event-bus";
 import { TournamentClient } from "./helper/service-client";
 import { useTournamentStore } from "./store/match";
 import { Setting } from "./features/configurations/settings/settings";
+// import { Setting } from "./features/configurations/settings/settings1";
 import "@xyflow/react/dist/style.css";
 import "./App.css";
 
@@ -36,6 +37,8 @@ function App() {
     queryFn: getTournamentByID,
     enabled: !!id,
   });
+
+  console.log("tournament",tournament)
 
   useEffect(() => {
     initTournamentInfo(tournament);
@@ -66,6 +69,7 @@ function App() {
 export default function Root() {
   return (
     <QueryClientProvider client={queryClient}>
+      
       <App />
     </QueryClientProvider>
   );

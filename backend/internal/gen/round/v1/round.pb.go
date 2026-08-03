@@ -23,13 +23,16 @@ const (
 )
 
 type Round struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Matches       []*v1.Match            `protobuf:"bytes,3,rep,name=matches,proto3" json:"matches,omitempty"`
-	BracketId     string                 `protobuf:"bytes,4,opt,name=bracket_id,json=bracketId,proto3" json:"bracket_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Id              string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name            string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Matches         []*v1.Match            `protobuf:"bytes,3,rep,name=matches,proto3" json:"matches,omitempty"`
+	BracketId       string                 `protobuf:"bytes,4,opt,name=bracket_id,json=bracketId,proto3" json:"bracket_id,omitempty"`
+	RaceTo          int32                  `protobuf:"varint,5,opt,name=race_to,json=raceTo,proto3" json:"race_to,omitempty"`
+	EliminationType string                 `protobuf:"bytes,6,opt,name=elimination_type,json=eliminationType,proto3" json:"elimination_type,omitempty"`
+	OrderIndex      int32                  `protobuf:"varint,7,opt,name=order_index,json=orderIndex,proto3" json:"order_index,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *Round) Reset() {
@@ -90,17 +93,42 @@ func (x *Round) GetBracketId() string {
 	return ""
 }
 
+func (x *Round) GetRaceTo() int32 {
+	if x != nil {
+		return x.RaceTo
+	}
+	return 0
+}
+
+func (x *Round) GetEliminationType() string {
+	if x != nil {
+		return x.EliminationType
+	}
+	return ""
+}
+
+func (x *Round) GetOrderIndex() int32 {
+	if x != nil {
+		return x.OrderIndex
+	}
+	return 0
+}
+
 var File_round_v1_round_proto protoreflect.FileDescriptor
 
 const file_round_v1_round_proto_rawDesc = "" +
 	"\n" +
-	"\x14round/v1/round.proto\x12\bround.v1\x1a\x14match/v1/match.proto\"u\n" +
+	"\x14round/v1/round.proto\x12\bround.v1\x1a\x14match/v1/match.proto\"\xda\x01\n" +
 	"\x05Round\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12)\n" +
 	"\amatches\x18\x03 \x03(\v2\x0f.match.v1.MatchR\amatches\x12\x1d\n" +
 	"\n" +
-	"bracket_id\x18\x04 \x01(\tR\tbracketIdB'Z%backend/internal/gen/round/v1;roundpbb\x06proto3"
+	"bracket_id\x18\x04 \x01(\tR\tbracketId\x12\x17\n" +
+	"\arace_to\x18\x05 \x01(\x05R\x06raceTo\x12)\n" +
+	"\x10elimination_type\x18\x06 \x01(\tR\x0feliminationType\x12\x1f\n" +
+	"\vorder_index\x18\a \x01(\x05R\n" +
+	"orderIndexB'Z%backend/internal/gen/round/v1;roundpbb\x06proto3"
 
 var (
 	file_round_v1_round_proto_rawDescOnce sync.Once

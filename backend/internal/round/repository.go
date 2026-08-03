@@ -27,6 +27,9 @@ func (r *RoundRepository) GetRoundsByBracketIDs(ctx context.Context, bracketIDs 
 			"round.id",
 			"round.name",
 			"round.bracket_id",
+			"round.race_to",
+			"round.elimination_type",
+			"round.order_index",
 		).
 		From("gd_rounds round").
 		Where(sq.Eq{"round.bracket_id": bracketIDs})
@@ -53,6 +56,9 @@ func (r *RoundRepository) GetRoundsByBracketIDs(ctx context.Context, bracketIDs 
 			&round.Id,
 			&round.Name,
 			&round.BracketId,
+			&round.RaceTo,
+			&round.EliminationType,
+			&round.OrderIndex,
 		)
 
 		if err != nil {
