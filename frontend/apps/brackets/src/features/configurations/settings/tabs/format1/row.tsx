@@ -1,9 +1,11 @@
 import { QSelect } from "@/components/ui/select";
 import { useTournamentStore } from "@/store/match";
+import { Button } from "antd";
 import { Pencil, Trophy } from "lucide-react";
 import { Tooltip } from "radix-ui";
 import { useMemo, useRef, useState, type RefObject } from "react";
 import { useOnClickOutside } from "usehooks-ts";
+import { CreateRoundsButton } from "./create-rounds";
 
 type EliminationType = "SINGLE" | "DOUBLE";
 type BracketSide = "winner" | "loser";
@@ -26,17 +28,18 @@ const MODE_ITEMS: { value: EliminationType; label: string }[] = [
 function ModeSelect({
   value,
   onChange,
-  disabled,
+  isDisableDouble
 }: {
   value: EliminationType;
   onChange: (value: EliminationType) => void;
-  disabled?: boolean;
+  isDisableDouble?: boolean;
 }) {
   return (
     <QSelect
       value={value}
       options={MODE_ITEMS}
       onChange={onChange}
+      disabled={isDisableDouble}
       size="large"
     />
   );
@@ -140,12 +143,14 @@ function RoundCard({
   name,
   index,
   items,
+  isDisableDouble,
   onChangeSide,
   onChangeMode,
 }: {
   name: string;
   index: number;
   items: Round[];
+  isDisableDouble: boolean,
   onChangeSide: (id: string, patch: Partial<Round>) => void;
   onChangeMode: (name: string, eliminationType: EliminationType) => void;
 }) {
@@ -217,6 +222,7 @@ function RoundCard({
           <ModeSelect
             value={primary.eliminationType}
             onChange={(eliminationType) => onChangeMode(name, eliminationType)}
+            isDisableDouble={isDisableDouble}
           />
         </div>
       </div>
@@ -297,7 +303,7 @@ export function RoundsList() {
       );
 
       const hasLoser = groupItems.some((r) => r.side === "loser");
-      console.log("hasLoser", hasLoser)
+
       if (hasLoser) return updated;
 
       const loserRound: Round = {
@@ -343,13 +349,14 @@ export function RoundsList() {
           Vòng đấu ({groups.length})
         </h2>
       </div>
-
+      <CreateRoundsButton />
       <div className="flex flex-col gap-2">
         {groups.map((group, index) => (
           <RoundCard
             key={group.name}
             name={group.name}
             index={index}
+            isDisableDouble={index > 0 && groups[index > 0 ? index - 1 : 0].eliminationType === "SINGLE"}
             items={group.items}
             onChangeSide={updateRound}
             onChangeMode={changeGroupMode}

@@ -17,14 +17,14 @@ import (
 
 type ServiceDeps struct {
 	BracketService     *bracket.Service
-	RoundService       *round.Service
+	RoundService       *round.RoundService
 	MatchService       *match.Service
 	ParticipantService *participant.Service
 }
 
 type AssembleService struct {
 	bracketSvc     *bracket.Service
-	roundSvc       *round.Service
+	roundSvc       *round.RoundService
 	matchSvc       *match.Service
 	participantSvc *participant.Service
 }
