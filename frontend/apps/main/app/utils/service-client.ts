@@ -12,6 +12,7 @@ import { createConnectTransport } from "@connectrpc/connect-web";
 import { AuthService } from "@gd/proto/auth/v1/auth_service_pb";
 import { MatchService } from "@gd/proto/match/v1/match_service_pb";
 import { PlayerService } from "@gd/proto/player/v1/player_service_pb";
+import { RoundService } from "@gd/proto/round/v1/round_service_pb";
 import { TournamentService } from "@gd/proto/tournament/v1/tournament_service_pb";
 import { UserService } from "@gd/proto/user/v1/user_service_pb";
 
@@ -94,3 +95,4 @@ export const UserClient = getPrivateClient(UserService);
 export const PlayerClient = getPrivateClient(PlayerService);
 export const MatchClient = getPrivateClient(MatchService);
 export const TournamentClient = getPrivateClient(TournamentService);
+export const RoundClient = getPrivateClient(RoundService);

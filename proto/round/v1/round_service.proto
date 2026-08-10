@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package round.v1;
+
+option go_package = "backend/internal/gen/round/v1;roundpb";
+
+import "round/v1/round.proto";
+import "google/protobuf/empty.proto";
+
+message ReplaceRoundsRequest {
+  string         tournament_id = 1;
+  repeated Round rounds        = 2;
+}
+
+service RoundService {
+  rpc ReplaceRounds(ReplaceRoundsRequest) returns (google.protobuf.Empty);
+}

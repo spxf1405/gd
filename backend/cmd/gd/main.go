@@ -5,6 +5,7 @@ import (
 	"backend/internal/auth"
 	"backend/internal/firebase"
 	"backend/internal/logger"
+	"backend/internal/round"
 	"backend/internal/tournament"
 	"context"
 	"encoding/json"
@@ -114,8 +115,9 @@ func main() {
 
 	infra := app.NewInfra(ctx)
 
-	auth.Mount(r, infra)
 	tournament.Mount(r, infra)
+	round.Mount(r, infra)
+	auth.Mount(r, infra)
 
 	addr := ":5000"
 	fmt.Fprintln(os.Stdout, prefix, "Starting server on", addr)

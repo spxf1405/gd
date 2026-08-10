@@ -1,11 +1,20 @@
-import type { GenService, GenServiceMethods } from "@bufbuild/protobuf/codegenv2";
-import { Code, ConnectError, createClient, type Interceptor } from "@connectrpc/connect";
+import type {
+  GenService,
+  GenServiceMethods,
+} from "@bufbuild/protobuf/codegenv2";
+import {
+  Code,
+  ConnectError,
+  createClient,
+  type Interceptor,
+} from "@connectrpc/connect";
 import { createConnectTransport } from "@connectrpc/connect-web";
 import { AuthService } from "@gd/proto/auth/v1/auth_service_pb";
 import { MatchService } from "@gd/proto/match/v1/match_service_pb";
 import { PlayerService } from "@gd/proto/player/v1/player_service_pb";
 import { TournamentService } from "@gd/proto/tournament/v1/tournament_service_pb";
 import { UserService } from "@gd/proto/user/v1/user_service_pb";
+import { RoundService } from "@gd/proto/round/v1/round_service_pb";
 
 const BASE_URL = "http://localhost:5000";
 
@@ -28,10 +37,11 @@ const publicTransport = createConnectTransport({
 export const PublicAuthClient = createClient(AuthService, publicTransport);
 
 const refreshOnce = (): Promise<void> => {
-  refreshPromise ??= PublicAuthClient
-    .refreshToken({})
+  refreshPromise ??= PublicAuthClient.refreshToken({})
     .then((res) => setAccessToken(res.accessToken))
-    .finally(() => { refreshPromise = null; });
+    .finally(() => {
+      refreshPromise = null;
+    });
   return refreshPromise;
 };
 
@@ -75,11 +85,13 @@ const privateTransport = createConnectTransport({
 const getPublicClient = <T extends GenServiceMethods>(service: GenService<T>) =>
   createClient(service, publicTransport);
 
-const getPrivateClient = <T extends GenServiceMethods>(service: GenService<T>) =>
-  createClient(service, privateTransport);
+const getPrivateClient = <T extends GenServiceMethods>(
+  service: GenService<T>,
+) => createClient(service, privateTransport);
 
-export const AuthClient       = getPublicClient(AuthService);
-export const UserClient       = getPrivateClient(UserService);
-export const PlayerClient     = getPrivateClient(PlayerService);
-export const MatchClient      = getPrivateClient(MatchService);
+export const AuthClient = getPublicClient(AuthService);
+export const UserClient = getPrivateClient(UserService);
+export const PlayerClient = getPrivateClient(PlayerService);
+export const MatchClient = getPrivateClient(MatchService);
 export const TournamentClient = getPrivateClient(TournamentService);
+export const RoundClient = getPrivateClient(RoundService);

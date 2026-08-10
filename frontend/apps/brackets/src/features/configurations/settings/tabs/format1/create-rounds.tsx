@@ -1,10 +1,22 @@
+import { RoundClient } from "@/helper/service-client";
 import { useTournamentStore } from "@/store/match";
 import { create } from "@bufbuild/protobuf";
-import { RoundSchema } from "@gd/proto/round/v1/round_pb";
+import { RoundSchema, type Round } from "@gd/proto/round/v1/round_pb";
+import { ReplaceRoundsRequestSchema } from "@gd/proto/round/v1/round_service_pb";
 import { Button } from "antd";
 
 export const CreateRoundsButton = () => {
   const { tournament } = useTournamentStore();
+
+  const handleSaveRound = async (rounds: Round[]) => {
+    const rq = create(ReplaceRoundsRequestSchema, {
+      tournamentId: '123',
+      rounds: rounds
+    })
+    const data = await RoundClient.replaceRounds(rq)
+
+    console.log("data", data)
+  }
 
   const onClick = () => {
     const maxPlayer = 64
@@ -30,6 +42,7 @@ export const CreateRoundsButton = () => {
     ).flat();
 
     console.log("rounds", rounds);
+    handleSaveRound(rounds)
   };
 
   return <Button size="large" onClick={onClick}>Lấy danh sách vòng đấu</Button>;
