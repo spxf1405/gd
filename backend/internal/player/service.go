@@ -20,3 +20,11 @@ func (s *Service) getPlayers(ctx context.Context) ([]*playerpb.Player, error) {
 	}
 	return player, nil
 }
+
+func (s *Service) getPlayersByTournamentID(ctx context.Context) ([]*playerpb.Player, error) {
+	player, err := s.repo.getPlayers(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return player, nil
+}

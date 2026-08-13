@@ -1,6 +1,6 @@
 import { QSelect } from "@/components/ui/select";
 import { useTournamentStore } from "@/store/match";
-import { Button } from "antd";
+import { Button, Input, Space } from "antd";
 import { Pencil, Trophy } from "lucide-react";
 import { Tooltip } from "radix-ui";
 import { useMemo, useRef, useState, type RefObject } from "react";
@@ -28,7 +28,7 @@ const MODE_ITEMS: { value: EliminationType; label: string }[] = [
 function ModeSelect({
   value,
   onChange,
-  isDisableDouble
+  isDisableDouble,
 }: {
   value: EliminationType;
   onChange: (value: EliminationType) => void;
@@ -115,6 +115,10 @@ function SideRow({
   round: Round;
   onChange: (patch: Partial<Round>) => void;
 }) {
+  if (round.eliminationType === "SINGLE" && round.side === "loser") {
+    return null;
+  }
+
   const isLoser = round.side === "loser";
 
   return (
@@ -150,7 +154,7 @@ function RoundCard({
   name: string;
   index: number;
   items: Round[];
-  isDisableDouble: boolean,
+  isDisableDouble: boolean;
   onChangeSide: (id: string, patch: Partial<Round>) => void;
   onChangeMode: (name: string, eliminationType: EliminationType) => void;
 }) {
@@ -320,8 +324,8 @@ export function RoundsList() {
         loserRound,
         ...updated.slice(winnerIndex + 1),
       ];
-      console.log('data', data)
-      return data
+      console.log("data", data);
+      return data;
     });
   }
 
@@ -339,24 +343,45 @@ export function RoundsList() {
     }));
   }, [rounds]);
 
-  console.log("groups", groups)
+  console.log("groups", groups);
 
   return (
     <div className="overflow-x-auto min-w-[640px]">
-      <div className="flex items-center gap-2 mb-4">
-        <Trophy className="w-4 h-4 text-orange-400" />
-        <h2 className="text-sm font-semibold text-zinc-100">
-          Vòng đấu ({groups.length})
-        </h2>
+      <div className="flex items-center justify-between gap-4 mb-5">
+        <div className="flex items-center gap-2">
+          <Trophy className="w-4 h-4 text-orange-400" />
+          <h2 className="text-sm font-semibold text-zinc-100">
+            Vòng đấu <span className="text-zinc-500">({groups.length})</span>
+          </h2>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-zinc-400 whitespace-nowrap">
+              Tổng số người chơi
+            </span>
+            <Input size="large" className="w-20" value={64} disabled />
+          </div>
+          <button className="text-xs text-orange-400 hover:text-orange-300 transition-colors whitespace-nowrap">
+            Xem danh sách người chơi
+          </button>
+        </div>
       </div>
-      <CreateRoundsButton />
+
+      <div className="mb-4">
+        <CreateRoundsButton />
+      </div>
+
       <div className="flex flex-col gap-2">
         {groups.map((group, index) => (
           <RoundCard
             key={group.name}
             name={group.name}
             index={index}
-            isDisableDouble={index > 0 && groups[index > 0 ? index - 1 : 0].eliminationType === "SINGLE"}
+            isDisableDouble={
+              index > 0 &&
+              groups[index > 0 ? index - 1 : 0].eliminationType === "SINGLE"
+            }
             items={group.items}
             onChangeSide={updateRound}
             onChangeMode={changeGroupMode}

@@ -78,3 +78,42 @@ func (r *ParticipantRepository) GetParticipantsByMatchIDs(ctx context.Context, m
 
 	return participants, nil
 }
+
+func (r *ParticipantRepository) GetParticipantsByTournamentID(ctx context.Context, tournamentID string) ([]*participantpb.Participant, error) {
+	query := `SELECT
+				player.id,
+				player.name 
+			  FROM gd_players player
+			  INNER JOIN gd_participants participant ON participant.player_id = player.id
+			  WHERE participant.tournament_id = $1
+			  `
+
+	rows, err := r.DB.Pool.Query(ctx, query, tournamentID)
+
+	if err != nil {
+		logger.Info("create connection failed")
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	players := []*participantpb.Participant{}
+
+	for rows.Next() {
+		player := &participantpb.Participant{}
+
+		err := rows.Scan(
+			player.Id,
+			player.DisplayName,
+		)
+
+		if err != nil {
+			logger.Error("can not get ")
+			return nil, err
+		}
+
+		players = append(players, player)
+	}
+
+	return players, nil
+}

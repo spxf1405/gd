@@ -14,16 +14,16 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file round/v1/round_service.proto.
  */
 export const file_round_v1_round_service: GenFile = /*@__PURE__*/
-  fileDesc("Chxyb3VuZC92MS9yb3VuZF9zZXJ2aWNlLnByb3RvEghyb3VuZC52MSJOChRSZXBsYWNlUm91bmRzUmVxdWVzdBIVCg10b3VybmFtZW50X2lkGAEgASgJEh8KBnJvdW5kcxgCIAMoCzIPLnJvdW5kLnYxLlJvdW5kMlcKDFJvdW5kU2VydmljZRJHCg1SZXBsYWNlUm91bmRzEh4ucm91bmQudjEuUmVwbGFjZVJvdW5kc1JlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHlCJ1olYmFja2VuZC9pbnRlcm5hbC9nZW4vcm91bmQvdjE7cm91bmRwYmIGcHJvdG8z", [file_round_v1_round, file_google_protobuf_empty]);
+  fileDesc("Chxyb3VuZC92MS9yb3VuZF9zZXJ2aWNlLnByb3RvEghyb3VuZC52MSJMChRSZXBsYWNlUm91bmRzUmVxdWVzdBITCgticmFja2V0X2lkcxgBIAMoCRIfCgZyb3VuZHMYAiADKAsyDy5yb3VuZC52MS5Sb3VuZDJXCgxSb3VuZFNlcnZpY2USRwoNUmVwbGFjZVJvdW5kcxIeLnJvdW5kLnYxLlJlcGxhY2VSb3VuZHNSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5QidaJWJhY2tlbmQvaW50ZXJuYWwvZ2VuL3JvdW5kL3YxO3JvdW5kcGJiBnByb3RvMw", [file_round_v1_round, file_google_protobuf_empty]);
 
 /**
  * @generated from message round.v1.ReplaceRoundsRequest
  */
 export type ReplaceRoundsRequest = Message<"round.v1.ReplaceRoundsRequest"> & {
   /**
-   * @generated from field: string tournament_id = 1;
+   * @generated from field: repeated string bracket_ids = 1;
    */
-  tournamentId: string;
+  bracketIds: string[];
 
   /**
    * @generated from field: repeated round.v1.Round rounds = 2;

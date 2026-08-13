@@ -68,15 +68,108 @@ func (x *GetPlayerResponse) GetPlayers() []*Player {
 	return nil
 }
 
+type GetPlayersByTournamentIDRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TournamentId  string                 `protobuf:"bytes,1,opt,name=tournament_id,json=tournamentId,proto3" json:"tournament_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPlayersByTournamentIDRequest) Reset() {
+	*x = GetPlayersByTournamentIDRequest{}
+	mi := &file_player_v1_player_service_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPlayersByTournamentIDRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPlayersByTournamentIDRequest) ProtoMessage() {}
+
+func (x *GetPlayersByTournamentIDRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_player_v1_player_service_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPlayersByTournamentIDRequest.ProtoReflect.Descriptor instead.
+func (*GetPlayersByTournamentIDRequest) Descriptor() ([]byte, []int) {
+	return file_player_v1_player_service_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GetPlayersByTournamentIDRequest) GetTournamentId() string {
+	if x != nil {
+		return x.TournamentId
+	}
+	return ""
+}
+
+type GetPlayersByTournamentIDResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Players       []*Player              `protobuf:"bytes,1,rep,name=players,proto3" json:"players,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPlayersByTournamentIDResponse) Reset() {
+	*x = GetPlayersByTournamentIDResponse{}
+	mi := &file_player_v1_player_service_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPlayersByTournamentIDResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPlayersByTournamentIDResponse) ProtoMessage() {}
+
+func (x *GetPlayersByTournamentIDResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_player_v1_player_service_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPlayersByTournamentIDResponse.ProtoReflect.Descriptor instead.
+func (*GetPlayersByTournamentIDResponse) Descriptor() ([]byte, []int) {
+	return file_player_v1_player_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetPlayersByTournamentIDResponse) GetPlayers() []*Player {
+	if x != nil {
+		return x.Players
+	}
+	return nil
+}
+
 var File_player_v1_player_service_proto protoreflect.FileDescriptor
 
 const file_player_v1_player_service_proto_rawDesc = "" +
 	"\n" +
 	"\x1eplayer/v1/player_service.proto\x12\tplayer.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x16player/v1/player.proto\"@\n" +
 	"\x11GetPlayerResponse\x12+\n" +
-	"\aplayers\x18\x01 \x03(\v2\x11.player.v1.PlayerR\aplayers2R\n" +
+	"\aplayers\x18\x01 \x03(\v2\x11.player.v1.PlayerR\aplayers\"F\n" +
+	"\x1fGetPlayersByTournamentIDRequest\x12#\n" +
+	"\rtournament_id\x18\x01 \x01(\tR\ftournamentId\"O\n" +
+	" GetPlayersByTournamentIDResponse\x12+\n" +
+	"\aplayers\x18\x01 \x03(\v2\x11.player.v1.PlayerR\aplayers2\xc7\x01\n" +
 	"\rPlayerService\x12A\n" +
-	"\tGetPlayer\x12\x16.google.protobuf.Empty\x1a\x1c.player.v1.GetPlayerResponseB)Z'backend/internal/gen/player/v1;playerpbb\x06proto3"
+	"\tGetPlayer\x12\x16.google.protobuf.Empty\x1a\x1c.player.v1.GetPlayerResponse\x12s\n" +
+	"\x18GetPlayersByTournamentID\x12*.player.v1.GetPlayersByTournamentIDRequest\x1a+.player.v1.GetPlayersByTournamentIDResponseB)Z'backend/internal/gen/player/v1;playerpbb\x06proto3"
 
 var (
 	file_player_v1_player_service_proto_rawDescOnce sync.Once
@@ -90,21 +183,26 @@ func file_player_v1_player_service_proto_rawDescGZIP() []byte {
 	return file_player_v1_player_service_proto_rawDescData
 }
 
-var file_player_v1_player_service_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_player_v1_player_service_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_player_v1_player_service_proto_goTypes = []any{
-	(*GetPlayerResponse)(nil), // 0: player.v1.GetPlayerResponse
-	(*Player)(nil),            // 1: player.v1.Player
-	(*emptypb.Empty)(nil),     // 2: google.protobuf.Empty
+	(*GetPlayerResponse)(nil),                // 0: player.v1.GetPlayerResponse
+	(*GetPlayersByTournamentIDRequest)(nil),  // 1: player.v1.GetPlayersByTournamentIDRequest
+	(*GetPlayersByTournamentIDResponse)(nil), // 2: player.v1.GetPlayersByTournamentIDResponse
+	(*Player)(nil),                           // 3: player.v1.Player
+	(*emptypb.Empty)(nil),                    // 4: google.protobuf.Empty
 }
 var file_player_v1_player_service_proto_depIdxs = []int32{
-	1, // 0: player.v1.GetPlayerResponse.players:type_name -> player.v1.Player
-	2, // 1: player.v1.PlayerService.GetPlayer:input_type -> google.protobuf.Empty
-	0, // 2: player.v1.PlayerService.GetPlayer:output_type -> player.v1.GetPlayerResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	3, // 0: player.v1.GetPlayerResponse.players:type_name -> player.v1.Player
+	3, // 1: player.v1.GetPlayersByTournamentIDResponse.players:type_name -> player.v1.Player
+	4, // 2: player.v1.PlayerService.GetPlayer:input_type -> google.protobuf.Empty
+	1, // 3: player.v1.PlayerService.GetPlayersByTournamentID:input_type -> player.v1.GetPlayersByTournamentIDRequest
+	0, // 4: player.v1.PlayerService.GetPlayer:output_type -> player.v1.GetPlayerResponse
+	2, // 5: player.v1.PlayerService.GetPlayersByTournamentID:output_type -> player.v1.GetPlayersByTournamentIDResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_player_v1_player_service_proto_init() }
@@ -119,7 +217,7 @@ func file_player_v1_player_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_player_v1_player_service_proto_rawDesc), len(file_player_v1_player_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

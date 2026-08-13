@@ -10,9 +10,18 @@ import "player/v1/player.proto";
 option go_package = "backend/internal/gen/player/v1;playerpb";
 
 message GetPlayerResponse {
-    repeated Player players = 1;
+  repeated Player players = 1;
+}
+
+message GetPlayersByTournamentIDRequest {
+  string tournament_id = 1;
+}
+
+message GetPlayersByTournamentIDResponse {
+  repeated Player players = 1;
 }
 
 service PlayerService {
-    rpc GetPlayer(google.protobuf.Empty) returns (GetPlayerResponse);
+  rpc GetPlayer(google.protobuf.Empty) returns (GetPlayerResponse);
+  rpc GetPlayersByTournamentID(GetPlayersByTournamentIDRequest) returns (GetPlayersByTournamentIDResponse);
 }

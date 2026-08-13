@@ -24,7 +24,7 @@ const (
 
 type ReplaceRoundsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	TournamentId  string                 `protobuf:"bytes,1,opt,name=tournament_id,json=tournamentId,proto3" json:"tournament_id,omitempty"`
+	BracketIds    []string               `protobuf:"bytes,1,rep,name=bracket_ids,json=bracketIds,proto3" json:"bracket_ids,omitempty"`
 	Rounds        []*Round               `protobuf:"bytes,2,rep,name=rounds,proto3" json:"rounds,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -60,11 +60,11 @@ func (*ReplaceRoundsRequest) Descriptor() ([]byte, []int) {
 	return file_round_v1_round_service_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ReplaceRoundsRequest) GetTournamentId() string {
+func (x *ReplaceRoundsRequest) GetBracketIds() []string {
 	if x != nil {
-		return x.TournamentId
+		return x.BracketIds
 	}
-	return ""
+	return nil
 }
 
 func (x *ReplaceRoundsRequest) GetRounds() []*Round {
@@ -78,9 +78,10 @@ var File_round_v1_round_service_proto protoreflect.FileDescriptor
 
 const file_round_v1_round_service_proto_rawDesc = "" +
 	"\n" +
-	"\x1cround/v1/round_service.proto\x12\bround.v1\x1a\x14round/v1/round.proto\x1a\x1bgoogle/protobuf/empty.proto\"d\n" +
-	"\x14ReplaceRoundsRequest\x12#\n" +
-	"\rtournament_id\x18\x01 \x01(\tR\ftournamentId\x12'\n" +
+	"\x1cround/v1/round_service.proto\x12\bround.v1\x1a\x14round/v1/round.proto\x1a\x1bgoogle/protobuf/empty.proto\"`\n" +
+	"\x14ReplaceRoundsRequest\x12\x1f\n" +
+	"\vbracket_ids\x18\x01 \x03(\tR\n" +
+	"bracketIds\x12'\n" +
 	"\x06rounds\x18\x02 \x03(\v2\x0f.round.v1.RoundR\x06rounds2W\n" +
 	"\fRoundService\x12G\n" +
 	"\rReplaceRounds\x12\x1e.round.v1.ReplaceRoundsRequest\x1a\x16.google.protobuf.EmptyB'Z%backend/internal/gen/round/v1;roundpbb\x06proto3"

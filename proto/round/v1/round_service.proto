@@ -8,8 +8,8 @@ import "round/v1/round.proto";
 import "google/protobuf/empty.proto";
 
 message ReplaceRoundsRequest {
-  string         tournament_id = 1;
-  repeated Round rounds        = 2;
+  repeated string bracket_ids = 1;
+  repeated Round  rounds      = 2;
 }
 
 service RoundService {

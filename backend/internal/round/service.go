@@ -26,8 +26,8 @@ func (s *RoundService) GetRoundsByBracketIDs(ctx context.Context, bracketIDs []s
 	return rounds, nil
 }
 
-func (s *RoundService) ReplaceRounds(ctx context.Context, tournamentID string, rounds []*roundpb.Round) error {
-	err := s.repo.ReplaceRounds(ctx, tournamentID, rounds)
+func (s *RoundService) ReplaceRounds(ctx context.Context, bracketIDs []string, rounds []*roundpb.Round) error {
+	err := s.repo.ReplaceRounds(ctx, bracketIDs, rounds)
 
 	if err != nil {
 		logger.Error("replace rounds failed", zap.Error(err))

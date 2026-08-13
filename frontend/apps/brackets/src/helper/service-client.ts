@@ -15,6 +15,7 @@ import { PlayerService } from "@gd/proto/player/v1/player_service_pb";
 import { TournamentService } from "@gd/proto/tournament/v1/tournament_service_pb";
 import { UserService } from "@gd/proto/user/v1/user_service_pb";
 import { RoundService } from "@gd/proto/round/v1/round_service_pb";
+import { ParticipantService } from "@gd/proto/participant/v1/participant_service_pb";
 
 const BASE_URL = "http://localhost:5000";
 
@@ -95,3 +96,4 @@ export const PlayerClient = getPrivateClient(PlayerService);
 export const MatchClient = getPrivateClient(MatchService);
 export const TournamentClient = getPrivateClient(TournamentService);
 export const RoundClient = getPrivateClient(RoundService);
+export const ParticipantClient = getPrivateClient(ParticipantService);

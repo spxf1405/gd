@@ -76,7 +76,7 @@ func (r *RoundRepository) GetRoundsByBracketIDs(ctx context.Context, bracketIDs 
 	return rounds, nil
 }
 
-func (r *RoundRepository) ReplaceRounds(ctx context.Context, tournamentID string, rounds []*roundpb.Round) error {
+func (r *RoundRepository) ReplaceRounds(ctx context.Context, bracketIDs []string, rounds []*roundpb.Round) error {
 	if len(rounds) == 0 {
 		return fmt.Errorf("no rounds provided")
 	}
@@ -91,9 +91,9 @@ func (r *RoundRepository) ReplaceRounds(ctx context.Context, tournamentID string
 		_ = tx.Rollback(ctx)
 	}()
 
-	deleteQuery := `DELETE FROM gd_rounds WHERE tournament_id = $1`
+	deleteQuery := `DELETE FROM gd_rounds WHERE bracket_id = ANY($1)`
 
-	commandTag, err := tx.Exec(ctx, deleteQuery, tournamentID)
+	commandTag, err := tx.Exec(ctx, deleteQuery, bracketIDs)
 
 	if err != nil {
 		return fmt.Errorf("delete rounds failed %w", err)

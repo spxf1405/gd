@@ -15,7 +15,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file player/v1/player_service.proto.
  */
 export const file_player_v1_player_service: GenFile = /*@__PURE__*/
-  fileDesc("Ch5wbGF5ZXIvdjEvcGxheWVyX3NlcnZpY2UucHJvdG8SCXBsYXllci52MSI3ChFHZXRQbGF5ZXJSZXNwb25zZRIiCgdwbGF5ZXJzGAEgAygLMhEucGxheWVyLnYxLlBsYXllcjJSCg1QbGF5ZXJTZXJ2aWNlEkEKCUdldFBsYXllchIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eRocLnBsYXllci52MS5HZXRQbGF5ZXJSZXNwb25zZUIpWidiYWNrZW5kL2ludGVybmFsL2dlbi9wbGF5ZXIvdjE7cGxheWVycGJiBnByb3RvMw", [file_google_protobuf_timestamp, file_google_protobuf_wrappers, file_google_protobuf_empty, file_player_v1_player]);
+  fileDesc("Ch5wbGF5ZXIvdjEvcGxheWVyX3NlcnZpY2UucHJvdG8SCXBsYXllci52MSI3ChFHZXRQbGF5ZXJSZXNwb25zZRIiCgdwbGF5ZXJzGAEgAygLMhEucGxheWVyLnYxLlBsYXllciI4Ch9HZXRQbGF5ZXJzQnlUb3VybmFtZW50SURSZXF1ZXN0EhUKDXRvdXJuYW1lbnRfaWQYASABKAkiRgogR2V0UGxheWVyc0J5VG91cm5hbWVudElEUmVzcG9uc2USIgoHcGxheWVycxgBIAMoCzIRLnBsYXllci52MS5QbGF5ZXIyxwEKDVBsYXllclNlcnZpY2USQQoJR2V0UGxheWVyEhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5GhwucGxheWVyLnYxLkdldFBsYXllclJlc3BvbnNlEnMKGEdldFBsYXllcnNCeVRvdXJuYW1lbnRJRBIqLnBsYXllci52MS5HZXRQbGF5ZXJzQnlUb3VybmFtZW50SURSZXF1ZXN0GisucGxheWVyLnYxLkdldFBsYXllcnNCeVRvdXJuYW1lbnRJRFJlc3BvbnNlQilaJ2JhY2tlbmQvaW50ZXJuYWwvZ2VuL3BsYXllci92MTtwbGF5ZXJwYmIGcHJvdG8z", [file_google_protobuf_timestamp, file_google_protobuf_wrappers, file_google_protobuf_empty, file_player_v1_player]);
 
 /**
  * @generated from message player.v1.GetPlayerResponse
@@ -35,6 +35,40 @@ export const GetPlayerResponseSchema: GenMessage<GetPlayerResponse> = /*@__PURE_
   messageDesc(file_player_v1_player_service, 0);
 
 /**
+ * @generated from message player.v1.GetPlayersByTournamentIDRequest
+ */
+export type GetPlayersByTournamentIDRequest = Message<"player.v1.GetPlayersByTournamentIDRequest"> & {
+  /**
+   * @generated from field: string tournament_id = 1;
+   */
+  tournamentId: string;
+};
+
+/**
+ * Describes the message player.v1.GetPlayersByTournamentIDRequest.
+ * Use `create(GetPlayersByTournamentIDRequestSchema)` to create a new message.
+ */
+export const GetPlayersByTournamentIDRequestSchema: GenMessage<GetPlayersByTournamentIDRequest> = /*@__PURE__*/
+  messageDesc(file_player_v1_player_service, 1);
+
+/**
+ * @generated from message player.v1.GetPlayersByTournamentIDResponse
+ */
+export type GetPlayersByTournamentIDResponse = Message<"player.v1.GetPlayersByTournamentIDResponse"> & {
+  /**
+   * @generated from field: repeated player.v1.Player players = 1;
+   */
+  players: Player[];
+};
+
+/**
+ * Describes the message player.v1.GetPlayersByTournamentIDResponse.
+ * Use `create(GetPlayersByTournamentIDResponseSchema)` to create a new message.
+ */
+export const GetPlayersByTournamentIDResponseSchema: GenMessage<GetPlayersByTournamentIDResponse> = /*@__PURE__*/
+  messageDesc(file_player_v1_player_service, 2);
+
+/**
  * @generated from service player.v1.PlayerService
  */
 export const PlayerService: GenService<{
@@ -45,6 +79,14 @@ export const PlayerService: GenService<{
     methodKind: "unary";
     input: typeof EmptySchema;
     output: typeof GetPlayerResponseSchema;
+  },
+  /**
+   * @generated from rpc player.v1.PlayerService.GetPlayersByTournamentID
+   */
+  getPlayersByTournamentID: {
+    methodKind: "unary";
+    input: typeof GetPlayersByTournamentIDRequestSchema;
+    output: typeof GetPlayersByTournamentIDResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_player_v1_player_service, 0);

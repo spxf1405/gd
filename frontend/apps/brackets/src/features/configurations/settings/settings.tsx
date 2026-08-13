@@ -21,9 +21,9 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { COLORS } from "./consts/color";
 import { LTooltip } from "./consts/input";
-import { FormatTab } from "./tabs/format";
 import { BasicTab, FinanceTab, PlayersTab, ScheduleTab } from "./tabs/tabs";
 import { AntdThemeConfig } from "@/components/ui/antd-config";
+import { RoundsList } from "./tabs/format/row";
 
 const TAB_CONFIG = (t: (key: string) => string) => [
   {
@@ -41,6 +41,13 @@ const TAB_CONFIG = (t: (key: string) => string) => [
     accent: COLORS.bronze,
   },
   {
+    value: "players",
+    label: t("settings.tabs.players.label"),
+    sub: t("settings.tabs.players.sub"),
+    icon: Users,
+    accent: COLORS.red,
+  },
+  {
     value: "schedule",
     label: t("settings.tabs.schedule.label"),
     sub: t("settings.tabs.schedule.sub"),
@@ -53,13 +60,6 @@ const TAB_CONFIG = (t: (key: string) => string) => [
     sub: t("settings.tabs.finance.sub"),
     icon: DollarSign,
     accent: COLORS.indigo,
-  },
-  {
-    value: "players",
-    label: t("settings.tabs.players.label"),
-    sub: t("settings.tabs.players.sub"),
-    icon: Users,
-    accent: COLORS.blue,
   },
   {
     value: "media",
@@ -348,7 +348,7 @@ export const Setting = () => {
                 value="format"
                 className="outline-none p-10 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
               >
-                <FormatTab />
+                <RoundsList />
               </Tabs.Content>
               <Tabs.Content
                 value="schedule"

@@ -1,6 +1,5 @@
 import { DollarSign } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { COLORS } from "../../consts/color";
 import { CurrencyHint, Field, LInput } from "../../consts/input";
 import { SectionHeader } from "../../header/tab-header";
 import { PrizeDistributionTable } from "@/features/configurations/settings/tabs/finance/prize-distributiontable";
@@ -11,6 +10,7 @@ import {
   type UseFormWatch,
 } from "react-hook-form";
 import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
+import { COLORS } from "../../consts/color";
 
 export const FinanceTab = ({
   control,

@@ -36,11 +36,15 @@ const (
 const (
 	// PlayerServiceGetPlayerProcedure is the fully-qualified name of the PlayerService's GetPlayer RPC.
 	PlayerServiceGetPlayerProcedure = "/player.v1.PlayerService/GetPlayer"
+	// PlayerServiceGetPlayersByTournamentIDProcedure is the fully-qualified name of the PlayerService's
+	// GetPlayersByTournamentID RPC.
+	PlayerServiceGetPlayersByTournamentIDProcedure = "/player.v1.PlayerService/GetPlayersByTournamentID"
 )
 
 // PlayerServiceClient is a client for the player.v1.PlayerService service.
 type PlayerServiceClient interface {
 	GetPlayer(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.GetPlayerResponse], error)
+	GetPlayersByTournamentID(context.Context, *connect.Request[v1.GetPlayersByTournamentIDRequest]) (*connect.Response[v1.GetPlayersByTournamentIDResponse], error)
 }
 
 // NewPlayerServiceClient constructs a client for the player.v1.PlayerService service. By default,
@@ -60,12 +64,19 @@ func NewPlayerServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithSchema(playerServiceMethods.ByName("GetPlayer")),
 			connect.WithClientOptions(opts...),
 		),
+		getPlayersByTournamentID: connect.NewClient[v1.GetPlayersByTournamentIDRequest, v1.GetPlayersByTournamentIDResponse](
+			httpClient,
+			baseURL+PlayerServiceGetPlayersByTournamentIDProcedure,
+			connect.WithSchema(playerServiceMethods.ByName("GetPlayersByTournamentID")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // playerServiceClient implements PlayerServiceClient.
 type playerServiceClient struct {
-	getPlayer *connect.Client[emptypb.Empty, v1.GetPlayerResponse]
+	getPlayer                *connect.Client[emptypb.Empty, v1.GetPlayerResponse]
+	getPlayersByTournamentID *connect.Client[v1.GetPlayersByTournamentIDRequest, v1.GetPlayersByTournamentIDResponse]
 }
 
 // GetPlayer calls player.v1.PlayerService.GetPlayer.
@@ -73,9 +84,15 @@ func (c *playerServiceClient) GetPlayer(ctx context.Context, req *connect.Reques
 	return c.getPlayer.CallUnary(ctx, req)
 }
 
+// GetPlayersByTournamentID calls player.v1.PlayerService.GetPlayersByTournamentID.
+func (c *playerServiceClient) GetPlayersByTournamentID(ctx context.Context, req *connect.Request[v1.GetPlayersByTournamentIDRequest]) (*connect.Response[v1.GetPlayersByTournamentIDResponse], error) {
+	return c.getPlayersByTournamentID.CallUnary(ctx, req)
+}
+
 // PlayerServiceHandler is an implementation of the player.v1.PlayerService service.
 type PlayerServiceHandler interface {
 	GetPlayer(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.GetPlayerResponse], error)
+	GetPlayersByTournamentID(context.Context, *connect.Request[v1.GetPlayersByTournamentIDRequest]) (*connect.Response[v1.GetPlayersByTournamentIDResponse], error)
 }
 
 // NewPlayerServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -91,10 +108,18 @@ func NewPlayerServiceHandler(svc PlayerServiceHandler, opts ...connect.HandlerOp
 		connect.WithSchema(playerServiceMethods.ByName("GetPlayer")),
 		connect.WithHandlerOptions(opts...),
 	)
+	playerServiceGetPlayersByTournamentIDHandler := connect.NewUnaryHandler(
+		PlayerServiceGetPlayersByTournamentIDProcedure,
+		svc.GetPlayersByTournamentID,
+		connect.WithSchema(playerServiceMethods.ByName("GetPlayersByTournamentID")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/player.v1.PlayerService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case PlayerServiceGetPlayerProcedure:
 			playerServiceGetPlayerHandler.ServeHTTP(w, r)
+		case PlayerServiceGetPlayersByTournamentIDProcedure:
+			playerServiceGetPlayersByTournamentIDHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -106,4 +131,8 @@ type UnimplementedPlayerServiceHandler struct{}
 
 func (UnimplementedPlayerServiceHandler) GetPlayer(context.Context, *connect.Request[emptypb.Empty]) (*connect.Response[v1.GetPlayerResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("player.v1.PlayerService.GetPlayer is not implemented"))
+}
+
+func (UnimplementedPlayerServiceHandler) GetPlayersByTournamentID(context.Context, *connect.Request[v1.GetPlayersByTournamentIDRequest]) (*connect.Response[v1.GetPlayersByTournamentIDResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("player.v1.PlayerService.GetPlayersByTournamentID is not implemented"))
 }

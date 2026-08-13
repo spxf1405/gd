@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package participant.v1;
+
+option go_package = "backend/internal/gen/participant/v1;participantpb";
+
+import "participant/v1/participant.proto";
+
+
+message GetParticipantsByTournamentIDRequest {
+  string tournament_id = 1;
+}
+
+message GetParticipantsByTournamentIDResponse {
+  repeated Participant participants = 1;
+}
+
+service ParticipantService {
+    rpc GetParticipantsByTournamentID(GetParticipantsByTournamentIDRequest) returns (GetParticipantsByTournamentIDResponse);
+}

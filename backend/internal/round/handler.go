@@ -21,7 +21,7 @@ func NewHandler(service *RoundService) *RoundHandler {
 
 func (h *RoundHandler) ReplaceRounds(ctx context.Context, req *connect.Request[roundpb.ReplaceRoundsRequest]) (*connect.Response[emptypb.Empty], error) {
 
-	if err := h.service.ReplaceRounds(ctx, req.Msg.TournamentId, req.Msg.Rounds); err != nil {
+	if err := h.service.ReplaceRounds(ctx, req.Msg.BracketIds, req.Msg.Rounds); err != nil {
 		//TODO: Internal server error is too general, fix with app internal code
 		return nil, connect.NewError(connect.CodeInternal, errors.New("internal server error"))
 	}
