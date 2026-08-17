@@ -4,15 +4,17 @@
 
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import type { Participant } from "./participant_pb";
+import type { TournamentParticipant } from "./participant_pb";
 import { file_participant_v1_participant } from "./participant_pb";
+import type { EmptySchema } from "@bufbuild/protobuf/wkt";
+import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file participant/v1/participant_service.proto.
  */
 export const file_participant_v1_participant_service: GenFile = /*@__PURE__*/
-  fileDesc("CihwYXJ0aWNpcGFudC92MS9wYXJ0aWNpcGFudF9zZXJ2aWNlLnByb3RvEg5wYXJ0aWNpcGFudC52MSI9CiRHZXRQYXJ0aWNpcGFudHNCeVRvdXJuYW1lbnRJRFJlcXVlc3QSFQoNdG91cm5hbWVudF9pZBgBIAEoCSJaCiVHZXRQYXJ0aWNpcGFudHNCeVRvdXJuYW1lbnRJRFJlc3BvbnNlEjEKDHBhcnRpY2lwYW50cxgBIAMoCzIbLnBhcnRpY2lwYW50LnYxLlBhcnRpY2lwYW50MqMBChJQYXJ0aWNpcGFudFNlcnZpY2USjAEKHUdldFBhcnRpY2lwYW50c0J5VG91cm5hbWVudElEEjQucGFydGljaXBhbnQudjEuR2V0UGFydGljaXBhbnRzQnlUb3VybmFtZW50SURSZXF1ZXN0GjUucGFydGljaXBhbnQudjEuR2V0UGFydGljaXBhbnRzQnlUb3VybmFtZW50SURSZXNwb25zZUIzWjFiYWNrZW5kL2ludGVybmFsL2dlbi9wYXJ0aWNpcGFudC92MTtwYXJ0aWNpcGFudHBiYgZwcm90bzM", [file_participant_v1_participant]);
+  fileDesc("CihwYXJ0aWNpcGFudC92MS9wYXJ0aWNpcGFudF9zZXJ2aWNlLnByb3RvEg5wYXJ0aWNpcGFudC52MSI9CiRHZXRQYXJ0aWNpcGFudHNCeVRvdXJuYW1lbnRJRFJlcXVlc3QSFQoNdG91cm5hbWVudF9pZBgBIAEoCSJvCiVHZXRQYXJ0aWNpcGFudHNCeVRvdXJuYW1lbnRJRFJlc3BvbnNlEkYKF3RvdXJuYW1lbnRfcGFydGljaXBhbnRzGAEgAygLMiUucGFydGljaXBhbnQudjEuVG91cm5hbWVudFBhcnRpY2lwYW50IjQKJkRlbGV0ZVRvdXJuYW1lbnRQYXJ0aWNpcGFudEJ5SURSZXF1ZXN0EgoKAmlkGAEgASgJMpYCChJQYXJ0aWNpcGFudFNlcnZpY2USjAEKHUdldFBhcnRpY2lwYW50c0J5VG91cm5hbWVudElEEjQucGFydGljaXBhbnQudjEuR2V0UGFydGljaXBhbnRzQnlUb3VybmFtZW50SURSZXF1ZXN0GjUucGFydGljaXBhbnQudjEuR2V0UGFydGljaXBhbnRzQnlUb3VybmFtZW50SURSZXNwb25zZRJxCh9EZWxldGVUb3VybmFtZW50UGFydGljaXBhbnRCeUlEEjYucGFydGljaXBhbnQudjEuRGVsZXRlVG91cm5hbWVudFBhcnRpY2lwYW50QnlJRFJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHlCM1oxYmFja2VuZC9pbnRlcm5hbC9nZW4vcGFydGljaXBhbnQvdjE7cGFydGljaXBhbnRwYmIGcHJvdG8z", [file_participant_v1_participant, file_google_protobuf_empty]);
 
 /**
  * @generated from message participant.v1.GetParticipantsByTournamentIDRequest
@@ -36,9 +38,9 @@ export const GetParticipantsByTournamentIDRequestSchema: GenMessage<GetParticipa
  */
 export type GetParticipantsByTournamentIDResponse = Message<"participant.v1.GetParticipantsByTournamentIDResponse"> & {
   /**
-   * @generated from field: repeated participant.v1.Participant participants = 1;
+   * @generated from field: repeated participant.v1.TournamentParticipant tournament_participants = 1;
    */
-  participants: Participant[];
+  tournamentParticipants: TournamentParticipant[];
 };
 
 /**
@@ -47,6 +49,23 @@ export type GetParticipantsByTournamentIDResponse = Message<"participant.v1.GetP
  */
 export const GetParticipantsByTournamentIDResponseSchema: GenMessage<GetParticipantsByTournamentIDResponse> = /*@__PURE__*/
   messageDesc(file_participant_v1_participant_service, 1);
+
+/**
+ * @generated from message participant.v1.DeleteTournamentParticipantByIDRequest
+ */
+export type DeleteTournamentParticipantByIDRequest = Message<"participant.v1.DeleteTournamentParticipantByIDRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message participant.v1.DeleteTournamentParticipantByIDRequest.
+ * Use `create(DeleteTournamentParticipantByIDRequestSchema)` to create a new message.
+ */
+export const DeleteTournamentParticipantByIDRequestSchema: GenMessage<DeleteTournamentParticipantByIDRequest> = /*@__PURE__*/
+  messageDesc(file_participant_v1_participant_service, 2);
 
 /**
  * @generated from service participant.v1.ParticipantService
@@ -59,6 +78,14 @@ export const ParticipantService: GenService<{
     methodKind: "unary";
     input: typeof GetParticipantsByTournamentIDRequestSchema;
     output: typeof GetParticipantsByTournamentIDResponseSchema;
+  },
+  /**
+   * @generated from rpc participant.v1.ParticipantService.DeleteTournamentParticipantByID
+   */
+  deleteTournamentParticipantByID: {
+    methodKind: "unary";
+    input: typeof DeleteTournamentParticipantByIDRequestSchema;
+    output: typeof EmptySchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_participant_v1_participant_service, 0);

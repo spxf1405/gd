@@ -9,6 +9,7 @@ package participantpb
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -66,10 +67,10 @@ func (x *GetParticipantsByTournamentIDRequest) GetTournamentId() string {
 }
 
 type GetParticipantsByTournamentIDResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Participants  []*Participant         `protobuf:"bytes,1,rep,name=participants,proto3" json:"participants,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState   `protogen:"open.v1"`
+	TournamentParticipants []*TournamentParticipant `protobuf:"bytes,1,rep,name=tournament_participants,json=tournamentParticipants,proto3" json:"tournament_participants,omitempty"`
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *GetParticipantsByTournamentIDResponse) Reset() {
@@ -102,24 +103,71 @@ func (*GetParticipantsByTournamentIDResponse) Descriptor() ([]byte, []int) {
 	return file_participant_v1_participant_service_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GetParticipantsByTournamentIDResponse) GetParticipants() []*Participant {
+func (x *GetParticipantsByTournamentIDResponse) GetTournamentParticipants() []*TournamentParticipant {
 	if x != nil {
-		return x.Participants
+		return x.TournamentParticipants
 	}
 	return nil
+}
+
+type DeleteTournamentParticipantByIDRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteTournamentParticipantByIDRequest) Reset() {
+	*x = DeleteTournamentParticipantByIDRequest{}
+	mi := &file_participant_v1_participant_service_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteTournamentParticipantByIDRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteTournamentParticipantByIDRequest) ProtoMessage() {}
+
+func (x *DeleteTournamentParticipantByIDRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_participant_v1_participant_service_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteTournamentParticipantByIDRequest.ProtoReflect.Descriptor instead.
+func (*DeleteTournamentParticipantByIDRequest) Descriptor() ([]byte, []int) {
+	return file_participant_v1_participant_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *DeleteTournamentParticipantByIDRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
 }
 
 var File_participant_v1_participant_service_proto protoreflect.FileDescriptor
 
 const file_participant_v1_participant_service_proto_rawDesc = "" +
 	"\n" +
-	"(participant/v1/participant_service.proto\x12\x0eparticipant.v1\x1a participant/v1/participant.proto\"K\n" +
+	"(participant/v1/participant_service.proto\x12\x0eparticipant.v1\x1a participant/v1/participant.proto\x1a\x1bgoogle/protobuf/empty.proto\"K\n" +
 	"$GetParticipantsByTournamentIDRequest\x12#\n" +
-	"\rtournament_id\x18\x01 \x01(\tR\ftournamentId\"h\n" +
-	"%GetParticipantsByTournamentIDResponse\x12?\n" +
-	"\fparticipants\x18\x01 \x03(\v2\x1b.participant.v1.ParticipantR\fparticipants2\xa3\x01\n" +
+	"\rtournament_id\x18\x01 \x01(\tR\ftournamentId\"\x87\x01\n" +
+	"%GetParticipantsByTournamentIDResponse\x12^\n" +
+	"\x17tournament_participants\x18\x01 \x03(\v2%.participant.v1.TournamentParticipantR\x16tournamentParticipants\"8\n" +
+	"&DeleteTournamentParticipantByIDRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id2\x96\x02\n" +
 	"\x12ParticipantService\x12\x8c\x01\n" +
-	"\x1dGetParticipantsByTournamentID\x124.participant.v1.GetParticipantsByTournamentIDRequest\x1a5.participant.v1.GetParticipantsByTournamentIDResponseB3Z1backend/internal/gen/participant/v1;participantpbb\x06proto3"
+	"\x1dGetParticipantsByTournamentID\x124.participant.v1.GetParticipantsByTournamentIDRequest\x1a5.participant.v1.GetParticipantsByTournamentIDResponse\x12q\n" +
+	"\x1fDeleteTournamentParticipantByID\x126.participant.v1.DeleteTournamentParticipantByIDRequest\x1a\x16.google.protobuf.EmptyB3Z1backend/internal/gen/participant/v1;participantpbb\x06proto3"
 
 var (
 	file_participant_v1_participant_service_proto_rawDescOnce sync.Once
@@ -133,18 +181,22 @@ func file_participant_v1_participant_service_proto_rawDescGZIP() []byte {
 	return file_participant_v1_participant_service_proto_rawDescData
 }
 
-var file_participant_v1_participant_service_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_participant_v1_participant_service_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_participant_v1_participant_service_proto_goTypes = []any{
-	(*GetParticipantsByTournamentIDRequest)(nil),  // 0: participant.v1.GetParticipantsByTournamentIDRequest
-	(*GetParticipantsByTournamentIDResponse)(nil), // 1: participant.v1.GetParticipantsByTournamentIDResponse
-	(*Participant)(nil),                           // 2: participant.v1.Participant
+	(*GetParticipantsByTournamentIDRequest)(nil),   // 0: participant.v1.GetParticipantsByTournamentIDRequest
+	(*GetParticipantsByTournamentIDResponse)(nil),  // 1: participant.v1.GetParticipantsByTournamentIDResponse
+	(*DeleteTournamentParticipantByIDRequest)(nil), // 2: participant.v1.DeleteTournamentParticipantByIDRequest
+	(*TournamentParticipant)(nil),                  // 3: participant.v1.TournamentParticipant
+	(*emptypb.Empty)(nil),                          // 4: google.protobuf.Empty
 }
 var file_participant_v1_participant_service_proto_depIdxs = []int32{
-	2, // 0: participant.v1.GetParticipantsByTournamentIDResponse.participants:type_name -> participant.v1.Participant
+	3, // 0: participant.v1.GetParticipantsByTournamentIDResponse.tournament_participants:type_name -> participant.v1.TournamentParticipant
 	0, // 1: participant.v1.ParticipantService.GetParticipantsByTournamentID:input_type -> participant.v1.GetParticipantsByTournamentIDRequest
-	1, // 2: participant.v1.ParticipantService.GetParticipantsByTournamentID:output_type -> participant.v1.GetParticipantsByTournamentIDResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
+	2, // 2: participant.v1.ParticipantService.DeleteTournamentParticipantByID:input_type -> participant.v1.DeleteTournamentParticipantByIDRequest
+	1, // 3: participant.v1.ParticipantService.GetParticipantsByTournamentID:output_type -> participant.v1.GetParticipantsByTournamentIDResponse
+	4, // 4: participant.v1.ParticipantService.DeleteTournamentParticipantByID:output_type -> google.protobuf.Empty
+	3, // [3:5] is the sub-list for method output_type
+	1, // [1:3] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -162,7 +214,7 @@ func file_participant_v1_participant_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_participant_v1_participant_service_proto_rawDesc), len(file_participant_v1_participant_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

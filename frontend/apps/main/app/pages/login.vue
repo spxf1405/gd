@@ -71,7 +71,7 @@
           </p>
           <div
             class="absolute top-9 right-10 text-[10px] text-[#00f0ff] border border-[#00f0ff] px-2.5 py-1 tracking-[2px] opacity-60"
-            @click="handleLogin"
+            @click="handleGoogle"
           >
             SECURE
           </div>
@@ -84,6 +84,7 @@
             :disabled="isLoading"
             class="w-full flex items-center gap-4 px-6 py-5 bg-transparent border border-[#0e2840] text-white text-[14px] tracking-[1.5px] cursor-pointer text-left mb-4 relative overflow-hidden uppercase transition-all duration-200 group hover:bg-[rgba(0,240,255,0.05)] hover:border-[#00f0ff] hover:text-[#00f0ff] disabled:opacity-40 disabled:cursor-not-allowed"
             @click="handleLoginTest"
+            
           >
             <span
               class="absolute left-0 top-0 bottom-0 w-[3px] bg-[#00f0ff] opacity-0 transition-opacity duration-200 group-hover:opacity-100"

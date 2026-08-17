@@ -71,16 +71,9 @@ function App() {
         <Setting />
         <AntdThemeConfig>
           <>
-            <button onClick={() => setOpen(true)}>
-              Xem danh sách người chơi
-            </button>
-
-            <PlayersModal
-              open={open}
+            <PlayersModal              
               onClose={() => setOpen(false)}
-              players={players}
               onPlayersChange={setPlayers}
-              onDeletePlayer={handleDeletePlayer}
               onAddPlayer={handleAddPlayer}
             />
           </>

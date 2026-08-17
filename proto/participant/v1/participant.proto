@@ -11,3 +11,11 @@ message Participant {
   int32  slot         = 4;
   int32  score        = 5;
 }
+
+message TournamentParticipant {
+  string id           = 1;
+  string player_id    = 2;
+  string display_name = 3;
+  string nationality  = 4;
+  string ranking      = 5;
+}

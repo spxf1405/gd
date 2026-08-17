@@ -9,6 +9,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	http "net/http"
 	strings "strings"
 )
@@ -36,11 +37,15 @@ const (
 	// ParticipantServiceGetParticipantsByTournamentIDProcedure is the fully-qualified name of the
 	// ParticipantService's GetParticipantsByTournamentID RPC.
 	ParticipantServiceGetParticipantsByTournamentIDProcedure = "/participant.v1.ParticipantService/GetParticipantsByTournamentID"
+	// ParticipantServiceDeleteTournamentParticipantByIDProcedure is the fully-qualified name of the
+	// ParticipantService's DeleteTournamentParticipantByID RPC.
+	ParticipantServiceDeleteTournamentParticipantByIDProcedure = "/participant.v1.ParticipantService/DeleteTournamentParticipantByID"
 )
 
 // ParticipantServiceClient is a client for the participant.v1.ParticipantService service.
 type ParticipantServiceClient interface {
 	GetParticipantsByTournamentID(context.Context, *connect.Request[v1.GetParticipantsByTournamentIDRequest]) (*connect.Response[v1.GetParticipantsByTournamentIDResponse], error)
+	DeleteTournamentParticipantByID(context.Context, *connect.Request[v1.DeleteTournamentParticipantByIDRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
 // NewParticipantServiceClient constructs a client for the participant.v1.ParticipantService
@@ -60,12 +65,19 @@ func NewParticipantServiceClient(httpClient connect.HTTPClient, baseURL string, 
 			connect.WithSchema(participantServiceMethods.ByName("GetParticipantsByTournamentID")),
 			connect.WithClientOptions(opts...),
 		),
+		deleteTournamentParticipantByID: connect.NewClient[v1.DeleteTournamentParticipantByIDRequest, emptypb.Empty](
+			httpClient,
+			baseURL+ParticipantServiceDeleteTournamentParticipantByIDProcedure,
+			connect.WithSchema(participantServiceMethods.ByName("DeleteTournamentParticipantByID")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // participantServiceClient implements ParticipantServiceClient.
 type participantServiceClient struct {
-	getParticipantsByTournamentID *connect.Client[v1.GetParticipantsByTournamentIDRequest, v1.GetParticipantsByTournamentIDResponse]
+	getParticipantsByTournamentID   *connect.Client[v1.GetParticipantsByTournamentIDRequest, v1.GetParticipantsByTournamentIDResponse]
+	deleteTournamentParticipantByID *connect.Client[v1.DeleteTournamentParticipantByIDRequest, emptypb.Empty]
 }
 
 // GetParticipantsByTournamentID calls
@@ -74,9 +86,16 @@ func (c *participantServiceClient) GetParticipantsByTournamentID(ctx context.Con
 	return c.getParticipantsByTournamentID.CallUnary(ctx, req)
 }
 
+// DeleteTournamentParticipantByID calls
+// participant.v1.ParticipantService.DeleteTournamentParticipantByID.
+func (c *participantServiceClient) DeleteTournamentParticipantByID(ctx context.Context, req *connect.Request[v1.DeleteTournamentParticipantByIDRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.deleteTournamentParticipantByID.CallUnary(ctx, req)
+}
+
 // ParticipantServiceHandler is an implementation of the participant.v1.ParticipantService service.
 type ParticipantServiceHandler interface {
 	GetParticipantsByTournamentID(context.Context, *connect.Request[v1.GetParticipantsByTournamentIDRequest]) (*connect.Response[v1.GetParticipantsByTournamentIDResponse], error)
+	DeleteTournamentParticipantByID(context.Context, *connect.Request[v1.DeleteTournamentParticipantByIDRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
 // NewParticipantServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -92,10 +111,18 @@ func NewParticipantServiceHandler(svc ParticipantServiceHandler, opts ...connect
 		connect.WithSchema(participantServiceMethods.ByName("GetParticipantsByTournamentID")),
 		connect.WithHandlerOptions(opts...),
 	)
+	participantServiceDeleteTournamentParticipantByIDHandler := connect.NewUnaryHandler(
+		ParticipantServiceDeleteTournamentParticipantByIDProcedure,
+		svc.DeleteTournamentParticipantByID,
+		connect.WithSchema(participantServiceMethods.ByName("DeleteTournamentParticipantByID")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/participant.v1.ParticipantService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ParticipantServiceGetParticipantsByTournamentIDProcedure:
 			participantServiceGetParticipantsByTournamentIDHandler.ServeHTTP(w, r)
+		case ParticipantServiceDeleteTournamentParticipantByIDProcedure:
+			participantServiceDeleteTournamentParticipantByIDHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -107,4 +134,8 @@ type UnimplementedParticipantServiceHandler struct{}
 
 func (UnimplementedParticipantServiceHandler) GetParticipantsByTournamentID(context.Context, *connect.Request[v1.GetParticipantsByTournamentIDRequest]) (*connect.Response[v1.GetParticipantsByTournamentIDResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("participant.v1.ParticipantService.GetParticipantsByTournamentID is not implemented"))
+}
+
+func (UnimplementedParticipantServiceHandler) DeleteTournamentParticipantByID(context.Context, *connect.Request[v1.DeleteTournamentParticipantByIDRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("participant.v1.ParticipantService.DeleteTournamentParticipantByID is not implemented"))
 }

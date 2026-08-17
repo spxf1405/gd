@@ -41,9 +41,20 @@ import { useTournamentStore } from "@/store/match";
 import { ParticipantClient } from "@/helper/service-client";
 import { ParticipantSchema } from "@gd/proto/participant/v1/participant_pb";
 import { create } from "@bufbuild/protobuf";
-import { GetTournamentByIDRequestSchema } from "@gd/proto/tournament/v1/tournament_service_pb";
-import { GetParticipantsByTournamentIDRequestSchema } from "@gd/proto/participant/v1/participant_service_pb";
-import { useQuery } from "@tanstack/react-query";
+import {
+  DeleteTournamentRequestSchema,
+  GetTournamentByIDRequestSchema,
+} from "@gd/proto/tournament/v1/tournament_service_pb";
+import {
+  DeleteTournamentParticipantByIDRequestSchema,
+  GetParticipantsByTournamentIDRequestSchema,
+} from "@gd/proto/participant/v1/participant_service_pb";
+import {
+  useMutation,
+  useMutationState,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useParticipantsByTournamentID } from "./players/hooks";
 
 interface Player {
@@ -134,6 +145,8 @@ const AddPlayerModal = ({
   );
 };
 
+const SILVER = "#38bdf8"; // sky-400, dùng cho hạng A
+
 const PlayerCard = ({
   player,
   viewMode,
@@ -153,7 +166,9 @@ const PlayerCard = ({
     isDragging,
   } = useSortable({ id: player.id });
 
-  const isPro = player.rank === "CN";
+  const isPro = player.ranking === "PRO";
+  const isA = player.ranking === "A";
+  const accent = isPro ? GOLD : isA ? SILVER : null;
 
   const dragStyle = {
     transform: CSS.Transform.toString(transform),
@@ -166,7 +181,6 @@ const PlayerCard = ({
       key: "delete",
       danger: true,
       icon: <Trash2 size={14} />,
-      // label: t("players.card.delete"),
       label: "Xóa",
       onClick: () => onDelete(player.id),
     },
@@ -181,9 +195,9 @@ const PlayerCard = ({
           ref={setNodeRef}
           style={{
             ...dragStyle,
-            background: isPro ? `${GOLD}0d` : undefined,
-            border: isPro ? `1px solid ${GOLD}35` : "1px solid transparent",
-            boxShadow: isPro ? `0 0 16px ${GOLD}15` : undefined,
+            background: accent ? `${accent}0d` : undefined,
+            border: accent ? `1px solid ${accent}35` : "1px solid transparent",
+            boxShadow: accent ? `0 0 16px ${accent}15` : undefined,
           }}
           className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors duration-150 hover:bg-white/[0.03]"
           {...attributes}
@@ -198,9 +212,9 @@ const PlayerCard = ({
           <div
             className="w-7 h-7 rounded-md flex items-center justify-center text-[11px] font-bold flex-shrink-0"
             style={{
-              background: isPro ? `${GOLD}1f` : `${COLORS.green}14`,
-              color: isPro ? GOLD : COLORS.green,
-              border: `1px solid ${isPro ? `${GOLD}40` : `${COLORS.green}28`}`,
+              background: accent ? `${accent}1f` : `${COLORS.green}14`,
+              color: accent ?? COLORS.green,
+              border: `1px solid ${accent ? `${accent}40` : `${COLORS.green}28`}`,
             }}
           >
             {player.seed}
@@ -214,10 +228,22 @@ const PlayerCard = ({
 
           <span
             className="text-[13px] font-semibold truncate flex items-center gap-1.5"
-            style={{ color: isPro ? "#fef3c7" : "#ffffff" }}
+            style={{ color: isPro ? "#fef3c7" : isA ? "#e0f2fe" : "#ffffff" }}
           >
-            {player.name}
+            {player.displayName}
             {isPro && <Crown size={12} style={{ color: GOLD }} fill={GOLD} />}
+            {isA && (
+              <span
+                className="text-[9px] font-bold px-1.5 py-0.5 rounded"
+                style={{
+                  background: `${SILVER}22`,
+                  color: SILVER,
+                  letterSpacing: "0.04em",
+                }}
+              >
+                A
+              </span>
+            )}
           </span>
 
           <span className="text-[11px] text-zinc-500 ml-auto flex-shrink-0">
@@ -234,9 +260,9 @@ const PlayerCard = ({
         ref={setNodeRef}
         style={{
           ...dragStyle,
-          background: isPro ? `${GOLD}0d` : "rgba(255,255,255,0.02)",
-          border: `1px solid ${isPro ? `${GOLD}40` : COLORS.borderFaint}`,
-          boxShadow: isPro ? `0 0 20px ${GOLD}18` : undefined,
+          background: accent ? `${accent}0d` : "rgba(255,255,255,0.02)",
+          border: `1px solid ${accent ? `${accent}40` : COLORS.borderFaint}`,
+          boxShadow: accent ? `0 0 20px ${accent}18` : undefined,
         }}
         {...attributes}
         {...listeners}
@@ -251,6 +277,19 @@ const PlayerCard = ({
           </div>
         )}
 
+        {isA && (
+          <div
+            className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded"
+            style={{
+              background: `${SILVER}22`,
+              color: SILVER,
+              letterSpacing: "0.04em",
+            }}
+          >
+            A
+          </div>
+        )}
+
         <div className="relative">
           <img
             src={flagUrl}
@@ -258,22 +297,13 @@ const PlayerCard = ({
             className="w-9 h-6 rounded object-cover"
             style={{ border: `1px solid ${COLORS.border}` }}
           />
-          <div
-            className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
-            style={{
-              background: isPro ? GOLD : COLORS.green,
-              color: "#0B0C12",
-            }}
-          >
-            {player.seed}
-          </div>
         </div>
 
         <span
           className="text-[13px] font-semibold text-center truncate w-full"
-          style={{ color: isPro ? "#fef3c7" : "#ffffff" }}
+          style={{ color: isPro ? "#fef3c7" : isA ? "#e0f2fe" : "#ffffff" }}
         >
-          {player.name}
+          {player.displayName}
         </span>
 
         <span className="text-[10px] text-zinc-500">{player.nationality}</span>
@@ -283,60 +313,80 @@ const PlayerCard = ({
 };
 
 export const PlayersModal = ({
-  players,
   onPlayersChange,
-  onDeletePlayer,
   onAddPlayer,
 }: {
-  players: Player[];
   onPlayersChange: (players: Player[]) => void;
-  onDeletePlayer: (id: string) => void;
   onAddPlayer: (name: string) => void;
 }) => {
-  const [open, setOpen] = useState(false);
-
+  const queryClient = useQueryClient();
   const { t } = useTranslation();
-  const [viewMode, setViewMode] = useState<"list" | "grid">("list");
+
+  const [open, setOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   const [search, setSearch] = useState("");
   const [addOpen, setAddOpen] = useState(false);
+
+  const isSearching = search.trim().length > 0;
+
+  const onClose = () => {
+    setOpen(false);
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
   );
 
-  const t1 = useTournamentStore();
-  console.log("t1", t1);
+  const tournamentStoreInfo = useTournamentStore();
 
-  const foo = useParticipantsByTournamentID({
-    tournamentId: t1.tournament?.id ?? "",
+  const tournamentParticipantsData = useParticipantsByTournamentID({
+    tournamentId: tournamentStoreInfo.tournament?.id ?? "",
   });
-  console.log("fpp", foo.data);
 
-  const filtered = useMemo(
+  const participants =
+    tournamentParticipantsData.data?.tournamentParticipants ?? [];
+
+  console.log(
+    "=============== 12312321312",
+    participants.filter((e) => e.ranking === "UNRANKED"),
+  );
+
+  const filteredParticipants = useMemo(
     () =>
-      players.filter((p) =>
-        p.name.toLowerCase().includes(search.trim().toLowerCase()),
+      participants.filter((p) =>
+        p.displayName.toLowerCase().includes(search.trim().toLowerCase()),
       ),
-    [players, search],
+    [participants, search],
+  );
+
+  console.log(
+    "=============== key",
+    filteredParticipants.filter((e) => e.ranking === "UNRANKED"),
   );
 
   const groupedPlayers = useMemo(() => {
     const groups = new Map<string, Player[]>();
 
-    filtered.forEach((player) => {
-      const key = player.rank ?? "unranked";
+    filteredParticipants.forEach((player) => {
+      const key = player.ranking ?? "UNRANKED";
+      if (player.ranking === "UNRANKED") {
+        // console.log("=============== key", player.ranking)
+      }
+
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key)!.push(player);
     });
 
     const sortedEntries = Array.from(groups.entries()).sort(([a], [b]) => {
-      if (a === "unranked") return 1;
-      if (b === "unranked") return -1;
+      if (a === "UNRANKED") return 1;
+      if (b === "UNRANKED") return -1;
       return RANK_ORDER.indexOf(a) - RANK_ORDER.indexOf(b);
     });
 
     return sortedEntries;
-  }, [filtered]);
+  }, [filteredParticipants]);
+
+  console.log("groupedPlayers", groupedPlayers);
 
   const handleDragEndWithinGroup = (
     event: DragEndEvent,
@@ -350,9 +400,9 @@ export const PlayersModal = ({
     const reorderedGroup = arrayMove(groupPlayers, oldIndex, newIndex);
 
     const reorderedIds = new Set(reorderedGroup.map((p) => p.id));
-    const otherPlayers = players.filter((p) => !reorderedIds.has(p.id));
+    const otherPlayers = participants.filter((p) => !reorderedIds.has(p.id));
 
-    const firstIndex = players.findIndex((p) => reorderedIds.has(p.id));
+    const firstIndex = participants.findIndex((p) => reorderedIds.has(p.id));
     const newPlayers = [
       ...otherPlayers.slice(0, firstIndex),
       ...reorderedGroup,
@@ -362,21 +412,54 @@ export const PlayersModal = ({
     onPlayersChange(newPlayers);
   };
 
-  const isSearching = search.trim().length > 0;
+  const deleteParticipantByID = async (id: string) => {
+    const rq = create(DeleteTournamentParticipantByIDRequestSchema, {
+      id,
+    });
+    await ParticipantClient.deleteTournamentParticipantByID(rq);
+  };
 
-  const onClose = () => {
-    setOpen(false);
+  const deleteParticipantMutation = useMutation({
+    mutationFn: (id: string) => deleteParticipantByID(id),
+
+    onSuccess: () => {
+      console.log("deleted");
+
+      void queryClient.invalidateQueries({
+        queryKey: ["tournament"],
+      });
+    },
+
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
+  const onDeletePlayer = (id: string) => {
+    deleteParticipantMutation.mutate(id);
   };
 
   return (
     <>
-      <button onClick={() => setOpen(true)}>Xem danh sách người chơi</button>
+      <button
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white cursor-pointer border-0 transition-all duration-200 hover:[border-color:rgba(255,255,255,0.2)]"
+        style={{
+          background: "linear-gradient(135deg, #1a1d27, #22263a)",
+          border: `1px solid ${COLORS.border}`,
+          boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+        }}
+      >
+        <Users size={14} style={{ color: COLORS.gold }} />
+        Xem danh sách người chơi
+      </button>
+
       <Modal
         open={open}
         onCancel={onClose}
         footer={null}
         closable={false}
-        width={1080}
+        width={"70%"}
         styles={{
           container: {
             padding: 0,
@@ -392,7 +475,7 @@ export const PlayersModal = ({
         >
           <div className="flex items-center gap-3">
             <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center"
+              className="w-12 h-12 rounded-xl flex items-center justify-center"
               style={{
                 background: `${COLORS.green}18`,
                 border: `1px solid ${COLORS.green}30`,
@@ -403,12 +486,15 @@ export const PlayersModal = ({
             </div>
             <div>
               <h4
-                className="text-[14px] font-bold text-white m-0"
+                className="text-lg font-bold text-white m-0"
                 style={{ letterSpacing: "-0.01em" }}
               >
-                Danh sách tuyển thủ tham gia
+                Danh sách tuyển thủ tham gia (
+                <span className="font-bold text-base">
+                  {participants.length}
+                </span>
+                )
               </h4>
-              <p className="">Tổng số: 123</p>
             </div>
           </div>
 
@@ -453,18 +539,18 @@ export const PlayersModal = ({
             }}
             options={[
               {
-                value: "list",
-                label: (
-                  <Tooltip title="Hiển thị dạng danh sách">
-                    <List size={18} />
-                  </Tooltip>
-                ),
-              },
-              {
                 value: "grid",
                 label: (
                   <Tooltip title="Hiển thị dạng lưới">
                     <LayoutGrid size={18} />
+                  </Tooltip>
+                ),
+              },
+              {
+                value: "list",
+                label: (
+                  <Tooltip title="Hiển thị dạng danh sách">
+                    <List size={18} />
                   </Tooltip>
                 ),
               },
@@ -489,21 +575,21 @@ export const PlayersModal = ({
           className="sys-scroll py-4 max-h-[80vh] overflow-y-auto px-8"
           style={{ background: COLORS.surface }}
         >
-          {filtered.length === 0 ? (
+          {filteredParticipants.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 gap-2">
               <Users size={28} style={{ color: COLORS.textSecondary }} />
               <p
                 className="text-[12px]"
                 style={{ color: COLORS.textSecondary }}
               >
-                {t("players.modal.empty")}
+                Không có người chơi phù hợp!
               </p>
             </div>
           ) : (
             <div className="flex flex-col gap-6">
               {groupedPlayers.map(([rankKey, groupPlayers]) => {
-                const isPro = rankKey === "CN";
-                const isUnranked = rankKey === "unranked";
+                const isPro = rankKey === "PRO";
+                const isUNRANKED = rankKey === "UNRANKED";
 
                 return (
                   <div key={rankKey} className="flex flex-col gap-2.5">
@@ -513,18 +599,18 @@ export const PlayersModal = ({
                         style={{
                           background: isPro
                             ? `${GOLD}22`
-                            : isUnranked
+                            : isUNRANKED
                               ? "rgba(255,255,255,0.06)"
                               : `${COLORS.green}18`,
                           color: isPro
                             ? GOLD
-                            : isUnranked
+                            : isUNRANKED
                               ? COLORS.textSecondary
                               : COLORS.green,
                           border: `1px solid ${
                             isPro
                               ? `${GOLD}45`
-                              : isUnranked
+                              : isUNRANKED
                                 ? "rgba(255,255,255,0.1)"
                                 : `${COLORS.green}30`
                           }`,
@@ -532,7 +618,7 @@ export const PlayersModal = ({
                       >
                         {isPro ? (
                           <Crown size={12} fill={GOLD} />
-                        ) : isUnranked ? (
+                        ) : isUNRANKED ? (
                           "?"
                         ) : (
                           rankKey
@@ -544,7 +630,7 @@ export const PlayersModal = ({
                       >
                         {isPro
                           ? "Chuyên nghiệp"
-                          : isUnranked
+                          : isUNRANKED
                             ? "Chưa xếp hạng"
                             : `Hạng ${rankKey}`}
                       </span>
@@ -580,7 +666,7 @@ export const PlayersModal = ({
                         <div
                           className={
                             viewMode === "grid"
-                              ? "grid grid-cols-4 gap-3"
+                              ? "grid grid-cols-4 xl:grid-cols-5 2xl:grid-cols-8  gap-3"
                               : "flex flex-col gap-1"
                           }
                         >

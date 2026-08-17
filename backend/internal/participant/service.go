@@ -26,14 +26,17 @@ func (s *Service) GetParticipantsByMatchIDs(ctx context.Context, matchIds []stri
 	return participants, nil
 }
 
-func (s *Service) GetParticipantsByTournamentID(ctx context.Context, tournamentID string) ([]*participantpb.Participant, error) {
-	logger.Info("tournament id", zap.String("id", tournamentID))
+func (s *Service) GetParticipantsByTournamentID(ctx context.Context, tournamentID string) ([]*participantpb.TournamentParticipant, error) {
 	participants, err := s.repo.GetParticipantsByTournamentID(ctx, tournamentID)
 
 	if err != nil {
-		logger.Error("Err", zap.Error(err))
+		logger.Error("Err ===", zap.Error(err))
 		return nil, err
 	}
 
 	return participants, nil
+}
+
+func (s *Service) DeleteTournamentParticipantByID(ctx context.Context, participantID string) error {
+	return s.repo.DeleteTournamentParticipantByID(ctx, participantID)
 }

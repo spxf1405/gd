@@ -6,7 +6,11 @@ import (
 	"backend/internal/logger"
 	"backend/internal/repository"
 	"context"
+	"errors"
+	"fmt"
 	"log"
+
+	"github.com/google/uuid"
 
 	"go.uber.org/zap"
 )
@@ -79,41 +83,70 @@ func (r *ParticipantRepository) GetParticipantsByMatchIDs(ctx context.Context, m
 	return participants, nil
 }
 
-func (r *ParticipantRepository) GetParticipantsByTournamentID(ctx context.Context, tournamentID string) ([]*participantpb.Participant, error) {
+func (r *ParticipantRepository) GetParticipantsByTournamentID(ctx context.Context, tournamentID string) ([]*participantpb.TournamentParticipant, error) {
 	query := `SELECT
 				player.id,
-				player.name 
+				player.name,
+				player.nationality,
+				player.ranking
 			  FROM gd_players player
 			  INNER JOIN gd_participants participant ON participant.player_id = player.id
 			  WHERE participant.tournament_id = $1
 			  `
 
 	rows, err := r.DB.Pool.Query(ctx, query, tournamentID)
-
 	if err != nil {
-		logger.Info("create connection failed")
+		logger.Error("failed to query participants", zap.Error(err), zap.String("tournament_id", tournamentID))
 		return nil, err
 	}
-
 	defer rows.Close()
 
-	players := []*participantpb.Participant{}
+	participants := []*participantpb.TournamentParticipant{}
 
 	for rows.Next() {
-		player := &participantpb.Participant{}
+		var playerUUID uuid.UUID
+		var displayName, nationality, ranking string
 
-		err := rows.Scan(
-			player.Id,
-			player.DisplayName,
-		)
-
-		if err != nil {
-			logger.Error("can not get ")
+		if err := rows.Scan(&playerUUID, &displayName, &nationality, &ranking); err != nil {
+			logger.Error("fail1", zap.Error(err), zap.String("tournament_id", tournamentID))
 			return nil, err
 		}
 
-		players = append(players, player)
+		if ranking == "UNRANKED" {
+			fmt.Println("============1", displayName)
+		}
+
+		participants = append(participants, &participantpb.TournamentParticipant{
+			Id:          playerUUID.String(),
+			DisplayName: displayName,
+			Nationality: nationality,
+			Ranking:     ranking,
+		})
 	}
 
-	return players, nil
+	if err := rows.Err(); err != nil {
+		logger.Error("fail2", zap.Error(err), zap.String("tournament_id", tournamentID))
+		return nil, err
+	}
+
+	return participants, nil
+}
+
+func (r *ParticipantRepository) DeleteTournamentParticipantByID(ctx context.Context, participantID string) error {
+	logger.Dump("==================================================")
+	logger.Dump(participantID)
+	query := `DELETE FROM gd_participants WHERE player_id = $1`
+
+	cmdTag, err := r.DB.Pool.Exec(ctx, query, participantID)
+	if err != nil {
+		logger.Error("failed to delete participant", zap.String("participant_id", participantID), zap.Error(err))
+		return err
+	}
+
+	if cmdTag.RowsAffected() == 0 {
+		logger.Warn("participant not found", zap.String("participant_id", participantID))
+		return errors.New("participant not found")
+	}
+
+	return nil
 }

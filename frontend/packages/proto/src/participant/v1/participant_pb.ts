@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file participant/v1/participant.proto.
  */
 export const file_participant_v1_participant: GenFile = /*@__PURE__*/
-  fileDesc("CiBwYXJ0aWNpcGFudC92MS9wYXJ0aWNpcGFudC5wcm90bxIOcGFydGljaXBhbnQudjEiXgoLUGFydGljaXBhbnQSCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEhAKCG1hdGNoX2lkGAMgASgJEgwKBHNsb3QYBCABKAUSDQoFc2NvcmUYBSABKAVCM1oxYmFja2VuZC9pbnRlcm5hbC9nZW4vcGFydGljaXBhbnQvdjE7cGFydGljaXBhbnRwYmIGcHJvdG8z");
+  fileDesc("CiBwYXJ0aWNpcGFudC92MS9wYXJ0aWNpcGFudC5wcm90bxIOcGFydGljaXBhbnQudjEiXgoLUGFydGljaXBhbnQSCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEhAKCG1hdGNoX2lkGAMgASgJEgwKBHNsb3QYBCABKAUSDQoFc2NvcmUYBSABKAUicgoVVG91cm5hbWVudFBhcnRpY2lwYW50EgoKAmlkGAEgASgJEhEKCXBsYXllcl9pZBgCIAEoCRIUCgxkaXNwbGF5X25hbWUYAyABKAkSEwoLbmF0aW9uYWxpdHkYBCABKAkSDwoHcmFua2luZxgFIAEoCUIzWjFiYWNrZW5kL2ludGVybmFsL2dlbi9wYXJ0aWNpcGFudC92MTtwYXJ0aWNpcGFudHBiYgZwcm90bzM");
 
 /**
  * @generated from message participant.v1.Participant
@@ -48,4 +48,41 @@ export type Participant = Message<"participant.v1.Participant"> & {
  */
 export const ParticipantSchema: GenMessage<Participant> = /*@__PURE__*/
   messageDesc(file_participant_v1_participant, 0);
+
+/**
+ * @generated from message participant.v1.TournamentParticipant
+ */
+export type TournamentParticipant = Message<"participant.v1.TournamentParticipant"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string player_id = 2;
+   */
+  playerId: string;
+
+  /**
+   * @generated from field: string display_name = 3;
+   */
+  displayName: string;
+
+  /**
+   * @generated from field: string nationality = 4;
+   */
+  nationality: string;
+
+  /**
+   * @generated from field: string ranking = 5;
+   */
+  ranking: string;
+};
+
+/**
+ * Describes the message participant.v1.TournamentParticipant.
+ * Use `create(TournamentParticipantSchema)` to create a new message.
+ */
+export const TournamentParticipantSchema: GenMessage<TournamentParticipant> = /*@__PURE__*/
+  messageDesc(file_participant_v1_participant, 1);
 

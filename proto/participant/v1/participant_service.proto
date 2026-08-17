@@ -5,16 +5,21 @@ package participant.v1;
 option go_package = "backend/internal/gen/participant/v1;participantpb";
 
 import "participant/v1/participant.proto";
-
+import "google/protobuf/empty.proto";
 
 message GetParticipantsByTournamentIDRequest {
   string tournament_id = 1;
 }
 
 message GetParticipantsByTournamentIDResponse {
-  repeated Participant participants = 1;
+  repeated TournamentParticipant tournament_participants = 1;
+}
+
+message DeleteTournamentParticipantByIDRequest {
+  string id = 1;
 }
 
 service ParticipantService {
-    rpc GetParticipantsByTournamentID(GetParticipantsByTournamentIDRequest) returns (GetParticipantsByTournamentIDResponse);
+  rpc GetParticipantsByTournamentID(GetParticipantsByTournamentIDRequest) returns (GetParticipantsByTournamentIDResponse);
+  rpc DeleteTournamentParticipantByID(DeleteTournamentParticipantByIDRequest) returns (google.protobuf.Empty);
 }

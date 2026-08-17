@@ -56,7 +56,9 @@ func debugUnknownStruct(unknownData interface{}) {
 }
 
 func main() {
-	godotenv.Load()
+	if err := godotenv.Load(); err != nil {
+		fmt.Fprintln(os.Stderr, "⚠️  could not load .env:", err)
+	}
 
 	prefix := "[backend]"
 

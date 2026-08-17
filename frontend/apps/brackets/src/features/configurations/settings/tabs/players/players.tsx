@@ -9,6 +9,7 @@ export const PlayersTab = () => {
   const { t } = useTranslation();
 
   const hasRanking = Form.useWatch("hasRanking", form);
+  console.log('hasRanking', hasRanking)
   const maxRankingClass = Form.useWatch("maxRankingClass", form);
 
   const genderOptions = [
