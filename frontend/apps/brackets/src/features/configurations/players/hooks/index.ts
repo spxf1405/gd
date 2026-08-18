@@ -15,7 +15,6 @@ export const useParticipantsByTournamentID = ({
 }: {
   tournamentId?: string;
 }) => {
-  console.log("tournamentId", tournamentId);
   return useQuery({
     queryKey: ["tournament"],
     queryFn: async () => {

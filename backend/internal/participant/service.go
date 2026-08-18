@@ -4,6 +4,7 @@ import (
 	participantpb "backend/internal/gen/participant/v1"
 	"backend/internal/logger"
 	"context"
+	"time"
 
 	"go.uber.org/zap"
 )
@@ -27,6 +28,7 @@ func (s *Service) GetParticipantsByMatchIDs(ctx context.Context, matchIds []stri
 }
 
 func (s *Service) GetParticipantsByTournamentID(ctx context.Context, tournamentID string) ([]*participantpb.TournamentParticipant, error) {
+	time.Sleep(3 * time.Second)
 	participants, err := s.repo.GetParticipantsByTournamentID(ctx, tournamentID)
 
 	if err != nil {

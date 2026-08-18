@@ -1,61 +1,51 @@
-import { useMemo, useState } from "react";
+import { ParticipantClient } from "@/helper/service-client";
+import { useTournamentStore } from "@/store/match";
+import { LoadingOutlined } from "@ant-design/icons";
+import { create } from "@bufbuild/protobuf";
 import {
-  Modal,
-  Input,
-  Segmented,
-  Form,
-  Dropdown,
-  type MenuProps,
-  Tooltip,
-} from "antd";
-import {
-  Users,
-  Search,
-  UserPlus,
-  List,
-  LayoutGrid,
-  GripVertical,
-  Trash2,
-  X,
-  Crown,
-} from "lucide-react";
-import { useTranslation } from "react-i18next";
-import {
-  DndContext,
   closestCenter,
+  DndContext,
   PointerSensor,
   useSensor,
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core";
 import {
+  arrayMove,
+  rectSortingStrategy,
   SortableContext,
   useSortable,
-  rectSortingStrategy,
   verticalListSortingStrategy,
-  arrayMove,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { COLORS } from "./settings/consts/color";
-import { useTournamentStore } from "@/store/match";
-import { ParticipantClient } from "@/helper/service-client";
-import { ParticipantSchema } from "@gd/proto/participant/v1/participant_pb";
-import { create } from "@bufbuild/protobuf";
+import { DeleteTournamentParticipantByIDRequestSchema } from "@gd/proto/participant/v1/participant_service_pb";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  DeleteTournamentRequestSchema,
-  GetTournamentByIDRequestSchema,
-} from "@gd/proto/tournament/v1/tournament_service_pb";
+  Dropdown,
+  Flex,
+  Form,
+  Input,
+  Modal,
+  Segmented,
+  Spin,
+  Tooltip,
+  type MenuProps,
+} from "antd";
 import {
-  DeleteTournamentParticipantByIDRequestSchema,
-  GetParticipantsByTournamentIDRequestSchema,
-} from "@gd/proto/participant/v1/participant_service_pb";
-import {
-  useMutation,
-  useMutationState,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+  Crown,
+  GripVertical,
+  LayoutGrid,
+  List,
+  Search,
+  Trash2,
+  UserPlus,
+  Users,
+  X,
+} from "lucide-react";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParticipantsByTournamentID } from "./players/hooks";
+import { COLORS } from "./settings/consts/color";
 
 interface Player {
   id: string;
@@ -339,12 +329,11 @@ export const PlayersModal = ({
 
   const tournamentStoreInfo = useTournamentStore();
 
-  const tournamentParticipantsData = useParticipantsByTournamentID({
+  const { data, isFetching } = useParticipantsByTournamentID({
     tournamentId: tournamentStoreInfo.tournament?.id ?? "",
   });
 
-  const participants =
-    tournamentParticipantsData.data?.tournamentParticipants ?? [];
+  const participants = data?.tournamentParticipants ?? [];
 
   console.log(
     "=============== 12312321312",
@@ -357,11 +346,6 @@ export const PlayersModal = ({
         p.displayName.toLowerCase().includes(search.trim().toLowerCase()),
       ),
     [participants, search],
-  );
-
-  console.log(
-    "=============== key",
-    filteredParticipants.filter((e) => e.ranking === "UNRANKED"),
   );
 
   const groupedPlayers = useMemo(() => {
@@ -575,7 +559,14 @@ export const PlayersModal = ({
           className="sys-scroll py-4 max-h-[80vh] overflow-y-auto px-8"
           style={{ background: COLORS.surface }}
         >
-          {filteredParticipants.length === 0 ? (
+          {isFetching ? (
+            <div className="flex flex-col items-center justify-center gap-3 py-16">
+              <Spin
+                indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />}
+              />
+              <span>Đang tải dữ liệu</span>
+            </div>
+          ) : filteredParticipants.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 gap-2">
               <Users size={28} style={{ color: COLORS.textSecondary }} />
               <p
@@ -666,7 +657,7 @@ export const PlayersModal = ({
                         <div
                           className={
                             viewMode === "grid"
-                              ? "grid grid-cols-4 xl:grid-cols-5 2xl:grid-cols-8  gap-3"
+                              ? "grid grid-cols-4 xl:grid-cols-5 2xl:grid-cols-8 gap-3"
                               : "flex flex-col gap-1"
                           }
                         >
@@ -687,12 +678,12 @@ export const PlayersModal = ({
             </div>
           )}
 
-          {isSearching && (
+          {!isFetching && isSearching && (
             <p
               className="text-[10px] mt-3"
               style={{ color: COLORS.textSecondary }}
             >
-              {t("players.modal.searchDragHint")}
+              Search theo tên ngươi chơi hoặc quốc gia
             </p>
           )}
         </div>

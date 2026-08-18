@@ -6,6 +6,7 @@ import { Tooltip } from "radix-ui";
 import { useMemo, useRef, useState, type RefObject } from "react";
 import { useOnClickOutside } from "usehooks-ts";
 import { CreateRoundsButton } from "./create-rounds";
+import { useParticipantsByTournamentID } from "@/features/configurations/players/hooks";
 
 type EliminationType = "SINGLE" | "DOUBLE";
 type BracketSide = "winner" | "loser";
@@ -246,6 +247,11 @@ function RoundCard({
 
 export function RoundsList() {
   const { tournament } = useTournamentStore();
+  const { data: participants } = useParticipantsByTournamentID({
+    tournamentId: tournament?.id,
+  });
+
+  console.log("tournament", tournament);
 
   const roundsStore = tournament?.brackets?.flatMap((bracket) =>
     bracket.rounds.map((e) => {
@@ -360,7 +366,7 @@ export function RoundsList() {
             <span className="text-xs text-zinc-400 whitespace-nowrap">
               Tổng số người chơi
             </span>
-            <Input size="large" className="w-20" value={64} disabled />
+            <Input size="large" className="!w-24" value={participants?.tournamentParticipants.length ?? 0} disabled />
           </div>
           <button className="text-xs text-orange-400 hover:text-orange-300 transition-colors whitespace-nowrap">
             Xem danh sách người chơi

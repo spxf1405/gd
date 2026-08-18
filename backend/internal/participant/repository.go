@@ -133,8 +133,6 @@ func (r *ParticipantRepository) GetParticipantsByTournamentID(ctx context.Contex
 }
 
 func (r *ParticipantRepository) DeleteTournamentParticipantByID(ctx context.Context, participantID string) error {
-	logger.Dump("==================================================")
-	logger.Dump(participantID)
 	query := `DELETE FROM gd_participants WHERE player_id = $1`
 
 	cmdTag, err := r.DB.Pool.Exec(ctx, query, participantID)
