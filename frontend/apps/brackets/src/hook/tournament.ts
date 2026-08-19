@@ -11,10 +11,10 @@ import { TournamentClient } from "@/helper/service-client";
   };
 
 
-export function useTournament(id: string) {
+export function useTournament(id?: string) {
   const { data: tournament } = useQuery({
     queryKey: ["tournament", id],
-    queryFn: () => getTournamentByID(id),
+    queryFn: () => getTournamentByID(id ?? ''),
     enabled: !!id,
   });
 

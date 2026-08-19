@@ -5,6 +5,7 @@ import { getPlayersInfo } from "@/features/flow/helper/player";
 import { createWbFlow as createWBFlow } from "@/features/flow/helper/winner";
 import { createLBFlow } from "@/features/flow/helper/loser";
 import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
+import type { Round } from "@gd/proto/round/v1/round_pb";
 
 export type WinnerBracketInfo = {
   players: string[];
@@ -36,20 +37,27 @@ type TourInfo = {
   };
 };
 
-
-
 type TourState = {
-  tournament?: Tournament,
+  tournament?: Tournament;
   tourInfo: TourInfo;
+
   initTourInfo: (players: string[]) => void;
+  updateTournamentRound: (round: Round) => void;
+  updateTournamentRounds: (rounds: Round[]) => void;
+
   updateCurrentRound: (round: string) => void;
-  initTournamentInfo: (tournament?: Tournament) => void
+  initTournamentInfo: (tournament?: Tournament) => void;
   reset: () => void;
 };
 
 const initTourInfoState: Omit<
   TourState,
-  "updateCurrentRound" | "initTourInfo" | "reset" | "initTournamentInfo"
+  | "updateCurrentRound"
+  | "initTourInfo"
+  | "reset"
+  | "initTournamentInfo"
+  | "updateTournamentRound"
+  | "updateTournamentRounds"
 > = {
   tourInfo: {
     players: [],
@@ -79,8 +87,34 @@ export const useTournamentStore = create<TourState>()(
     ...initTourInfoState,
     initTournamentInfo: (tournament?: Tournament) => {
       set((state) => {
-        state.tournament = tournament
-      })
+        state.tournament = tournament;
+      });
+    },
+    updateTournamentRound: (round: Round) => {
+      set((state) => {
+        for (const bracket of state.tournament?.brackets ?? []) {
+          const index = bracket.rounds.findIndex((r) => r.id === round.id);
+          if (index !== -1) {
+            bracket.rounds[index] = round;
+            break;
+          }
+        }
+      });
+    },
+    updateTournamentRounds: (rounds: Round[]) => {
+      set((state) => {
+        for (const bracket of state.tournament?.brackets ?? []) {
+          bracket.rounds = [];
+        }
+
+        for (const bracket of state.tournament?.brackets ?? []) {
+          rounds.forEach((r) => {
+            if (r.bracketId === bracket.id) {
+              bracket.rounds.push(r);
+            }
+          });
+        }
+      });
     },
     initTourInfo: (rawPlayers: string[]) =>
       set((state) => {
@@ -109,7 +143,7 @@ export const useTournamentStore = create<TourState>()(
           totalRounds: wbTotalRounds,
         });
 
-        console.log("wbNodes", wbNodes)
+        console.log("wbNodes", wbNodes);
 
         const { nodes: lbNodes, edges: lbEdges } = createLBFlow({
           wbPlayers,

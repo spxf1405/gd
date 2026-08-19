@@ -21,5 +21,7 @@ export const useParticipantsByTournamentID = ({
       return await getParticipantsByTournamentID(tournamentId);
     },
     enabled: !!tournamentId,
+    staleTime: 3 * 60 * 1000,
+    refetchOnWindowFocus: false
   });
 };

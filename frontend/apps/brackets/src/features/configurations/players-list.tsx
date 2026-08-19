@@ -21,6 +21,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { DeleteTournamentParticipantByIDRequestSchema } from "@gd/proto/participant/v1/participant_service_pb";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
+  Badge,
+  Button,
   Dropdown,
   Flex,
   Form,
@@ -33,10 +35,13 @@ import {
 } from "antd";
 import {
   Crown,
+  Flag,
   GripVertical,
+  Info,
   LayoutGrid,
   List,
   Search,
+  Settings,
   Trash2,
   UserPlus,
   Users,
@@ -168,6 +173,13 @@ const PlayerCard = ({
 
   const menuItems: MenuProps["items"] = [
     {
+      key: "detail",
+      icon: <Info size={14} className="text-emerald-500" />,
+      label: <span className="text-emerald-500">Hồ sơ</span>,
+      onClick: () =>
+        window.open("http://localhost:3000/player-detail", "_blank"),
+    },
+    {
       key: "delete",
       danger: true,
       icon: <Trash2 size={14} />,
@@ -189,7 +201,7 @@ const PlayerCard = ({
             border: accent ? `1px solid ${accent}35` : "1px solid transparent",
             boxShadow: accent ? `0 0 16px ${accent}15` : undefined,
           }}
-          className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors duration-150 hover:bg-white/[0.03]"
+          className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors duration-150 hover:bg-white/[0.03] "
           {...attributes}
         >
           <div
@@ -197,17 +209,6 @@ const PlayerCard = ({
             className="cursor-grab active:cursor-grabbing text-zinc-600 hover:text-zinc-400 flex-shrink-0"
           >
             <GripVertical size={15} />
-          </div>
-
-          <div
-            className="w-7 h-7 rounded-md flex items-center justify-center text-[11px] font-bold flex-shrink-0"
-            style={{
-              background: accent ? `${accent}1f` : `${COLORS.green}14`,
-              color: accent ?? COLORS.green,
-              border: `1px solid ${accent ? `${accent}40` : `${COLORS.green}28`}`,
-            }}
-          >
-            {player.seed}
           </div>
 
           <img
@@ -256,7 +257,10 @@ const PlayerCard = ({
         }}
         {...attributes}
         {...listeners}
-        className="relative cursor-grab active:cursor-grabbing flex flex-col items-center gap-2.5 p-4 rounded-xl transition-all duration-200 hover:[border-color:rgba(255,255,255,0.2)]"
+        className="relative cursor-grab active:cursor-grabbing flex flex-col items-center gap-2.5 p-4 rounded-xl transition-all duration-200 hover:scale-108 hover:-translate-y-0.5"
+        onClick={() => {
+          window.open("http://localhost:3000/player-detail/1", "_blank");
+        }}
       >
         {isPro && (
           <div
@@ -296,28 +300,45 @@ const PlayerCard = ({
           {player.displayName}
         </span>
 
-        <span className="text-[10px] text-zinc-500">{player.nationality}</span>
+        {/* <span className="text-[10px] text-zinc-500">{player.nationality}</span> */}
       </div>
     </Dropdown>
   );
 };
 
-export const PlayersModal = ({
-  onPlayersChange,
-  onAddPlayer,
-}: {
-  onPlayersChange: (players: Player[]) => void;
-  onAddPlayer: (name: string) => void;
-}) => {
+// TODO: Add conditions and change search business to search backend
+const SearchConditions = () => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Badge count={2}>
+        <Button size="large" onClick={() => setOpen(true)}>
+          <Settings size={16} />
+        </Button>
+      </Badge>
+
+      <Modal
+        title="Điều kiện tìm kiếm"
+        open={open}
+        onCancel={() => setOpen(false)}
+        onOk={() => setOpen(false)}
+        okText="Áp dụng"
+        cancelText="Khôi phục mặc định"
+      >
+        123
+      </Modal>
+    </>
+  );
+};
+
+export const Players = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
 
   const [open, setOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   const [search, setSearch] = useState("");
-  const [addOpen, setAddOpen] = useState(false);
-
-  const isSearching = search.trim().length > 0;
 
   const onClose = () => {
     setOpen(false);
@@ -335,11 +356,6 @@ export const PlayersModal = ({
 
   const participants = data?.tournamentParticipants ?? [];
 
-  console.log(
-    "=============== 12312321312",
-    participants.filter((e) => e.ranking === "UNRANKED"),
-  );
-
   const filteredParticipants = useMemo(
     () =>
       participants.filter((p) =>
@@ -353,9 +369,6 @@ export const PlayersModal = ({
 
     filteredParticipants.forEach((player) => {
       const key = player.ranking ?? "UNRANKED";
-      if (player.ranking === "UNRANKED") {
-        // console.log("=============== key", player.ranking)
-      }
 
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key)!.push(player);
@@ -393,7 +406,7 @@ export const PlayersModal = ({
       ...otherPlayers.slice(firstIndex),
     ];
 
-    onPlayersChange(newPlayers);
+    //TODO: Call to change players list when reorder feature implement
   };
 
   const deleteParticipantByID = async (id: string) => {
@@ -540,25 +553,15 @@ export const PlayersModal = ({
               },
             ]}
           />
-
-          {/* <button
-            onClick={() => setAddOpen(true)}
-            disabled
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-semibold text-white cursor-pointer border-0 transition-all duration-200 hover:[border-color:rgba(255,255,255,0.2)] whitespace-nowrap"
-            style={{
-              background: "linear-gradient(135deg, #1a1d27, #22263a)",
-              border: `1px solid ${COLORS.border}`,
-            }}
-          >
-            <UserPlus size={14} style={{ color: COLORS.green }} />
-            Thêm người chơi
-          </button> */}
         </div>
 
         <div
           className="sys-scroll py-4 max-h-[80vh] overflow-y-auto px-8"
           style={{ background: COLORS.surface }}
         >
+          <p className="italic pb-4">
+            (*) Nhấp chuột phải vào tên cơ thủ để xem thêm tùy chọn{" "}
+          </p>
           {isFetching ? (
             <div className="flex flex-col items-center justify-center gap-3 py-16">
               <Spin
@@ -584,7 +587,7 @@ export const PlayersModal = ({
 
                 return (
                   <div key={rankKey} className="flex flex-col gap-2.5">
-                    <div className="flex items-center gap-2.5 px-1">
+                    <div className="flex items-center gap-2.5 px-1 ">
                       <div
                         className="w-6 h-6 rounded-md flex items-center justify-center text-[11px] font-bold flex-shrink-0"
                         style={{
@@ -678,22 +681,16 @@ export const PlayersModal = ({
             </div>
           )}
 
-          {!isFetching && isSearching && (
+          {/* {!isFetching && isSearching && (
             <p
               className="text-[10px] mt-3"
               style={{ color: COLORS.textSecondary }}
             >
               Search theo tên ngươi chơi hoặc quốc gia
             </p>
-          )}
+          )} */}
         </div>
       </Modal>
-
-      <AddPlayerModal
-        open={addOpen}
-        onClose={() => setAddOpen(false)}
-        onAdd={onAddPlayer}
-      />
     </>
   );
 };

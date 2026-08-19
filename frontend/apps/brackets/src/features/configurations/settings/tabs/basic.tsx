@@ -94,11 +94,11 @@ export const BasicTab = () => {
 
   return (
     <div className="flex flex-col gap-5">
-      <SectionHeader
+      {/* <SectionHeader
         icon={<Info size={18} />}
         title={t("settings.tabs.basic.sectionTitle")}
         accent={COLORS.green}
-      />
+      /> */}
 
       <Field label={t("settings.tabs.basic.fields.name")} required>
         <Form.Item
