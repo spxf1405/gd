@@ -1,32 +1,27 @@
+import { PrizeDistributionTable } from "@/features/configurations/settings/tabs/finance/prize-distributiontable";
+import { Form, Input } from "antd";
 import { DollarSign } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { CurrencyHint, Field, LInput } from "../../consts/input";
-import { SectionHeader } from "../../header/tab-header";
-import { PrizeDistributionTable } from "@/features/configurations/settings/tabs/finance/prize-distributiontable";
-import {
-  Controller,
-  type Control,
-  type UseFormRegister,
-  type UseFormWatch,
-} from "react-hook-form";
-import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 import { COLORS } from "../../consts/color";
+import { CurrencyHint, Field } from "../../consts/input";
+import { SectionHeader } from "../../header/tab-header";
+import { useTournamentStore } from "@/store/match";
 
-export const FinanceTab = ({
-  control,
-  register,
-  watch,
-}: {
-  control: Control<Tournament, any, Tournament>;
-  register: UseFormRegister<Tournament>;
-  watch: UseFormWatch<Tournament>;
-}) => {
+export const FinanceTab = () => {
   const { t } = useTranslation();
-  const totalPrize = watch("totalPrize");
-  const entryFee = watch("entryFee");
-  const prizeDistributions = watch("prizeDistributions") ?? [];
 
-  const totalPrizeInNumber = typeof totalPrize === "number" ? totalPrize : parseFloat(totalPrize || "0");
+  const tournament = useTournamentStore();
+
+  const form = Form.useFormInstance();
+  const totalPrize = Form.useWatch("totalPrize", form);
+  const entryFee = Form.useWatch("entryFee", form);
+  const prizeDistributions = Form.useWatch("prizeDistributions") ?? [];
+
+  console.log("tournament", tournament);
+  console.log("prizeDistributions", prizeDistributions);
+
+  const totalPrizeInNumber =
+    typeof totalPrize === "number" ? totalPrize : parseFloat(totalPrize || "0");
 
   return (
     <div className="flex flex-col gap-6">
@@ -36,46 +31,44 @@ export const FinanceTab = ({
         accent={COLORS.indigo}
       />
 
+      <DollarSign
+        size={16}
+        className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+        style={{ color: COLORS.indigo }}
+      />
       <Field label={t("settings.finance.totalPrize")} required>
-        <div className="relative">
-          <DollarSign
-            size={16}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
-            style={{ color: COLORS.indigo }}
-          />
-          <LInput
-            type="number"
-            {...register("totalPrize", { valueAsNumber: true })}
+        <Form.Item
+          name="name"
+          noStyle
+          rules={[
+            { required: true, message: t("settings.tabs.basic.fields.name") },
+          ]}
+        >
+          <Input
+            size="large"
             placeholder={t("settings.finance.totalPrizePlaceholder")}
-            className="!pl-10 h-11 text-base"
           />
-        </div>
-        <CurrencyHint value={totalPrize} />
+        </Form.Item>
       </Field>
+      <CurrencyHint value={totalPrize} />
 
       <Field label={t("settings.finance.entryFee")}>
-        <LInput
+        {/* <LInput
           type="number"
           {...register("entryFee", { valueAsNumber: true })}
           placeholder={t("settings.finance.entryFeePlaceholder")}
           className="h-11 text-base"
-        />
+        /> */}
         <CurrencyHint value={entryFee} />
       </Field>
 
-      {(totalPrizeInNumber > 0 || prizeDistributions.length > 0) && (
-        <Controller
-          name="prizeDistributions"
-          control={control}
-          render={({ field }) => (
-            <PrizeDistributionTable
-              totalPrize={totalPrizeInNumber}
-              value={field.value ?? []}
-              onChange={field.onChange}
-            />
-          )}
+      <Form.Item name="prizeDistributions">
+        <PrizeDistributionTable
+          totalPrize={totalPrizeInNumber}
+          value={prizeDistributions}
+          onChange={() => console.log("1", 1)}
         />
-      )}
+      </Form.Item>
     </div>
   );
 };

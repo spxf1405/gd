@@ -65,11 +65,11 @@ export const ScheduleTab = () => {
         }}
       >
         <div className="flex flex-col gap-5">
-          <SectionHeader
+          {/* <SectionHeader
             icon={<Calendar size={18} />}
             title={t("settings.schedule.title")}
             accent={COLORS.amber}
-          />
+          /> */}
           <div className="grid grid-cols-2 gap-4">
             <Field label={t("settings.schedule.createdDate")} required>
               <DatePicker

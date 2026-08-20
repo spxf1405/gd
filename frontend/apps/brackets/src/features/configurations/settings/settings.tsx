@@ -45,7 +45,7 @@ const TAB_CONFIG = (t: (key: string) => string) => [
     label: t("settings.tabs.players.label"),
     sub: t("settings.tabs.players.sub"),
     icon: Users,
-    accent: COLORS.red,
+    accent: "#60A5FA",
   },
   {
     value: "schedule",
