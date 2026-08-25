@@ -342,41 +342,43 @@ func (r *TournamentRepository) getTournaments(
 func (r *TournamentRepository) getTournamentByID1(ctx context.Context, id string) (*tournamentpb.Tournament, error) {
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
-	qb := psql.
-		Select(
-			"t.id",
-			"t.name",
-			"t.type",
-			"t.format",
-			"t.format_description",
-			"t.start_date",
-			"t.end_date",
-			"t.location",
-			"t.total_prize",
-			"t.entry_fee",
-			"t.max_players",
-			"t.status",
-			"t.organizer",
-			"t.created_at",
-			"t.updated_at",
-			"t.description",
-			"t.max_age",
-			"t.has_ranking",
-			"t.max_ranking_class",
-			"t.gender",
-			"t.deleted_at",
-		).
-		From("gd_tournaments t").
-		Where(sq.Eq{"t.id": id})
+	query := `
+		SELECT
+			t.id,
+			t.name,
+			t.type,
+			t.format,
+			t.format_description,
+			t.start_date,
+			t.end_date,
+			t.location,
+			t.total_prize,
+			t.entry_fee,
+			t.max_players,
+			t.status,
+			t.organizer,
+			t.created_at,
+			t.updated_at,
+			t.description,
+			t.max_age,
+			t.has_ranking,
+			t.max_ranking_class,
+			t.gender,
+			t.deleted_at,
+			COALESCE(
+				json_agg(
+					json_build_object(
+						'id', p.id,
+						'name', p.name
+					)
+				)
+			) AS registered_players 
+		FROM gd_tournaments t
+		INNER JOIN gd_participants p ON p.tournament_id = t.id
+		WHERE t.id = $1
+	`
 
-	query, args, err := qb.ToSql()
-
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
-
-	row := r.DB.Pool.QueryRow(ctx, query, args...)
+	row := r.DB.Pool.QueryRow(ctx, query, id)
 
 	tournament := &tournamentpb.Tournament{}
 
@@ -407,6 +409,7 @@ func (r *TournamentRepository) getTournamentByID1(ctx context.Context, id string
 		&maxRankingClass,
 		&tournament.Gender,
 		&deletedAt,
+		&tournament.Participants
 	)
 
 	if err != nil {
@@ -461,217 +464,217 @@ func (r *TournamentRepository) getTournamentByID1(ctx context.Context, id string
 	return tournament, nil
 }
 
-func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string) (*tournamentpb.Tournament, error) {
-	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
+// func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string) (*tournamentpb.Tournament, error) {
+// 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
-	queryBuilder := psql.Select(
-		"t.id",
-		"t.name",
-		"t.type",
-		"t.format",
-		"t.format_description",
-		"t.start_date",
-		"t.end_date",
-		"t.location",
-		"t.total_prize",
-		"t.entry_fee",
-		"t.max_players",
-		"t.status",
-		"t.organizer",
-		"t.created_at",
-		"t.updated_at",
-		"t.description",
-		"t.max_age",
-		"t.has_ranking",
-		"t.max_ranking_class",
-		"t.gender",
-		`COALESCE (
-			(
-				SELECT (
-					json_agg(
-						json_build_object(
-							'id', p.id,
-							'name', p.name
-						)
-					)
-				)
-				FROM gd_registrations as r
-				JOIN gd_players as p ON p.id = r.player_id
-				WHERE r.tournament_id = t.id
-			),
-			'[]'::json
-		) AS registered_players`,
-		"t.deleted_at",
-		`COALESCE (
-			(
-				SELECT json_agg(
-					json_build_object(
-						'id', pd.id,
-						'tournament_id', pd.tournament_id,
-						'name', pd.name,
-						'amount', pd.amount,
-						'display_order', pd.display_order
-					) ORDER BY pd.display_order ASC
-				)
-				FROM gd_prize_distributions as pd
-				WHERE pd.tournament_id = t.id
-			),
-			'[]'::json
-		) AS prize_distributions`,
-		`COALESCE (
-			(
-				SELECT json_agg(
-					json_build_object(
-						'id', bracket.id,
-						'name', bracket.name,
-						'rounds', (
-							SELECT json_agg(
-								json_build_object(
-									'id', round.id,
-									'name', round.name,
-									'match', (
-										SELECT json_agg(
-											json_build_object(
-												'id', match.id,
-												'name', match.name,
-												'participants', (
-													SELECT json_agg(
-														json_build_object(
-															'id', paritcipant.id,
-															'users', (
-																SELECT json_agg(
-																	json_build_object(
-																		'id', user.id,
-																		'display_name', user.display_name
-																	)
-																)
-																FROM gd_users as user
-																WHERE paritcipant.user_id = user.id
-															)
-														)
-													)
-													FROM gd_participants as paritcipant
-													WHERE paritcipant.match_id = match.id
-												) 
-											)
-										)
-										FROM gd_matches as match
-										WHERE match.round_id = round.id
-									)
-								)
-							)
-							FROM gd_rounds as round
-							WHERE bracket_id = bracket.id
-						) 
-					)
-				)
-				FROM gd_brackets as bracket
-				WHERE bracket.tournament_id = t.id
-			),
-			'[]'::json
-		) AS brackets`,
-	).
-		From("gd_tournaments t").
-		Where(sq.Eq{"deleted_at": nil}).
-		Where(sq.Eq{"t.id": id})
+// 	queryBuilder := psql.Select(
+// 		"t.id",
+// 		"t.name",
+// 		"t.type",
+// 		"t.format",
+// 		"t.format_description",
+// 		"t.start_date",
+// 		"t.end_date",
+// 		"t.location",
+// 		"t.total_prize",
+// 		"t.entry_fee",
+// 		"t.max_players",
+// 		"t.status",
+// 		"t.organizer",
+// 		"t.created_at",
+// 		"t.updated_at",
+// 		"t.description",
+// 		"t.max_age",
+// 		"t.has_ranking",
+// 		"t.max_ranking_class",
+// 		"t.gender",
+// 		`COALESCE (
+// 			(
+// 				SELECT (
+// 					json_agg(
+// 						json_build_object(
+// 							'id', p.id,
+// 							'name', p.name
+// 						)
+// 					)
+// 				)
+// 				FROM gd_registrations as r
+// 				JOIN gd_players as p ON p.id = r.player_id
+// 				WHERE r.tournament_id = t.id
+// 			),
+// 			'[]'::json
+// 		) AS registered_players`,
+// 		"t.deleted_at",
+// 		`COALESCE (
+// 			(
+// 				SELECT json_agg(
+// 					json_build_object(
+// 						'id', pd.id,
+// 						'tournament_id', pd.tournament_id,
+// 						'name', pd.name,
+// 						'amount', pd.amount,
+// 						'display_order', pd.display_order
+// 					) ORDER BY pd.display_order ASC
+// 				)
+// 				FROM gd_prize_distributions as pd
+// 				WHERE pd.tournament_id = t.id
+// 			),
+// 			'[]'::json
+// 		) AS prize_distributions`,
+// 		`COALESCE (
+// 			(
+// 				SELECT json_agg(
+// 					json_build_object(
+// 						'id', bracket.id,
+// 						'name', bracket.name,
+// 						'rounds', (
+// 							SELECT json_agg(
+// 								json_build_object(
+// 									'id', round.id,
+// 									'name', round.name,
+// 									'match', (
+// 										SELECT json_agg(
+// 											json_build_object(
+// 												'id', match.id,
+// 												'name', match.name,
+// 												'participants', (
+// 													SELECT json_agg(
+// 														json_build_object(
+// 															'id', paritcipant.id,
+// 															'users', (
+// 																SELECT json_agg(
+// 																	json_build_object(
+// 																		'id', user.id,
+// 																		'display_name', user.display_name
+// 																	)
+// 																)
+// 																FROM gd_users as user
+// 																WHERE paritcipant.user_id = user.id
+// 															)
+// 														)
+// 													)
+// 													FROM gd_participants as paritcipant
+// 													WHERE paritcipant.match_id = match.id
+// 												) 
+// 											)
+// 										)
+// 										FROM gd_matches as match
+// 										WHERE match.round_id = round.id
+// 									)
+// 								)
+// 							)
+// 							FROM gd_rounds as round
+// 							WHERE bracket_id = bracket.id
+// 						) 
+// 					)
+// 				)
+// 				FROM gd_brackets as bracket
+// 				WHERE bracket.tournament_id = t.id
+// 			),
+// 			'[]'::json
+// 		) AS brackets`,
+// 	).
+// 		From("gd_tournaments t").
+// 		Where(sq.Eq{"deleted_at": nil}).
+// 		Where(sq.Eq{"t.id": id})
 
-	query, args, err := queryBuilder.ToSql()
+// 	query, args, err := queryBuilder.ToSql()
 
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		return nil, err
+// 	}
 
-	row := r.DB.Pool.QueryRow(ctx, query, args...)
+// 	row := r.DB.Pool.QueryRow(ctx, query, args...)
 
-	tournament := &tournamentpb.Tournament{}
+// 	tournament := &tournamentpb.Tournament{}
 
-	var location, totalPrize, organizer, formatDescription, description, entryFee, maxRankingClass sql.NullString
-	var createdAt, updatedAt time.Time
-	var startDate, deletedAt sql.NullTime
-	var maxPlayers sql.NullInt32
+// 	var location, totalPrize, organizer, formatDescription, description, entryFee, maxRankingClass sql.NullString
+// 	var createdAt, updatedAt time.Time
+// 	var startDate, deletedAt sql.NullTime
+// 	var maxPlayers sql.NullInt32
 
-	err = row.Scan(
-		&tournament.Id,
-		&tournament.Name,
-		&tournament.Type,
-		&tournament.Format,
-		&formatDescription,
-		&startDate,
-		&tournament.EndDate,
-		&location,
-		&totalPrize,
-		&entryFee,
-		&maxPlayers,
-		&tournament.Status,
-		&organizer,
-		&createdAt,
-		&updatedAt,
-		&description,
-		&tournament.MaxAge,
-		&tournament.HasRanking,
-		&maxRankingClass,
-		&tournament.Gender,
-		&tournament.RegisteredPlayers,
-		&deletedAt,
-		&tournament.PrizeDistributions,
-		&tournament.Brackets,
-	)
+// 	err = row.Scan(
+// 		&tournament.Id,
+// 		&tournament.Name,
+// 		&tournament.Type,
+// 		&tournament.Format,
+// 		&formatDescription,
+// 		&startDate,
+// 		&tournament.EndDate,
+// 		&location,
+// 		&totalPrize,
+// 		&entryFee,
+// 		&maxPlayers,
+// 		&tournament.Status,
+// 		&organizer,
+// 		&createdAt,
+// 		&updatedAt,
+// 		&description,
+// 		&tournament.MaxAge,
+// 		&tournament.HasRanking,
+// 		&maxRankingClass,
+// 		&tournament.Gender,
+// 		&tournament.RegisteredPlayers,
+// 		&deletedAt,
+// 		&tournament.PrizeDistributions,
+// 		&tournament.Brackets,
+// 	)
 
-	fmt.Println('1', tournament.Brackets)
+// 	fmt.Println('1', tournament.Brackets)
 
-	if err != nil {
-		fmt.Println("err", err)
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil
-		}
-		return nil, err
-	}
-	if location.Valid {
-		tournament.Location = wrapperspb.String(location.String)
-	}
+// 	if err != nil {
+// 		fmt.Println("err", err)
+// 		if errors.Is(err, pgx.ErrNoRows) {
+// 			return nil, nil
+// 		}
+// 		return nil, err
+// 	}
+// 	if location.Valid {
+// 		tournament.Location = wrapperspb.String(location.String)
+// 	}
 
-	if formatDescription.Valid {
-		tournament.FormatDescription = wrapperspb.String(formatDescription.String)
-	}
+// 	if formatDescription.Valid {
+// 		tournament.FormatDescription = wrapperspb.String(formatDescription.String)
+// 	}
 
-	if description.Valid {
-		tournament.Description = wrapperspb.String(description.String)
-	}
+// 	if description.Valid {
+// 		tournament.Description = wrapperspb.String(description.String)
+// 	}
 
-	tournament.CreatedAt = createdAt.Format(time.RFC3339)
-	tournament.UpdateAt = updatedAt.Format(time.RFC3339)
+// 	tournament.CreatedAt = createdAt.Format(time.RFC3339)
+// 	tournament.UpdateAt = updatedAt.Format(time.RFC3339)
 
-	if startDate.Valid {
-		tournament.StartDate = wrapperspb.String(startDate.Time.Format(time.RFC3339))
-	}
+// 	if startDate.Valid {
+// 		tournament.StartDate = wrapperspb.String(startDate.Time.Format(time.RFC3339))
+// 	}
 
-	if totalPrize.Valid {
-		tournament.TotalPrize = wrapperspb.String(totalPrize.String)
-	}
+// 	if totalPrize.Valid {
+// 		tournament.TotalPrize = wrapperspb.String(totalPrize.String)
+// 	}
 
-	if organizer.Valid {
-		tournament.Organizer = wrapperspb.String(organizer.String)
-	}
+// 	if organizer.Valid {
+// 		tournament.Organizer = wrapperspb.String(organizer.String)
+// 	}
 
-	if maxPlayers.Valid {
-		tournament.MaxPlayers = wrapperspb.Int32(maxPlayers.Int32)
-	}
+// 	if maxPlayers.Valid {
+// 		tournament.MaxPlayers = wrapperspb.Int32(maxPlayers.Int32)
+// 	}
 
-	if maxRankingClass.Valid {
-		tournament.MaxRankingClass = wrapperspb.String(maxRankingClass.String)
-	}
+// 	if maxRankingClass.Valid {
+// 		tournament.MaxRankingClass = wrapperspb.String(maxRankingClass.String)
+// 	}
 
-	if entryFee.Valid {
-		tournament.EntryFee = wrapperspb.String(entryFee.String)
-	}
+// 	if entryFee.Valid {
+// 		tournament.EntryFee = wrapperspb.String(entryFee.String)
+// 	}
 
-	if deletedAt.Valid {
-		tournament.DeletedAt = wrapperspb.String(deletedAt.Time.Format(time.RFC3339))
-	}
+// 	if deletedAt.Valid {
+// 		tournament.DeletedAt = wrapperspb.String(deletedAt.Time.Format(time.RFC3339))
+// 	}
 
-	return tournament, nil
-}
+// 	return tournament, nil
+// }
 
 func (r *TournamentRepository) createTournament(
 	ctx context.Context,

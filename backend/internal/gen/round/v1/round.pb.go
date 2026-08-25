@@ -22,6 +22,52 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type EliminationType int32
+
+const (
+	EliminationType_SINGLE EliminationType = 0
+	EliminationType_DOUBLE EliminationType = 1
+)
+
+// Enum value maps for EliminationType.
+var (
+	EliminationType_name = map[int32]string{
+		0: "SINGLE",
+		1: "DOUBLE",
+	}
+	EliminationType_value = map[string]int32{
+		"SINGLE": 0,
+		"DOUBLE": 1,
+	}
+)
+
+func (x EliminationType) Enum() *EliminationType {
+	p := new(EliminationType)
+	*p = x
+	return p
+}
+
+func (x EliminationType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (EliminationType) Descriptor() protoreflect.EnumDescriptor {
+	return file_round_v1_round_proto_enumTypes[0].Descriptor()
+}
+
+func (EliminationType) Type() protoreflect.EnumType {
+	return &file_round_v1_round_proto_enumTypes[0]
+}
+
+func (x EliminationType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use EliminationType.Descriptor instead.
+func (EliminationType) EnumDescriptor() ([]byte, []int) {
+	return file_round_v1_round_proto_rawDescGZIP(), []int{0}
+}
+
 type Round struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
 	Id              string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -29,7 +75,7 @@ type Round struct {
 	Matches         []*v1.Match            `protobuf:"bytes,3,rep,name=matches,proto3" json:"matches,omitempty"`
 	BracketId       string                 `protobuf:"bytes,4,opt,name=bracket_id,json=bracketId,proto3" json:"bracket_id,omitempty"`
 	RaceTo          int32                  `protobuf:"varint,5,opt,name=race_to,json=raceTo,proto3" json:"race_to,omitempty"`
-	EliminationType string                 `protobuf:"bytes,6,opt,name=elimination_type,json=eliminationType,proto3" json:"elimination_type,omitempty"`
+	EliminationType EliminationType        `protobuf:"varint,6,opt,name=elimination_type,json=eliminationType,proto3,enum=round.v1.EliminationType" json:"elimination_type,omitempty"`
 	OrderIndex      int32                  `protobuf:"varint,7,opt,name=order_index,json=orderIndex,proto3" json:"order_index,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
@@ -100,11 +146,11 @@ func (x *Round) GetRaceTo() int32 {
 	return 0
 }
 
-func (x *Round) GetEliminationType() string {
+func (x *Round) GetEliminationType() EliminationType {
 	if x != nil {
 		return x.EliminationType
 	}
-	return ""
+	return EliminationType_SINGLE
 }
 
 func (x *Round) GetOrderIndex() int32 {
@@ -118,17 +164,22 @@ var File_round_v1_round_proto protoreflect.FileDescriptor
 
 const file_round_v1_round_proto_rawDesc = "" +
 	"\n" +
-	"\x14round/v1/round.proto\x12\bround.v1\x1a\x14match/v1/match.proto\"\xda\x01\n" +
+	"\x14round/v1/round.proto\x12\bround.v1\x1a\x14match/v1/match.proto\"\xf5\x01\n" +
 	"\x05Round\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12)\n" +
 	"\amatches\x18\x03 \x03(\v2\x0f.match.v1.MatchR\amatches\x12\x1d\n" +
 	"\n" +
 	"bracket_id\x18\x04 \x01(\tR\tbracketId\x12\x17\n" +
-	"\arace_to\x18\x05 \x01(\x05R\x06raceTo\x12)\n" +
-	"\x10elimination_type\x18\x06 \x01(\tR\x0feliminationType\x12\x1f\n" +
+	"\arace_to\x18\x05 \x01(\x05R\x06raceTo\x12D\n" +
+	"\x10elimination_type\x18\x06 \x01(\x0e2\x19.round.v1.EliminationTypeR\x0feliminationType\x12\x1f\n" +
 	"\vorder_index\x18\a \x01(\x05R\n" +
-	"orderIndexB'Z%backend/internal/gen/round/v1;roundpbb\x06proto3"
+	"orderIndex*)\n" +
+	"\x0fEliminationType\x12\n" +
+	"\n" +
+	"\x06SINGLE\x10\x00\x12\n" +
+	"\n" +
+	"\x06DOUBLE\x10\x01B'Z%backend/internal/gen/round/v1;roundpbb\x06proto3"
 
 var (
 	file_round_v1_round_proto_rawDescOnce sync.Once
@@ -142,18 +193,21 @@ func file_round_v1_round_proto_rawDescGZIP() []byte {
 	return file_round_v1_round_proto_rawDescData
 }
 
+var file_round_v1_round_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_round_v1_round_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_round_v1_round_proto_goTypes = []any{
-	(*Round)(nil),    // 0: round.v1.Round
-	(*v1.Match)(nil), // 1: match.v1.Match
+	(EliminationType)(0), // 0: round.v1.EliminationType
+	(*Round)(nil),        // 1: round.v1.Round
+	(*v1.Match)(nil),     // 2: match.v1.Match
 }
 var file_round_v1_round_proto_depIdxs = []int32{
-	1, // 0: round.v1.Round.matches:type_name -> match.v1.Match
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 0: round.v1.Round.matches:type_name -> match.v1.Match
+	0, // 1: round.v1.Round.elimination_type:type_name -> round.v1.EliminationType
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_round_v1_round_proto_init() }
@@ -166,13 +220,14 @@ func file_round_v1_round_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_round_v1_round_proto_rawDesc), len(file_round_v1_round_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_round_v1_round_proto_goTypes,
 		DependencyIndexes: file_round_v1_round_proto_depIdxs,
+		EnumInfos:         file_round_v1_round_proto_enumTypes,
 		MessageInfos:      file_round_v1_round_proto_msgTypes,
 	}.Build()
 	File_round_v1_round_proto = out.File

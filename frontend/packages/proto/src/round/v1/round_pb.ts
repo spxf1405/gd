@@ -2,8 +2,8 @@
 // @generated from file round/v1/round.proto (package round.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
 import type { Match } from "../../match/v1/match_pb";
 import { file_match_v1_match } from "../../match/v1/match_pb";
 import type { Message } from "@bufbuild/protobuf";
@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file round/v1/round.proto.
  */
 export const file_round_v1_round: GenFile = /*@__PURE__*/
-  fileDesc("ChRyb3VuZC92MS9yb3VuZC5wcm90bxIIcm91bmQudjEilwEKBVJvdW5kEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSIAoHbWF0Y2hlcxgDIAMoCzIPLm1hdGNoLnYxLk1hdGNoEhIKCmJyYWNrZXRfaWQYBCABKAkSDwoHcmFjZV90bxgFIAEoBRIYChBlbGltaW5hdGlvbl90eXBlGAYgASgJEhMKC29yZGVyX2luZGV4GAcgASgFQidaJWJhY2tlbmQvaW50ZXJuYWwvZ2VuL3JvdW5kL3YxO3JvdW5kcGJiBnByb3RvMw", [file_match_v1_match]);
+  fileDesc("ChRyb3VuZC92MS9yb3VuZC5wcm90bxIIcm91bmQudjEisgEKBVJvdW5kEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSIAoHbWF0Y2hlcxgDIAMoCzIPLm1hdGNoLnYxLk1hdGNoEhIKCmJyYWNrZXRfaWQYBCABKAkSDwoHcmFjZV90bxgFIAEoBRIzChBlbGltaW5hdGlvbl90eXBlGAYgASgOMhkucm91bmQudjEuRWxpbWluYXRpb25UeXBlEhMKC29yZGVyX2luZGV4GAcgASgFKikKD0VsaW1pbmF0aW9uVHlwZRIKCgZTSU5HTEUQABIKCgZET1VCTEUQAUInWiViYWNrZW5kL2ludGVybmFsL2dlbi9yb3VuZC92MTtyb3VuZHBiYgZwcm90bzM", [file_match_v1_match]);
 
 /**
  * @generated from message round.v1.Round
@@ -44,9 +44,9 @@ export type Round = Message<"round.v1.Round"> & {
   raceTo: number;
 
   /**
-   * @generated from field: string elimination_type = 6;
+   * @generated from field: round.v1.EliminationType elimination_type = 6;
    */
-  eliminationType: string;
+  eliminationType: EliminationType;
 
   /**
    * @generated from field: int32 order_index = 7;
@@ -60,4 +60,25 @@ export type Round = Message<"round.v1.Round"> & {
  */
 export const RoundSchema: GenMessage<Round> = /*@__PURE__*/
   messageDesc(file_round_v1_round, 0);
+
+/**
+ * @generated from enum round.v1.EliminationType
+ */
+export enum EliminationType {
+  /**
+   * @generated from enum value: SINGLE = 0;
+   */
+  SINGLE = 0,
+
+  /**
+   * @generated from enum value: DOUBLE = 1;
+   */
+  DOUBLE = 1,
+}
+
+/**
+ * Describes the enum round.v1.EliminationType.
+ */
+export const EliminationTypeSchema: GenEnum<EliminationType> = /*@__PURE__*/
+  enumDesc(file_round_v1_round, 0);
 

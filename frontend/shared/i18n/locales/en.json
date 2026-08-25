@@ -204,9 +204,9 @@
     },
     "finance": {
       "title": "Finance",
-      "totalPrize": "Total Prize Pool (VND)",
+      "totalPrize": "Total Prize Pool",
       "totalPrizePlaceholder": "50000000",
-      "entryFee": "Entry Fee (VND)",
+      "entryFee": "Entry Fee",
       "entryFeePlaceholder": "500000"
     },
     "prizeDistribution": {

@@ -5,7 +5,6 @@ import {
 } from "@gd/proto/tournament/v1/tournament_pb";
 import { Form, Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import { Info } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { COLORS } from "../consts/color";
@@ -21,45 +20,13 @@ const Field = ({
 }) => (
   <div className="flex flex-col gap-1.5">
     <label
-      className="text-[11px] font-semibold uppercase tracking-[0.09em]"
+      className="text-[11px] font-semibold uppercase tracking-[0.09em] !text-white"
       style={{ color: COLORS.textSecondary }}
     >
       {label}
       {required && <span className="text-red-400 ml-1">*</span>}
     </label>
     {children}
-  </div>
-);
-
-const SectionHeader = ({
-  icon,
-  title,
-  accent = COLORS.green,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  accent?: string;
-}) => (
-  <div
-    className="flex items-center gap-3 pb-3 mb-1"
-    style={{ borderBottom: `1px solid ${COLORS.borderFaint}` }}
-  >
-    <div
-      className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-      style={{
-        background: `${accent}18`,
-        border: `1px solid ${accent}30`,
-        color: accent,
-      }}
-    >
-      {icon}
-    </div>
-    <h3
-      className="text-[17px] font-bold text-white"
-      style={{ letterSpacing: "-0.02em" }}
-    >
-      {title}
-    </h3>
   </div>
 );
 
@@ -94,19 +61,13 @@ export const BasicTab = () => {
 
   return (
     <div className="flex flex-col gap-5">
-      {/* <SectionHeader
-        icon={<Info size={18} />}
-        title={t("settings.tabs.basic.sectionTitle")}
-        accent={COLORS.green}
-      /> */}
-
       <Field label={t("settings.tabs.basic.fields.name")} required>
         <Form.Item
           name="name"
           noStyle
           rules={[{ required: true, message: t("settings.tabs.basic.fields.name") }]}
         >
-          <Input size="large" />
+          <Input size="large" placeholder="Nhập tên giải đấu!" />
         </Form.Item>
       </Field>
 
@@ -156,7 +117,7 @@ export const BasicTab = () => {
               noStyle
               rules={[{ required: true }]}
             >
-              <Input size="large" className="w-full" />
+              <Input size="large" className="w-full" placeholder="Nhập thể thức giải đấu!" />
             </Form.Item>
           </Field>
         </div>
@@ -168,7 +129,7 @@ export const BasicTab = () => {
           noStyle
           rules={[{ required: true }]}
         >
-          <Input size="large" />
+          <Input size="large" placeholder="Nhập tên người - đơn vị tổ chức giải đấu!" />
         </Form.Item>
       </Field>
 

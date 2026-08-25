@@ -27,7 +27,8 @@ import {
   useReactTable,
   type ColumnDef,
 } from "@tanstack/react-table";
-import { AlertCircle, GripVertical, Plus, Trash2 } from "lucide-react";
+import { Form } from "antd";
+import { AlertCircle, GripVertical, Pencil, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { v4 } from "uuid";
@@ -80,7 +81,7 @@ function NameCell({
 }: {
   row: any;
   index: number;
-  onChangeLabel: (id: string, v: string) => void;
+  onChangeLabel: (id: string, v: string, index: number) => void;
 }) {
   const { t } = useTranslation();
   const [focused, setFocused] = useState(false);
@@ -102,7 +103,11 @@ function NameCell({
       <input
         type="text"
         value={row.original.name}
-        onChange={(e) => onChangeLabel(row.original.id, e.target.value)}
+        onChange={(e) => {
+          console.log("row.original.name", row.original.name);
+          console.log("e.target.value", e.target.value);
+          onChangeLabel(row.original.id, e.target.value, index);
+        }}
         placeholder={t("settings.prizeDistribution.placeholderName", {
           rank: index + 1,
         })}
@@ -118,7 +123,7 @@ function NameCell({
           color: INDIGO,
         }}
       >
-        ✎
+        <Pencil size={14} />
       </span>
     </div>
   );
@@ -127,7 +132,6 @@ function NameCell({
 function SortableRow({
   row,
   index,
-  total,
   totalPrize,
   onChangeLabel,
   onChangeAmount,
@@ -136,14 +140,12 @@ function SortableRow({
 }: {
   row: any;
   index: number;
-  total: number;
   totalPrize: number;
-  onChangeLabel: (id: string, v: string) => void;
-  onChangeAmount: (id: string, v: number) => void;
+  onChangeLabel: (id: string, v: string, index: number) => void;
+  onChangeAmount: (id: string, v: number, index: number) => void;
   onRemove: (id: string) => void;
   amountError: string | null;
 }) {
-
   const {
     attributes,
     listeners,
@@ -197,7 +199,7 @@ function SortableRow({
             value={row.original.amount}
             onChange={(e) => {
               const raw = e.target.value.replace(/[^\d]/g, "");
-              onChangeAmount(row.original.id, parseInt(raw || "0", 10));
+              onChangeAmount(row.original.id, parseInt(raw || "0", 10), index);
             }}
             placeholder="0"
             className={`
@@ -265,16 +267,31 @@ function SortableRow({
   );
 }
 
-export function PrizeDistributionTable({ totalPrize, value, onChange }: Props) {
+export function PrizeDistributionTable({ onChange }: Props) {
   const { t } = useTranslation();
+  const form = Form.useFormInstance();
+
+  const totalPrizeString = Form.useWatch("totalPrize", form);
+
+  const totalPrize =
+    typeof totalPrizeString === "number"
+      ? totalPrizeString
+      : parseFloat(totalPrizeString || "0");
+
+  const prizeDistributions =
+    Form.useWatch("prizeDistributions", form) ||
+    form.getFieldValue("prizeDistributions") ||
+    [];
+
+  console.log("value", prizeDistributions);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
   );
 
   const distributedTotal = useMemo(
-    () => value.reduce((sum, r) => sum + r.amount, 0),
-    [value],
+    () => prizeDistributions.reduce((sum, r) => sum + r.amount, 0),
+    [prizeDistributions],
   );
 
   const remaining = (totalPrize || 0) - distributedTotal;
@@ -322,7 +339,7 @@ export function PrizeDistributionTable({ totalPrize, value, onChange }: Props) {
   );
 
   const table = useReactTable({
-    data: value,
+    data: prizeDistributions,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getRowId: (row) => row.id,
@@ -331,9 +348,9 @@ export function PrizeDistributionTable({ totalPrize, value, onChange }: Props) {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
-    const oldIdx = value.findIndex((r) => r.id === active.id);
-    const newIdx = value.findIndex((r) => r.id === over.id);
-    onChange(arrayMove(value, oldIdx, newIdx));
+    const oldIdx = prizeDistributions.findIndex((r) => r.id === active.id);
+    const newIdx = prizeDistributions.findIndex((r) => r.id === over.id);
+    onChange(arrayMove(prizeDistributions, oldIdx, newIdx));
   };
 
   const createNew = () => {
@@ -341,19 +358,34 @@ export function PrizeDistributionTable({ totalPrize, value, onChange }: Props) {
       id: v4(),
       name: "",
       amount: 0,
-      displayOrder: value.length + 1,
-      tournamentId: value[0].tournamentId,
+      displayOrder: prizeDistributions.length + 1,
+      tournamentId: form.getFieldValue("id"),
     });
   };
 
-  const handleAdd = () => onChange([...value, createNew()]);
-  const handleRemove = (id: string) =>
-    onChange(value.filter((r) => r.id !== id));
-  const handleChangeLabel = (id: string, v: string) => {
-    onChange(value.map((r) => (r.id === id ? { ...r, name: v } : r)));
+  const handleAdd = () => {
+    form.setFieldValue("prizeDistributions", [
+      ...prizeDistributions,
+      createNew(),
+    ]);
   };
-  const handleChangeAmount = (id: string, v: number) =>
-    onChange(value.map((r) => (r.id === id ? { ...r, amount: v } : r)));
+
+  const handleRemove = (id: string) => {
+    const currentDistributions = form.getFieldValue("prizeDistributions");
+
+    form.setFieldValue(
+      "prizeDistributions",
+      currentDistributions.filter((row) => row.id !== id),
+    );
+  };
+
+  const handleChangeLabel = (id: string, label: string, index: number) => {
+    form.setFieldValue(["prizeDistributions", index, "name"], label);
+  };
+
+  const handleChangeAmount = (id: string, value: number, index: number) => {
+    form.setFieldValue(["prizeDistributions", index, "amount"], value);
+  };
 
   const budgetLabel = isOverBudget
     ? t("settings.prizeDistribution.budget.over", {
@@ -415,14 +447,14 @@ export function PrizeDistributionTable({ totalPrize, value, onChange }: Props) {
         )}
       </div>
 
-      {value.length > 0 ? (
+      {prizeDistributions.length > 0 ? (
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
         >
           <SortableContext
-            items={value.map((r) => r.id)}
+            items={prizeDistributions.map((r) => r.id)}
             strategy={verticalListSortingStrategy}
           >
             <table className="w-full border-collapse">
@@ -458,7 +490,6 @@ export function PrizeDistributionTable({ totalPrize, value, onChange }: Props) {
                     key={row.original.id}
                     row={row}
                     index={index}
-                    total={value.length}
                     totalPrize={totalPrize || 0}
                     onChangeLabel={handleChangeLabel}
                     onChangeAmount={handleChangeAmount}
@@ -476,7 +507,6 @@ export function PrizeDistributionTable({ totalPrize, value, onChange }: Props) {
         </div>
       )}
 
-      {/* Footer */}
       <div
         className="flex items-center justify-between px-4 py-3"
         style={{ borderTop: `1px solid ${INDIGO}12` }}
@@ -497,13 +527,13 @@ export function PrizeDistributionTable({ totalPrize, value, onChange }: Props) {
           {t("settings.prizeDistribution.add")}
         </button>
 
-        {value.length > 0 && (
+        {prizeDistributions.length > 0 && (
           <div className="flex items-center gap-2">
             {isOverBudget && (
               <AlertCircle size={13} className="text-rose-400" />
             )}
             <span className="text-[13px] text-muted-foreground/60">
-              {t("settings.prizeDistribution.total")}s
+              {t("settings.prizeDistribution.total")}
             </span>
             <span
               className="text-[13px] font-black tabular-nums"

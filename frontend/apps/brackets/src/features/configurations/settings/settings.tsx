@@ -23,7 +23,7 @@ import { COLORS } from "./consts/color";
 import { LTooltip } from "./consts/input";
 import { BasicTab, FinanceTab, PlayersTab, ScheduleTab } from "./tabs/tabs";
 import { AntdThemeConfig } from "@/components/ui/antd-config";
-import { RoundsList } from "./tabs/format/row";
+import { FormatTab } from "./tabs/format/format";
 
 const TAB_CONFIG = (t: (key: string) => string) => [
   {
@@ -61,13 +61,13 @@ const TAB_CONFIG = (t: (key: string) => string) => [
     icon: DollarSign,
     accent: COLORS.indigo,
   },
-  {
-    value: "media",
-    label: t("settings.tabs.media.label"),
-    sub: t("settings.tabs.media.sub"),
-    icon: ImageIcon,
-    accent: COLORS.red,
-  },
+  // {
+  //   value: "media",
+  //   label: t("settings.tabs.media.label"),
+  //   sub: t("settings.tabs.media.sub"),
+  //   icon: ImageIcon,
+  //   accent: COLORS.red,
+  // },
 ];
 
 const SidebarTab = ({ tab }: { tab: any }) => {
@@ -147,11 +147,11 @@ export const Setting = () => {
 
   const [form] = Form.useForm<Tournament>();
 
-  useEffect(() => {
-    if (tournament) {
-      form.setFieldsValue(tournament);
-    }
-  }, [tournament, form]);
+  // useEffect(() => {
+  //   if (tournament) {
+  //     form.setFieldsValue(tournament);
+  //   }
+  // }, [tournament, form]);
 
   const onFinish = async (data: Tournament) => {
     console.log("data", { ...tournament, ...data });
@@ -170,6 +170,12 @@ export const Setting = () => {
   };
 
   const tabs = TAB_CONFIG(t);
+
+  useEffect(() => {
+  if (!tournament) return;
+
+  form.setFieldsValue(tournament);
+}, [tournament, form]);
 
   return (
     <AntdThemeConfig>
@@ -271,7 +277,6 @@ export const Setting = () => {
           form={form}
           layout="vertical"
           onFinish={onFinish}
-          initialValues={tournament ?? ({} as Tournament)}
         >
           <Tabs.Root
             defaultValue="basic"
@@ -348,7 +353,7 @@ export const Setting = () => {
                 value="format"
                 className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
               >
-                <RoundsList />
+                <FormatTab />
               </Tabs.Content>
               <Tabs.Content
                 value="schedule"

@@ -216,14 +216,18 @@ export const Field = ({
   </div>
 );
 
-export const CurrencyHint = ({ value }: { value: number }) =>
+export const CurrencyHint = ({
+  value,
+  unit,
+}: {
+  value: number;
+  unit: string;
+}) =>
   value > 0 ? (
-    <p className="text-[11px] mt-1" style={{ color: COLORS.indigo }}>
-      ≈ {value.toLocaleString("vi-VN")} đồng
+    <p className="text-xs mt-1 text-indigo-500 font-medium">
+      ≈ {Number(value).toLocaleString("vi-VN")} {unit}
     </p>
   ) : null;
-
-export const OPTIONS_MAXPLAYERS = [16, 32, 64, 128];
 
 export const RANKING_CLASSES = [
   "CN",

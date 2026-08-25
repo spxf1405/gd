@@ -2,7 +2,7 @@ import { useParticipantsByTournamentID } from "@/features/configurations/players
 import { RoundClient } from "@/helper/service-client";
 import { useTournamentStore } from "@/store/match";
 import { create } from "@bufbuild/protobuf";
-import { RoundSchema, type Round } from "@gd/proto/round/v1/round_pb";
+import { EliminationType, RoundSchema, type Round } from "@gd/proto/round/v1/round_pb";
 import { ReplaceRoundsRequestSchema } from "@gd/proto/round/v1/round_service_pb";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "antd";
@@ -70,7 +70,7 @@ export const CreateRoundsButton = ({ label }: { label: string }) => {
           name: roundName,
           bracketId,
           orderIndex: i,
-          eliminationType: isKnockoutStage ? "SINGLE" : "DOUBLE",
+          eliminationType: isKnockoutStage ? EliminationType.SINGLE :  EliminationType.DOUBLE,
           raceTo: 11,
         }),
       );

@@ -56,15 +56,24 @@ func (r *RoundRepository) GetRoundsByBracketIDs(ctx context.Context, bracketIDs 
 	rounds := []*roundpb.Round{}
 
 	for rows.Next() {
+		var sqlElimination string
+
 		round := &roundpb.Round{}
 		err := rows.Scan(
 			&round.Id,
 			&round.Name,
 			&round.BracketId,
 			&round.RaceTo,
-			&round.EliminationType,
+			&sqlElimination,
 			&round.OrderIndex,
 		)
+
+		eliminationType, ok := roundpb.EliminationType_value[sqlElimination]
+		if !ok {
+			return nil, fmt.Errorf("invalid elimination_type %q", sqlElimination)
+		}
+
+		round.EliminationType = roundpb.EliminationType(eliminationType)
 
 		if err != nil {
 			return nil, err

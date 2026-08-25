@@ -9,6 +9,7 @@ package tournamentpb
 import (
 	v11 "backend/internal/gen/bracket/v1"
 	v1 "backend/internal/gen/match/v1"
+	_ "backend/internal/gen/participant/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
@@ -231,7 +232,7 @@ func (Gender) EnumDescriptor() ([]byte, []int) {
 	return file_tournament_v1_tournament_proto_rawDescGZIP(), []int{3}
 }
 
-type Player struct {
+type Participant struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
@@ -239,20 +240,20 @@ type Player struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Player) Reset() {
-	*x = Player{}
+func (x *Participant) Reset() {
+	*x = Participant{}
 	mi := &file_tournament_v1_tournament_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Player) String() string {
+func (x *Participant) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Player) ProtoMessage() {}
+func (*Participant) ProtoMessage() {}
 
-func (x *Player) ProtoReflect() protoreflect.Message {
+func (x *Participant) ProtoReflect() protoreflect.Message {
 	mi := &file_tournament_v1_tournament_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -264,19 +265,19 @@ func (x *Player) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Player.ProtoReflect.Descriptor instead.
-func (*Player) Descriptor() ([]byte, []int) {
+// Deprecated: Use Participant.ProtoReflect.Descriptor instead.
+func (*Participant) Descriptor() ([]byte, []int) {
 	return file_tournament_v1_tournament_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Player) GetId() string {
+func (x *Participant) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *Player) GetName() string {
+func (x *Participant) GetName() string {
 	if x != nil {
 		return x.Name
 	}
@@ -442,7 +443,7 @@ type Tournament struct {
 	HasRanking         bool                    `protobuf:"varint,19,opt,name=has_ranking,json=hasRanking,proto3" json:"has_ranking,omitempty"`
 	MaxRankingClass    *wrapperspb.StringValue `protobuf:"bytes,20,opt,name=max_ranking_class,json=maxRankingClass,proto3" json:"max_ranking_class,omitempty"`
 	Gender             Gender                  `protobuf:"varint,21,opt,name=gender,proto3,enum=tournament.v1.Gender" json:"gender,omitempty"`
-	RegisteredPlayers  []*Player               `protobuf:"bytes,22,rep,name=registered_players,json=registeredPlayers,proto3" json:"registered_players,omitempty"`
+	Participants       []*Participant          `protobuf:"bytes,22,rep,name=participants,proto3" json:"participants,omitempty"`
 	DeletedAt          *wrapperspb.StringValue `protobuf:"bytes,23,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
 	PrizeDistributions []*PrizeDistribution    `protobuf:"bytes,24,rep,name=prize_distributions,json=prizeDistributions,proto3" json:"prize_distributions,omitempty"`
 	Brackets           []*v11.Bracket          `protobuf:"bytes,25,rep,name=brackets,proto3" json:"brackets,omitempty"`
@@ -620,9 +621,9 @@ func (x *Tournament) GetGender() Gender {
 	return Gender_MALE
 }
 
-func (x *Tournament) GetRegisteredPlayers() []*Player {
+func (x *Tournament) GetParticipants() []*Participant {
 	if x != nil {
-		return x.RegisteredPlayers
+		return x.Participants
 	}
 	return nil
 }
@@ -652,8 +653,8 @@ var File_tournament_v1_tournament_proto protoreflect.FileDescriptor
 
 const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\n" +
-	"\x1etournament/v1/tournament.proto\x12\rtournament.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x14match/v1/match.proto\x1a\x18bracket/v1/bracket.proto\",\n" +
-	"\x06Player\x12\x0e\n" +
+	"\x1etournament/v1/tournament.proto\x12\rtournament.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x14match/v1/match.proto\x1a\x18bracket/v1/bracket.proto\x1a participant/v1/participant.proto\"1\n" +
+	"\vParticipant\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\"\x99\x01\n" +
 	"\x11PrizeDistribution\x12\x0e\n" +
@@ -665,7 +666,7 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\x05Round\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12)\n" +
-	"\amatches\x18\x03 \x03(\v2\x0f.match.v1.MatchR\amatches\"\xfc\t\n" +
+	"\amatches\x18\x03 \x03(\v2\x0f.match.v1.MatchR\amatches\"\xf6\t\n" +
 	"\n" +
 	"Tournament\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
@@ -693,8 +694,8 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\vhas_ranking\x18\x13 \x01(\bR\n" +
 	"hasRanking\x12H\n" +
 	"\x11max_ranking_class\x18\x14 \x01(\v2\x1c.google.protobuf.StringValueR\x0fmaxRankingClass\x12-\n" +
-	"\x06gender\x18\x15 \x01(\x0e2\x15.tournament.v1.GenderR\x06gender\x12D\n" +
-	"\x12registered_players\x18\x16 \x03(\v2\x15.tournament.v1.PlayerR\x11registeredPlayers\x12;\n" +
+	"\x06gender\x18\x15 \x01(\x0e2\x15.tournament.v1.GenderR\x06gender\x12>\n" +
+	"\fparticipants\x18\x16 \x03(\v2\x1a.tournament.v1.ParticipantR\fparticipants\x12;\n" +
 	"\n" +
 	"deleted_at\x18\x17 \x01(\v2\x1c.google.protobuf.StringValueR\tdeletedAt\x12Q\n" +
 	"\x13prize_distributions\x18\x18 \x03(\v2 .tournament.v1.PrizeDistributionR\x12prizeDistributions\x12/\n" +
@@ -739,7 +740,7 @@ var file_tournament_v1_tournament_proto_goTypes = []any{
 	(TournamentType)(0),            // 1: tournament.v1.TournamentType
 	(TournamentFormat)(0),          // 2: tournament.v1.TournamentFormat
 	(Gender)(0),                    // 3: tournament.v1.Gender
-	(*Player)(nil),                 // 4: tournament.v1.Player
+	(*Participant)(nil),            // 4: tournament.v1.Participant
 	(*PrizeDistribution)(nil),      // 5: tournament.v1.PrizeDistribution
 	(*Round)(nil),                  // 6: tournament.v1.Round
 	(*Tournament)(nil),             // 7: tournament.v1.Tournament
@@ -764,7 +765,7 @@ var file_tournament_v1_tournament_proto_depIdxs = []int32{
 	9,  // 12: tournament.v1.Tournament.description:type_name -> google.protobuf.StringValue
 	9,  // 13: tournament.v1.Tournament.max_ranking_class:type_name -> google.protobuf.StringValue
 	3,  // 14: tournament.v1.Tournament.gender:type_name -> tournament.v1.Gender
-	4,  // 15: tournament.v1.Tournament.registered_players:type_name -> tournament.v1.Player
+	4,  // 15: tournament.v1.Tournament.participants:type_name -> tournament.v1.Participant
 	9,  // 16: tournament.v1.Tournament.deleted_at:type_name -> google.protobuf.StringValue
 	5,  // 17: tournament.v1.Tournament.prize_distributions:type_name -> tournament.v1.PrizeDistribution
 	11, // 18: tournament.v1.Tournament.brackets:type_name -> bracket.v1.Bracket

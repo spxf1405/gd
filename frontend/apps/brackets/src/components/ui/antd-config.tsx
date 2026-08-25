@@ -22,7 +22,6 @@ export const AntdThemeConfig = ({
           colorBgLayout: "#0B0C12",
 
           colorPrimary: "#10B981",
-          colorPrimaryBg: "rgba(16, 185, 129, 0.12)",
 
           colorBorder: "rgba(255, 255, 255, 0.08)",
           colorBorderSecondary: "rgba(255, 255, 255, 0.05)",

@@ -86,7 +86,7 @@ export const ScheduleTab = () => {
               />
             </Field>
           </div>
-          <Field label={t("settings.schedule.location")} required>
+          <Field label={t("settings.schedule.location")}>
             <SearchInput />
           </Field>
         </div>

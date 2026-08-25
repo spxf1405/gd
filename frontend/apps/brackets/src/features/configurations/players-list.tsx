@@ -383,7 +383,7 @@ export const Players = () => {
     return sortedEntries;
   }, [filteredParticipants]);
 
-  console.log("groupedPlayers", groupedPlayers);
+  
 
   const handleDragEndWithinGroup = (
     event: DragEndEvent,
