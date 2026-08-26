@@ -1,7 +1,4 @@
-import { useParticipantsByTournamentID } from "@/features/configurations/players/hooks";
-import { useTournament } from "@/hook/tournament";
-import { Form, Input } from "antd";
-import { Trophy } from "lucide-react";
+import { ConfigProvider, Form, Input } from "antd";
 
 import type { Bracket } from "@gd/proto/bracket/v1/bracket_pb";
 import { EliminationType } from "@gd/proto/round/v1/round_pb";
@@ -10,32 +7,11 @@ import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 import { CreateRoundsButton } from "./create-rounds";
 import { RoundCard } from "./round-card";
 import type { TournamentRound } from "./types/types";
-import { useTournamentStore } from "@/store/match";
+import { COLORS } from "../../consts/color";
 
 export function FormatTab() {
   const form = Form.useFormInstance<Tournament>();
 
-  const { tournament } = useTournamentStore();
-
-  const { data: participants } = useParticipantsByTournamentID({
-    tournamentId: tournament?.id,
-  });
-
-  const { isLoading } = useTournament(tournament?.id) ?? {};
-
-  /**
-   * Get all rounds from all brackets and attach the bracket side.
-   *
-   * Form structure:
-   *
-   * brackets[]
-   *   └── rounds[]
-   *
-   * UI structure:
-   *
-   * roundsStore[]
-   *   └── side
-   */
   const getRoundsFromBrackets = (brackets: Bracket[]): TournamentRound[] => {
     return brackets.flatMap((bracket) =>
       bracket.rounds.map((round) => ({
@@ -45,16 +21,6 @@ export function FormatTab() {
     );
   };
 
-  /**
-   * Get unique group names while preserving their current order.
-   *
-   * Multiple rounds can belong to the same group:
-   *
-   * winner Round 1
-   * loser  Round 1
-   *
-   * Both belong to group "Round 1".
-   */
   const getOrderedGroupNames = (rounds: TournamentRound[]): string[] => {
     const seen = new Set<string>();
     const names: string[] = [];
@@ -127,15 +93,6 @@ export function FormatTab() {
       );
   };
 
-  /**
-   * Convert a group to DOUBLE elimination.
-   *
-   * If a loser round already exists, only the elimination type
-   * needs to be updated.
-   *
-   * Otherwise a new loser round is created immediately after
-   * the corresponding winner round.
-   */
   const convertGroupToDoubleElimination = (
     groupName: string,
     rounds: TournamentRound[],
@@ -189,11 +146,6 @@ export function FormatTab() {
     ];
   };
 
-  /**
-   * Update elimination mode of a round group.
-   *
-   * This is the main business operation used by RoundCard.
-   */
   const updateGroupEliminationMode = (
     groupName: string,
     eliminationType: EliminationType,
@@ -233,101 +185,113 @@ export function FormatTab() {
   };
 
   return (
-    <div className="min-w-[640px] overflow-x-auto">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <Trophy className="h-4 w-4 text-orange-400" />
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: COLORS.bronze,
+        },
+      }}
+    >
+      <div className="flex justify-between items-start mb-4">
+        <Form.Item
+          noStyle
+          shouldUpdate={(prevValues, currentValues) =>
+            prevValues.brackets !== currentValues.brackets
+          }
+        >
+          {() => {
+            const brackets =
+              (form.getFieldValue("brackets") as Bracket[] | undefined) ?? [];
 
-          <h2 className="text-sm font-semibold text-zinc-100">Vòng đấu</h2>
-        </div>
-      </div>
+            const rounds = getRoundsFromBrackets(brackets);
 
-      <div className="flex justify-between">
-        <CreateRoundsButton label="Tạo vòng đấu" />
+            return (
+              <CreateRoundsButton
+                label={rounds.length ? "Đặt về mặc định" : "Tạo vòng đấu"}
+              />
+            );
+          }}
+        </Form.Item>
 
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <span className="whitespace-nowrap text-xs text-zinc-400">
+            <span className="whitespace-nowrap text-xs">
               Tổng số người chơi
             </span>
 
             <Input
               size="large"
               className="!w-24"
-              value={participants?.tournamentParticipants.length ?? 0}
+              defaultValue={form.getFieldValue("participants")?.length ?? 0}
               disabled
             />
           </div>
-
-          <button className="whitespace-nowrap text-xs text-orange-400 transition-colors hover:text-orange-300">
-            Xem danh sách người chơi
-          </button>
         </div>
       </div>
 
-      <Form.Item
-        noStyle
-        shouldUpdate={(prevValues, currentValues) =>
-          prevValues.brackets !== currentValues.brackets
-        }
-      >
-        {() => {
-          const brackets =
-            (form.getFieldValue("brackets") as Bracket[] | undefined) ?? [];
-
-          const rounds = getRoundsFromBrackets(brackets);
-
-          const groupMap = new Map<string, TournamentRound[]>();
-
-          for (const round of rounds) {
-            const group = groupMap.get(round.name);
-
-            if (group) {
-              group.push(round);
-            } else {
-              groupMap.set(round.name, [round]);
-            }
+      <div className="overflow-y-auto max-h-[50vh]">
+        <Form.Item
+          noStyle
+          shouldUpdate={(prevValues, currentValues) =>
+            prevValues.brackets !== currentValues.brackets
           }
+        >
+          {() => {
+            const brackets =
+              (form.getFieldValue("brackets") as Bracket[] | undefined) ?? [];
 
-          const groups = Array.from(groupMap.entries()).map(
-            ([name, items]) => ({
-              name,
-              eliminationType: items[0]?.eliminationType,
-              items,
-            }),
-          );
+            const rounds = getRoundsFromBrackets(brackets);
 
-          return (
-            <div
-              className={`flex flex-col gap-2 transition-opacity duration-200 ${
-                isLoading ? "pointer-events-none select-none opacity-40" : ""
-              }`}
-            >
-              {groups.map((group, index) => (
-                <RoundCard
-                  key={group.name}
-                  name={group.name}
-                  index={index}
-                  items={group.items}
-                  isDisableDouble={
-                    index > 0 &&
-                    groups[index - 1]?.eliminationType ===
-                      EliminationType.SINGLE
-                  }
-                  onChangeSide={updateRound}
-                  onChangeMode={(groupName, eliminationType) =>
-                    updateGroupEliminationMode(
-                      groupName,
-                      eliminationType,
-                      rounds,
-                    )
-                  }
-                />
-              ))}
-            </div>
-          );
-        }}
-      </Form.Item>
-    </div>
+            const groupMap = new Map<string, TournamentRound[]>();
+
+            for (const round of rounds) {
+              const group = groupMap.get(round.name);
+
+              if (group) {
+                group.push(round);
+              } else {
+                groupMap.set(round.name, [round]);
+              }
+            }
+
+            const groups = Array.from(groupMap.entries()).map(
+              ([name, items]) => ({
+                name,
+                eliminationType: items[0]?.eliminationType,
+                items,
+              }),
+            );
+
+            return (
+              <div
+                className={`flex flex-col gap-2 transition-opacity duration-200`}
+              >
+                {groups.map((group, index) => (
+                  <RoundCard
+                    key={group.name}
+                    name={group.name}
+                    index={index}
+                    items={group.items}
+                    isDisableDouble={
+                      index > 0 &&
+                      groups[index - 1]?.eliminationType ===
+                        EliminationType.SINGLE
+                    }
+                    onChangeSide={updateRound}
+                    onChangeMode={(groupName, eliminationType) =>
+                      updateGroupEliminationMode(
+                        groupName,
+                        eliminationType,
+                        rounds,
+                      )
+                    }
+                  />
+                ))}
+              </div>
+            );
+          }}
+        </Form.Item>
+      </div>
+    </ConfigProvider>
   );
 }

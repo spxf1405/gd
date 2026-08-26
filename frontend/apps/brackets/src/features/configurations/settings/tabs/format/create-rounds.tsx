@@ -1,93 +1,122 @@
-import { useParticipantsByTournamentID } from "@/features/configurations/players/hooks";
-import { RoundClient } from "@/helper/service-client";
-import { useTournamentStore } from "@/store/match";
+import { QButton } from "@/components/ui/button";
+import {
+  CheckOutlined,
+  CloseOutlined
+} from "@ant-design/icons";
 import { create } from "@bufbuild/protobuf";
-import { EliminationType, RoundSchema, type Round } from "@gd/proto/round/v1/round_pb";
-import { ReplaceRoundsRequestSchema } from "@gd/proto/round/v1/round_service_pb";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button } from "antd";
+import type { Bracket } from "@gd/proto/bracket/v1/bracket_pb";
+import type { Participant } from "@gd/proto/participant/v1/participant_pb";
+import { EliminationType, RoundSchema } from "@gd/proto/round/v1/round_pb";
+import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
+import { message, Popconfirm } from "antd";
+import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import { RefreshCcw } from "lucide-react";
+import { useState } from "react";
+import { v4 } from "uuid";
+
+const getRoundName = (roundSize: number, isFirstRound: boolean): string => {
+  if (isFirstRound) return "Vòng loại";
+  if (roundSize === 8) return "Quarterfinal";
+  if (roundSize === 4) return "Semifinal";
+  if (roundSize === 2) return "Final";
+  return `Last ${roundSize}`;
+};
+
+const wait = (time: number): Promise<void> => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+};
 
 export const CreateRoundsButton = ({ label }: { label: string }) => {
-  const { tournament } = useTournamentStore();
-  const { data: tournamentParticipants } = useParticipantsByTournamentID({
-    tournamentId: tournament?.id,
-  });
+  const form = useFormInstance<Tournament>();
+  const [loading, setLoading] = useState(false);
 
-  const queryClient = useQueryClient();
+  const handleReplaceRounds = async () => {
+    const { brackets, participants } = form.getFieldsValue(true) as {
+      brackets: Bracket[];
+      participants: Participant[];
+    };
 
-  const replaceRounds = async (rounds: Round[]) => {
-    const bracketIDs = tournament?.brackets.map((e) => e.id);
+    const maxPlayer = participants?.length ?? 0;
 
-    const rq = create(ReplaceRoundsRequestSchema, {
-      bracketIds: bracketIDs,
-      rounds,
-    });
-    await RoundClient.replaceRounds(rq);
+    if (maxPlayer < 2) {
+      message.warning("Cần ít nhất 2 participants để tạo rounds");
+      return;
+    }
 
-    queryClient.invalidateQueries({ queryKey: ["tournament"] });
-  };
+    setLoading(true);
+    try {
+      await wait(1000);
 
-  const { isPending, mutate: handleReplaceRounds } = useMutation({
-    mutationFn: (rounds: Round[]) => replaceRounds(rounds),
+      const totalRounds = Math.ceil(Math.log2(maxPlayer));
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tournament"] });
-    },
+      const updatedBrackets: Bracket[] = brackets.map((bracket) => {
+        return { ...bracket, rounds: [] };
+      });
 
-    onError: (error) => {
-      console.error(error);
-    },
-  });
+      for (let i = 0; i < totalRounds; i++) {
+        const roundSize = 2 ** (totalRounds - i);
+        const isKnockoutStage = roundSize <= 8;
+        const roundName = getRoundName(roundSize, i === 0);
 
-  const onClick = () => {
-    const maxPlayer =
-      tournamentParticipants?.tournamentParticipants.length ?? 0;
-    const totalRounds = Math.ceil(Math.log2(maxPlayer));
+        for (const bracket of updatedBrackets) {
+          const round = create(RoundSchema, {
+            id: v4(),
+            matches: [],
+            name: roundName,
+            bracketId: bracket.id,
+            orderIndex: i,
+            eliminationType: isKnockoutStage
+              ? EliminationType.SINGLE
+              : EliminationType.DOUBLE,
+            raceTo: 11,
+          });
 
-    const bracketIds = [
-      tournament?.brackets.find((b) => b.side === "winner")?.id,
-      tournament?.brackets.find((b) => b.side === "loser")?.id,
-    ].filter(Boolean);
+          bracket.rounds.push(round);
+        }
+      }
 
-    const rounds = Array.from({ length: totalRounds }, (_, i) => {
-      const roundSize = 2 ** (totalRounds - i);
-      const isKnockoutStage = roundSize <= 8;
-
-      const getRoundName = (roundSize: number, i: number): string => {
-        if (i === 0) return "Vòng loại";
-        if (roundSize === 8) return "Quarterfinal";
-        if (roundSize === 4) return "Semifinal";
-        if (roundSize === 2) return "Final";
-        return `Last ${roundSize}`;
-      };
-
-      const roundName = getRoundName(roundSize, i);
-
-      return bracketIds.map((bracketId) =>
-        create(RoundSchema, {
-          matches: [],
-          name: roundName,
-          bracketId,
-          orderIndex: i,
-          eliminationType: isKnockoutStage ? EliminationType.SINGLE :  EliminationType.DOUBLE,
-          raceTo: 11,
-        }),
-      );
-    }).flat();
-
-    handleReplaceRounds(rounds);
+      form.setFieldValue("brackets", updatedBrackets);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <Button
-      size="large"
-      className="my-4"
-      onClick={onClick}
-      disabled={isPending}
+    <Popconfirm
+      title="Reset rounds"
+      description={
+        <div className="w-72">
+          Reset cài đặt vòng đấu về mặc định cũng sẽ xóa hết tất cả thông
+          tin các trận đấu đã tạo!
+        </div>
+      }
+      onConfirm={handleReplaceRounds}
+      placement="right"
+      okText={
+        <span className="flex items-center gap-1">
+          <CheckOutlined /> Yes
+        </span>
+      }
+      cancelText={
+        <span className="flex items-center gap-1">
+          <CloseOutlined /> No
+        </span>
+      }
+      okButtonProps={{
+        size: "medium",
+        loading,
+      }}
+      cancelButtonProps={{
+        size: "middle",
+        disabled: loading,
+      }}
     >
-      <RefreshCcw size={14} className={isPending ? "animate-spin" : ""} />{" "}
-      {label}
-    </Button>
+      <QButton size="large" disabled={loading}>
+        <RefreshCcw size={14} className={loading ? "animate-spin" : ""} />
+        {label}
+      </QButton>
+    </Popconfirm>
   );
 };

@@ -41,6 +41,7 @@ function ModeSelect({
       onChange={onChange}
       disabled={isDisableDouble}
       size="large"
+      allowClear={false}
     />
   );
 }
@@ -170,7 +171,7 @@ export function RoundCard({
             </span>
 
             <Tooltip
-              title="Đổi tên vòng đấu"
+              title={<>Đổi tên vòng đấu</>}
               placement="top"
               mouseEnterDelay={0.4}
             >
@@ -184,6 +185,7 @@ export function RoundCard({
                   transition-colors
                   hover:bg-zinc-800
                   hover:text-zinc-200
+                  cursor-pointer
                 "
               >
                 <Pencil className="h-3.5 w-3.5" />
@@ -211,15 +213,6 @@ export function RoundCard({
         )}
 
         <div className="ml-auto flex items-center gap-2">
-          <span
-            className="
-              whitespace-nowrap
-              text-xs font-medium text-zinc-500
-            "
-          >
-            Thể thức
-          </span>
-
           <ModeSelect
             value={winnerRound.eliminationType}
             onChange={(eliminationType) => onChangeMode(name, eliminationType)}

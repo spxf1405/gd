@@ -1,3 +1,4 @@
+import { AntdThemeConfig } from "@/components/ui/antd-config";
 import { TournamentClient } from "@/helper/service-client";
 import { useTournamentStore } from "@/store/match";
 import { create } from "@bufbuild/protobuf";
@@ -8,7 +9,6 @@ import {
   Calendar,
   DollarSign,
   Grid2X2,
-  Image as ImageIcon,
   Info,
   Settings,
   Trophy,
@@ -17,13 +17,11 @@ import {
 } from "lucide-react";
 import { Separator, Tabs } from "radix-ui";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { COLORS } from "./consts/color";
 import { LTooltip } from "./consts/input";
-import { BasicTab, FinanceTab, PlayersTab, ScheduleTab } from "./tabs/tabs";
-import { AntdThemeConfig } from "@/components/ui/antd-config";
 import { FormatTab } from "./tabs/format/format";
+import { BasicTab, FinanceTab, PlayersTab, ScheduleTab } from "./tabs/tabs";
 
 const TAB_CONFIG = (t: (key: string) => string) => [
   {
@@ -31,85 +29,151 @@ const TAB_CONFIG = (t: (key: string) => string) => [
     label: t("settings.tabs.basic.label"),
     sub: t("settings.tabs.basic.sub"),
     icon: Info,
-    accent: COLORS.green,
+    accent: "emerald",
   },
   {
     value: "format",
     label: t("settings.tabs.format.label"),
     sub: t("settings.tabs.format.sub"),
     icon: Grid2X2,
-    accent: COLORS.bronze,
+    accent: "orange",
   },
   {
     value: "players",
     label: t("settings.tabs.players.label"),
     sub: t("settings.tabs.players.sub"),
     icon: Users,
-    accent: "#60A5FA",
+    accent: "blue",
   },
   {
     value: "schedule",
     label: t("settings.tabs.schedule.label"),
     sub: t("settings.tabs.schedule.sub"),
     icon: Calendar,
-    accent: COLORS.amber,
+    accent: "amber",
   },
   {
     value: "finance",
     label: t("settings.tabs.finance.label"),
     sub: t("settings.tabs.finance.sub"),
     icon: DollarSign,
-    accent: COLORS.indigo,
+    accent: "indigo",
   },
-  // {
-  //   value: "media",
-  //   label: t("settings.tabs.media.label"),
-  //   sub: t("settings.tabs.media.sub"),
-  //   icon: ImageIcon,
-  //   accent: COLORS.red,
-  // },
 ];
+
+type AccentColor = "emerald" | "orange" | "blue" | "amber" | "indigo";
+
+type AccentClasses = {
+  bar: string;
+  bgGradient: string;
+  ring: string;
+  iconBgGradient: string;
+  iconShadow: string;
+  text: string;
+  dot: string;
+  dotShadow: string;
+};
+
+const ACCENT_CLASSES: Record<AccentColor, AccentClasses> = {
+  emerald: {
+    bar: "bg-gradient-to-b from-emerald-500 to-emerald-500/70 shadow-[2px_0_10px_-2px] shadow-emerald-500/70",
+    bgGradient:
+      "bg-gradient-to-br from-emerald-500/[0.16] to-emerald-500/[0.08]",
+    ring: "ring-1 ring-inset ring-emerald-500/35",
+    iconBgGradient:
+      "bg-gradient-to-br from-emerald-500/[0.38] to-emerald-500/[0.18]",
+    iconShadow: "shadow-[0_0_18px_-2px] shadow-emerald-500/30",
+    text: "text-emerald-500",
+    dot: "bg-emerald-500",
+    dotShadow: "shadow-[0_0_10px] shadow-emerald-500",
+  },
+
+  orange: {
+    bar: "bg-gradient-to-b from-orange-400 to-orange-400/70 shadow-[2px_0_10px_-2px] shadow-orange-400/70",
+    bgGradient: "bg-gradient-to-br from-orange-400/[0.16] to-orange-400/[0.08]",
+    ring: "ring-1 ring-inset ring-orange-400/35",
+    iconBgGradient:
+      "bg-gradient-to-br from-orange-400/[0.38] to-orange-400/[0.18]",
+    iconShadow: "shadow-[0_0_18px_-2px] shadow-orange-400/30",
+    text: "text-orange-400",
+    dot: "bg-orange-400",
+    dotShadow: "shadow-[0_0_10px] shadow-orange-400",
+  },
+
+  blue: {
+    bar: "bg-gradient-to-b from-blue-400 to-blue-400/70 shadow-[2px_0_10px_-2px] shadow-blue-400/70",
+    bgGradient: "bg-gradient-to-br from-blue-400/[0.16] to-blue-400/[0.08]",
+    ring: "ring-1 ring-inset ring-blue-400/35",
+    iconBgGradient: "bg-gradient-to-br from-blue-400/[0.38] to-blue-400/[0.18]",
+    iconShadow: "shadow-[0_0_18px_-2px] shadow-blue-400/30",
+    text: "text-blue-400",
+    dot: "bg-blue-400",
+    dotShadow: "shadow-[0_0_10px] shadow-blue-400",
+  },
+
+  amber: {
+    bar: "bg-gradient-to-b from-amber-500 to-amber-500/70 shadow-[2px_0_10px_-2px] shadow-amber-500/70",
+    bgGradient: "bg-gradient-to-br from-amber-500/[0.16] to-amber-500/[0.08]",
+    ring: "ring-1 ring-inset ring-amber-500/35",
+    iconBgGradient:
+      "bg-gradient-to-br from-amber-500/[0.38] to-amber-500/[0.18]",
+    iconShadow: "shadow-[0_0_18px_-2px] shadow-amber-500/30",
+    text: "text-amber-500",
+    dot: "bg-amber-500",
+    dotShadow: "shadow-[0_0_10px] shadow-amber-500",
+  },
+
+  indigo: {
+    bar: "bg-gradient-to-b from-indigo-500 to-indigo-500/70 shadow-[2px_0_10px_-2px] shadow-indigo-500/70",
+    bgGradient: "bg-gradient-to-br from-indigo-500/[0.16] to-indigo-500/[0.08]",
+    ring: "ring-1 ring-inset ring-indigo-500/35",
+    iconBgGradient:
+      "bg-gradient-to-br from-indigo-500/[0.38] to-indigo-500/[0.18]",
+    iconShadow: "shadow-[0_0_18px_-2px] shadow-indigo-500/30",
+    text: "text-indigo-500",
+    dot: "bg-indigo-500",
+    dotShadow: "shadow-[0_0_10px] shadow-indigo-500",
+  },
+};
 
 const SidebarTab = ({ tab }: { tab: any }) => {
   const Icon = tab.icon;
+  const c = ACCENT_CLASSES[tab.accent as AccentColor];
+
   return (
     <Tabs.Trigger
       value={tab.value}
       className="group relative w-full text-left outline-none cursor-pointer p-0 bg-transparent border-0"
     >
+      {/* Active left bar */}
       <div
-        className="absolute left-0 top-3 bottom-3 w-[3px] rounded-r-full opacity-0 transition-all duration-200 scale-y-50 group-data-[state=active]:opacity-100 group-data-[state=active]:scale-y-100"
-        style={{
-          background: `linear-gradient(180deg, ${tab.accent}, ${tab.accent}70)`,
-          boxShadow: `2px 0 10px ${tab.accent}70`,
-        }}
+        className={`absolute left-0 top-3 bottom-3 w-[3px] rounded-r-full opacity-0 scale-y-50 transition-all duration-200 group-data-[state=active]:opacity-100 group-data-[state=active]:scale-y-100 ${c.bar}`}
       />
+
       <div className="relative flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-200 overflow-hidden hover:bg-white/[0.04]">
+        {/* Active background gradient */}
         <div
-          className="absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-200 group-data-[state=active]:opacity-100 rounded-2xl"
-          style={{
-            background: `linear-gradient(135deg, ${tab.accent}16 0%, ${tab.accent}08 100%)`,
-          }}
+          className={`absolute inset-0 rounded-2xl opacity-0 pointer-events-none transition-opacity duration-200 group-data-[state=active]:opacity-100 ${c.bgGradient}`}
         />
+
+        {/* Active inset border */}
         <div
-          className="absolute inset-0 rounded-2xl opacity-0 pointer-events-none transition-opacity duration-200 group-data-[state=active]:opacity-100"
-          style={{ boxShadow: `inset 0 0 0 1px ${tab.accent}35` }}
+          className={`absolute inset-0 rounded-2xl opacity-0 pointer-events-none transition-opacity duration-200 group-data-[state=active]:opacity-100 ${c.ring}`}
         />
+
+        {/* Icon container */}
         <div className="relative w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-200 bg-white/[0.05] group-hover:bg-white/[0.08] group-data-[state=active]:bg-transparent">
           <div
-            className="absolute inset-0 rounded-xl opacity-0 transition-opacity duration-200 group-data-[state=active]:opacity-100"
-            style={{
-              background: `linear-gradient(135deg, ${tab.accent}38, ${tab.accent}18)`,
-              boxShadow: `0 0 18px ${tab.accent}50, inset 0 1px 0 ${tab.accent}30`,
-            }}
+            className={`absolute inset-0 rounded-xl opacity-0 transition-opacity duration-200 group-data-[state=active]:opacity-100 ${c.iconBgGradient} ${c.iconShadow}`}
           />
           <span className="relative z-10 group-data-[state=active]:hidden">
-            <Icon size={20} color={COLORS.iconGray} />
+            <Icon size={20} className="text-slate-400" />
           </span>
           <span className="relative z-10 hidden group-data-[state=active]:inline-flex">
-            <Icon size={20} color={tab.accent} />
+            <Icon size={20} className={c.text} />
           </span>
         </div>
+
         <div className="min-w-0 flex-1 relative z-10">
           <p className="text-[14px] font-semibold leading-tight text-[#9aa3b0] transition-colors duration-200 group-hover:text-[#ccd3db] group-data-[state=active]:text-white">
             {tab.label}
@@ -119,20 +183,16 @@ const SidebarTab = ({ tab }: { tab: any }) => {
               {tab.sub}
             </span>
             <span
-              className="hidden group-data-[state=active]:inline"
-              style={{ color: tab.accent }}
+              className={`hidden group-data-[state=active]:inline ${c.text}`}
             >
               {tab.sub}
             </span>
           </p>
         </div>
+
         <div className="relative z-10 flex-shrink-0 w-5 flex items-center justify-center">
           <div
-            className="w-2 h-2 rounded-full opacity-0 scale-50 transition-all duration-200 group-data-[state=active]:opacity-100 group-data-[state=active]:scale-100"
-            style={{
-              background: tab.accent,
-              boxShadow: `0 0 10px ${tab.accent}, 0 0 4px ${tab.accent}`,
-            }}
+            className={`w-2 h-2 rounded-full opacity-0 scale-50 transition-all duration-200 group-data-[state=active]:opacity-100 group-data-[state=active]:scale-100 ${c.dot} ${c.dotShadow}`}
           />
         </div>
       </div>
@@ -143,6 +203,8 @@ const SidebarTab = ({ tab }: { tab: any }) => {
 export const Setting = () => {
   const { t } = useTranslation();
   const { tournament } = useTournamentStore();
+
+  console.log("tournament", tournament);
   const [open, setOpen] = useState(false);
 
   const [form] = Form.useForm<Tournament>();
@@ -160,8 +222,6 @@ export const Setting = () => {
     });
 
     const response = await TournamentClient.updateTournament(request);
-    console.log("form data", data);
-    console.log("response", response);
     setOpen(false);
   };
 
@@ -172,10 +232,10 @@ export const Setting = () => {
   const tabs = TAB_CONFIG(t);
 
   useEffect(() => {
-  if (!tournament) return;
+    if (!tournament) return;
 
-  form.setFieldsValue(tournament);
-}, [tournament, form]);
+    form.setFieldsValue(tournament);
+  }, [tournament, form]);
 
   return (
     <AntdThemeConfig>
@@ -273,11 +333,7 @@ export const Setting = () => {
           </LTooltip>
         </div>
 
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-        >
+        <Form form={form} layout="vertical" onFinish={onFinish}>
           <Tabs.Root
             defaultValue="basic"
             className="flex flex-1 overflow-hidden"

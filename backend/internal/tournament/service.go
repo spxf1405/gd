@@ -82,7 +82,7 @@ func extractIDs[T interface{ GetId() string }](items []T) []string {
 
 func (s *Service) getTournamentByID(ctx context.Context, id string) (*tournamentpb.Tournament, error) {
 	log.Println("id", id)
-	tournament, err := s.repo.getTournamentByID1(ctx, id)
+	tournament, err := s.repo.getTournamentByID(ctx, id)
 
 	if err != nil {
 		log.Println("getTournament error:", err)

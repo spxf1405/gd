@@ -290,7 +290,7 @@ func (r *TournamentRepository) getTournaments(
 			&t.HasRanking,
 			&maxRankingClass,
 			&t.Gender,
-			&t.RegisteredPlayers,
+			&t.Participants,
 		)
 
 		if err != nil {
@@ -339,9 +339,7 @@ func (r *TournamentRepository) getTournaments(
 	return tournaments, nil
 }
 
-func (r *TournamentRepository) getTournamentByID1(ctx context.Context, id string) (*tournamentpb.Tournament, error) {
-	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-
+func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string) (*tournamentpb.Tournament, error) {
 	query := `
 		SELECT
 			t.id,
@@ -368,14 +366,17 @@ func (r *TournamentRepository) getTournamentByID1(ctx context.Context, id string
 			COALESCE(
 				json_agg(
 					json_build_object(
-						'id', p.id,
-						'name', p.name
-					)
-				)
-			) AS registered_players 
+						'id', player.id,
+						'name', player.name
+					) 
+				) FILTER (WHERE player.id IS NOT NULL),
+				'[]'::json
+			) AS participants 
 		FROM gd_tournaments t
-		INNER JOIN gd_participants p ON p.tournament_id = t.id
+		JOIN gd_participants participant ON participant.tournament_id = t.id
+		JOIN gd_players player ON player.id = participant.player_id
 		WHERE t.id = $1
+		GROUP BY t.id
 	`
 
 	row := r.DB.Pool.QueryRow(ctx, query, id)
@@ -387,7 +388,14 @@ func (r *TournamentRepository) getTournamentByID1(ctx context.Context, id string
 	var startDate, deletedAt sql.NullTime
 	var maxPlayers sql.NullInt32
 
-	err = row.Scan(
+	type participantJSON struct {
+		ID   string `json:"id"`
+		Name string `json:"name"`
+	}
+
+	var rawParticipants []participantJSON
+
+	err := row.Scan(
 		&tournament.Id,
 		&tournament.Name,
 		&tournament.Type,
@@ -409,12 +417,24 @@ func (r *TournamentRepository) getTournamentByID1(ctx context.Context, id string
 		&maxRankingClass,
 		&tournament.Gender,
 		&deletedAt,
-		&tournament.Participants
+		&rawParticipants,
 	)
 
 	if err != nil {
 		log.Println("err", err)
+		return nil, err
 	}
+
+	participants := make([]*tournamentpb.Participant, 0, len(rawParticipants))
+
+	for _, p := range rawParticipants {
+		participants = append(participants, &tournamentpb.Participant{
+			Id:   p.ID,
+			Name: p.Name,
+		})
+	}
+
+	tournament.Participants = participants
 
 	if location.Valid {
 		tournament.Location = wrapperspb.String(location.String)
@@ -459,7 +479,7 @@ func (r *TournamentRepository) getTournamentByID1(ctx context.Context, id string
 		tournament.DeletedAt = wrapperspb.String(deletedAt.Time.Format(time.RFC3339))
 	}
 
-	logger.Dump(tournament)
+	// logger.Dump(tournament)
 
 	return tournament, nil
 }
@@ -555,7 +575,7 @@ func (r *TournamentRepository) getTournamentByID1(ctx context.Context, id string
 // 													)
 // 													FROM gd_participants as paritcipant
 // 													WHERE paritcipant.match_id = match.id
-// 												) 
+// 												)
 // 											)
 // 										)
 // 										FROM gd_matches as match
@@ -565,7 +585,7 @@ func (r *TournamentRepository) getTournamentByID1(ctx context.Context, id string
 // 							)
 // 							FROM gd_rounds as round
 // 							WHERE bracket_id = bracket.id
-// 						) 
+// 						)
 // 					)
 // 				)
 // 				FROM gd_brackets as bracket

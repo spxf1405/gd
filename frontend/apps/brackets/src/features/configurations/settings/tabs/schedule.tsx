@@ -59,17 +59,11 @@ export const ScheduleTab = () => {
       <ConfigProvider
         theme={{
           token: {
-            colorPrimary: "#f59e0b",
-            colorInfo: "#f59e0b",
+            colorPrimary: COLORS.amber,
           },
         }}
       >
         <div className="flex flex-col gap-5">
-          {/* <SectionHeader
-            icon={<Calendar size={18} />}
-            title={t("settings.schedule.title")}
-            accent={COLORS.amber}
-          /> */}
           <div className="grid grid-cols-2 gap-4">
             <Field label={t("settings.schedule.createdDate")} required>
               <DatePicker
