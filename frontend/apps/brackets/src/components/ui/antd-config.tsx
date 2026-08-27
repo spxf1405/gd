@@ -1,3 +1,4 @@
+import { COLORS } from "@/features/configurations/settings/consts/color";
 import { ConfigProvider, theme } from "antd";
 import React from "react";
 
@@ -36,15 +37,29 @@ export const AntdThemeConfig = ({
           fontFamily: FONT_FAMILY,
         },
         components: {
+          Tooltip: {
+            //TODO: make tooltip better
+          },
+          // Tooltip: {
+          //   colorBgSpotlight: COLORS.surfaceAlt,
+          //   colorTextLightSolid: COLORS.textPrimary,
+          //   borderRadius: 8,
+          //   boxShadowSecondary: `0 8px 24px rgba(0,0,0,0.5), 0 0 0 1px ${COLORS.border}`,
+          //   paddingXS: 10,
+          //   paddingSM: 6,
+          //   fontSize: 11,
+          //   fontWeightStrong: 500,
+          //   colorBorder: 
+          // },
           Input: {
-            inputFontSizeLG: 13
+            inputFontSizeLG: 13,
           },
           Modal: {
             contentBg: BG_DARKER_BLUE_TRANSPARENT,
             headerBg: "transparent",
             titleColor: "#FFFFFF",
             borderRadiusLG: 16,
-            controlPaddingHorizontal: 0, 
+            controlPaddingHorizontal: 0,
             paddingContentVertical: 0,
             padding: 100,
           },
@@ -57,8 +72,8 @@ export const AntdThemeConfig = ({
             headerColor: "#94A3B8",
             rowHoverBg: "rgba(255, 255, 255, 0.04)",
           },
-          Select: {          
-            selectorBg: 'transparent',
+          Select: {
+            selectorBg: "transparent",
             fontFamily: FONT_FAMILY,
           },
           Tabs: {

@@ -1,7 +1,26 @@
-import { ConfigProvider, Form, InputNumber, Select, Slider, Switch } from "antd";
+import { QSelect } from "@/components/ui/select";
+import { ConfigProvider, Form, InputNumber, Slider, Switch } from "antd";
 import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import { useTranslation } from "react-i18next";
-import { Field, RANKING_CLASSES } from "../../consts/input";
+import { Field } from "../../field/field";
+
+export const RANKING_CLASSES = [
+  "K",
+  "I",
+  "H",
+  "G",
+  "F",
+  "E",
+  "D",
+  "C",
+  "B",
+  "A",
+  "PRO",
+];
+
+const RANKING_MARKS = Object.fromEntries(
+  RANKING_CLASSES.map((rank, index) => [index, rank]),
+);
 
 export const PlayersTab = () => {
   const form = useFormInstance();
@@ -16,11 +35,6 @@ export const PlayersTab = () => {
     t("settings.options.gender.female"),
   ];
 
-  const currentIndex = Math.max(
-    0,
-    RANKING_CLASSES.indexOf(maxRankingClass ?? RANKING_CLASSES[0]),
-  );
-
   return (
     <ConfigProvider
       theme={{
@@ -32,40 +46,33 @@ export const PlayersTab = () => {
     >
       <div className="space-y-5">
         <div className="grid grid-cols-2 gap-3">
-          <div className="group rounded-xl hover:border-blue-300/50 transition-all duration-200">
-            <Field label={t("settings.players.gender")} required>
-              <Form.Item name="gender" noStyle>
-                <Select className="w-full" size="large">
-                  {genderOptions.map((v) => (
-                    <Select.Option key={v} value={v}>
-                      {v}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Field>
-          </div>
-          <div className="rounded-xl transition-all duration-200">
-            <Field label={t("settings.players.maxAge")} required>
-              <div className="relative max-w-[160px]">
-                <Form.Item
-                  name="maxAge"
-                  noStyle
-                  normalize={(value) => (value === 0 ? undefined : value)}
-                >
-                  <InputNumber
-                    size="large"
-                    className="w-full"
-                    min={0}
-                    controls={false}
-                  />
-                </Form.Item>
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
-                  {t("settings.players.maxAgeUnit")}
-                </span>
-              </div>
-            </Field>
-          </div>
+          <Field label={t("settings.players.gender")} required>
+            <Form.Item name="gender" noStyle>
+              <QSelect
+                className="w-full"
+                size="large"
+                options={genderOptions.map((e) => ({
+                  key: e,
+                  value: e,
+                }))}
+              />
+            </Form.Item>
+          </Field>
+
+          <Field label={t("settings.players.maxAge")} required>
+            <Form.Item
+              name="maxAge"
+              noStyle
+              normalize={(value) => (value === 0 ? undefined : value)}
+            >
+              <InputNumber
+                size="large"
+                className="!w-full"
+                min={0}
+                controls={false}
+              />
+            </Form.Item>
+          </Field>
         </div>
 
         <div className="flex items-center gap-3">
@@ -73,7 +80,12 @@ export const PlayersTab = () => {
             <span className="text-sm font-semibold text-foreground">
               {t("settings.players.ranking.title")}
             </span>
-            <Form.Item name="hasRanking" valuePropName="checked" noStyle>
+
+            <Form.Item
+              name="hasRanking"
+              valuePropName="checked"
+              noStyle
+            >
               <Switch />
             </Form.Item>
           </div>
@@ -81,17 +93,17 @@ export const PlayersTab = () => {
 
         <div
           className={`
-          rounded-xl border transition-all duration-300 overflow-hidden
-          ${
-            hasRanking
-              ? "border-blue-400/40 bg-blue-500/5"
-              : "[border-color:rgba(255,255,255,0.2)]"
-          }
-        `}
+            overflow-hidden rounded-xl border transition-all duration-300
+            ${
+              hasRanking
+                ? "border-blue-400/40 bg-blue-500/5"
+                : "[border-color:rgba(255,255,255,0.2)]"
+            }
+          `}
         >
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
-              <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+              <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
                 {hasRanking
                   ? t("settings.players.ranking.descriptionOn")
                   : t("settings.players.ranking.descriptionOff")}
@@ -100,9 +112,10 @@ export const PlayersTab = () => {
           </div>
 
           {hasRanking && (
-            <div className="px-4 pb-4 animate-in fade-in slide-in-from-top-1 duration-200">
-              <div className="h-px bg-blue-200/60 mb-4" />
-              <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-4">
+            <div className="animate-in slide-in-from-top-1 fade-in px-4 pb-4 duration-200">
+              <div className="mb-4 h-px bg-blue-200/60" />
+
+              <p className="mb-4 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                 {t("settings.players.ranking.rankLimit")}
               </p>
 
@@ -116,7 +129,9 @@ export const PlayersTab = () => {
                   getValueProps={(value) => ({
                     value: Math.max(
                       0,
-                      RANKING_CLASSES.indexOf(value ?? RANKING_CLASSES[0]),
+                      RANKING_CLASSES.indexOf(
+                        value ?? RANKING_CLASSES[0],
+                      ),
                     ),
                   })}
                 >
@@ -124,31 +139,19 @@ export const PlayersTab = () => {
                     min={0}
                     max={RANKING_CLASSES.length - 1}
                     step={1}
-                    tooltip={{ formatter: (i) => RANKING_CLASSES[i ?? 0] }}
+                    marks={RANKING_MARKS}
+                    tooltip={{
+                      formatter: (value) =>
+                        RANKING_CLASSES[value ?? 0],
+                    }}
                   />
                 </Form.Item>
 
-                <div className="flex justify-between">
-                  {RANKING_CLASSES.map((v, i) => (
-                    <span
-                      key={v}
-                      className={`text-[11px] font-medium transition-colors cursor-pointer ${
-                        i === currentIndex
-                          ? "text-blue-500"
-                          : "text-muted-foreground"
-                      }`}
-                      onClick={() => form.setFieldValue("maxRankingClass", v)}
-                    >
-                      {v}
-                    </span>
-                  ))}
-                </div>
-
                 {maxRankingClass && (
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/30 text-blue-500 text-xs font-semibold">
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1.5 text-xs font-semibold text-blue-500">
                     <span>≤</span>
                     <span>{maxRankingClass}</span>
-                    <span className="text-blue-400 font-normal">
+                    <span className="font-normal text-blue-400">
                       rank required
                     </span>
                   </div>
@@ -156,6 +159,11 @@ export const PlayersTab = () => {
               </div>
             </div>
           )}
+        </div>
+
+        <div className="text-xs italic">
+          (*) Cài đặt tuổi tối đa đặc biệt hữu ích nếu bạn đang tổ chức một
+          giải đấu junior!
         </div>
       </div>
     </ConfigProvider>

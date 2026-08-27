@@ -1,10 +1,23 @@
+import { QSelect } from "@/components/ui/select";
 import { PrizeDistributionTable } from "@/features/configurations/settings/tabs/finance/prize-distributiontable";
-import { ConfigProvider, Form, Input, Select } from "antd";
+import { ConfigProvider, Form, Input } from "antd";
 import { Banknote, Coins, Globe2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CurrencyHint, Field } from "../../consts/input";
-import { QSelect } from "@/components/ui/select";
+import { Field } from "../../field/field";
+
+export const CurrencyHint = ({
+  value,
+  unit,
+}: {
+  value: number;
+  unit: string;
+}) =>
+  value > 0 ? (
+    <p className="text-xs mt-1 text-indigo-500 font-medium">
+      ≈ {Number(value).toLocaleString("vi-VN")} {unit}
+    </p>
+  ) : null;
 
 function CurrencyInput({
   value,

@@ -1,5 +1,5 @@
 import { QSelect } from "@/components/ui/select";
-import { Form, Tooltip } from "antd";
+import { Form } from "antd";
 import { Pencil } from "lucide-react";
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
@@ -8,6 +8,7 @@ import type { Bracket } from "@gd/proto/bracket/v1/bracket_pb";
 import { EliminationType } from "@gd/proto/round/v1/round_pb";
 import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 
+import { QTooltip } from "@/components/ui/toottip";
 import { SideRow } from "./side-row";
 import type { TournamentRound } from "./types/types";
 
@@ -170,27 +171,25 @@ export function RoundCard({
               {name}
             </span>
 
-            <Tooltip
-              title={<>Đổi tên vòng đấu</>}
-              placement="top"
-              mouseEnterDelay={0.4}
-            >
+            <QTooltip title="Đổi tên vòng đấu" arrow={false}>
               <button
                 type="button"
                 onClick={startEditingRoundName}
                 className="
                   flex h-6 w-6 shrink-0
                   items-center justify-center
-                  rounded-md text-zinc-500
+                  rounded-md text-zinc-300
                   transition-colors
                   hover:bg-zinc-800
                   hover:text-zinc-200
+                  hover:scale-115
                   cursor-pointer
+                  transition-all duration-200
                 "
               >
                 <Pencil className="h-3.5 w-3.5" />
               </button>
-            </Tooltip>
+            </QTooltip>
           </div>
         ) : (
           <input

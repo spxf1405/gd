@@ -1,4 +1,4 @@
-export * from './basic'
+export * from './basic/basic'
 export * from './finance/finance'
 export * from './players/players'
-export * from './schedule'
+export * from './schedule/schedule'

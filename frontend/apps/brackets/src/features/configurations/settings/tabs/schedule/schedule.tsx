@@ -1,50 +1,12 @@
 import { AntdThemeConfig } from "@/components/ui/antd-config";
 import { useTournamentStore } from "@/store/match";
-import { type Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 import { ConfigProvider, DatePicker, Input, theme } from "antd";
 import dayjs from "dayjs";
-import { Calendar, MapPin } from "lucide-react";
-import React from "react";
-import { type UseFormRegister } from "react-hook-form";
+import { MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { COLORS } from "../consts/color";
-import { SectionHeader } from "../header/tab-header";
+import { COLORS } from "../../consts/color";
+import { Field } from "../../field/field";
 
-const INPUT_BASE_CLS =
-  "w-full px-3.5 py-2.5 text-[13px] text-white rounded-xl outline-none transition-all duration-150 focus:ring-2 focus:ring-white/10 placeholder-[#4a5568]";
-const INPUT_STYLE = {
-  background: COLORS.inputBg,
-  border: `1px solid ${COLORS.inputBorder}`,
-};
-
-const LInput = ({ className = "", ...p }) => (
-  <input
-    className={`${INPUT_BASE_CLS} ${className}`}
-    style={INPUT_STYLE}
-    {...p}
-  />
-);
-
-const Field = ({
-  label,
-  required,
-  children,
-}: {
-  label: string;
-  required?: boolean;
-  children: React.ReactNode;
-}) => (
-  <div className="flex flex-col gap-1.5">
-    <label
-      className="text-[11px] font-semibold uppercase tracking-[0.09em]"
-      style={{ color: COLORS.textSecondary }}
-    >
-      {label}
-      {required && <span className="text-red-400 ml-1">*</span>}
-    </label>
-    {children}
-  </div>
-);
 
 export const ScheduleTab = () => {
   const { t } = useTranslation();

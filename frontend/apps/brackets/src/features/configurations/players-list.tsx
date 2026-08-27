@@ -1,3 +1,4 @@
+import { QButton } from "@/components/ui/button";
 import { ParticipantClient } from "@/helper/service-client";
 import { useTournamentStore } from "@/store/match";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -24,18 +25,15 @@ import {
   Badge,
   Button,
   Dropdown,
-  Flex,
-  Form,
   Input,
   Modal,
   Segmented,
   Spin,
   Tooltip,
-  type MenuProps,
+  type MenuProps
 } from "antd";
 import {
   Crown,
-  Flag,
   GripVertical,
   Info,
   LayoutGrid,
@@ -43,9 +41,8 @@ import {
   Search,
   Settings,
   Trash2,
-  UserPlus,
   Users,
-  X,
+  X
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -62,83 +59,6 @@ interface Player {
 
 const RANK_ORDER = ["CN", "A", "B", "C", "D", "E"];
 const GOLD = "#eab308";
-
-const AddPlayerModal = ({
-  open,
-  onClose,
-  onAdd,
-}: {
-  open: boolean;
-  onClose: () => void;
-  onAdd: (name: string) => void;
-}) => {
-  const { t } = useTranslation();
-  const [form] = Form.useForm<{ name: string }>();
-
-  const handleOk = async () => {
-    const { name } = await form.validateFields();
-    onAdd(name.trim());
-    form.resetFields();
-    onClose();
-  };
-
-  return (
-    <Modal
-      open={open}
-      onCancel={onClose}
-      onOk={handleOk}
-      // okText={t("players.add.confirm")}
-      okText="Confirm"
-      // cancelText={t("players.add.cancel")}
-      cancelText="Cancel"
-      title={
-        <div className="flex justify-between">
-          <div className="flex items-center gap-2.5">
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{
-                background: `${COLORS.green}18`,
-                border: `1px solid ${COLORS.green}30`,
-                color: COLORS.green,
-              }}
-            >
-              <UserPlus size={15} />
-            </div>
-            <span className="text-[14px] font-bold text-white">
-              {/* {t("players.add.title")} */}
-              Thêm người chơi
-            </span>
-          </div>
-        </div>
-      }
-      closable={false}
-      width={480}
-      centered
-    >
-      <Form form={form} layout="vertical" className="mt-4">
-        <Form.Item
-          name="name"
-          // label={t("players.add.nameLabel")}
-          label={
-            <>
-              Vui lòng nhập id của người chơi, &nbsp;
-              <span className="text-blue-500">hướng dẫn lấy ID người chơi</span>
-            </>
-          }
-          rules={[{ required: true, message: t("players.add.nameRequired") }]}
-        >
-          <Input
-            size="large"
-            // placeholder={t("players.add.namePlaceholder")}
-            placeholder="ID người chơi"
-            autoFocus
-            onPressEnter={handleOk}
-          />
-        </Form.Item>
-      </Form>
-    </Modal>
-  );
-};
 
 const SILVER = "#38bdf8"; // sky-400, dùng cho hạng A
 
@@ -383,8 +303,6 @@ export const Players = () => {
     return sortedEntries;
   }, [filteredParticipants]);
 
-  
-
   const handleDragEndWithinGroup = (
     event: DragEndEvent,
     groupPlayers: Player[],
@@ -438,18 +356,27 @@ export const Players = () => {
 
   return (
     <>
-      <button
+      <QButton
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white cursor-pointer border-0 transition-all duration-200 hover:[border-color:rgba(255,255,255,0.2)]"
+        icon={<Users size={16} className="!text-amber-500" />}
+        size="large"
         style={{
-          background: "linear-gradient(135deg, #1a1d27, #22263a)",
+          height: "auto",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 10,
+          padding: "10px 20px",
+          borderRadius: 12,
+          fontWeight: 700,
+          fontSize: 13,
+          color: "#ffffff",
           border: `1px solid ${COLORS.border}`,
+          background: "linear-gradient(135deg, #1a1d27, #22263a)",
           boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
         }}
       >
-        <Users size={14} style={{ color: COLORS.gold }} />
         Xem danh sách người chơi
-      </button>
+      </QButton>
 
       <Modal
         open={open}

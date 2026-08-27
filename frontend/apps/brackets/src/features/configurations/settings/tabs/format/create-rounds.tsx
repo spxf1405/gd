@@ -85,7 +85,7 @@ export const CreateRoundsButton = ({ label }: { label: string }) => {
 
   return (
     <Popconfirm
-      title="Reset rounds"
+      title="Warning"
       description={
         <div className="w-72">
           Reset cài đặt vòng đấu về mặc định cũng sẽ xóa hết tất cả thông

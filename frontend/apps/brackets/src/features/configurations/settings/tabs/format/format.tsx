@@ -1,13 +1,13 @@
-import { ConfigProvider, Form, Input } from "antd";
+import { ConfigProvider, Form } from "antd";
 
 import type { Bracket } from "@gd/proto/bracket/v1/bracket_pb";
 import { EliminationType } from "@gd/proto/round/v1/round_pb";
 import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 
+import { COLORS } from "../../consts/color";
 import { CreateRoundsButton } from "./create-rounds";
 import { RoundCard } from "./round-card";
 import type { TournamentRound } from "./types/types";
-import { COLORS } from "../../consts/color";
 
 export function FormatTab() {
   const form = Form.useFormInstance<Tournament>();
@@ -37,9 +37,6 @@ export function FormatTab() {
     return names;
   };
 
-  /**
-   * Replace a single round inside Form.brackets.
-   */
   const updateRound = (updatedRound: TournamentRound) => {
     const brackets =
       (form.getFieldValue("brackets") as Bracket[] | undefined) ?? [];
@@ -192,7 +189,7 @@ export function FormatTab() {
         },
       }}
     >
-      <div className="flex justify-between items-start mb-4">
+      <div className="flex justify-between mb-4">
         <Form.Item
           noStyle
           shouldUpdate={(prevValues, currentValues) =>
@@ -215,16 +212,10 @@ export function FormatTab() {
 
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <span className="whitespace-nowrap text-xs">
-              Tổng số người chơi
+            <span className="whitespace-nowrap text-[13px]">
+              Tổng số người tham gia:
             </span>
-
-            <Input
-              size="large"
-              className="!w-24"
-              defaultValue={form.getFieldValue("participants")?.length ?? 0}
-              disabled
-            />
+            <span className="text-base font-bold">{form.getFieldValue("participants")?.length ?? 0}</span>
           </div>
         </div>
       </div>

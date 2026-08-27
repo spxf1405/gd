@@ -237,7 +237,7 @@
       "maxPlayers": "Maximum Players",
       "maxPlayersUnit": "players",
       "gender": "Gender",
-      "maxAge": "Maximum Age (Suitable for age-restricted tournaments, e.g. Under-age, Junior tournaments...)",
+      "maxAge": "Maximum Age",
       "maxAgeUnit": "years old",
       "ranking": {
         "title": "Ranking Mode",

@@ -1,27 +1,30 @@
 import { AntdThemeConfig } from "@/components/ui/antd-config";
+import { QButton } from "@/components/ui/button";
+import { QTooltip } from "@/components/ui/toottip";
 import { TournamentClient } from "@/helper/service-client";
 import { useTournamentStore } from "@/store/match";
 import { create } from "@bufbuild/protobuf";
 import { type Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 import { UpdateTournamentRequestSchema } from "@gd/proto/tournament/v1/tournament_service_pb";
-import { Form, Modal } from "antd";
+import { Button, Form, Modal } from "antd";
 import {
   Calendar,
   DollarSign,
   Grid2X2,
   Info,
+  Save,
   Settings,
   Trophy,
   Users,
   X,
+  XIcon,
 } from "lucide-react";
 import { Separator, Tabs } from "radix-ui";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { COLORS } from "./consts/color";
-import { LTooltip } from "./consts/input";
 import { FormatTab } from "./tabs/format/format";
-import { BasicTab, FinanceTab, PlayersTab, ScheduleTab } from "./tabs/tabs";
+import { FinanceTab, PlayersTab, ScheduleTab, BasicTab } from "./tabs/tabs";
 
 const TAB_CONFIG = (t: (key: string) => string) => [
   {
@@ -239,18 +242,27 @@ export const Setting = () => {
 
   return (
     <AntdThemeConfig>
-      <button
+      <QButton
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white cursor-pointer border-0 transition-all duration-200 hover:[border-color:rgba(255,255,255,0.2)]"
+        icon={<Settings size={16} style={{ color: COLORS.green }} />}
+        size="large"
         style={{
-          background: "linear-gradient(135deg, #1a1d27, #22263a)",
+          height: "auto",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 10,
+          padding: "10px 20px",
+          borderRadius: 12,
+          fontWeight: 700,
+          fontSize: 13,
+          color: "#ffffff",
           border: `1px solid ${COLORS.border}`,
+          background: "linear-gradient(135deg, #1a1d27, #22263a)",
           boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
         }}
       >
-        <Settings size={14} style={{ color: COLORS.green }} />
-        {t("settings.trigger")}
-      </button>
+        Cài đặt giải đấu
+      </QButton>
 
       <Modal
         open={open}
@@ -265,72 +277,55 @@ export const Setting = () => {
           },
         }}
       >
-        <div
-          className="flex-shrink-0 flex items-center justify-between px-6 py-4"
-          style={{
-            borderBottom: `1px solid ${COLORS.borderSubtle}`,
-            background: "rgba(255,255,255,0.015)",
-          }}
-        >
+        <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-b border-white/[0.06] bg-white/[0.015]">
           <div className="flex items-center gap-3.5">
             <div className="flex items-center gap-1.5">
-              {[COLORS.red, COLORS.amber, COLORS.green].map((c) => (
-                <div
-                  key={c}
-                  className="w-3 h-3 rounded-full"
-                  style={{ background: c }}
-                />
+              {["bg-red-500", "bg-amber-500", "bg-emerald-500"].map((c) => (
+                <div key={c} className={`w-3 h-3 rounded-full ${c}`} />
               ))}
             </div>
 
             <Separator.Root
               orientation="vertical"
-              className="w-px h-5"
-              style={{ background: "rgba(255,255,255,0.08)" }}
+              className="w-px h-5 bg-white/[0.08]"
             />
 
             <div className="flex items-center gap-3">
-              <div
-                className="w-9 h-9 rounded-xl flex items-center justify-center"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.green}4d, ${COLORS.indigo}33)`,
-                  border: `1px solid ${COLORS.green}4d`,
-                }}
-              >
-                <Trophy size={17} style={{ color: COLORS.green }} />
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-emerald-500/30 to-indigo-500/20 border border-emerald-500/30">
+                <Trophy size={17} className="text-emerald-500" />
               </div>
               <div>
-                <h4
-                  className="text-[14px] font-bold text-white m-0"
-                  style={{ letterSpacing: "-0.01em" }}
-                >
+                <h4 className="text-[14px] font-bold text-white m-0 tracking-[-0.01em]">
                   {t("settings.title")}
                 </h4>
-                <p
-                  className="text-[10px] mt-0.5 mb-0"
-                  style={{
-                    color: COLORS.textSecondary,
-                    letterSpacing: "0.06em",
-                  }}
-                >
+                <p className="text-[11px] mt-0.5 mb-0 text-[#9aa4b4]">
                   {t("settings.description")}
                 </p>
               </div>
             </div>
           </div>
 
-          <LTooltip content={t("settings.close")}>
-            <button
+          <QTooltip title={t("settings.close")}>
+            <Button
+              type="text"
               onClick={() => setOpen(false)}
-              className="w-7 h-7 rounded-lg flex items-center justify-center cursor-pointer border-0 transition-all duration-150 hover:bg-[rgba(239,68,68,0.15)] hover:text-[#ef4444]"
+              icon={<X size={13} />}
               style={{
+                width: 28,
+                height: 28,
+                padding: 0,
+                border: 0,
+                borderRadius: 8,
                 background: "rgba(255,255,255,0.05)",
-                color: COLORS.closeBtnColor,
+                color: "#8a95a8",
               }}
-            >
-              <X size={13} />
-            </button>
-          </LTooltip>
+              className="
+              transition-all duration-150
+              hover:bg-[rgba(239,68,68,0.15)]
+              hover:text-[#ef4444]
+            "
+            />
+          </QTooltip>
         </div>
 
         <Form form={form} layout="vertical" onFinish={onFinish}>
@@ -338,19 +333,8 @@ export const Setting = () => {
             defaultValue="basic"
             className="flex flex-1 overflow-hidden"
           >
-            <div
-              className="flex-shrink-0 flex flex-col overflow-y-auto"
-              style={{
-                width: 330,
-                borderRight: `1px solid ${COLORS.borderSubtle}`,
-                background: COLORS.overlayBg,
-                padding: "24px 16px",
-              }}
-            >
-              <p
-                className="text-[9px] font-bold tracking-[0.2em] uppercase pl-1 mb-2.5"
-                style={{ color: COLORS.closeBtnColor }}
-              >
+            <div className="flex-shrink-0 flex flex-col overflow-y-auto w-[330px] border-r border-white/[0.06] bg-black/[0.15] px-4 py-6">
+              <p className="text-[9px] font-bold tracking-[0.2em] uppercase pl-1 mb-2.5 text-[#8a95a8]">
                 {t("settings.navigation")}
               </p>
               <Tabs.List className="flex flex-col gap-1.5">
@@ -359,35 +343,14 @@ export const Setting = () => {
                 ))}
               </Tabs.List>
               <div className="mt-auto pt-4">
-                <Separator.Root
-                  className="h-px mb-3.5"
-                  style={{ background: COLORS.borderFaint }}
-                />
-                <div
-                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl"
-                  style={{
-                    background: `${COLORS.green}0f`,
-                    border: `1px solid ${COLORS.green}1f`,
-                  }}
-                >
-                  <div
-                    className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                    style={{
-                      background: COLORS.green,
-                      boxShadow: `0 0 8px ${COLORS.green}`,
-                    }}
-                  />
+                <Separator.Root className="h-px mb-3.5 bg-white/[0.05]" />
+                <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-emerald-500/[0.06] border border-emerald-500/[0.12]">
+                  <div className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-emerald-500 shadow-[0_0_8px] shadow-emerald-500" />
                   <div>
-                    <p
-                      className="text-[10px] font-semibold m-0"
-                      style={{ color: COLORS.green }}
-                    >
+                    <p className="text-[10px] font-semibold m-0 text-emerald-500">
                       {t("settings.systemStatus.label")}
                     </p>
-                    <p
-                      className="text-[9px] mt-px mb-0"
-                      style={{ color: COLORS.greenMuted }}
-                    >
+                    <p className="text-[9px] mt-px mb-0 text-[#7ab090]">
                       {t("settings.systemStatus.uptime")}
                     </p>
                   </div>
@@ -395,10 +358,7 @@ export const Setting = () => {
               </div>
             </div>
 
-            <div
-              className="sys-scroll flex-1 overflow-y-auto"
-              style={{ background: COLORS.surface }}
-            >
+            <div className="sys-scroll flex-1 overflow-y-auto bg-[#13151f]">
               <Tabs.Content
                 value="basic"
                 className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
@@ -433,51 +393,33 @@ export const Setting = () => {
           </Tabs.Root>
         </Form>
 
-        <div
-          className="flex-shrink-0 flex items-center justify-between px-6 py-3.5"
-          style={{
-            borderTop: `1px solid ${COLORS.borderSubtle}`,
-            background: COLORS.overlayDark,
-          }}
-        >
-          <p
-            className="text-[10px] tracking-[0.06em] m-0"
-            style={{ color: COLORS.closeBtnColor }}
-          >
+        <div className="flex-shrink-0 flex items-center justify-between px-6 py-3.5 border-t border-white/[0.06] bg-black/[0.2]">
+          <p className="text-[10px] tracking-[0.06em] m-0 text-[#8a95a8]">
             {t("settings.lastSaved")}
           </p>
           <div className="flex gap-2.5">
-            <button
-              onClick={() => setOpen(false)}
-              className="px-4 py-2 rounded-lg text-[12px] font-medium cursor-pointer border-0 transition-all duration-150 hover:bg-white/[0.09]"
-              style={{
-                background: "rgba(255,255,255,0.05)",
-                color: COLORS.cancelText,
-                border: `1px solid ${COLORS.borderFaint}`,
-              }}
-            >
-              {t("settings.cancel")}
-            </button>
+            <QTooltip title={t("settings.cancelTooltip")}>
+              <Button
+                onClick={() => setOpen(false)}
+                size="medium"
+                icon={<XIcon size={16} />}
+                className="!py-5 !font-bold"
+              >
+                {t("settings.cancel")}
+              </Button>
+            </QTooltip>
 
-            <LTooltip content={t("settings.saveTooltip")}>
-              <button
-                type="button"
+            <QTooltip title={t("settings.saveTooltip")}>
+              <QButton
+                type="primary"
                 onClick={handleSave}
-                className="px-5 py-2 rounded-lg text-[12px] font-semibold text-white cursor-pointer border-0 transition-all duration-150"
-                style={{
-                  background: `linear-gradient(135deg, ${COLORS.green}, ${COLORS.greenDark})`,
-                  boxShadow: `0 0 20px ${COLORS.green}40, 0 4px 12px rgba(0,0,0,0.3)`,
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.boxShadow = `0 0 28px ${COLORS.green}66, 0 4px 12px rgba(0,0,0,0.3)`)
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.boxShadow = `0 0 20px ${COLORS.green}40, 0 4px 12px rgba(0,0,0,0.3)`)
-                }
+                size="medium"
+                icon={<Save size={16} />}
+                className="!py-5 !font-bold"
               >
                 {t("settings.save")}
-              </button>
-            </LTooltip>
+              </QButton>
+            </QTooltip>
           </div>
         </div>
       </Modal>
