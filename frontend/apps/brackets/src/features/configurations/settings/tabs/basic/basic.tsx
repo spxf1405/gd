@@ -1,7 +1,7 @@
 import { QSelect } from "@/components/ui/select";
 import {
   TournamentFormat,
-  TournamentType
+  TournamentType,
 } from "@gd/proto/tournament/v1/tournament_pb";
 import { Form, Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
@@ -45,9 +45,14 @@ export const BasicTab = () => {
         <Form.Item
           name="name"
           noStyle
-          rules={[{ required: true, message: t("settings.tabs.basic.fields.name") }]}
+          rules={[
+            { required: true, message: t("settings.tabs.basic.fields.name") },
+          ]}
         >
-          <Input size="large" placeholder="Nhập tên giải đấu!" />
+          <Input
+            size="large"
+            placeholder={t("settings.tabs.basic.fields.namePlaceholder")}
+          />
         </Form.Item>
       </Field>
 
@@ -83,7 +88,11 @@ export const BasicTab = () => {
             })}
             rules={[{ required: true }]}
           >
-            <QSelect size="large" options={TournamentFormatList} className="w-56" />
+            <QSelect
+              size="large"
+              options={TournamentFormatList}
+              className="w-56"
+            />
           </Form.Item>
         </Field>
 
@@ -92,33 +101,32 @@ export const BasicTab = () => {
             label={t("settings.tabs.basic.fields.formatDescription")}
             required
           >
-            <Form.Item
-              name="formatDescription"
-              noStyle
-              rules={[{ required: true }]}
-            >
-              <Input size="large" className="w-full" placeholder="Nhập thể thức giải đấu!" />
+            <Form.Item name="formatDescription" noStyle>
+              <Input
+                size="large"
+                className="w-full"
+                placeholder={t(
+                  "settings.tabs.basic.fields.formatDescriptionPlaceholder"
+                )}
+              />
             </Form.Item>
           </Field>
         </div>
       </div>
 
       <Field label={t("settings.tabs.basic.fields.organizer")} required>
-        <Form.Item
-          name="organizer"
-          noStyle
-          rules={[{ required: true }]}
-        >
-          <Input size="large" placeholder="Nhập tên người - đơn vị tổ chức giải đấu!" />
+        <Form.Item name="organizer" noStyle rules={[{ required: true }]}>
+          <Input
+            size="large"
+            placeholder={t(
+              "settings.tabs.basic.fields.organizerPlaceholder"
+            )}
+          />
         </Form.Item>
       </Field>
 
-      <Field label={t("settings.tabs.basic.fields.description")} required>
-        <Form.Item
-          name="description"
-          noStyle
-          rules={[{ required: true }]}
-        >
+      <Field label={t("settings.tabs.basic.fields.description")}>
+        <Form.Item name="description" noStyle>
           <TextArea
             placeholder={t("settings.tabs.basic.fields.descriptionPlaceholder")}
             rows={6}

@@ -3,6 +3,7 @@ import { Form } from "antd";
 import { Pencil } from "lucide-react";
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
+import { useTranslation } from "react-i18next";
 
 import type { Bracket } from "@gd/proto/bracket/v1/bracket_pb";
 import { EliminationType } from "@gd/proto/round/v1/round_pb";
@@ -12,19 +13,20 @@ import { QTooltip } from "@/components/ui/toottip";
 import { SideRow } from "./side-row";
 import type { TournamentRound } from "./types/types";
 
-const MODE_ITEMS: {
-  value: EliminationType;
-  label: string;
-}[] = [
-  {
-    value: EliminationType.SINGLE,
-    label: "Loại trực tiếp",
-  },
-  {
-    value: EliminationType.DOUBLE,
-    label: "Nhánh thắng nhánh thua",
-  },
-];
+function getModeItems(
+  t: (key: string) => string,
+): { value: EliminationType; label: string }[] {
+  return [
+    {
+      value: EliminationType.SINGLE,
+      label: t("settings.format.eliminationType.single"),
+    },
+    {
+      value: EliminationType.DOUBLE,
+      label: t("settings.format.eliminationType.double"),
+    },
+  ];
+}
 
 function ModeSelect({
   value,
@@ -35,14 +37,18 @@ function ModeSelect({
   onChange: (value: EliminationType) => void;
   isDisableDouble?: boolean;
 }) {
+  const { t } = useTranslation();
+
   return (
     <QSelect
       value={value}
-      options={MODE_ITEMS}
+      options={getModeItems(t)}
       onChange={onChange}
       disabled={isDisableDouble}
       size="large"
       allowClear={false}
+      placement="bottomRight"
+      popupMatchSelectWidth={false}
     />
   );
 }
@@ -65,6 +71,7 @@ export function RoundCard({
   onChangeMode,
 }: RoundCardProps) {
   const form = Form.useFormInstance<Tournament>();
+  const { t } = useTranslation();
 
   const [isEditingRoundName, setIsEditingRoundName] = useState(false);
 
@@ -171,7 +178,7 @@ export function RoundCard({
               {name}
             </span>
 
-            <QTooltip title="Đổi tên vòng đấu" arrow={false}>
+            <QTooltip title={t("settings.format.renameRound")} arrow={false}>
               <button
                 type="button"
                 onClick={startEditingRoundName}

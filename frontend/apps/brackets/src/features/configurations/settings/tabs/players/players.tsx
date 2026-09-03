@@ -3,6 +3,7 @@ import { ConfigProvider, Form, InputNumber, Slider, Switch } from "antd";
 import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import { useTranslation } from "react-i18next";
 import { Field } from "../../field/field";
+import { Gender } from "@gd/proto/tournament/v1/tournament_pb";
 
 export const RANKING_CLASSES = [
   "K",
@@ -15,7 +16,6 @@ export const RANKING_CLASSES = [
   "C",
   "B",
   "A",
-  "PRO",
 ];
 
 const RANKING_MARKS = Object.fromEntries(
@@ -30,9 +30,18 @@ export const PlayersTab = () => {
   const maxRankingClass = Form.useWatch("maxRankingClass", form);
 
   const genderOptions = [
-    t("settings.options.gender.all"),
-    t("settings.options.gender.male"),
-    t("settings.options.gender.female"),
+    {
+      value: Gender.PREFER_NOT_TO_SAY,
+      label: t("settings.options.gender.preferNotToSay"),
+    },
+    {
+      value: Gender.MALE,
+      label: t("settings.options.gender.male"),
+    },
+    {
+      value: Gender.FEMALE,
+      label: t("settings.options.gender.female"),
+    },
   ];
 
   return (
@@ -51,26 +60,18 @@ export const PlayersTab = () => {
               <QSelect
                 className="w-full"
                 size="large"
-                options={genderOptions.map((e) => ({
-                  key: e,
-                  value: e,
-                }))}
+                options={genderOptions}
               />
             </Form.Item>
           </Field>
 
-          <Field label={t("settings.players.maxAge")} required>
+          <Field label={t("settings.players.maxAge")}>
             <Form.Item
               name="maxAge"
               noStyle
               normalize={(value) => (value === 0 ? undefined : value)}
             >
-              <InputNumber
-                size="large"
-                className="!w-full"
-                min={0}
-                controls={false}
-              />
+              <InputNumber size="large" className="!w-full" controls={false} />
             </Form.Item>
           </Field>
         </div>
@@ -81,11 +82,7 @@ export const PlayersTab = () => {
               {t("settings.players.ranking.title")}
             </span>
 
-            <Form.Item
-              name="hasRanking"
-              valuePropName="checked"
-              noStyle
-            >
+            <Form.Item name="hasRanking" valuePropName="checked" noStyle>
               <Switch />
             </Form.Item>
           </div>
@@ -129,9 +126,7 @@ export const PlayersTab = () => {
                   getValueProps={(value) => ({
                     value: Math.max(
                       0,
-                      RANKING_CLASSES.indexOf(
-                        value ?? RANKING_CLASSES[0],
-                      ),
+                      RANKING_CLASSES.indexOf(value ?? RANKING_CLASSES[0]),
                     ),
                   })}
                 >
@@ -141,8 +136,7 @@ export const PlayersTab = () => {
                     step={1}
                     marks={RANKING_MARKS}
                     tooltip={{
-                      formatter: (value) =>
-                        RANKING_CLASSES[value ?? 0],
+                      formatter: (value) => RANKING_CLASSES[value ?? 0],
                     }}
                   />
                 </Form.Item>
@@ -152,7 +146,7 @@ export const PlayersTab = () => {
                     <span>≤</span>
                     <span>{maxRankingClass}</span>
                     <span className="font-normal text-blue-400">
-                      rank required
+                      {t("settings.players.ranking.rankRequiredSuffix")}
                     </span>
                   </div>
                 )}
@@ -161,10 +155,7 @@ export const PlayersTab = () => {
           )}
         </div>
 
-        <div className="text-xs italic">
-          (*) Cài đặt tuổi tối đa đặc biệt hữu ích nếu bạn đang tổ chức một
-          giải đấu junior!
-        </div>
+        <div className="text-xs italic">{t("settings.players.note")}</div>
       </div>
     </ConfigProvider>
   );

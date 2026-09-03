@@ -165,7 +165,7 @@
           "formatDescription": "Format Description",
           "formatDescriptionPlaceholder": "E.g. Round Robin - Winner Break - WPA Rules",
           "bracketType": "Bracket Type",
-          "bracketDoubleElim": "Winner & Loser Bracket",
+          "bracketDoubleElim": "Double elimination",
           "maxPlayers": "Max Players",
           "playersUnit": "players",
           "advanceTo": "Advance To",
@@ -206,8 +206,20 @@
       "title": "Finance",
       "totalPrize": "Total Prize Pool",
       "totalPrizePlaceholder": "50000000",
+      "totalPrizeError": "Please enter the total prize",
       "entryFee": "Entry Fee",
-      "entryFeePlaceholder": "500000"
+      "entryFeePlaceholder": "500000",
+      "entryFeeError": "Please enter the entry fee",
+      "prizeConfig": "Prize & entry fee configuration",
+      "currencyUnit": "Currency",
+      "selectCurrency": "Currency used",
+      "unitLabel": "Unit:",
+      "autoConvertHint": "The system automatically converts the prize table based on this total amount.",
+      "formatPreview": "Sample display format",
+      "currencyOptions": {
+        "vnd": "VND - Vietnamese Dong (₫)",
+        "usd": "USD - US Dollar ($)"
+      }
     },
     "prizeDistribution": {
       "title": "Prize Structure",
@@ -231,6 +243,16 @@
         "invalid": "Invalid value"
       }
     },
+    "format": {
+      "createRounds": "Create rounds",
+      "resetDefault": "Reset to default",
+      "totalParticipants": "Total participants:",
+      "renameRound": "Rename round",
+      "eliminationType": {
+        "single": "Single elimination",
+        "double": "Double elimination"
+      }
+    },
     "players": {
       "title": "Player Settings",
       "subtitle": "Tournament participation requirements",
@@ -245,12 +267,15 @@
         "disabled": "Disabled",
         "descriptionOn": "Players must have a rank to register for the tournament.",
         "descriptionOff": "No ranking required, open to all levels.",
-        "rankLimit": "Rank Limit"
-      }
+        "rankLimit": "Rank Limit",
+        "rankRequiredSuffix": "rank required"
+      },
+      "note": "(*) The maximum age setting is especially useful if you're organizing a junior tournament!"
     },
     "options": {
       "gender": {
         "all": "All",
+        "preferNotToSay": "-- Prefer not to say",
         "male": "Male",
         "female": "Female"
       },

@@ -1,13 +1,12 @@
 import { QButton } from "@/components/ui/button";
-import {
-  CheckOutlined,
-  CloseOutlined
-} from "@ant-design/icons";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { create } from "@bufbuild/protobuf";
 import type { Bracket } from "@gd/proto/bracket/v1/bracket_pb";
 import type { Participant } from "@gd/proto/participant/v1/participant_pb";
 import { EliminationType, RoundSchema } from "@gd/proto/round/v1/round_pb";
-import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
+import {
+  type Tournament
+} from "@gd/proto/tournament/v1/tournament_pb";
 import { message, Popconfirm } from "antd";
 import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import { RefreshCcw } from "lucide-react";
@@ -15,17 +14,11 @@ import { useState } from "react";
 import { v4 } from "uuid";
 
 const getRoundName = (roundSize: number, isFirstRound: boolean): string => {
-  if (isFirstRound) return "Vòng loại";
   if (roundSize === 8) return "Quarterfinal";
-  if (roundSize === 4) return "Semifinal";
+  if (roundSize === 4) return "Semi final";
   if (roundSize === 2) return "Final";
+  if (isFirstRound) return "Vòng loại";
   return `Last ${roundSize}`;
-};
-
-const wait = (time: number): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, time);
-  });
 };
 
 export const CreateRoundsButton = ({ label }: { label: string }) => {
@@ -47,8 +40,6 @@ export const CreateRoundsButton = ({ label }: { label: string }) => {
 
     setLoading(true);
     try {
-      await wait(1000);
-
       const totalRounds = Math.ceil(Math.log2(maxPlayer));
 
       const updatedBrackets: Bracket[] = brackets.map((bracket) => {
@@ -77,6 +68,8 @@ export const CreateRoundsButton = ({ label }: { label: string }) => {
         }
       }
 
+      console.log("updatedBrackets", updatedBrackets);
+
       form.setFieldValue("brackets", updatedBrackets);
     } finally {
       setLoading(false);
@@ -88,8 +81,8 @@ export const CreateRoundsButton = ({ label }: { label: string }) => {
       title="Warning"
       description={
         <div className="w-72">
-          Reset cài đặt vòng đấu về mặc định cũng sẽ xóa hết tất cả thông
-          tin các trận đấu đã tạo!
+          Reset cài đặt vòng đấu về mặc định cũng sẽ xóa hết tất cả thông tin
+          các trận đấu đã tạo!
         </div>
       }
       onConfirm={handleReplaceRounds}

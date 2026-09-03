@@ -373,8 +373,8 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 				'[]'::json
 			) AS participants 
 		FROM gd_tournaments t
-		JOIN gd_participants participant ON participant.tournament_id = t.id
-		JOIN gd_players player ON player.id = participant.player_id
+		LEFT JOIN gd_participants participant ON participant.tournament_id = t.id
+		LEFT JOIN gd_players player ON player.id = participant.player_id
 		WHERE t.id = $1
 		GROUP BY t.id
 	`

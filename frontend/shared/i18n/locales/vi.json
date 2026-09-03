@@ -20,6 +20,31 @@
       "settings": "Cài đặt"
     }
   },
+  "calendar": {
+    "selectDate": "Chọn ngày",
+    "today": "Hôm nay",
+    "clear": "Xóa",
+    "back": "Quay lại",
+    "pickerMode": {
+      "month": "Tháng",
+      "year": "Năm"
+    },
+    "months": [
+      "Th1",
+      "Th2",
+      "Th3",
+      "Th4",
+      "Th5",
+      "Th6",
+      "Th7",
+      "Th8",
+      "Th9",
+      "Th10",
+      "Th11",
+      "Th12"
+    ],
+    "weekdays": ["CN", "T2", "T3", "T4", "T5", "T6", "T7"]
+  },
   "tournament": {
     "columns": {
       "name": "Tên giải đấu",
@@ -114,7 +139,44 @@
     "tabs": {
       "basic": {
         "label": "Thông tin cơ bản",
-        "sub": "Cơ bản"
+        "sub": "Cơ bản",
+        "sectionTitle": "Thông tin cơ bản",
+        "fields": {
+          "name": "Tên giải đấu",
+          "namePlaceholder": "VD: Giải Bida 8 Bi Hà Nội 2026",
+          "type": "Loại",
+          "format": "Thể thức",
+          "formatDescription": "Mô tả thể thức",
+          "formatDescriptionPlaceholder": "VD: Vòng tròn - Giao bóng người thắng - Luật WPA",
+          "organizer": "Đơn vị tổ chức",
+          "organizerPlaceholder": "VD: CLB Billiards Golden",
+          "description": "Mô tả giải đấu",
+          "descriptionPlaceholder": "Mô tả chi tiết về giải đấu..."
+        }
+      },
+      "format": {
+        "label": "Thể thức & Nhánh đấu",
+        "sub": "Thể thức",
+        "sectionTitle": "Thể thức & Nhánh đấu",
+        "bracketSection": "Nhánh đấu",
+        "fields": {
+          "type": "Loại",
+          "format": "Thể thức",
+          "formatDescription": "Mô tả thể thức",
+          "formatDescriptionPlaceholder": "VD: Vòng tròn - Giao bóng người thắng - Luật WPA",
+          "bracketType": "Loại nhánh đấu",
+          "bracketDoubleElim": "Nhánh thắng & Nhánh thua",
+          "maxPlayers": "Số người tối đa",
+          "playersUnit": "người",
+          "advanceTo": "Tiến vào",
+          "final": "Chung kết"
+        },
+        "info": {
+          "prefix": "Với",
+          "rounds": "nhánh đấu có {count} vòng",
+          "from": "từ",
+          "to": "đến"
+        }
       },
       "schedule": {
         "label": "Lịch trình & Địa điểm",
@@ -142,10 +204,54 @@
     },
     "finance": {
       "title": "Tài chính",
-      "totalPrize": "Tổng giải thưởng (VNĐ)",
+      "totalPrize": "Tổng giải thưởng",
       "totalPrizePlaceholder": "50000000",
-      "entryFee": "Lệ phí tham gia (VNĐ)",
-      "entryFeePlaceholder": "500000"
+      "totalPrizeError": "Vui lòng nhập tổng giải thưởng",
+      "entryFee": "Lệ phí tham gia",
+      "entryFeePlaceholder": "500000",
+      "entryFeeError": "Vui lòng nhập lệ phí tham gia",
+      "prizeConfig": "Cấu hình tiền thưởng & lệ phí",
+      "currencyUnit": "Đơn vị tiền tệ",
+      "selectCurrency": "Loại tiền tệ sử dụng",
+      "unitLabel": "Đơn vị tính:",
+      "autoConvertHint": "Hệ thống tự động quy đổi bảng giải thưởng theo tổng tiền này.",
+      "formatPreview": "Định dạng hiển thị mẫu",
+      "currencyOptions": {
+        "vnd": "VNĐ - Việt Nam Đồng (₫)",
+        "usd": "USD - US Dollar ($)"
+      }
+    },
+    "prizeDistribution": {
+      "title": "Cơ cấu giải thưởng",
+      "columns": {
+        "rank": "#",
+        "name": "Giải thưởng",
+        "amount": "Giá trị",
+        "percent": "%"
+      },
+      "placeholderName": "Giải thưởng #{rank}",
+      "empty": "Chưa có giải thưởng nào. Nhấn + để thêm.",
+      "add": "Thêm giải thưởng",
+      "total": "Tổng:",
+      "budget": {
+        "over": "Vượt {amount}",
+        "exact": "Đủ ngân sách ✓",
+        "remaining": "Còn lại {amount}"
+      },
+      "errors": {
+        "numbersOnly": "Chỉ nhập số",
+        "invalid": "Giá trị không hợp lệ"
+      }
+    },
+    "format": {
+      "createRounds": "Tạo vòng đấu",
+      "resetDefault": "Đặt về mặc định",
+      "totalParticipants": "Tổng số cơ thủ tham gia:",
+      "renameRound": "Đổi tên vòng đấu",
+      "eliminationType": {
+        "single": "Loại trực tiếp",
+        "double": "Nhánh thắng nhánh thua"
+      }
     },
     "players": {
       "title": "Cài đặt người chơi",
@@ -153,7 +259,7 @@
       "maxPlayers": "Số người tối đa",
       "maxPlayersUnit": "người",
       "gender": "Giới tính",
-      "maxAge": "Độ tuổi tối đa (Phù hợp các giải đấu giới hạn độ tuổi, ví dụ các giải U, giải Junior....)",
+      "maxAge": "Độ tuổi tối đa",
       "maxAgeUnit": "tuổi",
       "ranking": {
         "title": "Chế độ phân hạng",
@@ -161,12 +267,15 @@
         "disabled": "Tắt",
         "descriptionOn": "Người chơi cần có hạng khi đăng ký tham gia giải.",
         "descriptionOff": "Không phân hạng, đồng cơ.",
-        "rankLimit": "Hạng giới hạn"
-      }
+        "rankLimit": "Hạng giới hạn",
+        "rankRequiredSuffix": "hạng yêu cầu"
+      },
+      "note": "(*) Cài đặt tuổi tối đa đặc biệt hữu ích nếu bạn đang tổ chức một giải đấu junior!"
     },
     "options": {
       "gender": {
         "all": "Tất cả",
+        "preferNotToSay": "-- Không muốn nói",
         "male": "Nam",
         "female": "Nữ"
       },

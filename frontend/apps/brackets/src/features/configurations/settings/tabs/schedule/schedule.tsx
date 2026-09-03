@@ -30,14 +30,12 @@ export const ScheduleTab = () => {
             <Field label={t("settings.schedule.createdDate")} required>
               <DatePicker
                 size="large"
-                className="font-bold"
                 value={createdAt}
               />
             </Field>
             <Field label={t("settings.schedule.startDate")} required>
               <DatePicker
                 size="large"
-                className="font-bold"
                 value={startDate}
               />
             </Field>

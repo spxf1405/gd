@@ -9,6 +9,7 @@ import { EventBus } from "./helper/event-bus";
 import { useTournament } from "./hook/tournament";
 import { useTournamentStore } from "./store/match";
 import { AntdThemeConfig } from "./components/ui/antd-config";
+import { LanguageSwitcher } from "./features/lang/lang";
 
 const queryClient = new QueryClient();
 const bus = new EventBus();
@@ -72,6 +73,7 @@ function App() {
         <AntdThemeConfig>
           <Players />
         </AntdThemeConfig>
+        <LanguageSwitcher />
       </div>
       <BracketFlow />
     </div>

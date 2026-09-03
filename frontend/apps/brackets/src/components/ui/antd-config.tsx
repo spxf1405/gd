@@ -37,20 +37,12 @@ export const AntdThemeConfig = ({
           fontFamily: FONT_FAMILY,
         },
         components: {
+          Notification: {
+            width: 1200
+          },
           Tooltip: {
             //TODO: make tooltip better
           },
-          // Tooltip: {
-          //   colorBgSpotlight: COLORS.surfaceAlt,
-          //   colorTextLightSolid: COLORS.textPrimary,
-          //   borderRadius: 8,
-          //   boxShadowSecondary: `0 8px 24px rgba(0,0,0,0.5), 0 0 0 1px ${COLORS.border}`,
-          //   paddingXS: 10,
-          //   paddingSM: 6,
-          //   fontSize: 11,
-          //   fontWeightStrong: 500,
-          //   colorBorder: 
-          // },
           Input: {
             inputFontSizeLG: 13,
           },

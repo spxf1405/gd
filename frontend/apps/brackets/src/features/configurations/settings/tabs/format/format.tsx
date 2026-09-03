@@ -1,4 +1,5 @@
 import { ConfigProvider, Form } from "antd";
+import { useTranslation } from "react-i18next";
 
 import type { Bracket } from "@gd/proto/bracket/v1/bracket_pb";
 import { EliminationType } from "@gd/proto/round/v1/round_pb";
@@ -11,6 +12,7 @@ import type { TournamentRound } from "./types/types";
 
 export function FormatTab() {
   const form = Form.useFormInstance<Tournament>();
+  const { t } = useTranslation();
 
   const getRoundsFromBrackets = (brackets: Bracket[]): TournamentRound[] => {
     return brackets.flatMap((bracket) =>
@@ -204,7 +206,11 @@ export function FormatTab() {
 
             return (
               <CreateRoundsButton
-                label={rounds.length ? "Đặt về mặc định" : "Tạo vòng đấu"}
+                label={
+                  rounds.length
+                    ? t("settings.format.resetDefault")
+                    : t("settings.format.createRounds")
+                }
               />
             );
           }}
@@ -213,9 +219,11 @@ export function FormatTab() {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <span className="whitespace-nowrap text-[13px]">
-              Tổng số người tham gia:
+              {t("settings.format.totalParticipants")}
             </span>
-            <span className="text-base font-bold">{form.getFieldValue("participants")?.length ?? 0}</span>
+            <span className="text-base font-bold">
+              {form.getFieldValue("participants")?.length ?? 0}
+            </span>
           </div>
         </div>
       </div>
