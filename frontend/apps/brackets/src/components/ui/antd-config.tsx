@@ -1,4 +1,3 @@
-import { COLORS } from "@/features/configurations/settings/consts/color";
 import { ConfigProvider, theme } from "antd";
 import React from "react";
 
@@ -44,6 +43,9 @@ export const AntdThemeConfig = ({
             //TODO: make tooltip better
           },
           Input: {
+            inputFontSizeLG: 13,
+          },
+          InputNumber: {
             inputFontSizeLG: 13,
           },
           Modal: {

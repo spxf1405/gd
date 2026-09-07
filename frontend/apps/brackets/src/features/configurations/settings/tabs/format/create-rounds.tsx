@@ -4,26 +4,26 @@ import { create } from "@bufbuild/protobuf";
 import type { Bracket } from "@gd/proto/bracket/v1/bracket_pb";
 import type { Participant } from "@gd/proto/participant/v1/participant_pb";
 import { EliminationType, RoundSchema } from "@gd/proto/round/v1/round_pb";
-import {
-  type Tournament
-} from "@gd/proto/tournament/v1/tournament_pb";
+import { type Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 import { message, Popconfirm } from "antd";
 import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import { RefreshCcw } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { v4 } from "uuid";
 
-const getRoundName = (roundSize: number, isFirstRound: boolean): string => {
-  if (roundSize === 8) return "Quarterfinal";
-  if (roundSize === 4) return "Semi final";
-  if (roundSize === 2) return "Final";
-  if (isFirstRound) return "Vòng loại";
-  return `Last ${roundSize}`;
-};
-
 export const CreateRoundsButton = ({ label }: { label: string }) => {
+  const { t } = useTranslation();
   const form = useFormInstance<Tournament>();
   const [loading, setLoading] = useState(false);
+
+  const getRoundName = (roundSize: number, isFirstRound: boolean): string => {
+    if (roundSize === 8) return t("settings.format.rounds.quarterfinal");
+    if (roundSize === 4) return t("settings.format.rounds.semifinal");
+    if (roundSize === 2) return t("settings.format.rounds.final");
+    if (isFirstRound) return t("settings.format.rounds.qualification");
+    return t("settings.format.rounds.lastN", { size: roundSize });
+  };
 
   const handleReplaceRounds = async () => {
     const { brackets, participants } = form.getFieldsValue(true) as {
@@ -31,12 +31,12 @@ export const CreateRoundsButton = ({ label }: { label: string }) => {
       participants: Participant[];
     };
 
-    const maxPlayer = participants?.length ?? 0;
+    const maxPlayer = participants?.length ?? 4;
 
-    if (maxPlayer < 2) {
-      message.warning("Cần ít nhất 2 participants để tạo rounds");
-      return;
-    }
+    // if (maxPlayer < 2) {
+    //   message.warning(t("settings.format.rounds.minParticipantsWarning"));
+    //   return;
+    // }
 
     setLoading(true);
     try {
@@ -68,33 +68,42 @@ export const CreateRoundsButton = ({ label }: { label: string }) => {
         }
       }
 
-      console.log("updatedBrackets", updatedBrackets);
-
       form.setFieldValue("brackets", updatedBrackets);
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    const brackets = form.getFieldValue("brackets") as Bracket[];
+
+    const roundCount = brackets.map((e) => e.rounds).flat().length;
+
+    console.log("roundCount", roundCount);
+
+    if (!roundCount) {
+      handleReplaceRounds();
+    }
+  }, [form]);
+
   return (
     <Popconfirm
-      title="Warning"
+      title={t("settings.format.rounds.popconfirmTitle")}
       description={
         <div className="w-72">
-          Reset cài đặt vòng đấu về mặc định cũng sẽ xóa hết tất cả thông tin
-          các trận đấu đã tạo!
+          {t("settings.format.rounds.popconfirmDescription")}
         </div>
       }
       onConfirm={handleReplaceRounds}
       placement="right"
       okText={
         <span className="flex items-center gap-1">
-          <CheckOutlined /> Yes
+          <CheckOutlined /> {t("settings.format.rounds.yes")}
         </span>
       }
       cancelText={
         <span className="flex items-center gap-1">
-          <CloseOutlined /> No
+          <CloseOutlined /> {t("settings.format.rounds.no")}
         </span>
       }
       okButtonProps={{
@@ -108,7 +117,8 @@ export const CreateRoundsButton = ({ label }: { label: string }) => {
     >
       <QButton size="large" disabled={loading}>
         <RefreshCcw size={14} className={loading ? "animate-spin" : ""} />
-        {label}
+        {/* {label} */}
+        Đồng bộ rounds
       </QButton>
     </Popconfirm>
   );

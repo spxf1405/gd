@@ -1,5 +1,3 @@
-// TODO: Api load data hơi chậm sẽ gây không init đựợc form value, cần check chỉ khi có data mới render
-
 import { AntdThemeConfig } from "@/components/ui/antd-config";
 import { QButton } from "@/components/ui/button";
 import { QTooltip } from "@/components/ui/toottip";
@@ -8,7 +6,7 @@ import { useTournamentStore } from "@/store/match";
 import { create } from "@bufbuild/protobuf";
 import { type Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 import { UpdateTournamentRequestSchema } from "@gd/proto/tournament/v1/tournament_service_pb";
-import { Button, Form, Modal, type FormProps } from "antd";
+import { Button, Form, Modal } from "antd";
 import {
   Calendar,
   DollarSign,
@@ -221,11 +219,7 @@ export const Setting = () => {
   // }, [tournament, form]);
 
   const onFinish = async (data: Tournament) => {
-    console.log("data", data);
-
-    return;
     console.log("data", { ...tournament, ...data });
-
     const request = create(UpdateTournamentRequestSchema, {
       tournament: { ...tournament, ...data },
     });
@@ -234,39 +228,11 @@ export const Setting = () => {
     setOpen(false);
   };
 
-  type TabValue = 'basic' | 'format' | "finance" | "players"
-  
-  const tabs = TAB_CONFIG(t);
-
-  const FIELD_TAB_MAP: Partial<Record<keyof Tournament, TabValue>> = {
-    name: "basic",
-    type: "format",
-    format: "format",
-
-    totalPrize: "finance",
-    entryFee: "finance",
-    // currencyUnit: "finance",
-
-    maxPlayers: "players",
-  };
-
-  const onFinishFailed: FormProps<Tournament>["onFinishFailed"] = async (
-    errorInfo,
-  ) => {
-    console.log("data", errorInfo);
-    const field = errorInfo.errorFields[0].name[0];
-
-    if (field === "totalPrize") {
-      setTabActive(FIELD_TAB_MAP[field]);
-    }
-  };
-
   const handleSave = () => {
-    console.log("handleSave");
     form.submit();
   };
 
-  const [tabActive, setTabActive] = useState("basic");
+  const tabs = TAB_CONFIG(t);
 
   useEffect(() => {
     if (!tournament) return;
@@ -362,17 +328,10 @@ export const Setting = () => {
           </QTooltip>
         </div>
 
-        <Form
-          form={form}
-          layout="vertical"
-          validateTrigger="onSubmit"
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-        >
+        <Form form={form} layout="vertical" onFinish={onFinish}>
           <Tabs.Root
-            value={tabActive}
+            defaultValue="basic"
             className="flex flex-1 overflow-hidden"
-            onValueChange={(val) => setTabActive(val)}
           >
             <div className="flex-shrink-0 flex flex-col overflow-y-auto w-[330px] border-r border-white/[0.06] bg-black/[0.15] px-4 py-6">
               <p className="text-[9px] font-bold tracking-[0.2em] uppercase pl-1 mb-2.5 text-[#8a95a8]">
@@ -402,73 +361,67 @@ export const Setting = () => {
             <div className="sys-scroll flex-1 overflow-y-auto bg-[#13151f]">
               <Tabs.Content
                 value="basic"
-                forceMount
-                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
+                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
               >
                 <BasicTab />
               </Tabs.Content>
               <Tabs.Content
                 value="format"
-                forceMount
-                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
+                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
               >
                 <FormatTab />
               </Tabs.Content>
               <Tabs.Content
                 value="schedule"
-                forceMount
-                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
+                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
               >
                 <ScheduleTab />
               </Tabs.Content>
               <Tabs.Content
                 value="finance"
-                forceMount
-                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
+                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
               >
                 <FinanceTab />
               </Tabs.Content>
               <Tabs.Content
                 value="players"
-                forceMount
-                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
+                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200"
               >
                 <PlayersTab />
               </Tabs.Content>
             </div>
           </Tabs.Root>
-
-          <div className="flex-shrink-0 flex items-center justify-between px-6 py-3.5 border-t border-white/[0.06] bg-black/[0.2]">
-            <p className="text-[10px] tracking-[0.06em] m-0 text-[#8a95a8]">
-              {t("settings.lastSaved")}
-            </p>
-            <div className="flex gap-2.5">
-              <QTooltip title={t("settings.cancelTooltip")}>
-                <Button
-                  onClick={() => setOpen(false)}
-                  size="medium"
-                  icon={<XIcon size={16} />}
-                  className="!py-5 !font-bold"
-                >
-                  {t("settings.cancel")}
-                </Button>
-              </QTooltip>
-
-              <QTooltip title={t("settings.saveTooltip")}>
-                <QButton
-                  type="primary"
-                  htmlType="submit"
-                  onClick={handleSave}
-                  size="medium"
-                  icon={<Save size={16} />}
-                  className="!py-5 !font-bold"
-                >
-                  {t("settings.save")}
-                </QButton>
-              </QTooltip>
-            </div>
-          </div>
         </Form>
+
+        <div className="flex-shrink-0 flex items-center justify-between px-6 py-3.5 border-t border-white/[0.06] bg-black/[0.2]">
+          <p className="text-[10px] tracking-[0.06em] m-0 text-[#8a95a8]">
+            {t("settings.lastSaved")}
+          </p>
+          <div className="flex gap-2.5">
+            <QTooltip title={t("settings.cancelTooltip")}>
+              <Button
+                onClick={() => setOpen(false)}
+                size="medium"
+                icon={<XIcon size={16} />}
+                className="!py-5 !font-bold"
+              >
+                {t("settings.cancel")}
+              </Button>
+            </QTooltip>
+
+            <QTooltip title={t("settings.saveTooltip")}>
+              <QButton
+                type="primary"
+                onClick={handleSave}
+                size="medium"
+                icon={<Save size={16} />}
+                className="!py-5 !font-bold"
+              >
+                {t("settings.save")}
+              </QButton>
+            </QTooltip>
+          </div>
+        </div>
       </Modal>
     </AntdThemeConfig>
   );

@@ -1,6 +1,6 @@
 import { QSelect } from "@/components/ui/select";
 import { PrizeDistributionTable } from "@/features/configurations/settings/tabs/finance/prize-distributiontable";
-import { ConfigProvider, Form, Input } from "antd";
+import { ConfigProvider, Form, Input, type InputProps } from "antd";
 import { Banknote, Coins, Globe2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -19,26 +19,24 @@ export const CurrencyHint = ({
     </p>
   ) : null;
 
-function CurrencyInput({
-  value,
-  onChange,
-}: {
-  value?: number;
-  onChange?: (v: number) => void;
-}) {
+export const CurrencyInput = ({ value, onChange, ...props }: InputProps) => {
   const { t } = useTranslation();
 
+  const numericValue = value as unknown as number | undefined;
+
   const [display, setDisplay] = useState(
-    value !== undefined && value !== null ? value.toLocaleString("vi-VN") : "",
+    numericValue !== undefined && numericValue !== null
+      ? numericValue.toLocaleString("vi-VN")
+      : "",
   );
 
   useEffect(() => {
     setDisplay(
-      value !== undefined && value !== null
-        ? Number(value).toLocaleString("vi-VN")
+      numericValue !== undefined && numericValue !== null
+        ? Number(numericValue).toLocaleString("vi-VN")
         : "",
     );
-  }, [value]);
+  }, [numericValue]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value;
@@ -49,19 +47,22 @@ function CurrencyInput({
 
     const formatted = stripped ? Number(stripped).toLocaleString("vi-VN") : "";
     setDisplay(formatted);
-    onChange?.(stripped ? Number(stripped) : 0);
+    (onChange as unknown as (value: number) => void)?.(
+      stripped ? Number(stripped) : 0,
+    );
   };
 
   return (
     <Input
       size="large"
       className="!w-full"
+      placeholder={t("settings.finance.totalPrizePlaceholder")}
+      {...props}
       value={display}
       onChange={handleChange}
-      placeholder={t("settings.finance.totalPrizePlaceholder")}
     />
   );
-}
+};
 
 export const FinanceTab = () => {
   const { t } = useTranslation();
@@ -81,7 +82,7 @@ export const FinanceTab = () => {
         },
       }}
     >
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 overflow-y-auto max-h-50vh">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
           <div className="lg:col-span-2 rounded-xl border border-indigo-500/20 bg-slate-900/5 p-5 flex flex-col justify-between hover:border-indigo-500/30 transition-colors">
             <div>
@@ -95,7 +96,6 @@ export const FinanceTab = () => {
                   <Field label={t("settings.finance.totalPrize")} required>
                     <Form.Item
                       name="totalPrize"
-                      noStyle
                       rules={[
                         {
                           required: true,
@@ -117,7 +117,6 @@ export const FinanceTab = () => {
                   <Field label={t("settings.finance.entryFee")}>
                     <Form.Item
                       name="entryFee"
-                      noStyle
                       rules={[
                         {
                           required: true,
@@ -163,6 +162,7 @@ export const FinanceTab = () => {
                   <QSelect
                     size="large"
                     className="w-full"
+                    allowClear={false}
                     options={[
                       {
                         label: t("settings.finance.currencyOptions.vnd"),
@@ -190,9 +190,7 @@ export const FinanceTab = () => {
           </div>
         </div>
 
-        <Form.Item name="prizeDistributions" className="m-0">
-          <PrizeDistributionTable onChange={() => console.log("1")} />
-        </Form.Item>
+        <PrizeDistributionTable />
       </div>
     </ConfigProvider>
   );

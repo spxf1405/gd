@@ -33,6 +33,7 @@ export function SideRow({
 
       <RaceToPicker
         value={round.raceTo}
+        isLoser={isLoser}
         onChange={(raceTo) => onChange({ ...round, raceTo })}
         accent={isLoser ? "rose" : "emerald"}
       />

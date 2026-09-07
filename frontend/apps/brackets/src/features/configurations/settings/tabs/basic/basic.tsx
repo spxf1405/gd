@@ -40,11 +40,11 @@ export const BasicTab = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col">
       <Field label={t("settings.tabs.basic.fields.name")} required>
         <Form.Item
           name="name"
-          noStyle
+          
           rules={[
             { required: true, message: t("settings.tabs.basic.fields.name") },
           ]}
@@ -60,7 +60,6 @@ export const BasicTab = () => {
         <Field label={t("settings.tabs.basic.fields.type")} required>
           <Form.Item
             name="type"
-            noStyle
             initialValue={TournamentType.SINGLE.toString()}
             normalize={(value) => (value !== undefined ? Number(value) : value)}
             getValueProps={(value) => ({
@@ -71,8 +70,10 @@ export const BasicTab = () => {
             <QSelect
               size="large"
               options={TournamentTypeList}
-              className="w-56"
-              style={{ fontSize: 13 }}
+              allowClear={false}
+              classNames={{
+                content : 'w-20'
+              }}
             />
           </Form.Item>
         </Field>
@@ -80,7 +81,6 @@ export const BasicTab = () => {
         <Field label={t("settings.tabs.basic.fields.format")} required>
           <Form.Item
             name="format"
-            noStyle
             initialValue={TournamentFormat.TOURNAMENT_TYPE_8_BALL.toString()}
             normalize={(value) => (value !== undefined ? Number(value) : value)}
             getValueProps={(value) => ({
@@ -90,23 +90,23 @@ export const BasicTab = () => {
           >
             <QSelect
               size="large"
+              allowClear={false}
               options={TournamentFormatList}
-              className="w-56"
+              classNames={{
+                content : 'w-20'
+              }}
             />
           </Form.Item>
         </Field>
 
         <div className="flex-1">
-          <Field
-            label={t("settings.tabs.basic.fields.formatDescription")}
-            required
-          >
-            <Form.Item name="formatDescription" noStyle>
+          <Field label={t("settings.tabs.basic.fields.formatDescription")}>
+            <Form.Item name="formatDescription">
               <Input
                 size="large"
                 className="w-full"
                 placeholder={t(
-                  "settings.tabs.basic.fields.formatDescriptionPlaceholder"
+                  "settings.tabs.basic.fields.formatDescriptionPlaceholder",
                 )}
               />
             </Form.Item>
@@ -114,19 +114,17 @@ export const BasicTab = () => {
         </div>
       </div>
 
-      <Field label={t("settings.tabs.basic.fields.organizer")} required>
-        <Form.Item name="organizer" noStyle rules={[{ required: true }]}>
+      <Field label={t("settings.tabs.basic.fields.organizer")}>
+        <Form.Item name="organizer">
           <Input
             size="large"
-            placeholder={t(
-              "settings.tabs.basic.fields.organizerPlaceholder"
-            )}
+            placeholder={t("settings.tabs.basic.fields.organizerPlaceholder")}
           />
         </Form.Item>
       </Field>
 
       <Field label={t("settings.tabs.basic.fields.description")}>
-        <Form.Item name="description" noStyle>
+        <Form.Item name="description">
           <TextArea
             placeholder={t("settings.tabs.basic.fields.descriptionPlaceholder")}
             rows={6}

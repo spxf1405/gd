@@ -35,12 +35,6 @@ import { v4 } from "uuid";
 
 const INDIGO = "#6366f1";
 
-interface Props {
-  totalPrize: number;
-  value: PrizeDistribution[];
-  onChange: (rows: PrizeDistribution[]) => void;
-}
-
 const formatVND = (n: number) =>
   n > 0 ? n.toLocaleString("vi-VN") + " đ" : "—";
 
@@ -267,7 +261,7 @@ function SortableRow({
   );
 }
 
-export function PrizeDistributionTable({ onChange }: Props) {
+export function PrizeDistributionTable() {
   const { t } = useTranslation();
   const form = Form.useFormInstance();
 
@@ -350,7 +344,8 @@ export function PrizeDistributionTable({ onChange }: Props) {
     if (!over || active.id === over.id) return;
     const oldIdx = prizeDistributions.findIndex((r) => r.id === active.id);
     const newIdx = prizeDistributions.findIndex((r) => r.id === over.id);
-    onChange(arrayMove(prizeDistributions, oldIdx, newIdx));
+    const newArr = arrayMove(prizeDistributions, oldIdx, newIdx);
+    form.setFieldValue("prizeDistributions", newArr)
   };
 
   const createNew = () => {
@@ -402,7 +397,6 @@ export function PrizeDistributionTable({ onChange }: Props) {
       className="rounded-xl overflow-hidden border"
       style={{ borderColor: `${INDIGO}30`, background: `${INDIGO}06` }}
     >
-      {/* Header */}
       <div
         className="flex items-center justify-between px-5 py-3.5"
         style={{
@@ -446,66 +440,67 @@ export function PrizeDistributionTable({ onChange }: Props) {
           </div>
         )}
       </div>
-
-      {prizeDistributions.length > 0 ? (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={prizeDistributions.map((r) => r.id)}
-            strategy={verticalListSortingStrategy}
+      <Form.Item name="prizeDistributions" noStyle>
+        {prizeDistributions.length > 0 ? (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
           >
-            <table className="w-full border-collapse">
-              <thead>
-                <tr style={{ borderBottom: `1px solid ${INDIGO}15` }}>
-                  <th className="w-8 pl-4 pr-1 py-3" />
-                  <th className="w-10 px-2 py-3 text-center">
-                    <span className="text-[11px] font-semibold text-muted-foreground/50 uppercase tracking-wider">
-                      {t("settings.prizeDistribution.columns.rank")}
-                    </span>
-                  </th>
-                  <th className="px-3 py-3 text-left">
-                    <span className="text-[11px] font-semibold text-muted-foreground/50 uppercase tracking-wider">
-                      {t("settings.prizeDistribution.columns.name")}
-                    </span>
-                  </th>
-                  <th className="px-3 py-3 text-right min-w-[160px]">
-                    <span className="text-[11px] font-semibold text-muted-foreground/50 uppercase tracking-wider">
-                      {t("settings.prizeDistribution.columns.amount")}
-                    </span>
-                  </th>
-                  <th className="px-3 py-3 w-20 text-right">
-                    <span className="text-[11px] font-semibold text-muted-foreground/50 uppercase tracking-wider">
-                      {t("settings.prizeDistribution.columns.percent")}
-                    </span>
-                  </th>
-                  <th className="w-10 pr-4" />
-                </tr>
-              </thead>
-              <tbody>
-                {table.getRowModel().rows.map((row, index) => (
-                  <SortableRow
-                    key={row.original.id}
-                    row={row}
-                    index={index}
-                    totalPrize={totalPrize || 0}
-                    onChangeLabel={handleChangeLabel}
-                    onChangeAmount={handleChangeAmount}
-                    onRemove={handleRemove}
-                    amountError={getRowError(row.original)}
-                  />
-                ))}
-              </tbody>
-            </table>
-          </SortableContext>
-        </DndContext>
-      ) : (
-        <div className="py-10 text-center text-sm text-muted-foreground/40">
-          {t("settings.prizeDistribution.empty")}
-        </div>
-      )}
+            <SortableContext
+              items={prizeDistributions.map((r) => r.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr style={{ borderBottom: `1px solid ${INDIGO}15` }}>
+                    <th className="w-8 pl-4 pr-1 py-3" />
+                    <th className="w-10 px-2 py-3 text-center">
+                      <span className="text-[11px] font-semibold text-muted-foreground/50 uppercase tracking-wider">
+                        {t("settings.prizeDistribution.columns.rank")}
+                      </span>
+                    </th>
+                    <th className="px-3 py-3 text-left">
+                      <span className="text-[11px] font-semibold text-muted-foreground/50 uppercase tracking-wider">
+                        {t("settings.prizeDistribution.columns.name")}
+                      </span>
+                    </th>
+                    <th className="px-3 py-3 text-right min-w-[160px]">
+                      <span className="text-[11px] font-semibold text-muted-foreground/50 uppercase tracking-wider">
+                        {t("settings.prizeDistribution.columns.amount")}
+                      </span>
+                    </th>
+                    <th className="px-3 py-3 w-20 text-right">
+                      <span className="text-[11px] font-semibold text-muted-foreground/50 uppercase tracking-wider">
+                        {t("settings.prizeDistribution.columns.percent")}
+                      </span>
+                    </th>
+                    <th className="w-10 pr-4" />
+                  </tr>
+                </thead>
+                <tbody>
+                  {table.getRowModel().rows.map((row, index) => (
+                    <SortableRow
+                      key={row.original.id}
+                      row={row}
+                      index={index}
+                      totalPrize={totalPrize || 0}
+                      onChangeLabel={handleChangeLabel}
+                      onChangeAmount={handleChangeAmount}
+                      onRemove={handleRemove}
+                      amountError={getRowError(row.original)}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </SortableContext>
+          </DndContext>
+        ) : (
+          <div className="py-10 text-center text-sm text-muted-foreground/40">
+            {t("settings.prizeDistribution.empty")}
+          </div>
+        )}
+      </Form.Item>
 
       <div
         className="flex items-center justify-between px-4 py-3"

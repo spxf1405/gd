@@ -205,10 +205,10 @@
     "finance": {
       "title": "Finance",
       "totalPrize": "Total Prize Pool",
-      "totalPrizePlaceholder": "50000000",
+      "totalPrizePlaceholder": "Eg., 50.000.000",
       "totalPrizeError": "Please enter the total prize",
       "entryFee": "Entry Fee",
-      "entryFeePlaceholder": "500000",
+      "entryFeePlaceholder": "500.000",
       "entryFeeError": "Please enter the entry fee",
       "prizeConfig": "Prize & entry fee configuration",
       "currencyUnit": "Currency",
@@ -245,12 +245,24 @@
     },
     "format": {
       "createRounds": "Create rounds",
-      "resetDefault": "Reset to default",
-      "totalParticipants": "Total participants:",
-      "renameRound": "Rename round",
+      "resetDefault": "Reset to Default",
+      "totalParticipants": "Total Participants:",
+      "renameRound": "Rename Round",
       "eliminationType": {
-        "single": "Single elimination",
-        "double": "Double elimination"
+        "single": "Single Elimination",
+        "double": "Double Elimination"
+      },
+      "rounds": {
+        "quarterfinal": "Quarterfinal",
+        "semifinal": "Semifinal",
+        "final": "Final",
+        "qualification": "Qualification",
+        "lastN": "Last {size}",
+        "minParticipantsWarning": "At least 2 participants are required to create rounds",
+        "popconfirmTitle": "Warning",
+        "popconfirmDescription": "Resetting round settings to default will delete all created match details!",
+        "yes": "Yes",
+        "no": "No"
       }
     },
     "players": {
@@ -260,6 +272,7 @@
       "maxPlayersUnit": "players",
       "gender": "Gender",
       "maxAge": "Maximum Age",
+      "maxAgePlaceholder": "Eg., 18",
       "maxAgeUnit": "years old",
       "ranking": {
         "title": "Ranking Mode",

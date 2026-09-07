@@ -55,11 +55,12 @@ export const PlayersTab = () => {
     >
       <div className="space-y-5">
         <div className="grid grid-cols-2 gap-3">
-          <Field label={t("settings.players.gender")} required>
+          <Field label={t("settings.players.gender")}>
             <Form.Item name="gender" noStyle>
               <QSelect
                 className="w-full"
                 size="large"
+                allowClear={false}
                 options={genderOptions}
               />
             </Form.Item>
@@ -70,8 +71,11 @@ export const PlayersTab = () => {
               name="maxAge"
               noStyle
               normalize={(value) => (value === 0 ? undefined : value)}
+              getValueProps={(value) => ({
+                value: value === 0 ? undefined : value,
+              })}
             >
-              <InputNumber size="large" className="!w-full" controls={false} />
+              <InputNumber size="large" className="!w-full" controls={false} placeholder={t("settings.players.maxAgePlaceholder")} />
             </Form.Item>
           </Field>
         </div>

@@ -254,12 +254,19 @@ export function FormatTab() {
             }
 
             const groups = Array.from(groupMap.entries()).map(
-              ([name, items]) => ({
-                name,
-                eliminationType: items[0]?.eliminationType,
-                items,
-              }),
+              ([name, items]) => {
+                const sortItems = items.sort((a) => {
+                  return a.side === "winner" ? -1 : 1;
+                });
+                return {
+                  name,
+                  eliminationType: items[0]?.eliminationType,
+                  items: sortItems,
+                };
+              },
             );
+
+            console.log("groups", groups);
 
             return (
               <div

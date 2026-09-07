@@ -144,7 +144,7 @@
         "fields": {
           "name": "Tên giải đấu",
           "namePlaceholder": "VD: Giải Bida 8 Bi Hà Nội 2026",
-          "type": "Loại",
+          "type": "Loại hình",
           "format": "Thể thức",
           "formatDescription": "Mô tả thể thức",
           "formatDescriptionPlaceholder": "VD: Vòng tròn - Giao bóng người thắng - Luật WPA",
@@ -251,6 +251,18 @@
       "eliminationType": {
         "single": "Loại trực tiếp",
         "double": "Nhánh thắng nhánh thua"
+      },
+      "rounds": {
+        "quarterfinal": "Tứ kết",
+        "semifinal": "Bán kết",
+        "final": "Chung kết",
+        "qualification": "Vòng loại",
+        "lastN": "Last {size}",
+        "minParticipantsWarning": "Cần ít nhất 2 người chơi để tạo thông tin vòng đấu",
+        "popconfirmTitle": "Cảnh báo",
+        "popconfirmDescription": "Reset cài đặt vòng đấu về mặc định cũng sẽ xóa hết tất cả thông tin các trận đấu đã tạo!",
+        "yes": "Có",
+        "no": "Không"
       }
     },
     "players": {
@@ -260,6 +272,7 @@
       "maxPlayersUnit": "người",
       "gender": "Giới tính",
       "maxAge": "Độ tuổi tối đa",
+      "maxAgePlaceholder": "Vui lòng nhập tuổi tối đa!",
       "maxAgeUnit": "tuổi",
       "ranking": {
         "title": "Chế độ phân hạng",
