@@ -122,6 +122,7 @@ message UpdateTournamentRequest {
 
 message UpdateTournamentResponse {}
 
+
 service TournamentService {
   rpc GetTournaments(GetTournamentsRequestWrapper) returns (GetTournamentsResponse);
   rpc GetTournamentByID(GetTournamentByIDRequest) returns (GetTournamentByIDResponse);

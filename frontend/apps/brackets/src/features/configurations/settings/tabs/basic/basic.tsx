@@ -44,9 +44,8 @@ export const BasicTab = () => {
       <Field label={t("settings.tabs.basic.fields.name")} required>
         <Form.Item
           name="name"
-          
           rules={[
-            { required: true, message: t("settings.tabs.basic.fields.name") },
+            { required: true, message: t("settings.tabs.basic.fields.nameEmptyError") },
           ]}
         >
           <Input
@@ -72,7 +71,7 @@ export const BasicTab = () => {
               options={TournamentTypeList}
               allowClear={false}
               classNames={{
-                content : 'w-20'
+                content: "w-20",
               }}
             />
           </Form.Item>
@@ -93,7 +92,7 @@ export const BasicTab = () => {
               allowClear={false}
               options={TournamentFormatList}
               classNames={{
-                content : 'w-20'
+                content: "w-20",
               }}
             />
           </Form.Item>

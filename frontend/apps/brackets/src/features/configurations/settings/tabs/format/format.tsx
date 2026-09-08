@@ -192,30 +192,7 @@ export function FormatTab() {
       }}
     >
       <div className="flex justify-between mb-4">
-        <Form.Item
-          noStyle
-          shouldUpdate={(prevValues, currentValues) =>
-            prevValues.brackets !== currentValues.brackets
-          }
-        >
-          {() => {
-            const brackets =
-              (form.getFieldValue("brackets") as Bracket[] | undefined) ?? [];
-
-            const rounds = getRoundsFromBrackets(brackets);
-
-            return (
-              <CreateRoundsButton
-                label={
-                  rounds.length
-                    ? t("settings.format.resetDefault")
-                    : t("settings.format.createRounds")
-                }
-              />
-            );
-          }}
-        </Form.Item>
-
+        <CreateRoundsButton />
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <span className="whitespace-nowrap text-[13px]">
@@ -229,6 +206,9 @@ export function FormatTab() {
       </div>
 
       <div className="overflow-y-auto max-h-[50vh]">
+        <Form.Item name="brackets" hidden>
+          <input type="hidden" />
+        </Form.Item>
         <Form.Item
           noStyle
           shouldUpdate={(prevValues, currentValues) =>

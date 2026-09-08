@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { v4 } from "uuid";
 
-export const CreateRoundsButton = ({ label }: { label: string }) => {
+export const CreateRoundsButton = () => {
   const { t } = useTranslation();
   const form = useFormInstance<Tournament>();
   const [loading, setLoading] = useState(false);
@@ -32,11 +32,6 @@ export const CreateRoundsButton = ({ label }: { label: string }) => {
     };
 
     const maxPlayer = participants?.length ?? 4;
-
-    // if (maxPlayer < 2) {
-    //   message.warning(t("settings.format.rounds.minParticipantsWarning"));
-    //   return;
-    // }
 
     setLoading(true);
     try {

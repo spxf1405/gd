@@ -723,11 +723,6 @@ func (r *TournamentRepository) UpdateTournament(
 		return errors.New("DB pool is nil")
 	}
 
-	sd, err := time.Parse(time.RFC3339, tournament.StartDate.Value)
-	if err != nil {
-		return fmt.Errorf("invalid start_date: %w", err)
-	}
-
 	tx, err := r.DB.Pool.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("begin tx: %w", err)
@@ -741,20 +736,19 @@ func (r *TournamentRepository) UpdateTournament(
 			type               = $2,
 			format             = $3,
 			format_description = $4,
-			start_date         = $5,
-			location           = $6,
-			total_prize        = $7,
-			entry_fee          = $8,
-			max_players        = $9,
-			status             = $10,
-			organizer          = $11,
+			location           = $5,
+			total_prize        = $6,
+			entry_fee          = $7,
+			max_players        = $8,
+			status             = $9,
+			organizer          = $10,
 			updated_at         = NOW(),
-			description        = $12,
-			max_age            = $13,
-			has_ranking        = $14,
-			max_ranking_class  = $15,
-			gender             = $16
-		WHERE id = $17
+			description        = $11,
+			max_age            = $12,
+			has_ranking        = $13,
+			max_ranking_class  = $14,
+			gender             = $15
+		WHERE id = $16
 	`
 
 	tag, err := tx.Exec(
@@ -763,7 +757,6 @@ func (r *TournamentRepository) UpdateTournament(
 		tournament.Type,
 		tournament.Format,
 		tournament.FormatDescription.Value,
-		sd,
 		tournament.Location.Value,
 		tournament.TotalPrize.Value,
 		tournament.EntryFee.Value,
@@ -787,6 +780,7 @@ func (r *TournamentRepository) UpdateTournament(
 	// Prize Distribution
 	batch := &pgx.Batch{}
 
+	// TODO: total amount can't greater than totalPrize
 	for index, prize := range tournament.PrizeDistributions {
 		batch.Queue(`
 			INSERT INTO gd_prize_distributions(id, tournament_id, name, amount, display_order)

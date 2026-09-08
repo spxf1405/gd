@@ -209,56 +209,43 @@ export const Setting = () => {
   const { t } = useTranslation();
   const { tournament } = useTournamentStore();
 
-  console.log("tournament", tournament);
+
   const [open, setOpen] = useState(false);
 
   const [form] = Form.useForm<Tournament>();
 
-  // useEffect(() => {
-  //   if (tournament) {
-  //     form.setFieldsValue(tournament);
-  //   }
-  // }, [tournament, form]);
-
-  const onFinish = async (data: Tournament) => {
-    console.log("data", data);
-
-    return;
-    console.log("data", { ...tournament, ...data });
-
+  const onFinish = async (values: Tournament) => {
     const request = create(UpdateTournamentRequestSchema, {
-      tournament: { ...tournament, ...data },
+      tournament: values,
     });
+    return 
 
     const response = await TournamentClient.updateTournament(request);
     setOpen(false);
   };
 
-  type TabValue = 'basic' | 'format' | "finance" | "players"
-  
+  type TabValue = "basic" | "format" | "finance" | "players";
+
   const tabs = TAB_CONFIG(t);
-
-  const FIELD_TAB_MAP: Partial<Record<keyof Tournament, TabValue>> = {
-    name: "basic",
-    type: "format",
-    format: "format",
-
-    totalPrize: "finance",
-    entryFee: "finance",
-    // currencyUnit: "finance",
-
-    maxPlayers: "players",
-  };
 
   const onFinishFailed: FormProps<Tournament>["onFinishFailed"] = async (
     errorInfo,
   ) => {
     console.log("data", errorInfo);
-    const field = errorInfo.errorFields[0].name[0];
+    const firstError = errorInfo.errorFields[0];
+    const field = firstError.name[0];
 
-    if (field === "totalPrize") {
-      setTabActive(FIELD_TAB_MAP[field]);
+    if (field === "totalPrize" || field === "entryFee") {
+      setTabActive("finance");
     }
+
+    if (field === "name" || field === "type" || field === "format") {
+      setTabActive("basic");
+    }
+
+    form.scrollToField(firstError.name, {
+      focus: true,
+    });
   };
 
   const handleSave = () => {
@@ -266,7 +253,7 @@ export const Setting = () => {
     form.submit();
   };
 
-  const [tabActive, setTabActive] = useState("basic");
+  const [tabActive, setTabActive] = useState<TabValue>("basic");
 
   useEffect(() => {
     if (!tournament) return;
@@ -422,18 +409,18 @@ export const Setting = () => {
                 <ScheduleTab />
               </Tabs.Content>
               <Tabs.Content
-                value="finance"
-                forceMount
-                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
-              >
-                <FinanceTab />
-              </Tabs.Content>
-              <Tabs.Content
                 value="players"
                 forceMount
                 className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
               >
                 <PlayersTab />
+              </Tabs.Content>
+              <Tabs.Content
+                value="finance"
+                forceMount
+                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
+              >
+                <FinanceTab />
               </Tabs.Content>
             </div>
           </Tabs.Root>

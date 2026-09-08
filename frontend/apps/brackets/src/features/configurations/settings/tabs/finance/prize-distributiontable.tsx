@@ -28,15 +28,20 @@ import {
   type ColumnDef,
 } from "@tanstack/react-table";
 import { Form } from "antd";
+import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import { AlertCircle, GripVertical, Pencil, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { v4 } from "uuid";
+import { useEffect } from "react";
 
 const INDIGO = "#6366f1";
 
-const formatVND = (n: number) =>
-  n > 0 ? n.toLocaleString("vi-VN") + " đ" : "—";
+const formatCurrency = (n: number, isUSD: boolean) => {
+  const val = n > 0 ? n.toLocaleString(isUSD ? "en-US" : "vi-VN") : "";
+
+  return isUSD ? `$${val}` : `${val}đ`;
+};
 
 const getRankColor = (index: number): string => {
   const palette = [
@@ -123,6 +128,92 @@ function NameCell({
   );
 }
 
+function CurrencyAmountInput({
+  value,
+  currency,
+  onChange,
+  error,
+}: {
+  value: number;
+  currency: string;
+  onChange: (value: number) => void;
+  error?: boolean;
+}) {
+  const [focused, setFocused] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+
+  const isUSD = currency === "USD";
+
+  const formatAmount = (value: number) => {
+    if (!value) return "";
+
+    return new Intl.NumberFormat("vi-VN").format(value);
+  };
+
+  useEffect(() => {
+    setInputValue(formatAmount(value));
+  }, [value]);
+
+  const handleFocus = () => {
+    setFocused(true);
+
+    // Vẫn giữ format: 1000000 -> 1.000.000
+    setInputValue(formatAmount(value));
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Bỏ toàn bộ dấu chấm để lấy số thật
+    const raw = e.target.value.replace(/\D/g, "");
+
+    const numericValue = Number(raw || 0);
+
+    // Format ngay trong lúc nhập
+    setInputValue(
+      raw ? new Intl.NumberFormat("vi-VN").format(numericValue) : "",
+    );
+
+    onChange(numericValue);
+  };
+
+  const handleBlur = () => {
+    setFocused(false);
+
+    setInputValue(formatAmount(value));
+  };
+
+  return (
+    <div className="flex items-center">
+      <input
+        type="text"
+        inputMode="numeric"
+        value={inputValue}
+        onFocus={handleFocus}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        placeholder="0"
+        size={Math.max(inputValue.length - 4, 1)}
+        className={`
+          w-fit
+          bg-transparent
+          text-right text-[14px] font-semibold
+          outline-none
+          border-b pb-0.5
+          transition-colors
+          ${
+            error
+              ? "border-rose-400 text-rose-400"
+              : "border-border/30 text-foreground"
+          }
+          placeholder:text-muted-foreground/25
+        `}
+        style={{
+          borderColor: error ? undefined : focused ? INDIGO : undefined,
+        }}
+      />
+    </div>
+  );
+}
+
 function SortableRow({
   row,
   index,
@@ -147,7 +238,9 @@ function SortableRow({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: row.original.id });
+  } = useSortable({
+    id: row.original.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -159,13 +252,22 @@ function SortableRow({
   const rankColor = getRankColor(index);
   const rankBg = getRankBg(index);
 
+  const form = useFormInstance();
+  const currencyUnit = Form.useWatch("currencyUnit", form) || "VND";
+
   const cellRenderers: Record<string, () => React.ReactNode> = {
     drag: () => (
       <button
         type="button"
         {...attributes}
         {...listeners}
-        className="cursor-grab active:cursor-grabbing text-muted-foreground/30 hover:text-muted-foreground transition-colors p-1"
+        className="
+          cursor-grab active:cursor-grabbing
+          p-1
+          text-muted-foreground/30
+          transition-colors
+          hover:text-muted-foreground
+        "
       >
         <GripVertical size={16} />
       </button>
@@ -173,8 +275,19 @@ function SortableRow({
 
     rank: () => (
       <span
-        className="inline-flex items-center justify-center w-8 h-8 rounded-full text-[12px] font-black"
-        style={{ color: rankColor, background: `${rankColor}22` }}
+        className="
+          inline-flex
+          h-8 w-8
+          items-center
+          justify-center
+          rounded-full
+          text-[12px]
+          font-black
+        "
+        style={{
+          color: rankColor,
+          background: `${rankColor}22`,
+        }}
       >
         {index + 1}
       </span>
@@ -185,46 +298,33 @@ function SortableRow({
     ),
 
     amount: () => (
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            inputMode="numeric"
-            value={row.original.amount}
-            onChange={(e) => {
-              const raw = e.target.value.replace(/[^\d]/g, "");
-              onChangeAmount(row.original.id, parseInt(raw || "0", 10), index);
-            }}
-            placeholder="0"
-            className={`
-              w-full bg-transparent text-[14px] font-semibold text-right outline-none border-b-2 transition-colors pb-0.5
-              ${amountError ? "border-rose-400 text-rose-400" : "border-border/30 text-foreground"}
-              placeholder:text-muted-foreground/25 min-w-[100px]
-            `}
-            onFocus={(e) => {
-              if (!amountError) e.currentTarget.style.borderColor = INDIGO;
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.borderColor = "";
-            }}
-          />
-          <span className="text-sm text-muted-foreground shrink-0">đ</span>
-        </div>
+      <>
+        <CurrencyAmountInput
+          value={Number(row.original.amount) || 0}
+          currency={currencyUnit}
+          error={!!amountError}
+          onChange={(value) => {
+            onChangeAmount(row.original.id, value, index);
+          }}
+        />
+
         {amountError && (
-          <span className="text-[11px] text-rose-400 text-right">
+          <span className="text-right text-[11px] text-rose-400">
             {amountError}
           </span>
         )}
-      </div>
+      </>
     ),
 
     percent: () => (
       <span
         className="text-[13px] font-semibold tabular-nums"
-        style={{ color: rankColor }}
+        style={{
+          color: rankColor,
+        }}
       >
         {totalPrize > 0
-          ? ((row.original.amount / totalPrize) * 100).toFixed(1) + "%"
+          ? `${((row.original.amount / totalPrize) * 100).toFixed(1)}%`
           : "—"}
       </span>
     ),
@@ -233,7 +333,14 @@ function SortableRow({
       <button
         type="button"
         onClick={() => onRemove(row.original.id)}
-        className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground/30 hover:text-rose-400 p-1"
+        className="
+          p-1
+          text-muted-foreground/30
+          opacity-0
+          transition-opacity
+          group-hover:opacity-100
+          hover:text-rose-400
+        "
       >
         <Trash2 size={15} />
       </button>
@@ -243,8 +350,16 @@ function SortableRow({
   return (
     <tr
       ref={setNodeRef}
-      style={{ ...style, background: rankBg }}
-      className="group border-border/30 last:border-none transition-colors"
+      style={{
+        ...style,
+        background: rankBg,
+      }}
+      className="
+        group
+        border-border/30
+        transition-colors
+        last:border-none
+      "
     >
       {row.getVisibleCells().map((cell: any) => (
         <td
@@ -267,17 +382,16 @@ export function PrizeDistributionTable() {
 
   const totalPrizeString = Form.useWatch("totalPrize", form);
 
+  const currencyUnit = Form.useWatch("currencyUnit", form) || "VND";
+
+  const isUSD = currencyUnit === "USD";
+
   const totalPrize =
     typeof totalPrizeString === "number"
       ? totalPrizeString
       : parseFloat(totalPrizeString || "0");
 
-  const prizeDistributions =
-    Form.useWatch("prizeDistributions", form) ||
-    form.getFieldValue("prizeDistributions") ||
-    [];
-
-  console.log("value", prizeDistributions);
+  const prizeDistributions = Form.useWatch("prizeDistributions", form) || [];
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -318,7 +432,7 @@ export function PrizeDistributionTable() {
       }),
       columnHelper.accessor("amount", {
         id: "amount",
-        meta: { className: "px-3 py-4 min-w-[160px]" },
+        meta: { className: "whitespace-nowrap px-3 py-4" },
       }),
       columnHelper.display({
         id: "percent",
@@ -345,7 +459,7 @@ export function PrizeDistributionTable() {
     const oldIdx = prizeDistributions.findIndex((r) => r.id === active.id);
     const newIdx = prizeDistributions.findIndex((r) => r.id === over.id);
     const newArr = arrayMove(prizeDistributions, oldIdx, newIdx);
-    form.setFieldValue("prizeDistributions", newArr)
+    form.setFieldValue("prizeDistributions", newArr);
   };
 
   const createNew = () => {
@@ -384,12 +498,12 @@ export function PrizeDistributionTable() {
 
   const budgetLabel = isOverBudget
     ? t("settings.prizeDistribution.budget.over", {
-        amount: formatVND(distributedTotal - totalPrize),
+        amount: formatCurrency(distributedTotal - totalPrize, isUSD),
       })
     : remaining === 0
       ? t("settings.prizeDistribution.budget.exact")
       : t("settings.prizeDistribution.budget.remaining", {
-          amount: formatVND(remaining),
+          amount: formatCurrency(remaining, isUSD),
         });
 
   return (
@@ -465,7 +579,7 @@ export function PrizeDistributionTable() {
                         {t("settings.prizeDistribution.columns.name")}
                       </span>
                     </th>
-                    <th className="px-3 py-3 text-right min-w-[160px]">
+                    <th className="px-3 py-3 text-right">
                       <span className="text-[11px] font-semibold text-muted-foreground/50 uppercase tracking-wider">
                         {t("settings.prizeDistribution.columns.amount")}
                       </span>
@@ -534,7 +648,7 @@ export function PrizeDistributionTable() {
               className="text-[13px] font-black tabular-nums"
               style={{ color: isOverBudget ? "#F43F5E" : "#10B981" }}
             >
-              {formatVND(distributedTotal)}
+              {formatCurrency(distributedTotal, isUSD)}
             </span>
           </div>
         )}

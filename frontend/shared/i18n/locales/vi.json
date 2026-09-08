@@ -142,7 +142,7 @@
         "sub": "Cơ bản",
         "sectionTitle": "Thông tin cơ bản",
         "fields": {
-          "name": "Tên giải đấu",
+          "nameEmptyError": "Tên giải đấu",
           "namePlaceholder": "VD: Giải Bida 8 Bi Hà Nội 2026",
           "type": "Loại hình",
           "format": "Thể thức",
