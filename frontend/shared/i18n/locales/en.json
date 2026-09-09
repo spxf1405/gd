@@ -142,6 +142,7 @@
         "sub": "Basic Info",
         "sectionTitle": "Basic Information",
         "fields": {
+          "name": "Tournament Name",
           "nameEmptyError": "Tournament name can not be blank!",
           "namePlaceholder": "E.g. Hanoi 8-Ball Championship 2026",
           "type": "Type",
