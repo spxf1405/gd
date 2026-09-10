@@ -209,18 +209,25 @@ export const Setting = () => {
   const { t } = useTranslation();
   const { tournament } = useTournamentStore();
 
-
   const [open, setOpen] = useState(false);
 
   const [form] = Form.useForm<Tournament>();
 
   const onFinish = async (values: Tournament) => {
     const request = create(UpdateTournamentRequestSchema, {
-      tournament: values,
+      tournament: {
+        ...values,
+        formatDescription: values.formatDescription ?? "",
+        maxAge: values.maxAge ?? 0,
+        organizer: values.organizer ?? "",
+        description: values.description ?? "",
+      },
     });
-    return 
 
     const response = await TournamentClient.updateTournament(request);
+
+    console.log("response", response);
+
     setOpen(false);
   };
 
@@ -247,12 +254,6 @@ export const Setting = () => {
       focus: true,
     });
   };
-
-  const handleSave = () => {
-    console.log("handleSave");
-    form.submit();
-  };
-
   const [tabActive, setTabActive] = useState<TabValue>("basic");
 
   useEffect(() => {
@@ -445,7 +446,7 @@ export const Setting = () => {
                 <QButton
                   type="primary"
                   htmlType="submit"
-                  onClick={handleSave}
+                  // onClick={handleSave}
                   size="medium"
                   icon={<Save size={16} />}
                   className="!py-5 !font-bold"

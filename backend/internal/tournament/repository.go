@@ -6,9 +6,11 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"backend/internal/db"
+	roundpb "backend/internal/gen/round/v1"
 	tournamentpb "backend/internal/gen/tournament/v1"
 	"backend/internal/logger"
 	"backend/internal/repository"
@@ -484,218 +486,6 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 	return tournament, nil
 }
 
-// func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string) (*tournamentpb.Tournament, error) {
-// 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-
-// 	queryBuilder := psql.Select(
-// 		"t.id",
-// 		"t.name",
-// 		"t.type",
-// 		"t.format",
-// 		"t.format_description",
-// 		"t.start_date",
-// 		"t.end_date",
-// 		"t.location",
-// 		"t.total_prize",
-// 		"t.entry_fee",
-// 		"t.max_players",
-// 		"t.status",
-// 		"t.organizer",
-// 		"t.created_at",
-// 		"t.updated_at",
-// 		"t.description",
-// 		"t.max_age",
-// 		"t.has_ranking",
-// 		"t.max_ranking_class",
-// 		"t.gender",
-// 		`COALESCE (
-// 			(
-// 				SELECT (
-// 					json_agg(
-// 						json_build_object(
-// 							'id', p.id,
-// 							'name', p.name
-// 						)
-// 					)
-// 				)
-// 				FROM gd_registrations as r
-// 				JOIN gd_players as p ON p.id = r.player_id
-// 				WHERE r.tournament_id = t.id
-// 			),
-// 			'[]'::json
-// 		) AS registered_players`,
-// 		"t.deleted_at",
-// 		`COALESCE (
-// 			(
-// 				SELECT json_agg(
-// 					json_build_object(
-// 						'id', pd.id,
-// 						'tournament_id', pd.tournament_id,
-// 						'name', pd.name,
-// 						'amount', pd.amount,
-// 						'display_order', pd.display_order
-// 					) ORDER BY pd.display_order ASC
-// 				)
-// 				FROM gd_prize_distributions as pd
-// 				WHERE pd.tournament_id = t.id
-// 			),
-// 			'[]'::json
-// 		) AS prize_distributions`,
-// 		`COALESCE (
-// 			(
-// 				SELECT json_agg(
-// 					json_build_object(
-// 						'id', bracket.id,
-// 						'name', bracket.name,
-// 						'rounds', (
-// 							SELECT json_agg(
-// 								json_build_object(
-// 									'id', round.id,
-// 									'name', round.name,
-// 									'match', (
-// 										SELECT json_agg(
-// 											json_build_object(
-// 												'id', match.id,
-// 												'name', match.name,
-// 												'participants', (
-// 													SELECT json_agg(
-// 														json_build_object(
-// 															'id', paritcipant.id,
-// 															'users', (
-// 																SELECT json_agg(
-// 																	json_build_object(
-// 																		'id', user.id,
-// 																		'display_name', user.display_name
-// 																	)
-// 																)
-// 																FROM gd_users as user
-// 																WHERE paritcipant.user_id = user.id
-// 															)
-// 														)
-// 													)
-// 													FROM gd_participants as paritcipant
-// 													WHERE paritcipant.match_id = match.id
-// 												)
-// 											)
-// 										)
-// 										FROM gd_matches as match
-// 										WHERE match.round_id = round.id
-// 									)
-// 								)
-// 							)
-// 							FROM gd_rounds as round
-// 							WHERE bracket_id = bracket.id
-// 						)
-// 					)
-// 				)
-// 				FROM gd_brackets as bracket
-// 				WHERE bracket.tournament_id = t.id
-// 			),
-// 			'[]'::json
-// 		) AS brackets`,
-// 	).
-// 		From("gd_tournaments t").
-// 		Where(sq.Eq{"deleted_at": nil}).
-// 		Where(sq.Eq{"t.id": id})
-
-// 	query, args, err := queryBuilder.ToSql()
-
-// 	if err != nil {
-// 		fmt.Println(err)
-// 		return nil, err
-// 	}
-
-// 	row := r.DB.Pool.QueryRow(ctx, query, args...)
-
-// 	tournament := &tournamentpb.Tournament{}
-
-// 	var location, totalPrize, organizer, formatDescription, description, entryFee, maxRankingClass sql.NullString
-// 	var createdAt, updatedAt time.Time
-// 	var startDate, deletedAt sql.NullTime
-// 	var maxPlayers sql.NullInt32
-
-// 	err = row.Scan(
-// 		&tournament.Id,
-// 		&tournament.Name,
-// 		&tournament.Type,
-// 		&tournament.Format,
-// 		&formatDescription,
-// 		&startDate,
-// 		&tournament.EndDate,
-// 		&location,
-// 		&totalPrize,
-// 		&entryFee,
-// 		&maxPlayers,
-// 		&tournament.Status,
-// 		&organizer,
-// 		&createdAt,
-// 		&updatedAt,
-// 		&description,
-// 		&tournament.MaxAge,
-// 		&tournament.HasRanking,
-// 		&maxRankingClass,
-// 		&tournament.Gender,
-// 		&tournament.RegisteredPlayers,
-// 		&deletedAt,
-// 		&tournament.PrizeDistributions,
-// 		&tournament.Brackets,
-// 	)
-
-// 	fmt.Println('1', tournament.Brackets)
-
-// 	if err != nil {
-// 		fmt.Println("err", err)
-// 		if errors.Is(err, pgx.ErrNoRows) {
-// 			return nil, nil
-// 		}
-// 		return nil, err
-// 	}
-// 	if location.Valid {
-// 		tournament.Location = wrapperspb.String(location.String)
-// 	}
-
-// 	if formatDescription.Valid {
-// 		tournament.FormatDescription = wrapperspb.String(formatDescription.String)
-// 	}
-
-// 	if description.Valid {
-// 		tournament.Description = wrapperspb.String(description.String)
-// 	}
-
-// 	tournament.CreatedAt = createdAt.Format(time.RFC3339)
-// 	tournament.UpdateAt = updatedAt.Format(time.RFC3339)
-
-// 	if startDate.Valid {
-// 		tournament.StartDate = wrapperspb.String(startDate.Time.Format(time.RFC3339))
-// 	}
-
-// 	if totalPrize.Valid {
-// 		tournament.TotalPrize = wrapperspb.String(totalPrize.String)
-// 	}
-
-// 	if organizer.Valid {
-// 		tournament.Organizer = wrapperspb.String(organizer.String)
-// 	}
-
-// 	if maxPlayers.Valid {
-// 		tournament.MaxPlayers = wrapperspb.Int32(maxPlayers.Int32)
-// 	}
-
-// 	if maxRankingClass.Valid {
-// 		tournament.MaxRankingClass = wrapperspb.String(maxRankingClass.String)
-// 	}
-
-// 	if entryFee.Valid {
-// 		tournament.EntryFee = wrapperspb.String(entryFee.String)
-// 	}
-
-// 	if deletedAt.Valid {
-// 		tournament.DeletedAt = wrapperspb.String(deletedAt.Time.Format(time.RFC3339))
-// 	}
-
-// 	return tournament, nil
-// }
-
 func (r *TournamentRepository) createTournament(
 	ctx context.Context,
 	name string,
@@ -719,40 +509,35 @@ func (r *TournamentRepository) UpdateTournament(
 	ctx context.Context,
 	tournament *tournamentpb.Tournament,
 ) error {
-	if r.DB == nil || r.DB.Pool == nil {
-		return errors.New("DB pool is nil")
-	}
-
-	tx, err := r.DB.Pool.Begin(ctx)
+	tx, err := r.DB.Pool.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
-		return fmt.Errorf("begin tx: %w", err)
+		return err
 	}
 	defer tx.Rollback(ctx)
 
-	const query = `
-		UPDATE gd_tournaments
-		SET
-			name               = $1,
-			type               = $2,
-			format             = $3,
-			format_description = $4,
-			location           = $5,
-			total_prize        = $6,
-			entry_fee          = $7,
-			max_players        = $8,
-			status             = $9,
-			organizer          = $10,
-			updated_at         = NOW(),
-			description        = $11,
-			max_age            = $12,
-			has_ranking        = $13,
-			max_ranking_class  = $14,
-			gender             = $15
-		WHERE id = $16
-	`
+	query := `
+    UPDATE gd_tournaments
+    SET
+        name               = $1,
+        type               = $2,
+        format             = $3,
+        format_description = $4,
+        location           = $5,
+        total_prize        = $6,
+        entry_fee          = $7,
+        organizer          = $8,
+        updated_at         = NOW(),
+        description        = $9,
+        max_age            = $10,
+        has_ranking        = $11,
+        max_ranking_class  = $12,
+        gender             = $13
+    WHERE id = $14
+`
 
-	tag, err := tx.Exec(
-		ctx, query,
+	logger.Dump(tournament)
+
+	tag, err := tx.Exec(ctx, query,
 		tournament.Name,
 		tournament.Type,
 		tournament.Format,
@@ -760,8 +545,6 @@ func (r *TournamentRepository) UpdateTournament(
 		tournament.Location.Value,
 		tournament.TotalPrize.Value,
 		tournament.EntryFee.Value,
-		tournament.MaxPlayers.Value,
-		tournament.Status,
 		tournament.Organizer.Value,
 		tournament.Description.Value,
 		tournament.MaxAge,
@@ -770,67 +553,133 @@ func (r *TournamentRepository) UpdateTournament(
 		tournament.Gender,
 		tournament.Id,
 	)
+
 	if err != nil {
 		return fmt.Errorf("update tournament: %w", err)
 	}
+
 	if tag.RowsAffected() == 0 {
 		return errors.New("tournament not found")
 	}
 
-	// Prize Distribution
+	_, err = tx.Exec(ctx,
+		`DELETE FROM gd_prize_distributions WHERE tournament_id = $1`,
+		tournament.Id,
+	)
+	if err != nil {
+		return fmt.Errorf("delete prize distributions: %w", err)
+	}
+
 	batch := &pgx.Batch{}
 
-	// TODO: total amount can't greater than totalPrize
-	for index, prize := range tournament.PrizeDistributions {
-		batch.Queue(`
-			INSERT INTO gd_prize_distributions(id, tournament_id, name, amount, display_order)
-			VALUES ($1, $2, $3, $4, $5)
-			ON CONFLICT (id)
-			DO UPDATE SET
-				id            = EXCLUDED.id,
-				name		  = EXCLUDED.name,
-				amount        = EXCLUDED.amount,
-				display_order = EXCLUDED.display_order
-		`, prize.Id, tournament.Id, prize.Name, prize.Amount, index)
-	}
-
-	prizeIds := make([]string, len(tournament.PrizeDistributions))
-	for i, prize := range tournament.PrizeDistributions {
-		prizeIds[i] = prize.Id
-	}
-
-	batch.Queue(
-		`DELETE FROM gd_prize_distributions WHERE tournament_id = $1 AND id NOT IN (SELECT UNNEST($2::uuid[]))`,
-		tournament.Id, prizeIds,
-	)
-
-	br := tx.SendBatch(ctx, batch)
+	const insertPrizeQuery = `
+        INSERT INTO gd_prize_distributions(
+            id,
+            tournament_id,
+            name,
+            amount,
+            display_order
+        )
+        VALUES ($1, $2, $3, $4, $5)
+    `
 
 	for index, prize := range tournament.PrizeDistributions {
-		tag, err := br.Exec()
-		if err != nil {
-			br.Close()
-			return fmt.Errorf("prize upsert failed at index %d (id=%s, name=%s, amount=%v): %w",
-				index, prize.Id, prize.Name, prize.Amount, err)
+		batch.Queue(
+			insertPrizeQuery,
+			prize.Id,
+			tournament.Id,
+			prize.Name,
+			prize.Amount,
+			index,
+		)
+	}
+
+	if len(tournament.PrizeDistributions) > 0 {
+		br := tx.SendBatch(ctx, batch)
+		defer br.Close()
+
+		for index := range tournament.PrizeDistributions {
+			if _, err := br.Exec(); err != nil {
+				return fmt.Errorf(
+					"insert prize distribution at index %d: %w",
+					index,
+					err,
+				)
+			}
 		}
-		fmt.Printf("[DEBUG] prize upsert index=%d id=%s rows_affected=%d\n",
-			index, prize.Id, tag.RowsAffected())
 	}
 
-	deleteTag, err := br.Exec()
+	bracketIDs := make([]string, 0, len(tournament.Brackets))
+
+	for _, bracket := range tournament.Brackets {
+		bracketIDs = append(bracketIDs, bracket.Id)
+	}
+
+	_, err = tx.Exec(ctx,
+		`DELETE FROM gd_rounds WHERE bracket_id = ANY($1)`,
+		bracketIDs,
+	)
 	if err != nil {
-		br.Close()
-		return fmt.Errorf("prize delete failed (tournament_id=%s, keeping_ids=%v): %w",
-			tournament.Id, prizeIds, err)
-	}
-	fmt.Printf("[DEBUG] prize delete tournament_id=%s rows_affected=%d\n",
-		tournament.Id, deleteTag.RowsAffected())
-
-	if err := br.Close(); err != nil {
-		return fmt.Errorf("batch close: %w", err)
+		return fmt.Errorf("delete rounds: %w", err)
 	}
 
-	return tx.Commit(ctx)
+	var rounds []*roundpb.Round
+
+	for _, bracket := range tournament.Brackets {
+		rounds = append(rounds, bracket.Rounds...)
+	}
+
+	if len(rounds) > 0 {
+		const columnCount = 5
+
+		query := `
+            INSERT INTO gd_rounds (
+                bracket_id,
+                name,
+                race_to,
+                elimination_type,
+                order_index
+            ) VALUES
+        `
+
+		placeholders := make([]string, 0, len(rounds))
+		params := make([]any, 0, len(rounds)*columnCount)
+
+		for i, round := range rounds {
+			index := i * columnCount
+
+			placeholders = append(placeholders,
+				fmt.Sprintf(
+					"($%d,$%d,$%d,$%d,$%d)",
+					index+1,
+					index+2,
+					index+3,
+					index+4,
+					index+5,
+				),
+			)
+
+			params = append(params,
+				round.BracketId,
+				round.Name,
+				round.RaceTo,
+				round.EliminationType,
+				round.OrderIndex,
+			)
+		}
+
+		query += strings.Join(placeholders, ",")
+
+		if _, err := tx.Exec(ctx, query, params...); err != nil {
+			return fmt.Errorf("insert rounds: %w", err)
+		}
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("commit transaction: %w", err)
+	}
+
+	return nil
 }
 
 func (r *TournamentRepository) deleteTournament(
