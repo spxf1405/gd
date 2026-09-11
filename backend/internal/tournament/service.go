@@ -2,10 +2,12 @@ package tournament
 
 import (
 	tournamentpb "backend/internal/gen/tournament/v1"
+	"backend/internal/logger"
 	"context"
 	"log"
 
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 )
 
 type Service struct {
@@ -39,6 +41,7 @@ func (s *Service) getTournaments(ctx context.Context, params *tournamentpb.GetTo
 func (s *Service) UpdateTournament(ctx context.Context, tournament *tournamentpb.Tournament) error {
 	err := s.repo.UpdateTournament(ctx, tournament)
 	if err != nil {
+		logger.Debug("Debug", zap.Error(err))
 		return err
 	}
 	return nil

@@ -5,9 +5,7 @@ import {
 } from "@gd/proto/tournament/v1/tournament_pb";
 import { Form, Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
-import React from "react";
 import { useTranslation } from "react-i18next";
-import { COLORS } from "../../consts/color";
 import { Field } from "../../field/field";
 
 export const BasicTab = () => {
@@ -45,7 +43,10 @@ export const BasicTab = () => {
         <Form.Item
           name="name"
           rules={[
-            { required: true, message: t("settings.tabs.basic.fields.nameEmptyError") },
+            {
+              required: true,
+              message: t("settings.tabs.basic.fields.nameEmptyError"),
+            },
           ]}
         >
           <Input

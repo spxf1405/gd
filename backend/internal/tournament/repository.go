@@ -537,6 +537,14 @@ func (r *TournamentRepository) UpdateTournament(
 
 	logger.Dump(tournament)
 
+	var maxRankingClass any
+
+	if tournament.MaxRankingClass != nil {
+		maxRankingClass = tournament.MaxRankingClass.Value
+	}
+
+	fmt.Println("maxRankingClass", maxRankingClass)
+
 	tag, err := tx.Exec(ctx, query,
 		tournament.Name,
 		tournament.Type,
@@ -549,7 +557,7 @@ func (r *TournamentRepository) UpdateTournament(
 		tournament.Description.Value,
 		tournament.MaxAge,
 		tournament.HasRanking,
-		tournament.MaxRankingClass.Value,
+		maxRankingClass,
 		tournament.Gender,
 		tournament.Id,
 	)
@@ -676,6 +684,10 @@ func (r *TournamentRepository) UpdateTournament(
 	}
 
 	if err := tx.Commit(ctx); err != nil {
+		logger.Error("commit transaction failed",
+			zap.String("tournament_id", tournament.Id),
+			zap.Error(err),
+		)
 		return fmt.Errorf("commit transaction: %w", err)
 	}
 

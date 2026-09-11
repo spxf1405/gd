@@ -214,6 +214,8 @@ export const Setting = () => {
   const [form] = Form.useForm<Tournament>();
 
   const onFinish = async (values: Tournament) => {
+    if (!tournament) return;
+
     const request = create(UpdateTournamentRequestSchema, {
       tournament: {
         ...values,
@@ -221,6 +223,9 @@ export const Setting = () => {
         maxAge: values.maxAge ?? 0,
         organizer: values.organizer ?? "",
         description: values.description ?? "",
+        hasRanking: values.hasRanking,
+        maxRankingClass: values.maxRankingClass,
+        id: tournament.id,
       },
     });
 
@@ -403,18 +408,18 @@ export const Setting = () => {
                 <FormatTab />
               </Tabs.Content>
               <Tabs.Content
-                value="schedule"
-                forceMount
-                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
-              >
-                <ScheduleTab />
-              </Tabs.Content>
-              <Tabs.Content
                 value="players"
                 forceMount
                 className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
               >
                 <PlayersTab />
+              </Tabs.Content>
+              <Tabs.Content
+                value="schedule"
+                forceMount
+                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
+              >
+                <ScheduleTab />
               </Tabs.Content>
               <Tabs.Content
                 value="finance"
