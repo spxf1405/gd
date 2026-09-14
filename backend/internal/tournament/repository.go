@@ -3,6 +3,7 @@ package tournament
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -365,20 +366,41 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 			t.max_ranking_class,
 			t.gender,
 			t.deleted_at,
-			COALESCE(
-				json_agg(
-					json_build_object(
-						'id', player.id,
-						'name', player.name
-					) 
-				) FILTER (WHERE player.id IS NOT NULL),
+			
+			COALESCE (
+				(
+					SELECT json_agg(
+						json_build_object(
+							'id', player.id,
+							'name', player.name
+						)
+					)
+					FROM gd_participants participant
+					JOIN gd_players player
+						ON player.id = participant.player_id
+					WHERE participant.tournament_id = t.id
+				),
 				'[]'::json
-			) AS participants 
+			) AS participants,
+
+			COALESCE (
+				(
+					SELECT json_agg(
+						json_build_object(
+							'id', pd.id,
+							'name', pd.name,
+							'amount', pd.amount,
+							'display', 'pd.display_order'
+						)
+						ORDER BY pd.display_order
+					)
+					FROM gd_prize_distributions pd
+					WHERE pd.tournament_id = t.id
+				),
+				'[]'::json
+			) AS prize_distributions
 		FROM gd_tournaments t
-		LEFT JOIN gd_participants participant ON participant.tournament_id = t.id
-		LEFT JOIN gd_players player ON player.id = participant.player_id
 		WHERE t.id = $1
-		GROUP BY t.id
 	`
 
 	row := r.DB.Pool.QueryRow(ctx, query, id)
@@ -390,12 +412,8 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 	var startDate, deletedAt sql.NullTime
 	var maxPlayers sql.NullInt32
 
-	type participantJSON struct {
-		ID   string `json:"id"`
-		Name string `json:"name"`
-	}
-
-	var rawParticipants []participantJSON
+	var rawParticipants json.RawMessage
+	var rawPrizeDistributions json.RawMessage
 
 	err := row.Scan(
 		&tournament.Id,
@@ -420,6 +438,7 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		&tournament.Gender,
 		&deletedAt,
 		&rawParticipants,
+		&rawPrizeDistributions,
 	)
 
 	if err != nil {
@@ -427,16 +446,21 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		return nil, err
 	}
 
-	participants := make([]*tournamentpb.Participant, 0, len(rawParticipants))
+	participants := []*tournamentpb.Participant{}
 
-	for _, p := range rawParticipants {
-		participants = append(participants, &tournamentpb.Participant{
-			Id:   p.ID,
-			Name: p.Name,
-		})
+	if err := json.Unmarshal(rawParticipants, &participants); err != nil {
+		return nil, fmt.Errorf("unmarshal participants: %w", err)
 	}
 
 	tournament.Participants = participants
+
+	var prizeDistributions []*tournamentpb.PrizeDistribution
+
+	if err := json.Unmarshal(rawPrizeDistributions, &prizeDistributions); err != nil {
+		return nil, fmt.Errorf("unmarshal prize distributions: %w", err)
+	}
+
+	tournament.PrizeDistributions = prizeDistributions
 
 	if location.Valid {
 		tournament.Location = wrapperspb.String(location.String)
@@ -516,24 +540,24 @@ func (r *TournamentRepository) UpdateTournament(
 	defer tx.Rollback(ctx)
 
 	query := `
-    UPDATE gd_tournaments
-    SET
-        name               = $1,
-        type               = $2,
-        format             = $3,
-        format_description = $4,
-        location           = $5,
-        total_prize        = $6,
-        entry_fee          = $7,
-        organizer          = $8,
-        updated_at         = NOW(),
-        description        = $9,
-        max_age            = $10,
-        has_ranking        = $11,
-        max_ranking_class  = $12,
-        gender             = $13
-    WHERE id = $14
-`
+		UPDATE gd_tournaments
+		SET
+			name               = $1,
+			type               = $2,
+			format             = $3,
+			format_description = $4,
+			location           = $5,
+			total_prize        = $6,
+			entry_fee          = $7,
+			organizer          = $8,
+			updated_at         = NOW(),
+			description        = $9,
+			max_age            = $10,
+			has_ranking        = $11,
+			max_ranking_class  = $12,
+			gender             = $13
+		WHERE id = $14 
+	`
 
 	logger.Dump(tournament)
 
@@ -610,10 +634,13 @@ func (r *TournamentRepository) UpdateTournament(
 			if _, err := br.Exec(); err != nil {
 				return fmt.Errorf(
 					"insert prize distribution at index %d: %w",
-					index,
-					err,
+					index, err,
 				)
 			}
+		}
+
+		if err := br.Close(); err != nil {
+			return fmt.Errorf("close batch: %w", err)
 		}
 	}
 
@@ -622,6 +649,8 @@ func (r *TournamentRepository) UpdateTournament(
 	for _, bracket := range tournament.Brackets {
 		bracketIDs = append(bracketIDs, bracket.Id)
 	}
+
+	logger.Dump(bracketIDs)
 
 	_, err = tx.Exec(ctx,
 		`DELETE FROM gd_rounds WHERE bracket_id = ANY($1)`,

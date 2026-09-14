@@ -209,6 +209,8 @@ export const Setting = () => {
   const { t } = useTranslation();
   const { tournament } = useTournamentStore();
 
+  console.log("tournament", tournament)
+
   const [open, setOpen] = useState(false);
 
   const [form] = Form.useForm<Tournament>();
