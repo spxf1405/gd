@@ -156,9 +156,9 @@ export const FinanceTab = () => {
                   {currencyUnit}
                 </span>
               </div>
-
+              
               <Field label={t("settings.finance.selectCurrency")}>
-                <Form.Item name="currencyUnit" noStyle initialValue="VND">
+                <Form.Item name="currencyUnit" noStyle>
                   <QSelect
                     size="large"
                     className="w-full"

@@ -83,4 +83,5 @@ message Tournament {
   google.protobuf.StringValue deleted_at          = 23;
   repeated PrizeDistribution  prize_distributions = 24;
   repeated bracket.v1.Bracket brackets            = 25;
+  string                      currency_unit       = 26;
 }

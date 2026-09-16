@@ -447,6 +447,7 @@ type Tournament struct {
 	DeletedAt          *wrapperspb.StringValue `protobuf:"bytes,23,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
 	PrizeDistributions []*PrizeDistribution    `protobuf:"bytes,24,rep,name=prize_distributions,json=prizeDistributions,proto3" json:"prize_distributions,omitempty"`
 	Brackets           []*v11.Bracket          `protobuf:"bytes,25,rep,name=brackets,proto3" json:"brackets,omitempty"`
+	CurrencyUnit       string                  `protobuf:"bytes,26,opt,name=currency_unit,json=currencyUnit,proto3" json:"currency_unit,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -649,6 +650,13 @@ func (x *Tournament) GetBrackets() []*v11.Bracket {
 	return nil
 }
 
+func (x *Tournament) GetCurrencyUnit() string {
+	if x != nil {
+		return x.CurrencyUnit
+	}
+	return ""
+}
+
 var File_tournament_v1_tournament_proto protoreflect.FileDescriptor
 
 const file_tournament_v1_tournament_proto_rawDesc = "" +
@@ -666,7 +674,8 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\x05Round\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12)\n" +
-	"\amatches\x18\x03 \x03(\v2\x0f.match.v1.MatchR\amatches\"\xf6\t\n" +
+	"\amatches\x18\x03 \x03(\v2\x0f.match.v1.MatchR\amatches\"\x9b\n" +
+	"\n" +
 	"\n" +
 	"Tournament\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
@@ -699,7 +708,8 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\n" +
 	"deleted_at\x18\x17 \x01(\v2\x1c.google.protobuf.StringValueR\tdeletedAt\x12Q\n" +
 	"\x13prize_distributions\x18\x18 \x03(\v2 .tournament.v1.PrizeDistributionR\x12prizeDistributions\x12/\n" +
-	"\bbrackets\x18\x19 \x03(\v2\x13.bracket.v1.BracketR\bbrackets*\x82\x02\n" +
+	"\bbrackets\x18\x19 \x03(\v2\x13.bracket.v1.BracketR\bbrackets\x12#\n" +
+	"\rcurrency_unit\x18\x1a \x01(\tR\fcurrencyUnit*\x82\x02\n" +
 	"\x10TournamentStatus\x12!\n" +
 	"\x1dTOURNAMENT_STATUS_UNSPECIFIED\x10\x00\x12!\n" +
 	"\x1dTOURNAMENT_STATUS_REGISTERING\x10\x01\x12)\n" +

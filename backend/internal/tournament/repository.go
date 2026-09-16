@@ -1,5 +1,7 @@
 package tournament
 
+// TODO: Consider to separate currency_unit to other table
+
 import (
 	"context"
 	"database/sql"
@@ -366,7 +368,7 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 			t.max_ranking_class,
 			t.gender,
 			t.deleted_at,
-			
+			t.currency_unit,
 			COALESCE (
 				(
 					SELECT json_agg(
@@ -437,6 +439,7 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		&maxRankingClass,
 		&tournament.Gender,
 		&deletedAt,
+		&tournament.CurrencyUnit,
 		&rawParticipants,
 		&rawPrizeDistributions,
 	)
@@ -555,8 +558,9 @@ func (r *TournamentRepository) UpdateTournament(
 			max_age            = $10,
 			has_ranking        = $11,
 			max_ranking_class  = $12,
-			gender             = $13
-		WHERE id = $14 
+			gender             = $13,
+			currency_unit	   = $14
+		WHERE id = $15
 	`
 
 	logger.Dump(tournament)
