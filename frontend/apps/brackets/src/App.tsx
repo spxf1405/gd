@@ -10,7 +10,7 @@ import { useTournament } from "./hook/tournament";
 import { useTournamentStore } from "./store/match";
 import { AntdThemeConfig } from "./components/ui/antd-config";
 import { LanguageSwitcher } from "./features/lang/lang";
-import { StartButton } from "./features/configurations/start-button";
+import { TournamentStatusControl } from "./features/configurations/start-button";
 
 const queryClient = new QueryClient();
 const bus = new EventBus();
@@ -70,12 +70,12 @@ function App() {
   return (
     <div className="bg-black w-full h-full">
       <div className="p-2 flex gap-2">
+        <TournamentStatusControl />
         <Setting />
         <AntdThemeConfig>
           <Players />
         </AntdThemeConfig>
-        <StartButton />
-        <LanguageSwitcher />
+        <LanguageSwitcher /> 
       </div>
       <BracketFlow />
     </div>

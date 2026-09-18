@@ -24,18 +24,18 @@ export const ScheduleTab = () => {
         },
       }}
     >
-      <Field label={t("settings.schedule.location")} required>
+      <Field label={t("settings.schedule.venue")} required>
         <Form.Item
-          name="location"
+          name="venue"
           rules={[
             {
               required: true,
-              message: "Location required!",
+              message: "Venue required!",
             },
           ]}
         >
           <Input
-            placeholder={t("settings.schedule.locationPlaceholder")}
+            placeholder={t("settings.schedule.venuePlaceholder")}
             size="large"
             prefix={<MapPin size={16} style={{ color: COLORS.amber }} />}
           />

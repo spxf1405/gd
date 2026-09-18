@@ -193,9 +193,9 @@ function CurrencyAmountInput({
         placeholder="0"
         size={Math.max(inputValue.length - 4, 1)}
         className={`
-          w-fit
+          w-[120px]
           bg-transparent
-          text-right text-[14px] font-semibold
+          text-right text-[13px] font-semibold
           outline-none
           border-b pb-0.5
           transition-colors

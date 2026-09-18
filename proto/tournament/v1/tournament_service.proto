@@ -120,13 +120,16 @@ message UpdateTournamentRequest {
   Tournament tournament = 1;
 }
 
-message UpdateTournamentResponse {}
-
+message ChangeTournamentStatusRequest {
+  string           id     = 1;
+  TournamentStatus status = 2;
+}
 
 service TournamentService {
   rpc GetTournaments(GetTournamentsRequestWrapper) returns (GetTournamentsResponse);
   rpc GetTournamentByID(GetTournamentByIDRequest) returns (GetTournamentByIDResponse);
-  rpc UpdateTournament(UpdateTournamentRequest) returns (UpdateTournamentResponse);
+  rpc UpdateTournament(UpdateTournamentRequest) returns (google.protobuf.Empty);
   rpc CreateTournament(CreateTournamentRequest) returns (CreateTournamentResponse);
   rpc DeleteTournament(DeleteTournamentRequest) returns (DeleteTournamentResponse);
+  rpc ChangeTournamentStatus(ChangeTournamentStatusRequest) returns (google.protobuf.Empty);
 }

@@ -200,8 +200,8 @@
       "title": "Schedule & Location",
       "createdDate": "Created Date",
       "startDate": "Start Date",
-      "location": "Venue",
-      "locationPlaceholder": "e.g. Golden Billiard Club, Hanoi"
+      "venue": "Venue",
+      "venuePlaceholder": "e.g. Golden Billiard Club, Hanoi"
     },
     "finance": {
       "title": "Finance",

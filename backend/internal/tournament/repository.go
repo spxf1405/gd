@@ -312,7 +312,7 @@ func (r *TournamentRepository) getTournaments(
 		}
 
 		if location.Valid {
-			t.Location = wrapperspb.String(location.String)
+			t.Venue = wrapperspb.String(location.String)
 		}
 
 		t.CreatedAt = createdAt.Format(time.RFC3339)
@@ -354,7 +354,7 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 			t.format_description,
 			t.start_date,
 			t.end_date,
-			t.location,
+			t.venue,
 			t.total_prize,
 			t.entry_fee,
 			t.max_players,
@@ -409,7 +409,7 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 
 	tournament := &tournamentpb.Tournament{}
 
-	var location, totalPrize, organizer, formatDescription, description, entryFee, maxRankingClass sql.NullString
+	var venue, totalPrize, organizer, formatDescription, description, entryFee, maxRankingClass sql.NullString
 	var createdAt, updatedAt time.Time
 	var startDate, deletedAt sql.NullTime
 	var maxPlayers sql.NullInt32
@@ -425,7 +425,7 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		&formatDescription,
 		&startDate,
 		&tournament.EndDate,
-		&location,
+		&venue,
 		&totalPrize,
 		&entryFee,
 		&maxPlayers,
@@ -465,8 +465,8 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 
 	tournament.PrizeDistributions = prizeDistributions
 
-	if location.Valid {
-		tournament.Location = wrapperspb.String(location.String)
+	if venue.Valid {
+		tournament.Venue = wrapperspb.String(venue.String)
 	}
 
 	if formatDescription.Valid {
@@ -549,7 +549,7 @@ func (r *TournamentRepository) UpdateTournament(
 			type               = $2,
 			format             = $3,
 			format_description = $4,
-			location           = $5,
+			venue              = $5,
 			total_prize        = $6,
 			entry_fee          = $7,
 			organizer          = $8,
@@ -578,7 +578,7 @@ func (r *TournamentRepository) UpdateTournament(
 		tournament.Type,
 		tournament.Format,
 		tournament.FormatDescription.Value,
-		tournament.Location.Value,
+		tournament.Venue.Value,
 		tournament.TotalPrize.Value,
 		tournament.EntryFee.Value,
 		tournament.Organizer.Value,
@@ -587,6 +587,7 @@ func (r *TournamentRepository) UpdateTournament(
 		tournament.HasRanking,
 		maxRankingClass,
 		tournament.Gender,
+		tournament.CurrencyUnit,
 		tournament.Id,
 	)
 
@@ -746,4 +747,21 @@ func (r *TournamentRepository) deleteTournament(
 	}
 
 	return deletedAt.Format(time.RFC3339), nil
+}
+
+func (r *TournamentRepository) changeTournamentStatus(ctx context.Context, id string, status int) error {
+	query := `UPDATE gd_tournaments SET status = $1 WHERE id = $2`
+
+	cmt, err := r.DB.Pool.Exec(ctx, query, status, id)
+
+	if err != nil {
+		logger.Dump(err)
+		return err
+	}
+
+	if cmt.RowsAffected() == 0 {
+		return errors.New("not found")
+	}
+
+	return nil
 }

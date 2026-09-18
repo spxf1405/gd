@@ -1,9 +1,11 @@
 package tournament
 
 import (
+	roundpb "backend/internal/gen/round/v1"
 	tournamentpb "backend/internal/gen/tournament/v1"
 	"backend/internal/logger"
 	"context"
+	"errors"
 	"log"
 
 	"github.com/google/uuid"
@@ -100,4 +102,45 @@ func (s *Service) getTournamentByID(ctx context.Context, id string) (*tournament
 	tournament.Brackets = brackets
 
 	return tournament, nil
+}
+
+func (s *Service) ChangeTournamentStatus(
+	ctx context.Context,
+	id string,
+	status int,
+) error {
+	tournament, err := s.repo.getTournamentByID(ctx, id)
+
+	if err != nil {
+		return errors.New("tournament not found")
+	}
+
+	if status == int(tournamentpb.TournamentStatus_TOURNAMENT_STATUS_REGISTERING) {
+		if tournament.Venue == nil {
+			return errors.New("infomation required: tournament venue")
+		}
+		if tournament.Name == "" {
+			return errors.New("infomation required: tournament name")
+		}
+	}
+
+	if status == int(tournamentpb.TournamentStatus_TOURNAMENT_STATUS_REGISTRATION_CLOSED) {
+		var rounds []*roundpb.Round
+
+		for _, bracket := range tournament.Brackets {
+			rounds = append(rounds, bracket.Rounds...)
+		}
+
+		if len(rounds) == 0 {
+			return errors.New("infomation required: rounds isn't created yet")
+		}
+	}
+
+	err = s.repo.changeTournamentStatus(ctx, id, status)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

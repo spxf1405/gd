@@ -9,6 +9,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	http "net/http"
 	strings "strings"
 )
@@ -48,15 +49,19 @@ const (
 	// TournamentServiceDeleteTournamentProcedure is the fully-qualified name of the TournamentService's
 	// DeleteTournament RPC.
 	TournamentServiceDeleteTournamentProcedure = "/tournament.v1.TournamentService/DeleteTournament"
+	// TournamentServiceChangeTournamentStatusProcedure is the fully-qualified name of the
+	// TournamentService's ChangeTournamentStatus RPC.
+	TournamentServiceChangeTournamentStatusProcedure = "/tournament.v1.TournamentService/ChangeTournamentStatus"
 )
 
 // TournamentServiceClient is a client for the tournament.v1.TournamentService service.
 type TournamentServiceClient interface {
 	GetTournaments(context.Context, *connect.Request[v1.GetTournamentsRequestWrapper]) (*connect.Response[v1.GetTournamentsResponse], error)
 	GetTournamentByID(context.Context, *connect.Request[v1.GetTournamentByIDRequest]) (*connect.Response[v1.GetTournamentByIDResponse], error)
-	UpdateTournament(context.Context, *connect.Request[v1.UpdateTournamentRequest]) (*connect.Response[v1.UpdateTournamentResponse], error)
+	UpdateTournament(context.Context, *connect.Request[v1.UpdateTournamentRequest]) (*connect.Response[emptypb.Empty], error)
 	CreateTournament(context.Context, *connect.Request[v1.CreateTournamentRequest]) (*connect.Response[v1.CreateTournamentResponse], error)
 	DeleteTournament(context.Context, *connect.Request[v1.DeleteTournamentRequest]) (*connect.Response[v1.DeleteTournamentResponse], error)
+	ChangeTournamentStatus(context.Context, *connect.Request[v1.ChangeTournamentStatusRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
 // NewTournamentServiceClient constructs a client for the tournament.v1.TournamentService service.
@@ -82,7 +87,7 @@ func NewTournamentServiceClient(httpClient connect.HTTPClient, baseURL string, o
 			connect.WithSchema(tournamentServiceMethods.ByName("GetTournamentByID")),
 			connect.WithClientOptions(opts...),
 		),
-		updateTournament: connect.NewClient[v1.UpdateTournamentRequest, v1.UpdateTournamentResponse](
+		updateTournament: connect.NewClient[v1.UpdateTournamentRequest, emptypb.Empty](
 			httpClient,
 			baseURL+TournamentServiceUpdateTournamentProcedure,
 			connect.WithSchema(tournamentServiceMethods.ByName("UpdateTournament")),
@@ -100,16 +105,23 @@ func NewTournamentServiceClient(httpClient connect.HTTPClient, baseURL string, o
 			connect.WithSchema(tournamentServiceMethods.ByName("DeleteTournament")),
 			connect.WithClientOptions(opts...),
 		),
+		changeTournamentStatus: connect.NewClient[v1.ChangeTournamentStatusRequest, emptypb.Empty](
+			httpClient,
+			baseURL+TournamentServiceChangeTournamentStatusProcedure,
+			connect.WithSchema(tournamentServiceMethods.ByName("ChangeTournamentStatus")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // tournamentServiceClient implements TournamentServiceClient.
 type tournamentServiceClient struct {
-	getTournaments    *connect.Client[v1.GetTournamentsRequestWrapper, v1.GetTournamentsResponse]
-	getTournamentByID *connect.Client[v1.GetTournamentByIDRequest, v1.GetTournamentByIDResponse]
-	updateTournament  *connect.Client[v1.UpdateTournamentRequest, v1.UpdateTournamentResponse]
-	createTournament  *connect.Client[v1.CreateTournamentRequest, v1.CreateTournamentResponse]
-	deleteTournament  *connect.Client[v1.DeleteTournamentRequest, v1.DeleteTournamentResponse]
+	getTournaments         *connect.Client[v1.GetTournamentsRequestWrapper, v1.GetTournamentsResponse]
+	getTournamentByID      *connect.Client[v1.GetTournamentByIDRequest, v1.GetTournamentByIDResponse]
+	updateTournament       *connect.Client[v1.UpdateTournamentRequest, emptypb.Empty]
+	createTournament       *connect.Client[v1.CreateTournamentRequest, v1.CreateTournamentResponse]
+	deleteTournament       *connect.Client[v1.DeleteTournamentRequest, v1.DeleteTournamentResponse]
+	changeTournamentStatus *connect.Client[v1.ChangeTournamentStatusRequest, emptypb.Empty]
 }
 
 // GetTournaments calls tournament.v1.TournamentService.GetTournaments.
@@ -123,7 +135,7 @@ func (c *tournamentServiceClient) GetTournamentByID(ctx context.Context, req *co
 }
 
 // UpdateTournament calls tournament.v1.TournamentService.UpdateTournament.
-func (c *tournamentServiceClient) UpdateTournament(ctx context.Context, req *connect.Request[v1.UpdateTournamentRequest]) (*connect.Response[v1.UpdateTournamentResponse], error) {
+func (c *tournamentServiceClient) UpdateTournament(ctx context.Context, req *connect.Request[v1.UpdateTournamentRequest]) (*connect.Response[emptypb.Empty], error) {
 	return c.updateTournament.CallUnary(ctx, req)
 }
 
@@ -137,13 +149,19 @@ func (c *tournamentServiceClient) DeleteTournament(ctx context.Context, req *con
 	return c.deleteTournament.CallUnary(ctx, req)
 }
 
+// ChangeTournamentStatus calls tournament.v1.TournamentService.ChangeTournamentStatus.
+func (c *tournamentServiceClient) ChangeTournamentStatus(ctx context.Context, req *connect.Request[v1.ChangeTournamentStatusRequest]) (*connect.Response[emptypb.Empty], error) {
+	return c.changeTournamentStatus.CallUnary(ctx, req)
+}
+
 // TournamentServiceHandler is an implementation of the tournament.v1.TournamentService service.
 type TournamentServiceHandler interface {
 	GetTournaments(context.Context, *connect.Request[v1.GetTournamentsRequestWrapper]) (*connect.Response[v1.GetTournamentsResponse], error)
 	GetTournamentByID(context.Context, *connect.Request[v1.GetTournamentByIDRequest]) (*connect.Response[v1.GetTournamentByIDResponse], error)
-	UpdateTournament(context.Context, *connect.Request[v1.UpdateTournamentRequest]) (*connect.Response[v1.UpdateTournamentResponse], error)
+	UpdateTournament(context.Context, *connect.Request[v1.UpdateTournamentRequest]) (*connect.Response[emptypb.Empty], error)
 	CreateTournament(context.Context, *connect.Request[v1.CreateTournamentRequest]) (*connect.Response[v1.CreateTournamentResponse], error)
 	DeleteTournament(context.Context, *connect.Request[v1.DeleteTournamentRequest]) (*connect.Response[v1.DeleteTournamentResponse], error)
+	ChangeTournamentStatus(context.Context, *connect.Request[v1.ChangeTournamentStatusRequest]) (*connect.Response[emptypb.Empty], error)
 }
 
 // NewTournamentServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -183,6 +201,12 @@ func NewTournamentServiceHandler(svc TournamentServiceHandler, opts ...connect.H
 		connect.WithSchema(tournamentServiceMethods.ByName("DeleteTournament")),
 		connect.WithHandlerOptions(opts...),
 	)
+	tournamentServiceChangeTournamentStatusHandler := connect.NewUnaryHandler(
+		TournamentServiceChangeTournamentStatusProcedure,
+		svc.ChangeTournamentStatus,
+		connect.WithSchema(tournamentServiceMethods.ByName("ChangeTournamentStatus")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/tournament.v1.TournamentService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case TournamentServiceGetTournamentsProcedure:
@@ -195,6 +219,8 @@ func NewTournamentServiceHandler(svc TournamentServiceHandler, opts ...connect.H
 			tournamentServiceCreateTournamentHandler.ServeHTTP(w, r)
 		case TournamentServiceDeleteTournamentProcedure:
 			tournamentServiceDeleteTournamentHandler.ServeHTTP(w, r)
+		case TournamentServiceChangeTournamentStatusProcedure:
+			tournamentServiceChangeTournamentStatusHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -212,7 +238,7 @@ func (UnimplementedTournamentServiceHandler) GetTournamentByID(context.Context, 
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tournament.v1.TournamentService.GetTournamentByID is not implemented"))
 }
 
-func (UnimplementedTournamentServiceHandler) UpdateTournament(context.Context, *connect.Request[v1.UpdateTournamentRequest]) (*connect.Response[v1.UpdateTournamentResponse], error) {
+func (UnimplementedTournamentServiceHandler) UpdateTournament(context.Context, *connect.Request[v1.UpdateTournamentRequest]) (*connect.Response[emptypb.Empty], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tournament.v1.TournamentService.UpdateTournament is not implemented"))
 }
 
@@ -222,4 +248,8 @@ func (UnimplementedTournamentServiceHandler) CreateTournament(context.Context, *
 
 func (UnimplementedTournamentServiceHandler) DeleteTournament(context.Context, *connect.Request[v1.DeleteTournamentRequest]) (*connect.Response[v1.DeleteTournamentResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tournament.v1.TournamentService.DeleteTournament is not implemented"))
+}
+
+func (UnimplementedTournamentServiceHandler) ChangeTournamentStatus(context.Context, *connect.Request[v1.ChangeTournamentStatusRequest]) (*connect.Response[emptypb.Empty], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("tournament.v1.TournamentService.ChangeTournamentStatus is not implemented"))
 }

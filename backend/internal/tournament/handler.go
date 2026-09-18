@@ -9,6 +9,7 @@ import (
 
 	"buf.build/go/protovalidate"
 	"connectrpc.com/connect"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type Hanlder struct {
@@ -79,8 +80,9 @@ func (h *Hanlder) GetTournamentByID(ctx context.Context, req *connect.Request[to
 func (h *Hanlder) UpdateTournament(
 	ctx context.Context,
 	req *connect.Request[tournamentpb.UpdateTournamentRequest],
-) (*connect.Response[tournamentpb.UpdateTournamentResponse], error) {
+) (*connect.Response[emptypb.Empty], error) {
 	err := h.service.UpdateTournament(ctx, req.Msg.Tournament)
+
 	if err != nil {
 		return nil, connect.NewError(
 			connect.CodeInternal,
@@ -88,7 +90,7 @@ func (h *Hanlder) UpdateTournament(
 		)
 	}
 
-	res := connect.NewResponse(&tournamentpb.UpdateTournamentResponse{})
+	res := connect.NewResponse(&emptypb.Empty{})
 
 	return res, nil
 }
@@ -98,6 +100,7 @@ func (h *Hanlder) CreateTournament(
 	req *connect.Request[tournamentpb.CreateTournamentRequest],
 ) (*connect.Response[tournamentpb.CreateTournamentResponse], error) {
 	id, err := h.service.createTournament(ctx, req.Msg.Name)
+
 	if err != nil {
 		return nil, connect.NewError(
 			connect.CodeInternal,
@@ -127,6 +130,26 @@ func (h *Hanlder) DeleteTournament(
 	res := connect.NewResponse(&tournamentpb.DeleteTournamentResponse{
 		DeletedAt: deletedAt,
 	})
+
+	return res, nil
+}
+
+func (h *Hanlder) ChangeTournamentStatus(
+	ctx context.Context,
+	req *connect.Request[tournamentpb.ChangeTournamentStatusRequest],
+) (*connect.Response[emptypb.Empty], error) {
+	status := int(req.Msg.Status)
+
+	err := h.service.ChangeTournamentStatus(ctx, req.Msg.Id, status)
+
+	if err != nil {
+		return nil, connect.NewError(
+			connect.CodeInternal,
+			errors.New("change tournament status failed"),
+		)
+	}
+
+	res := connect.NewResponse(&emptypb.Empty{})
 
 	return res, nil
 }

@@ -199,8 +199,8 @@
       "title": "Lịch trình & Địa điểm",
       "createdDate": "Ngày tạo",
       "startDate": "Ngày bắt đầu",
-      "location": "Địa điểm tổ chức",
-      "locationPlaceholder": "VD: CLB Billard Golden, Hà Nội"
+      "venue": "Địa điểm tổ chức",
+      "venuePlaceholder": "VD: CLB Billard Golden, Hà Nội"
     },
     "finance": {
       "title": "Tài chính",

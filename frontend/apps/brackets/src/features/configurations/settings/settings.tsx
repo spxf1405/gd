@@ -209,7 +209,7 @@ export const Setting = () => {
   const { t } = useTranslation();
   const { tournament } = useTournamentStore();
 
-  console.log("tournament", tournament)
+  console.log("tournament", tournament);
 
   const [open, setOpen] = useState(false);
 
@@ -238,7 +238,7 @@ export const Setting = () => {
     setOpen(false);
   };
 
-  type TabValue = "basic" | "format" | "finance" | "players";
+  type TabValue = "basic" | "format" | "finance" | "players" | "schedule";
 
   const tabs = TAB_CONFIG(t);
 
@@ -255,6 +255,10 @@ export const Setting = () => {
 
     if (field === "name" || field === "type" || field === "format") {
       setTabActive("basic");
+    }
+
+    if (field === "venue") {
+      setTabActive("schedule");
     }
 
     form.scrollToField(firstError.name, {

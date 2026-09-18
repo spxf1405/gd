@@ -430,7 +430,7 @@ type Tournament struct {
 	FormatDescription  *wrapperspb.StringValue `protobuf:"bytes,5,opt,name=format_description,json=formatDescription,proto3" json:"format_description,omitempty"`
 	StartDate          *wrapperspb.StringValue `protobuf:"bytes,6,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
 	EndDate            *wrapperspb.StringValue `protobuf:"bytes,7,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
-	Location           *wrapperspb.StringValue `protobuf:"bytes,8,opt,name=location,proto3" json:"location,omitempty"`
+	Venue              *wrapperspb.StringValue `protobuf:"bytes,8,opt,name=venue,proto3" json:"venue,omitempty"`
 	TotalPrize         *wrapperspb.StringValue `protobuf:"bytes,10,opt,name=total_prize,json=totalPrize,proto3" json:"total_prize,omitempty"`
 	EntryFee           *wrapperspb.StringValue `protobuf:"bytes,11,opt,name=entry_fee,json=entryFee,proto3" json:"entry_fee,omitempty"`
 	MaxPlayers         *wrapperspb.Int32Value  `protobuf:"bytes,12,opt,name=max_players,json=maxPlayers,proto3" json:"max_players,omitempty"`
@@ -531,9 +531,9 @@ func (x *Tournament) GetEndDate() *wrapperspb.StringValue {
 	return nil
 }
 
-func (x *Tournament) GetLocation() *wrapperspb.StringValue {
+func (x *Tournament) GetVenue() *wrapperspb.StringValue {
 	if x != nil {
-		return x.Location
+		return x.Venue
 	}
 	return nil
 }
@@ -674,7 +674,7 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\x05Round\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12)\n" +
-	"\amatches\x18\x03 \x03(\v2\x0f.match.v1.MatchR\amatches\"\x9b\n" +
+	"\amatches\x18\x03 \x03(\v2\x0f.match.v1.MatchR\amatches\"\x95\n" +
 	"\n" +
 	"\n" +
 	"Tournament\x12\x0e\n" +
@@ -685,8 +685,8 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\x12format_description\x18\x05 \x01(\v2\x1c.google.protobuf.StringValueR\x11formatDescription\x12;\n" +
 	"\n" +
 	"start_date\x18\x06 \x01(\v2\x1c.google.protobuf.StringValueR\tstartDate\x127\n" +
-	"\bend_date\x18\a \x01(\v2\x1c.google.protobuf.StringValueR\aendDate\x128\n" +
-	"\blocation\x18\b \x01(\v2\x1c.google.protobuf.StringValueR\blocation\x12=\n" +
+	"\bend_date\x18\a \x01(\v2\x1c.google.protobuf.StringValueR\aendDate\x122\n" +
+	"\x05venue\x18\b \x01(\v2\x1c.google.protobuf.StringValueR\x05venue\x12=\n" +
 	"\vtotal_prize\x18\n" +
 	" \x01(\v2\x1c.google.protobuf.StringValueR\n" +
 	"totalPrize\x129\n" +
@@ -766,7 +766,7 @@ var file_tournament_v1_tournament_proto_depIdxs = []int32{
 	9,  // 3: tournament.v1.Tournament.format_description:type_name -> google.protobuf.StringValue
 	9,  // 4: tournament.v1.Tournament.start_date:type_name -> google.protobuf.StringValue
 	9,  // 5: tournament.v1.Tournament.end_date:type_name -> google.protobuf.StringValue
-	9,  // 6: tournament.v1.Tournament.location:type_name -> google.protobuf.StringValue
+	9,  // 6: tournament.v1.Tournament.venue:type_name -> google.protobuf.StringValue
 	9,  // 7: tournament.v1.Tournament.total_prize:type_name -> google.protobuf.StringValue
 	9,  // 8: tournament.v1.Tournament.entry_fee:type_name -> google.protobuf.StringValue
 	10, // 9: tournament.v1.Tournament.max_players:type_name -> google.protobuf.Int32Value
