@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package tournament.v1;
+
+import "common/v1/errors.proto";
+
+option go_package = "backend/internal/gen/tournament/v1;tournamentpb";
+
+enum TournamentErrorCode {
+  UNSPECIFIED            = 0;
+  NAME_REQUIRED          = 1;
+  VENUE_REQUIRED         = 2;
+  ROUNDS_REQUIRED        = 3;
+  NOT_FOUND              = 4;
+  ROUNDS_CONFIG_REQUIRED = 5;
+  INTERNAL_ERROR         = 6;
+}
+
+message TournamentError {
+  common.v1.AppError  AppError = 1;
+  TournamentErrorCode code     = 2;
+}

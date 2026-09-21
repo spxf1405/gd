@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package common.v1;
+
+option go_package = "backend/internal/gen/common/v1;commonpb";
+
+enum Severity {
+  SEVERITY_UNSPECIFIED = 0;
+  SEVERITY_BLOCKING    = 1;
+  SEVERITY_WARNING     = 2;
+}
+
+message AppError {
+  string   message  = 1;
+  Severity severity = 2;
+}

@@ -5,7 +5,7 @@ import (
 	tournamentpb "backend/internal/gen/tournament/v1"
 	"backend/internal/logger"
 	"context"
-	"errors"
+	"fmt"
 	"log"
 
 	"github.com/google/uuid"
@@ -107,24 +107,24 @@ func (s *Service) getTournamentByID(ctx context.Context, id string) (*tournament
 func (s *Service) ChangeTournamentStatus(
 	ctx context.Context,
 	id string,
-	status int,
-) error {
+	status tournamentpb.TournamentStatus,
+) (tournamentpb.TournamentErrorCode, error) {
 	tournament, err := s.repo.getTournamentByID(ctx, id)
 
 	if err != nil {
-		return errors.New("tournament not found")
+		return tournamentpb.TournamentErrorCode_UNSPECIFIED, fmt.Errorf("get tournament %s: %w", id, err)
 	}
 
-	if status == int(tournamentpb.TournamentStatus_TOURNAMENT_STATUS_REGISTERING) {
+	if status == tournamentpb.TournamentStatus_TOURNAMENT_STATUS_REGISTERING {
 		if tournament.Venue == nil {
-			return errors.New("infomation required: tournament venue")
+			return tournamentpb.TournamentErrorCode_VENUE_REQUIRED, nil
 		}
 		if tournament.Name == "" {
-			return errors.New("infomation required: tournament name")
+			return tournamentpb.TournamentErrorCode_NAME_REQUIRED, nil
 		}
 	}
 
-	if status == int(tournamentpb.TournamentStatus_TOURNAMENT_STATUS_REGISTRATION_CLOSED) {
+	if status == tournamentpb.TournamentStatus_TOURNAMENT_STATUS_REGISTRATION_CLOSED {
 		var rounds []*roundpb.Round
 
 		for _, bracket := range tournament.Brackets {
@@ -132,15 +132,15 @@ func (s *Service) ChangeTournamentStatus(
 		}
 
 		if len(rounds) == 0 {
-			return errors.New("infomation required: rounds isn't created yet")
+			return tournamentpb.TournamentErrorCode_ROUNDS_REQUIRED, nil
 		}
 	}
 
-	err = s.repo.changeTournamentStatus(ctx, id, status)
+	err = s.repo.changeTournamentStatus(ctx, id, int(status))
 
 	if err != nil {
-		return err
+		return tournamentpb.TournamentErrorCode_UNSPECIFIED, fmt.Errorf("change tournament status %s: %w", id, err)
 	}
 
-	return nil
+	return tournamentpb.TournamentErrorCode_UNSPECIFIED, nil
 }

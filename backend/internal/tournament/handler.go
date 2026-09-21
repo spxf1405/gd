@@ -2,6 +2,7 @@ package tournament
 
 import (
 	tournamentpb "backend/internal/gen/tournament/v1"
+	"backend/internal/logger"
 	"context"
 	"errors"
 	"fmt"
@@ -9,6 +10,7 @@ import (
 
 	"buf.build/go/protovalidate"
 	"connectrpc.com/connect"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -138,18 +140,29 @@ func (h *Hanlder) ChangeTournamentStatus(
 	ctx context.Context,
 	req *connect.Request[tournamentpb.ChangeTournamentStatusRequest],
 ) (*connect.Response[emptypb.Empty], error) {
-	status := int(req.Msg.Status)
-
-	err := h.service.ChangeTournamentStatus(ctx, req.Msg.Id, status)
-
+	code, err := h.service.ChangeTournamentStatus(ctx, req.Msg.Id, req.Msg.Status)
 	if err != nil {
-		return nil, connect.NewError(
-			connect.CodeInternal,
-			errors.New("change tournament status failed"),
+		logger.Error("failed to change tournament status",
+			zap.String("tournament_id", req.Msg.Id),
+			zap.Error(err),
 		)
+
+		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
-	res := connect.NewResponse(&emptypb.Empty{})
+	if code != tournamentpb.TournamentErrorCode_UNSPECIFIED {
+		cErr := connect.NewError(connect.CodeFailedPrecondition, errors.New(code.String()))
 
-	return res, nil
+		detail, dErr := connect.NewErrorDetail(&tournamentpb.TournamentError{Code: code})
+		if dErr != nil {
+			logger.Error("failed to create error detail", zap.Error(dErr))
+			return nil, cErr
+		}
+
+		cErr.AddDetail(detail)
+
+		return nil, cErr
+	}
+
+	return connect.NewResponse(&emptypb.Empty{}), nil
 }

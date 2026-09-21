@@ -6,10 +6,16 @@ import { COLORS } from "../settings/consts/color";
 
 import { create } from "@bufbuild/protobuf";
 import { ChangeTournamentStatusRequestSchema } from "@gd/proto/tournament/v1/tournament_service_pb";
+import {
+  TournamentErrorCode,
+  TournamentErrorSchema,
+} from "@gd/proto/tournament/v1/tournament_error_pb";
 import { TournamentStatus } from "@gd/proto/tournament/v1/tournament_pb";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SquarePen } from "lucide-react";
+import { ConnectError } from "@connectrpc/connect";
+import { message } from "antd";
 
 type UpdateTournamentStatusParams = {
   status: TournamentStatus;
@@ -21,21 +27,39 @@ const useUpdateTournamentStatus = () => {
 
   return useMutation({
     mutationFn: async ({ status, id }: UpdateTournamentStatusParams) => {
-      console.log("foo", status, id);
-
-      
       const request = create(ChangeTournamentStatusRequestSchema, {
         status,
         id,
       });
 
-      await TournamentClient.changeTournamentStatus(request);
+      return await TournamentClient.changeTournamentStatus(request);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("data on success", data);
       void queryClient.invalidateQueries({ queryKey: ["tournament"] });
     },
-    onError: () => {
-      console.log("error");
+    onError: (error) => {
+      if (error instanceof ConnectError) {
+        const connectError = ConnectError.from(error);
+        const detail = connectError.findDetails(TournamentErrorSchema)[0];
+
+        if (detail.code === TournamentErrorCode.ROUNDS_REQUIRED) {
+          message.error({
+            content: "Bạn chưa cài đặt các vòng của giải đấu!",
+            duration: Infinity,
+            styles: {
+             wrapper: {
+              fontFamily: 'Google Sans'
+             }
+            }
+          });
+          // message.error("Bạn chưa cài đặt các vòng của giải đấu!");
+        }
+
+        console.log("error.details");
+        console.log("code:", detail);
+        console.log("message:", connectError.rawMessage);
+      }
     },
   });
 };
