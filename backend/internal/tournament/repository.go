@@ -563,8 +563,6 @@ func (r *TournamentRepository) UpdateTournament(
 		WHERE id = $15
 	`
 
-	logger.Dump(tournament)
-
 	var maxRankingClass any
 
 	if tournament.MaxRankingClass != nil {
@@ -654,8 +652,6 @@ func (r *TournamentRepository) UpdateTournament(
 	for _, bracket := range tournament.Brackets {
 		bracketIDs = append(bracketIDs, bracket.Id)
 	}
-
-	logger.Dump(bracketIDs)
 
 	_, err = tx.Exec(ctx,
 		`DELETE FROM gd_rounds WHERE bracket_id = ANY($1)`,
@@ -755,7 +751,6 @@ func (r *TournamentRepository) changeTournamentStatus(ctx context.Context, id st
 	cmt, err := r.DB.Pool.Exec(ctx, query, status, id)
 
 	if err != nil {
-		logger.Dump(err)
 		return err
 	}
 

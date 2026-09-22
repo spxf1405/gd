@@ -5,7 +5,7 @@ import type { Bracket } from "@gd/proto/bracket/v1/bracket_pb";
 import type { Participant } from "@gd/proto/participant/v1/participant_pb";
 import { EliminationType, RoundSchema } from "@gd/proto/round/v1/round_pb";
 import { type Tournament } from "@gd/proto/tournament/v1/tournament_pb";
-import { message, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
 import useFormInstance from "antd/es/form/hooks/useFormInstance";
 import { RefreshCcw } from "lucide-react";
 import { useEffect, useState } from "react";

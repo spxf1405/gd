@@ -38,6 +38,8 @@ type TourInfo = {
 };
 
 type TourState = {
+  id: string;
+
   tournament?: Tournament;
   tourInfo: TourInfo;
 
@@ -47,6 +49,8 @@ type TourState = {
 
   updateCurrentRound: (round: string) => void;
   initTournamentInfo: (tournament?: Tournament) => void;
+
+  initId: (id: string) => void;
   reset: () => void;
 };
 
@@ -58,7 +62,9 @@ const initTourInfoState: Omit<
   | "initTournamentInfo"
   | "updateTournamentRound"
   | "updateTournamentRounds"
+  | "initId"
 > = {
+  id: "",
   tourInfo: {
     players: [],
     playerCount: 0,
@@ -85,6 +91,11 @@ const initTourInfoState: Omit<
 export const useTournamentStore = create<TourState>()(
   immer((set) => ({
     ...initTourInfoState,
+    initId: (id: string) => {
+      set((state) => {
+        state.id = id;
+      });
+    },
     initTournamentInfo: (tournament?: Tournament) => {
       set((state) => {
         state.tournament = tournament;

@@ -9,9 +9,8 @@ import { Field } from "../../field/field";
 export const ScheduleTab = () => {
   const { t } = useTranslation();
   const { useToken } = theme;
-  const { token } = useToken();
 
-  const { tournament } = useTournamentStore();
+  const tournament = useTournamentStore();
 
   const createdAt = dayjs(tournament?.createdAt);
   // const startDate = dayjs(tournament?.startDate);

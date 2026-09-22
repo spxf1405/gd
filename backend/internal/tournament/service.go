@@ -109,7 +109,7 @@ func (s *Service) ChangeTournamentStatus(
 	id string,
 	status tournamentpb.TournamentStatus,
 ) (tournamentpb.TournamentErrorCode, error) {
-	tournament, err := s.repo.getTournamentByID(ctx, id)
+	tournament, err := s.getTournamentByID(ctx, id)
 
 	if err != nil {
 		return tournamentpb.TournamentErrorCode_UNSPECIFIED, fmt.Errorf("get tournament %s: %w", id, err)

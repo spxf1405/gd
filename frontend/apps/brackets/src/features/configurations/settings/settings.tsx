@@ -4,11 +4,10 @@ import { AntdThemeConfig } from "@/components/ui/antd-config";
 import { QButton } from "@/components/ui/button";
 import { QTooltip } from "@/components/ui/toottip";
 import { TournamentClient } from "@/helper/service-client";
-import { useTournamentStore } from "@/store/match";
 import { create } from "@bufbuild/protobuf";
 import { type Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 import { UpdateTournamentRequestSchema } from "@gd/proto/tournament/v1/tournament_service_pb";
-import { Button, Form, Modal, type FormProps } from "antd";
+import { App, Button, Form, Modal, type FormProps } from "antd";
 import {
   Calendar,
   DollarSign,
@@ -27,6 +26,9 @@ import { useTranslation } from "react-i18next";
 import { COLORS } from "./consts/color";
 import { FormatTab } from "./tabs/format/format";
 import { FinanceTab, PlayersTab, ScheduleTab, BasicTab } from "./tabs/tabs";
+import { useTournament } from "@/hook/tournament";
+import { useTournamentStore } from "@/store/match";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const TAB_CONFIG = (t: (key: string) => string) => [
   {
@@ -207,35 +209,69 @@ const SidebarTab = ({ tab }: { tab: any }) => {
 
 export const Setting = () => {
   const { t } = useTranslation();
-  const { tournament } = useTournamentStore();
 
-  console.log("tournament", tournament);
+  const { id } = useTournamentStore();
+  const tournament = useTournament(id);
 
   const [open, setOpen] = useState(false);
 
   const [form] = Form.useForm<Tournament>();
 
-  const onFinish = async (values: Tournament) => {
-    if (!tournament) return;
+  const { notification } = App.useApp();
 
-    const request = create(UpdateTournamentRequestSchema, {
-      tournament: {
-        ...values,
-        formatDescription: values.formatDescription ?? "",
-        maxAge: values.maxAge ?? 0,
-        organizer: values.organizer ?? "",
-        description: values.description ?? "",
-        hasRanking: values.hasRanking,
-        maxRankingClass: values.maxRankingClass,
-        id: tournament.id,
-      },
-    });
+  const queryClient = useQueryClient();
 
-    const response = await TournamentClient.updateTournament(request);
+  const updateTournamentMutation = useMutation({
+    mutationFn: async (formData: Tournament) => {
+      console.log("formData", formData);
 
-    console.log("response", response);
+      const request = create(UpdateTournamentRequestSchema, {
+        tournament: {
+          ...formData,
+          formatDescription: formData.formatDescription ?? "",
+          maxAge: formData.maxAge ?? 0,
+          organizer: formData.organizer ?? "",
+          description: formData.description ?? "",
+          hasRanking: formData.hasRanking,
+          maxRankingClass: formData.maxRankingClass,
+          id,
+        },
+      });
 
-    setOpen(false);
+      return await TournamentClient.updateTournament(request);
+    },
+    onMutate: () => {
+      setOpen(true);
+    },
+    onSuccess: (data) => {
+      console.log("data", data);
+      void queryClient.invalidateQueries({ queryKey: ["tournaments"] });
+
+      notification.success({
+        message: <div className="font-bold">Thành công</div>,
+        description: "Cập nhật giải đấu thành công!",
+        placement: "top",
+        duration: 3,
+        style: { width: "fit-content" },
+        styles: {
+          wrapper: {
+            fontFamily: "IBM Plex Sans, Google Sans",
+          },
+        },
+      });
+    },
+    onError: (err) => {
+      console.log("err", err);
+    },
+    onSettled: () => {
+      setOpen(false);
+    },
+  });
+
+  const onFinish = async (formData: Tournament) => {
+    if (!formData) return;
+
+    await updateTournamentMutation.mutateAsync(formData);
   };
 
   type TabValue = "basic" | "format" | "finance" | "players" | "schedule";
@@ -274,7 +310,7 @@ export const Setting = () => {
   }, [tournament, form]);
 
   return (
-    <AntdThemeConfig>
+    <>
       <QButton
         onClick={() => setOpen(true)}
         icon={<Settings size={16} style={{ color: COLORS.green }} />}
@@ -469,6 +505,16 @@ export const Setting = () => {
           </div>
         </Form>
       </Modal>
+    </>
+  );
+};
+
+export const SettingWrapper = () => {
+  return (
+    <AntdThemeConfig>
+      <App>
+        <Setting />
+      </App>
     </AntdThemeConfig>
   );
 };

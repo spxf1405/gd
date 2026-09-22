@@ -1,63 +1,33 @@
+import { useEffect, useState } from "react";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import "@xyflow/react/dist/style.css";
-import { useEffect, useRef, useState } from "react";
-import "./App.css";
+
+import { AntdThemeConfig } from "./components/ui/antd-config";
 import { BracketFlow } from "./features/configurations/bracket-flow";
 import { Players } from "./features/configurations/players-list";
-import { Setting } from "./features/configurations/settings/settings";
+import { SettingWrapper } from "./features/configurations/settings/settings";
+import { TournamentStatusControl } from "./features/configurations/start-button";
+import { LanguageSwitcher } from "./features/lang/lang";
 import { EventBus } from "./helper/event-bus";
 import { useTournament } from "./hook/tournament";
+
+import "@xyflow/react/dist/style.css";
+import "./App.css";
 import { useTournamentStore } from "./store/match";
-import { AntdThemeConfig } from "./components/ui/antd-config";
-import { LanguageSwitcher } from "./features/lang/lang";
-import { TournamentStatusControl } from "./features/configurations/start-button";
 
 const queryClient = new QueryClient();
 const bus = new EventBus();
 
-interface Player {
-  id: string;
-  name: string;
-  seed: number;
-  nationality: string;
-}
-
 function App() {
   const [id, setId] = useState("");
-  const { initTournamentInfo } = useTournamentStore();
 
-  const [players, setPlayers] = useState<Player[]>([
-    { id: "1", name: "Nguyễn Văn A", seed: 1, nationality: "VN", rank: "A" },
-    { id: "2", name: "Trần Thị B", seed: 2, nationality: "VN", rank: "B" },
-    { id: "3", name: "John Smith", seed: 3, nationality: "US", rank: "A" },
-    { id: "4", name: "Nguyễn Văn A", seed: 1, nationality: "VN", rank: "CN" },
-    { id: "5", name: "Trần Thị B", seed: 2, nationality: "VN", rank: "CN" },
-    { id: "6", name: "John Smith", seed: 3, nationality: "US" },
-    { id: "7", name: "Nguyễn Văn A", seed: 1, nationality: "VN" },
-    { id: "8", name: "Trần Thị B", seed: 2, nationality: "VN" },
-    { id: "9", name: "John Smith", seed: 3, nationality: "US" },
-  ]);
+  const { initId } = useTournamentStore();
 
-  const handleAddPlayer = (name: string) => {
-    const newPlayer: Player = {
-      id: crypto.randomUUID(),
-      name,
-      seed: players.length + 1,
-      nationality: "VN",
-    };
-    setPlayers((prev) => [...prev, newPlayer]);
-  };
-
-  const tournament = useTournament(id);
-
-  const initializedIdRef = useRef<string | null>(null);
+  useTournament(id);
 
   useEffect(() => {
-    if (tournament && initializedIdRef.current !== id) {
-      initTournamentInfo(tournament);
-      initializedIdRef.current = id;
-    }
-  }, [tournament, id, initTournamentInfo]);
+    initId(id);
+  }, [id]);
 
   useEffect(() => {
     bus.emitToParent("READY");
@@ -69,14 +39,21 @@ function App() {
 
   return (
     <div className="bg-black w-full h-full">
-      <div className="p-2 flex gap-2">
-        <TournamentStatusControl />
-        <Setting />
-        <AntdThemeConfig>
-          <Players />
-        </AntdThemeConfig>
-        <LanguageSwitcher /> 
+      <div className="flex justify-between items-center px-2">
+        <div className="flex gap-2">
+          <TournamentStatusControl />
+          <AntdThemeConfig>
+            <Players />
+          </AntdThemeConfig>
+        </div>
+
+        <div className="p-2 flex gap-2">
+          <SettingWrapper />
+
+          <LanguageSwitcher />
+        </div>
       </div>
+
       <BracketFlow />
     </div>
   );
