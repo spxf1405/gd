@@ -14,6 +14,7 @@ import { useTournament } from "./hook/tournament";
 import "@xyflow/react/dist/style.css";
 import "./App.css";
 import { useTournamentStore } from "./store/match";
+import { FirstMatchRoundSetting } from "./features/configurations/first-round-matches/first-round-matches";
 
 const queryClient = new QueryClient();
 const bus = new EventBus();
@@ -48,8 +49,8 @@ function App() {
         </div>
 
         <div className="p-2 flex gap-2">
+          <FirstMatchRoundSetting />
           <SettingWrapper />
-
           <LanguageSwitcher />
         </div>
       </div>

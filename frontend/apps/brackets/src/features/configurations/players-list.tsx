@@ -30,7 +30,7 @@ import {
   Segmented,
   Spin,
   Tooltip,
-  type MenuProps
+  type MenuProps,
 } from "antd";
 import {
   Crown,
@@ -42,12 +42,13 @@ import {
   Settings,
   Trash2,
   Users,
-  X
+  X,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParticipantsByTournamentID } from "./players/hooks";
 import { COLORS } from "./settings/consts/color";
+import { useTournament } from "@/hook/tournament";
 
 interface Player {
   id: string;
@@ -254,7 +255,7 @@ const SearchConditions = () => {
 
 export const Players = () => {
   const queryClient = useQueryClient();
-  const { t } = useTranslation();
+  const { id } = useTournamentStore();
 
   const [open, setOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
@@ -268,10 +269,8 @@ export const Players = () => {
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
   );
 
-  const tournamentStoreInfo = useTournamentStore();
-
   const { data, isFetching } = useParticipantsByTournamentID({
-    tournamentId: tournamentStoreInfo.tournament?.id ?? "",
+    tournamentId: id,
   });
 
   const participants = data?.tournamentParticipants ?? [];

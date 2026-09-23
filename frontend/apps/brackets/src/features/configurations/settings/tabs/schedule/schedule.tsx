@@ -5,12 +5,13 @@ import { MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { COLORS } from "../../consts/color";
 import { Field } from "../../field/field";
+import { useTournament } from "@/hook/tournament";
 
 export const ScheduleTab = () => {
   const { t } = useTranslation();
-  const { useToken } = theme;
 
-  const tournament = useTournamentStore();
+  const { id } = useTournamentStore();
+  const tournament = useTournament(id);
 
   const createdAt = dayjs(tournament?.createdAt);
   // const startDate = dayjs(tournament?.startDate);

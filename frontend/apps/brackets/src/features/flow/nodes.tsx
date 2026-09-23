@@ -109,6 +109,7 @@ export const CustomNode = (node) => {
                 color: "text-orange-400",
                 hoverColor: "group-hover:text-orange-300",
                 label: "Xuất ảnh trận đấu",
+                // TODO: tính năng này cần có thể preview được những thứ như trận đấu hiện tại, trận đấu cùng vòng , trận đấu kế tiếp....
               },
               {
                 Icon: Lightbulb,

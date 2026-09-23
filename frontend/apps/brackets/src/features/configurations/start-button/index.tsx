@@ -21,6 +21,7 @@ import {
   Ban,
   CirclePlay,
   DoorOpen,
+  Loader,
   LockKeyhole,
   Play,
   Trophy,
@@ -244,60 +245,57 @@ const TournamentStatusAction = ({
   };
 
   if (isLoadingButton) {
-    <QButton
-      size="large"
-      disabled={isCancelled}
-      onClick={onClick}
-      style={{
-        height: "44px",
-        display: "inline-flex",
-        alignItems: "center",
-        gap: "12px",
-        padding: "0 18px 0 12px",
-        borderRadius: "10px",
-        fontWeight: 600,
-        fontSize: "13px",
-        letterSpacing: "0.03em",
-
-        color: isCancelled ? "#A0A6B5" : "#FFFFFF",
-
-        background: isCancelled ? "#1F232E" : "#242936",
-        border: `1px solid ${
-          isCancelled
-            ? "rgba(255, 255, 255, 0.08)"
-            : "rgba(255, 255, 255, 0.12)"
-        }`,
-        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.12)",
-        cursor: isCancelled ? "not-allowed" : "pointer",
-        opacity: isCancelled ? 0.85 : 1,
-        transition: "all 0.2s ease-in-out",
-      }}
-    >
-      <div
+    return (
+      <QButton
+        size="large"
+        disabled={true}
+        onClick={onClick}
         style={{
-          width: "28px",
-          height: "28px",
-          borderRadius: "50%",
-          display: "flex",
+          height: "44px",
+          display: "inline-flex",
           alignItems: "center",
-          justifyContent: "center",
-          background: "rgba(0, 0, 0, 0.2)",
-          border: `1px solid ${
-            isCancelled ? "rgba(255, 255, 255, 0.1)" : `${config.color}40`
-          }`,
-          flexShrink: 0,
+          gap: "12px",
+          padding: "0 18px 0 12px",
+          borderRadius: "10px",
+          fontWeight: 600,
+          fontSize: "13px",
+          letterSpacing: "0.03em",
+
+          color: "#A0A6B5",
+
+          background: "#1F232E",
+          border: `1px solid rgba(255, 255, 255, 0.08)`,
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.12)",
+          cursor: "not-allowed",
+          opacity: 0.85,
+          transition: "all 0.2s ease-in-out",
         }}
       >
-        <Icon
-          size={15}
+        <div
           style={{
-            color: config.color,
+            width: "28px",
+            height: "28px",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(0, 0, 0, 0.2)",
+            border: `1px solid rgba(255, 255, 255, 0.1)`,
+            flexShrink: 0,
           }}
-        />
-      </div>
+          className="animate-spin"
+        >
+          <Loader
+            size={15}
+            style={{
+              color: "#fff",
+            }}
+          />
+        </div>
 
-      <span>{children}</span>
-    </QButton>
+        <span>Loading</span>
+      </QButton>
+    );
   }
 
   return (
@@ -312,7 +310,14 @@ export const TournamentStatusControl = () => {
   const tournament = useTournament(id);
 
   const content = useMemo(() => {
-    if (!tournament) return <></>;
+    if (!tournament)
+      return (
+        <TournamentStatusAction
+          status={TournamentStatus.UNSPECIFIED}
+          isLoadingButton={true}
+          nextLabel=""
+        />
+      );
 
     switch (tournament.status) {
       case TournamentStatus.UNSPECIFIED:
@@ -361,12 +366,7 @@ export const TournamentStatusControl = () => {
         );
 
       default:
-        return (
-          <TournamentStatusAction
-            status={TournamentStatus.UNSPECIFIED}
-            nextLabel="Giải đấu đã bị hủy"
-          />
-        );
+        return <></>;
     }
   }, [tournament?.status]);
 
