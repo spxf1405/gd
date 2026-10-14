@@ -1,7 +1,6 @@
 package tournament
 
 import (
-	roundpb "backend/internal/gen/round/v1"
 	tournamentpb "backend/internal/gen/tournament/v1"
 	"backend/internal/logger"
 	"context"
@@ -54,6 +53,7 @@ func (s *Service) createTournament(ctx context.Context, name string) (uuid.UUID,
 	if err != nil {
 		return uuid.Nil, err
 	}
+
 	return id, nil
 }
 
@@ -124,17 +124,19 @@ func (s *Service) ChangeTournamentStatus(
 		}
 	}
 
-	if status == tournamentpb.TournamentStatus_TOURNAMENT_STATUS_REGISTRATION_CLOSED {
-		var rounds []*roundpb.Round
+	// TODO: Recheck this logic, look likes too much verification steps
 
-		for _, bracket := range tournament.Brackets {
-			rounds = append(rounds, bracket.Rounds...)
-		}
+	// if status == tournamentpb.TournamentStatus_TOURNAMENT_STATUS_REGISTRATION_CLOSED {
+	// 	var rounds []*roundpb.Round
 
-		if len(rounds) == 0 {
-			return tournamentpb.TournamentErrorCode_ROUNDS_REQUIRED, nil
-		}
-	}
+	// 	for _, bracket := range tournament.Brackets {
+	// 		rounds = append(rounds, bracket.Rounds...)
+	// 	}
+
+	// 	if len(rounds) == 0 {
+	// 		return tournamentpb.TournamentErrorCode_ROUNDS_REQUIRED, nil
+	// 	}
+	// }
 
 	err = s.repo.changeTournamentStatus(ctx, id, int(status))
 

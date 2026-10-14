@@ -7,9 +7,9 @@
 package tournamentpb
 
 import (
-	v11 "backend/internal/gen/bracket/v1"
+	v12 "backend/internal/gen/bracket/v1"
 	v1 "backend/internal/gen/match/v1"
-	_ "backend/internal/gen/participant/v1"
+	v11 "backend/internal/gen/participant/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
@@ -422,32 +422,32 @@ func (x *Round) GetMatches() []*v1.Match {
 
 // Thông tin giải đấu
 type Tournament struct {
-	state              protoimpl.MessageState  `protogen:"open.v1"`
-	Id                 string                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name               string                  `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Type               TournamentType          `protobuf:"varint,3,opt,name=type,proto3,enum=tournament.v1.TournamentType" json:"type,omitempty"`
-	Format             TournamentFormat        `protobuf:"varint,4,opt,name=format,proto3,enum=tournament.v1.TournamentFormat" json:"format,omitempty"`
-	FormatDescription  *wrapperspb.StringValue `protobuf:"bytes,5,opt,name=format_description,json=formatDescription,proto3" json:"format_description,omitempty"`
-	StartDate          *wrapperspb.StringValue `protobuf:"bytes,6,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
-	EndDate            *wrapperspb.StringValue `protobuf:"bytes,7,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
-	Venue              *wrapperspb.StringValue `protobuf:"bytes,8,opt,name=venue,proto3" json:"venue,omitempty"`
-	TotalPrize         *wrapperspb.StringValue `protobuf:"bytes,10,opt,name=total_prize,json=totalPrize,proto3" json:"total_prize,omitempty"`
-	EntryFee           *wrapperspb.StringValue `protobuf:"bytes,11,opt,name=entry_fee,json=entryFee,proto3" json:"entry_fee,omitempty"`
-	MaxPlayers         *wrapperspb.Int32Value  `protobuf:"bytes,12,opt,name=max_players,json=maxPlayers,proto3" json:"max_players,omitempty"`
-	Status             TournamentStatus        `protobuf:"varint,13,opt,name=status,proto3,enum=tournament.v1.TournamentStatus" json:"status,omitempty"`
-	Organizer          *wrapperspb.StringValue `protobuf:"bytes,14,opt,name=organizer,proto3" json:"organizer,omitempty"`
-	CreatedAt          string                  `protobuf:"bytes,15,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdateAt           string                  `protobuf:"bytes,16,opt,name=update_at,json=updateAt,proto3" json:"update_at,omitempty"`
-	Description        *wrapperspb.StringValue `protobuf:"bytes,17,opt,name=description,proto3" json:"description,omitempty"`
-	MaxAge             int32                   `protobuf:"varint,18,opt,name=max_age,json=maxAge,proto3" json:"max_age,omitempty"`
-	HasRanking         bool                    `protobuf:"varint,19,opt,name=has_ranking,json=hasRanking,proto3" json:"has_ranking,omitempty"`
-	MaxRankingClass    *wrapperspb.StringValue `protobuf:"bytes,20,opt,name=max_ranking_class,json=maxRankingClass,proto3" json:"max_ranking_class,omitempty"`
-	Gender             Gender                  `protobuf:"varint,21,opt,name=gender,proto3,enum=tournament.v1.Gender" json:"gender,omitempty"`
-	Participants       []*Participant          `protobuf:"bytes,22,rep,name=participants,proto3" json:"participants,omitempty"`
-	DeletedAt          *wrapperspb.StringValue `protobuf:"bytes,23,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
-	PrizeDistributions []*PrizeDistribution    `protobuf:"bytes,24,rep,name=prize_distributions,json=prizeDistributions,proto3" json:"prize_distributions,omitempty"`
-	Brackets           []*v11.Bracket          `protobuf:"bytes,25,rep,name=brackets,proto3" json:"brackets,omitempty"`
-	CurrencyUnit       string                  `protobuf:"bytes,26,opt,name=currency_unit,json=currencyUnit,proto3" json:"currency_unit,omitempty"`
+	state              protoimpl.MessageState       `protogen:"open.v1"`
+	Id                 string                       `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name               string                       `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Type               TournamentType               `protobuf:"varint,3,opt,name=type,proto3,enum=tournament.v1.TournamentType" json:"type,omitempty"`
+	Format             TournamentFormat             `protobuf:"varint,4,opt,name=format,proto3,enum=tournament.v1.TournamentFormat" json:"format,omitempty"`
+	FormatDescription  *wrapperspb.StringValue      `protobuf:"bytes,5,opt,name=format_description,json=formatDescription,proto3" json:"format_description,omitempty"`
+	StartDate          *wrapperspb.StringValue      `protobuf:"bytes,6,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
+	EndDate            *wrapperspb.StringValue      `protobuf:"bytes,7,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
+	Venue              *wrapperspb.StringValue      `protobuf:"bytes,8,opt,name=venue,proto3" json:"venue,omitempty"`
+	TotalPrize         *wrapperspb.StringValue      `protobuf:"bytes,10,opt,name=total_prize,json=totalPrize,proto3" json:"total_prize,omitempty"`
+	EntryFee           *wrapperspb.StringValue      `protobuf:"bytes,11,opt,name=entry_fee,json=entryFee,proto3" json:"entry_fee,omitempty"`
+	MaxPlayers         *wrapperspb.Int32Value       `protobuf:"bytes,12,opt,name=max_players,json=maxPlayers,proto3" json:"max_players,omitempty"`
+	Status             TournamentStatus             `protobuf:"varint,13,opt,name=status,proto3,enum=tournament.v1.TournamentStatus" json:"status,omitempty"`
+	Organizer          *wrapperspb.StringValue      `protobuf:"bytes,14,opt,name=organizer,proto3" json:"organizer,omitempty"`
+	CreatedAt          string                       `protobuf:"bytes,15,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdateAt           string                       `protobuf:"bytes,16,opt,name=update_at,json=updateAt,proto3" json:"update_at,omitempty"`
+	Description        *wrapperspb.StringValue      `protobuf:"bytes,17,opt,name=description,proto3" json:"description,omitempty"`
+	MaxAge             int32                        `protobuf:"varint,18,opt,name=max_age,json=maxAge,proto3" json:"max_age,omitempty"`
+	HasRanking         bool                         `protobuf:"varint,19,opt,name=has_ranking,json=hasRanking,proto3" json:"has_ranking,omitempty"`
+	MaxRankingClass    *wrapperspb.StringValue      `protobuf:"bytes,20,opt,name=max_ranking_class,json=maxRankingClass,proto3" json:"max_ranking_class,omitempty"`
+	Gender             Gender                       `protobuf:"varint,21,opt,name=gender,proto3,enum=tournament.v1.Gender" json:"gender,omitempty"`
+	Participants       []*v11.TournamentParticipant `protobuf:"bytes,22,rep,name=participants,proto3" json:"participants,omitempty"`
+	DeletedAt          *wrapperspb.StringValue      `protobuf:"bytes,23,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
+	PrizeDistributions []*PrizeDistribution         `protobuf:"bytes,24,rep,name=prize_distributions,json=prizeDistributions,proto3" json:"prize_distributions,omitempty"`
+	Brackets           []*v12.Bracket               `protobuf:"bytes,25,rep,name=brackets,proto3" json:"brackets,omitempty"`
+	CurrencyUnit       string                       `protobuf:"bytes,26,opt,name=currency_unit,json=currencyUnit,proto3" json:"currency_unit,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -622,7 +622,7 @@ func (x *Tournament) GetGender() Gender {
 	return Gender_MALE
 }
 
-func (x *Tournament) GetParticipants() []*Participant {
+func (x *Tournament) GetParticipants() []*v11.TournamentParticipant {
 	if x != nil {
 		return x.Participants
 	}
@@ -643,7 +643,7 @@ func (x *Tournament) GetPrizeDistributions() []*PrizeDistribution {
 	return nil
 }
 
-func (x *Tournament) GetBrackets() []*v11.Bracket {
+func (x *Tournament) GetBrackets() []*v12.Bracket {
 	if x != nil {
 		return x.Brackets
 	}
@@ -674,7 +674,7 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\x05Round\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12)\n" +
-	"\amatches\x18\x03 \x03(\v2\x0f.match.v1.MatchR\amatches\"\x95\n" +
+	"\amatches\x18\x03 \x03(\v2\x0f.match.v1.MatchR\amatches\"\xa0\n" +
 	"\n" +
 	"\n" +
 	"Tournament\x12\x0e\n" +
@@ -703,8 +703,8 @@ const file_tournament_v1_tournament_proto_rawDesc = "" +
 	"\vhas_ranking\x18\x13 \x01(\bR\n" +
 	"hasRanking\x12H\n" +
 	"\x11max_ranking_class\x18\x14 \x01(\v2\x1c.google.protobuf.StringValueR\x0fmaxRankingClass\x12-\n" +
-	"\x06gender\x18\x15 \x01(\x0e2\x15.tournament.v1.GenderR\x06gender\x12>\n" +
-	"\fparticipants\x18\x16 \x03(\v2\x1a.tournament.v1.ParticipantR\fparticipants\x12;\n" +
+	"\x06gender\x18\x15 \x01(\x0e2\x15.tournament.v1.GenderR\x06gender\x12I\n" +
+	"\fparticipants\x18\x16 \x03(\v2%.participant.v1.TournamentParticipantR\fparticipants\x12;\n" +
 	"\n" +
 	"deleted_at\x18\x17 \x01(\v2\x1c.google.protobuf.StringValueR\tdeletedAt\x12Q\n" +
 	"\x13prize_distributions\x18\x18 \x03(\v2 .tournament.v1.PrizeDistributionR\x12prizeDistributions\x12/\n" +
@@ -746,18 +746,19 @@ func file_tournament_v1_tournament_proto_rawDescGZIP() []byte {
 var file_tournament_v1_tournament_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
 var file_tournament_v1_tournament_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_tournament_v1_tournament_proto_goTypes = []any{
-	(TournamentStatus)(0),          // 0: tournament.v1.TournamentStatus
-	(TournamentType)(0),            // 1: tournament.v1.TournamentType
-	(TournamentFormat)(0),          // 2: tournament.v1.TournamentFormat
-	(Gender)(0),                    // 3: tournament.v1.Gender
-	(*Participant)(nil),            // 4: tournament.v1.Participant
-	(*PrizeDistribution)(nil),      // 5: tournament.v1.PrizeDistribution
-	(*Round)(nil),                  // 6: tournament.v1.Round
-	(*Tournament)(nil),             // 7: tournament.v1.Tournament
-	(*v1.Match)(nil),               // 8: match.v1.Match
-	(*wrapperspb.StringValue)(nil), // 9: google.protobuf.StringValue
-	(*wrapperspb.Int32Value)(nil),  // 10: google.protobuf.Int32Value
-	(*v11.Bracket)(nil),            // 11: bracket.v1.Bracket
+	(TournamentStatus)(0),             // 0: tournament.v1.TournamentStatus
+	(TournamentType)(0),               // 1: tournament.v1.TournamentType
+	(TournamentFormat)(0),             // 2: tournament.v1.TournamentFormat
+	(Gender)(0),                       // 3: tournament.v1.Gender
+	(*Participant)(nil),               // 4: tournament.v1.Participant
+	(*PrizeDistribution)(nil),         // 5: tournament.v1.PrizeDistribution
+	(*Round)(nil),                     // 6: tournament.v1.Round
+	(*Tournament)(nil),                // 7: tournament.v1.Tournament
+	(*v1.Match)(nil),                  // 8: match.v1.Match
+	(*wrapperspb.StringValue)(nil),    // 9: google.protobuf.StringValue
+	(*wrapperspb.Int32Value)(nil),     // 10: google.protobuf.Int32Value
+	(*v11.TournamentParticipant)(nil), // 11: participant.v1.TournamentParticipant
+	(*v12.Bracket)(nil),               // 12: bracket.v1.Bracket
 }
 var file_tournament_v1_tournament_proto_depIdxs = []int32{
 	8,  // 0: tournament.v1.Round.matches:type_name -> match.v1.Match
@@ -775,10 +776,10 @@ var file_tournament_v1_tournament_proto_depIdxs = []int32{
 	9,  // 12: tournament.v1.Tournament.description:type_name -> google.protobuf.StringValue
 	9,  // 13: tournament.v1.Tournament.max_ranking_class:type_name -> google.protobuf.StringValue
 	3,  // 14: tournament.v1.Tournament.gender:type_name -> tournament.v1.Gender
-	4,  // 15: tournament.v1.Tournament.participants:type_name -> tournament.v1.Participant
+	11, // 15: tournament.v1.Tournament.participants:type_name -> participant.v1.TournamentParticipant
 	9,  // 16: tournament.v1.Tournament.deleted_at:type_name -> google.protobuf.StringValue
 	5,  // 17: tournament.v1.Tournament.prize_distributions:type_name -> tournament.v1.PrizeDistribution
-	11, // 18: tournament.v1.Tournament.brackets:type_name -> bracket.v1.Bracket
+	12, // 18: tournament.v1.Tournament.brackets:type_name -> bracket.v1.Bracket
 	19, // [19:19] is the sub-list for method output_type
 	19, // [19:19] is the sub-list for method input_type
 	19, // [19:19] is the sub-list for extension type_name

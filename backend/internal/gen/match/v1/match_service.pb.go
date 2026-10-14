@@ -9,7 +9,7 @@ package matchpb
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -22,168 +22,28 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GetMatchByIDRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            *wrapperspb.Int64Value `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetMatchByIDRequest) Reset() {
-	*x = GetMatchByIDRequest{}
-	mi := &file_match_v1_match_service_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetMatchByIDRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetMatchByIDRequest) ProtoMessage() {}
-
-func (x *GetMatchByIDRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_match_v1_match_service_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetMatchByIDRequest.ProtoReflect.Descriptor instead.
-func (*GetMatchByIDRequest) Descriptor() ([]byte, []int) {
-	return file_match_v1_match_service_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *GetMatchByIDRequest) GetId() *wrapperspb.Int64Value {
-	if x != nil {
-		return x.Id
-	}
-	return nil
-}
-
-type GetMatchByIDResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Match         *Match                 `protobuf:"bytes,1,opt,name=match,proto3" json:"match,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetMatchByIDResponse) Reset() {
-	*x = GetMatchByIDResponse{}
-	mi := &file_match_v1_match_service_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetMatchByIDResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetMatchByIDResponse) ProtoMessage() {}
-
-func (x *GetMatchByIDResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_match_v1_match_service_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetMatchByIDResponse.ProtoReflect.Descriptor instead.
-func (*GetMatchByIDResponse) Descriptor() ([]byte, []int) {
-	return file_match_v1_match_service_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *GetMatchByIDResponse) GetMatch() *Match {
-	if x != nil {
-		return x.Match
-	}
-	return nil
-}
-
-type GenerateMatchesRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	TournamentId  int32                  `protobuf:"varint,1,opt,name=tournament_id,json=tournamentId,proto3" json:"tournament_id,omitempty"`
-	PlayerIds     []string               `protobuf:"bytes,2,rep,name=player_ids,json=playerIds,proto3" json:"player_ids,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GenerateMatchesRequest) Reset() {
-	*x = GenerateMatchesRequest{}
-	mi := &file_match_v1_match_service_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GenerateMatchesRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GenerateMatchesRequest) ProtoMessage() {}
-
-func (x *GenerateMatchesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_match_v1_match_service_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GenerateMatchesRequest.ProtoReflect.Descriptor instead.
-func (*GenerateMatchesRequest) Descriptor() ([]byte, []int) {
-	return file_match_v1_match_service_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *GenerateMatchesRequest) GetTournamentId() int32 {
-	if x != nil {
-		return x.TournamentId
-	}
-	return 0
-}
-
-func (x *GenerateMatchesRequest) GetPlayerIds() []string {
-	if x != nil {
-		return x.PlayerIds
-	}
-	return nil
-}
-
-type GenerateMatchesResponse struct {
+type AddMatchesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Matches       []*Match               `protobuf:"bytes,1,rep,name=matches,proto3" json:"matches,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GenerateMatchesResponse) Reset() {
-	*x = GenerateMatchesResponse{}
-	mi := &file_match_v1_match_service_proto_msgTypes[3]
+func (x *AddMatchesRequest) Reset() {
+	*x = AddMatchesRequest{}
+	mi := &file_match_v1_match_service_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GenerateMatchesResponse) String() string {
+func (x *AddMatchesRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GenerateMatchesResponse) ProtoMessage() {}
+func (*AddMatchesRequest) ProtoMessage() {}
 
-func (x *GenerateMatchesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_match_v1_match_service_proto_msgTypes[3]
+func (x *AddMatchesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_match_v1_match_service_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -194,14 +54,58 @@ func (x *GenerateMatchesResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GenerateMatchesResponse.ProtoReflect.Descriptor instead.
-func (*GenerateMatchesResponse) Descriptor() ([]byte, []int) {
-	return file_match_v1_match_service_proto_rawDescGZIP(), []int{3}
+// Deprecated: Use AddMatchesRequest.ProtoReflect.Descriptor instead.
+func (*AddMatchesRequest) Descriptor() ([]byte, []int) {
+	return file_match_v1_match_service_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GenerateMatchesResponse) GetMatches() []*Match {
+func (x *AddMatchesRequest) GetMatches() []*Match {
 	if x != nil {
 		return x.Matches
+	}
+	return nil
+}
+
+type AddMatchesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Empty         *emptypb.Empty         `protobuf:"bytes,1,opt,name=empty,proto3" json:"empty,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddMatchesResponse) Reset() {
+	*x = AddMatchesResponse{}
+	mi := &file_match_v1_match_service_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddMatchesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddMatchesResponse) ProtoMessage() {}
+
+func (x *AddMatchesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_match_v1_match_service_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddMatchesResponse.ProtoReflect.Descriptor instead.
+func (*AddMatchesResponse) Descriptor() ([]byte, []int) {
+	return file_match_v1_match_service_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *AddMatchesResponse) GetEmpty() *emptypb.Empty {
+	if x != nil {
+		return x.Empty
 	}
 	return nil
 }
@@ -210,20 +114,14 @@ var File_match_v1_match_service_proto protoreflect.FileDescriptor
 
 const file_match_v1_match_service_proto_rawDesc = "" +
 	"\n" +
-	"\x1cmatch/v1/match_service.proto\x12\bmatch.v1\x1a\x1egoogle/protobuf/wrappers.proto\x1a\x14match/v1/match.proto\"B\n" +
-	"\x13GetMatchByIDRequest\x12+\n" +
-	"\x02id\x18\x01 \x01(\v2\x1b.google.protobuf.Int64ValueR\x02id\"=\n" +
-	"\x14GetMatchByIDResponse\x12%\n" +
-	"\x05match\x18\x01 \x01(\v2\x0f.match.v1.MatchR\x05match\"\\\n" +
-	"\x16GenerateMatchesRequest\x12#\n" +
-	"\rtournament_id\x18\x01 \x01(\x05R\ftournamentId\x12\x1d\n" +
+	"\x1cmatch/v1/match_service.proto\x12\bmatch.v1\x1a\x14match/v1/match.proto\x1a\x1bgoogle/protobuf/empty.proto\">\n" +
+	"\x11AddMatchesRequest\x12)\n" +
+	"\amatches\x18\x01 \x03(\v2\x0f.match.v1.MatchR\amatches\"B\n" +
+	"\x12AddMatchesResponse\x12,\n" +
+	"\x05empty\x18\x01 \x01(\v2\x16.google.protobuf.EmptyR\x05empty2W\n" +
+	"\fMatchService\x12G\n" +
 	"\n" +
-	"player_ids\x18\x02 \x03(\tR\tplayerIds\"D\n" +
-	"\x17GenerateMatchesResponse\x12)\n" +
-	"\amatches\x18\x01 \x03(\v2\x0f.match.v1.MatchR\amatches2\xb5\x01\n" +
-	"\fMatchService\x12M\n" +
-	"\fGetMatchByID\x12\x1d.match.v1.GetMatchByIDRequest\x1a\x1e.match.v1.GetMatchByIDResponse\x12V\n" +
-	"\x0fGenerateMatches\x12 .match.v1.GenerateMatchesRequest\x1a!.match.v1.GenerateMatchesResponseB'Z%backend/internal/gen/match/v1;matchpbb\x06proto3"
+	"AddMatches\x12\x1b.match.v1.AddMatchesRequest\x1a\x1c.match.v1.AddMatchesResponseB'Z%backend/internal/gen/match/v1;matchpbb\x06proto3"
 
 var (
 	file_match_v1_match_service_proto_rawDescOnce sync.Once
@@ -237,28 +135,23 @@ func file_match_v1_match_service_proto_rawDescGZIP() []byte {
 	return file_match_v1_match_service_proto_rawDescData
 }
 
-var file_match_v1_match_service_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_match_v1_match_service_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_match_v1_match_service_proto_goTypes = []any{
-	(*GetMatchByIDRequest)(nil),     // 0: match.v1.GetMatchByIDRequest
-	(*GetMatchByIDResponse)(nil),    // 1: match.v1.GetMatchByIDResponse
-	(*GenerateMatchesRequest)(nil),  // 2: match.v1.GenerateMatchesRequest
-	(*GenerateMatchesResponse)(nil), // 3: match.v1.GenerateMatchesResponse
-	(*wrapperspb.Int64Value)(nil),   // 4: google.protobuf.Int64Value
-	(*Match)(nil),                   // 5: match.v1.Match
+	(*AddMatchesRequest)(nil),  // 0: match.v1.AddMatchesRequest
+	(*AddMatchesResponse)(nil), // 1: match.v1.AddMatchesResponse
+	(*Match)(nil),              // 2: match.v1.Match
+	(*emptypb.Empty)(nil),      // 3: google.protobuf.Empty
 }
 var file_match_v1_match_service_proto_depIdxs = []int32{
-	4, // 0: match.v1.GetMatchByIDRequest.id:type_name -> google.protobuf.Int64Value
-	5, // 1: match.v1.GetMatchByIDResponse.match:type_name -> match.v1.Match
-	5, // 2: match.v1.GenerateMatchesResponse.matches:type_name -> match.v1.Match
-	0, // 3: match.v1.MatchService.GetMatchByID:input_type -> match.v1.GetMatchByIDRequest
-	2, // 4: match.v1.MatchService.GenerateMatches:input_type -> match.v1.GenerateMatchesRequest
-	1, // 5: match.v1.MatchService.GetMatchByID:output_type -> match.v1.GetMatchByIDResponse
-	3, // 6: match.v1.MatchService.GenerateMatches:output_type -> match.v1.GenerateMatchesResponse
-	5, // [5:7] is the sub-list for method output_type
-	3, // [3:5] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	2, // 0: match.v1.AddMatchesRequest.matches:type_name -> match.v1.Match
+	3, // 1: match.v1.AddMatchesResponse.empty:type_name -> google.protobuf.Empty
+	0, // 2: match.v1.MatchService.AddMatches:input_type -> match.v1.AddMatchesRequest
+	1, // 3: match.v1.MatchService.AddMatches:output_type -> match.v1.AddMatchesResponse
+	3, // [3:4] is the sub-list for method output_type
+	2, // [2:3] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_match_v1_match_service_proto_init() }
@@ -273,7 +166,7 @@ func file_match_v1_match_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_match_v1_match_service_proto_rawDesc), len(file_match_v1_match_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

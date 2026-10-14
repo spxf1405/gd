@@ -30,14 +30,16 @@ export const CreateRoundsButton = () => {
       brackets: Bracket[];
       participants: Participant[];
     };
-
+    
     const maxPlayer = participants?.length ?? 4;
 
     setLoading(true);
     try {
       const totalRounds = Math.ceil(Math.log2(maxPlayer));
 
-      const updatedBrackets: Bracket[] = brackets.map((bracket) => {
+      // TODO: tạo nhánh ngay khi tạo giải đấu
+      const updatedBrackets: 
+      Bracket[] = brackets.map((bracket) => {
         return { ...bracket, rounds: [] };
       });
 
@@ -69,18 +71,6 @@ export const CreateRoundsButton = () => {
     }
   };
 
-  useEffect(() => {
-    const brackets = form.getFieldValue("brackets") as Bracket[];
-
-    const roundCount = brackets.map((e) => e.rounds).flat().length;
-
-    console.log("roundCount", roundCount);
-
-    if (!roundCount) {
-      handleReplaceRounds();
-    }
-  }, [form]);
-
   return (
     <Popconfirm
       title={t("settings.format.rounds.popconfirmTitle")}
@@ -110,9 +100,8 @@ export const CreateRoundsButton = () => {
         disabled: loading,
       }}
     >
-      <QButton size="large" disabled={loading}>
+      <QButton size="large" disabled={loading} type="dashed">
         <RefreshCcw size={14} className={loading ? "animate-spin" : ""} />
-        {/* {label} */}
         Đồng bộ rounds
       </QButton>
     </Popconfirm>

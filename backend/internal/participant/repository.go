@@ -7,7 +7,6 @@ import (
 	"backend/internal/repository"
 	"context"
 	"errors"
-	"fmt"
 	"log"
 
 	"github.com/google/uuid"
@@ -16,24 +15,25 @@ import (
 )
 
 type ParticipantRepository struct {
-	*repository.BaseRepository[*participantpb.Participant]
+	*repository.BaseRepository[*participantpb.MatchParticipant]
 }
 
 func NewRepository(db *db.DB) *ParticipantRepository {
 	return &ParticipantRepository{
-		BaseRepository: repository.NewBaseRepository[*participantpb.Participant](db),
+		BaseRepository: repository.NewBaseRepository[*participantpb.MatchParticipant](db),
 	}
 }
 
-func (r *ParticipantRepository) GetParticipantsByMatchIDs(ctx context.Context, matchIDs []string) ([]*participantpb.Participant, error) {
+func (r *ParticipantRepository) GetParticipantsByMatchIDs(ctx context.Context, matchIDs []string) ([]*participantpb.MatchParticipant, error) {
 	logger.Info("List match", zap.Strings("Match Ids:", matchIDs))
 
 	query := `
         SELECT
             participant.id,
             player.name,
+			player.nationality,
             mp.match_id,
-            mp.position,
+            mp.slot,
             mp.score
         FROM
             gd_match_participants mp
@@ -48,7 +48,7 @@ func (r *ParticipantRepository) GetParticipantsByMatchIDs(ctx context.Context, m
         WHERE
             mp.match_id = ANY($1)
         ORDER BY
-            mp.position
+            mp.slot
     `
 
 	rows, err := r.DB.Pool.Query(ctx, query, matchIDs)
@@ -60,14 +60,15 @@ func (r *ParticipantRepository) GetParticipantsByMatchIDs(ctx context.Context, m
 
 	defer rows.Close()
 
-	participants := []*participantpb.Participant{}
+	participants := []*participantpb.MatchParticipant{}
 
 	for rows.Next() {
-		participant := &participantpb.Participant{}
+		participant := &participantpb.MatchParticipant{}
 
 		err := rows.Scan(
 			&participant.Id,
 			&participant.DisplayName,
+			&participant.Nationality,
 			&participant.MatchId,
 			&participant.Slot,
 			&participant.Score,
@@ -84,7 +85,9 @@ func (r *ParticipantRepository) GetParticipantsByMatchIDs(ctx context.Context, m
 }
 
 func (r *ParticipantRepository) GetParticipantsByTournamentID(ctx context.Context, tournamentID string) ([]*participantpb.TournamentParticipant, error) {
+	logger.Dump("======================= 2")
 	query := `SELECT
+				participant.id,
 				player.id,
 				player.name,
 				player.nationality,
@@ -104,25 +107,24 @@ func (r *ParticipantRepository) GetParticipantsByTournamentID(ctx context.Contex
 	participants := []*participantpb.TournamentParticipant{}
 
 	for rows.Next() {
-		var playerUUID uuid.UUID
+		var playerUUID, pariticipantID uuid.UUID
 		var displayName, nationality, ranking string
 
-		if err := rows.Scan(&playerUUID, &displayName, &nationality, &ranking); err != nil {
+		if err := rows.Scan(&pariticipantID, &playerUUID, &displayName, &nationality, &ranking); err != nil {
 			logger.Error("fail1", zap.Error(err), zap.String("tournament_id", tournamentID))
 			return nil, err
 		}
 
-		if ranking == "UNRANKED" {
-			fmt.Println("============1", displayName)
-		}
-
 		participants = append(participants, &participantpb.TournamentParticipant{
-			Id:          playerUUID.String(),
+			Id:          pariticipantID.String(),
+			PlayerId:    playerUUID.String(),
 			DisplayName: displayName,
 			Nationality: nationality,
 			Ranking:     ranking,
 		})
 	}
+	logger.Dump("=======================1")
+	logger.Dump(participants)
 
 	if err := rows.Err(); err != nil {
 		logger.Error("fail2", zap.Error(err), zap.String("tournament_id", tournamentID))

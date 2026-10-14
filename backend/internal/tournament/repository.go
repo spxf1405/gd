@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"backend/internal/db"
+	participantpb "backend/internal/gen/participant/v1"
 	roundpb "backend/internal/gen/round/v1"
 	tournamentpb "backend/internal/gen/tournament/v1"
 	"backend/internal/logger"
@@ -373,8 +374,9 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 				(
 					SELECT json_agg(
 						json_build_object(
-							'id', player.id,
-							'name', player.name
+							'id', participant.id,
+							'display_name', player.name,
+							'player_id', player.id
 						)
 					)
 					FROM gd_participants participant
@@ -449,7 +451,7 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 		return nil, err
 	}
 
-	participants := []*tournamentpb.Participant{}
+	participants := []*participantpb.TournamentParticipant{}
 
 	if err := json.Unmarshal(rawParticipants, &participants); err != nil {
 		return nil, fmt.Errorf("unmarshal participants: %w", err)
@@ -521,12 +523,39 @@ func (r *TournamentRepository) createTournament(
 		panic("DB pool is nil")
 	}
 
-	query := `INSERT INTO gd_tournaments (name) VALUES ($1) RETURNING id`
+	tx, err := r.DB.Pool.BeginTx(ctx, pgx.TxOptions{})
 
-	var id uuid.UUID
-	err := r.DB.Pool.QueryRow(ctx, query, name).Scan(&id)
 	if err != nil {
+		fmt.Println(err)
 		return uuid.Nil, err
+	}
+
+	defer tx.Rollback(ctx)
+
+	insertTournamentQuery := `INSERT INTO gd_tournaments (name) VALUES ($1) RETURNING id`
+	var id uuid.UUID
+
+	if err := tx.QueryRow(ctx, insertTournamentQuery, name).Scan(&id); err != nil {
+		return uuid.Nil, err
+	}
+
+	insertBracketsQuery := `INSERT INTO gd_brackets (tournament_id, name, side) VALUES ($1, 'Nhánh thắng', 'winner'), ($1, 'Nhánh thua', 'loser')`
+
+	cmtTag, err := tx.Exec(ctx, insertBracketsQuery, id)
+
+	if err != nil {
+		fmt.Println(err)
+		return uuid.Nil, err
+	}
+
+	if cmtTag.RowsAffected() == 0 {
+		fmt.Println(err)
+		return uuid.Nil, errors.New("can't create brackets")
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		fmt.Println(err)
+		return uuid.Nil, errors.New("some thing went wrong with transaction")
 	}
 
 	return id, nil

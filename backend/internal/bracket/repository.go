@@ -5,6 +5,7 @@ import (
 	bracketpb "backend/internal/gen/bracket/v1"
 	"backend/internal/repository"
 	"context"
+	"errors"
 	"fmt"
 
 	sq "github.com/Masterminds/squirrel"
@@ -20,7 +21,7 @@ func NewRepository(db *db.DB) *BracketRepository {
 	}
 }
 
-func (r *BracketRepository) getBracketsByTournamentID(ctx context.Context, tournamentId string) ([]*bracketpb.Bracket, error) {
+func (r *BracketRepository) GetBracketsByTournamentID(ctx context.Context, tournamentId string) ([]*bracketpb.Bracket, error) {
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
 	qb := psql.
@@ -66,4 +67,20 @@ func (r *BracketRepository) getBracketsByTournamentID(ctx context.Context, tourn
 	}
 
 	return brackets, nil
+}
+
+func (r *BracketRepository) CreateBracketsByTournamentID(ctx context.Context, tournamentID string) error {
+	query := `INSERT INTO gd_brackets VALUES ($1, 'Nhánh thắng', 'winner'), ($1, 'Nhánh thua', 'loser')`
+
+	cmtTag, err := r.DB.Pool.Exec(ctx, query, tournamentID, tournamentID)
+
+	if err != nil {
+		return err
+	}
+
+	if cmtTag.RowsAffected() == 0 {
+		return errors.New("can't create brackets")
+	}
+
+	return nil
 }

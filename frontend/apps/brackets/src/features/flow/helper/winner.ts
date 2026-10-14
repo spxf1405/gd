@@ -9,7 +9,7 @@ import {
   Y_REDUCE_FACTOR,
 } from "../consts";
 import type { BracketMatch } from "../types";
-import { getNextMatch, isBye, isRealMatch } from "./player";
+import { getNextMatch, isBye as isParticipantBye, isRealMatch } from "./player";
 
 export const createMatch = (data: {
   round: number;
@@ -56,6 +56,7 @@ export function createWbFlow(winnerBracketInfo: WinnerBracketInfo) {
       round === 1
         ? playerCount - totalBracketSlots / 2
         : totalBracketSlots / 2 ** round;
+
     for (let match = 0; match < matchesInRound; match++) {
       matches.push(
         createMatch({
@@ -78,14 +79,14 @@ export function createWbFlow(winnerBracketInfo: WinnerBracketInfo) {
       const [player1, player2] = node.players;
 
       // 2 BYE → skip
-      if (isBye(player1) && isBye(player2)) {
+      if (isParticipantBye(player1) && isParticipantBye(player2)) {
         node.isSkipped = true;
         continue;
       }
 
       // 1 BYE → auto win
-      if (isBye(player1) || isBye(player2)) {
-        const winner = isBye(player1) ? player2 : player1;
+      if (isParticipantBye(player1) || isParticipantBye(player2)) {
+        const winner = isParticipantBye(player1) ? player2 : player1;
         node.isAutoWin = true;
         node.winner = winner;
 
@@ -262,5 +263,5 @@ export function createWbFlow(winnerBracketInfo: WinnerBracketInfo) {
     ];
   });
 
-  return { nodes: nodes.flat(), edges , centerX: CENTER_X};
+  return { matches, nodes: nodes.flat(), edges , centerX: CENTER_X};
 }

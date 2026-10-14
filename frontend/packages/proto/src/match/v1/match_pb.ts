@@ -4,7 +4,7 @@
 
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
-import type { Participant } from "../../participant/v1/participant_pb";
+import type { MatchParticipant } from "../../participant/v1/participant_pb";
 import { file_participant_v1_participant } from "../../participant/v1/participant_pb";
 import type { Message } from "@bufbuild/protobuf";
 
@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file match/v1/match.proto.
  */
 export const file_match_v1_match: GenFile = /*@__PURE__*/
-  fileDesc("ChRtYXRjaC92MS9tYXRjaC5wcm90bxIIbWF0Y2gudjEiygIKBU1hdGNoEgoKAmlkGAEgASgJEhUKDWRpc3BsYXlfb3JkZXIYAiABKAUSEwoLbWF0Y2hfaW5kZXgYAyABKAUSDQoFcm91bmQYBCABKAUSFAoMdG90YWxfcm91bmRzGAUgASgFEgwKBHNpZGUYBiABKAkSDwoHcGxheWVycxgHIAMoCRIOCgZ3aW5uZXIYCCABKAkSEwoLaXNfYXV0b193aW4YCSABKAgSEgoKaXNfc2tpcHBlZBgKIAEoCBIhCgRkYXRhGAsgASgLMhMubWF0Y2gudjEuTWF0Y2hEYXRhEiQKCHBvc2l0aW9uGAwgASgLMhIubWF0Y2gudjEuUG9zaXRpb24SEAoIcm91bmRfaWQYDSABKAkSMQoMcGFydGljaXBhbnRzGA4gAygLMhsucGFydGljaXBhbnQudjEuUGFydGljaXBhbnQiGgoJTWF0Y2hEYXRhEg0KBWxhYmVsGAEgASgJIiAKCFBvc2l0aW9uEgkKAXgYASABKAUSCQoBeRgCIAEoBUInWiViYWNrZW5kL2ludGVybmFsL2dlbi9tYXRjaC92MTttYXRjaHBiYgZwcm90bzM", [file_participant_v1_participant]);
+  fileDesc("ChRtYXRjaC92MS9tYXRjaC5wcm90bxIIbWF0Y2gudjEizwIKBU1hdGNoEgoKAmlkGAEgASgJEhUKDWRpc3BsYXlfb3JkZXIYAiABKAUSEwoLbWF0Y2hfaW5kZXgYAyABKAUSDQoFcm91bmQYBCABKAUSFAoMdG90YWxfcm91bmRzGAUgASgFEgwKBHNpZGUYBiABKAkSDwoHcGxheWVycxgHIAMoCRIOCgZ3aW5uZXIYCCABKAkSEwoLaXNfYXV0b193aW4YCSABKAgSEgoKaXNfc2tpcHBlZBgKIAEoCBIhCgRkYXRhGAsgASgLMhMubWF0Y2gudjEuTWF0Y2hEYXRhEiQKCHBvc2l0aW9uGAwgASgLMhIubWF0Y2gudjEuUG9zaXRpb24SEAoIcm91bmRfaWQYDSABKAkSNgoMcGFydGljaXBhbnRzGA4gAygLMiAucGFydGljaXBhbnQudjEuTWF0Y2hQYXJ0aWNpcGFudCIaCglNYXRjaERhdGESDQoFbGFiZWwYASABKAkiIAoIUG9zaXRpb24SCQoBeBgBIAEoBRIJCgF5GAIgASgFQidaJWJhY2tlbmQvaW50ZXJuYWwvZ2VuL21hdGNoL3YxO21hdGNocGJiBnByb3RvMw", [file_participant_v1_participant]);
 
 /**
  * @generated from message match.v1.Match
@@ -84,9 +84,9 @@ export type Match = Message<"match.v1.Match"> & {
   roundId: string;
 
   /**
-   * @generated from field: repeated participant.v1.Participant participants = 14;
+   * @generated from field: repeated participant.v1.MatchParticipant participants = 14;
    */
-  participants: Participant[];
+  participants: MatchParticipant[];
 };
 
 /**

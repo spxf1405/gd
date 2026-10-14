@@ -8,14 +8,13 @@ const getTournamentByID = async (id: string) => {
   return res.tournament;
 };
 
+//TODO: return all the query here not only tournament
 export function useTournament(id?: string) {
-  const { data: tournament } = useQuery({
+  return useQuery({
     queryKey: ["tournament", id],
     queryFn: async () => {
       return await getTournamentByID(id ?? "");
     },
     enabled: !!id,
   });
-
-  return tournament;
 }

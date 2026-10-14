@@ -5,6 +5,7 @@ import type { Bracket } from "@gd/proto/bracket/v1/bracket_pb";
 import { EliminationType } from "@gd/proto/round/v1/round_pb";
 import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 
+import type { TournamentParticipant } from "@gd/proto/participant/v1/participant_pb";
 import { COLORS } from "../../consts/color";
 import { CreateRoundsButton } from "./create-rounds";
 import { RoundCard } from "./round-card";
@@ -183,6 +184,11 @@ export function FormatTab() {
     form.setFieldValue("brackets", nextBrackets);
   };
 
+  const getTotalRounds = (x: number): number => {
+    if (x <= 1) return 0;
+    return Math.ceil(Math.log2(x));
+  };
+
   return (
     <ConfigProvider
       theme={{
@@ -191,7 +197,58 @@ export function FormatTab() {
         },
       }}
     >
-      <div className="flex justify-between mb-4">
+      <Form.Item
+        noStyle
+        shouldUpdate={(prev, current) =>
+          prev.brackets !== current.brackets ||
+          prev.participants !== current.participants
+        }
+      >
+        {() => {
+          const brackets =
+            (form.getFieldValue("brackets") as Bracket[] | undefined) ?? [];
+          const participants =
+            (form.getFieldValue("participants") as
+              | TournamentParticipant[]
+              | undefined) ?? [];
+
+          const winnerRounds = brackets.find(
+            (b) => b.side === "winner",
+          )?.rounds;
+          const expectedRoundsCount = getTotalRounds(participants.length);
+          const actualRoundsCount = winnerRounds?.length ?? 0;
+
+          // Hiển thị cảnh báo khi số vòng đấu thực tế khác số vòng tính toán từ số participant
+          const isOutSync = expectedRoundsCount !== actualRoundsCount;
+
+          console.log("expectedRoundsCount !== actualRoundsCount", expectedRoundsCount ,actualRoundsCount)
+
+          if (!isOutSync) return null;
+
+          return (
+            <div className="mb-4 p-4 rounded-lg bg-amber-950/30 border border-amber-500/30 flex items-start justify-between gap-4 backdrop-blur-sm">
+              <div className="flex items-start gap-3">
+                <span className="text-amber-400 text-lg leading-none mt-0.5">
+                  ⚠️
+                </span>
+                <div className="text-xs text-amber-200/80 leading-relaxed">
+                  <p className="font-semibold text-sm text-amber-300 mb-1">
+                    Cần đồng bộ lại các vòng đấu (Rounds)!
+                  </p>
+                  <p>
+                    Danh sách người chơi đã được cập nhật. Bạn cần đồng bộ lại
+                    cấu hình các vòng đấu theo số lượng người chơi mới để tránh
+                    lỗi sơ đồ nhánh đấu.
+                  </p>
+                </div>
+              </div>
+              <CreateRoundsButton />
+            </div>
+          );
+        }}
+      </Form.Item>
+
+      {/* <div className="flex justify-between mb-4">
         <CreateRoundsButton />
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
@@ -203,7 +260,7 @@ export function FormatTab() {
             </span>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="overflow-y-auto max-h-[50vh]">
         <Form.Item name="brackets" hidden>
@@ -219,7 +276,10 @@ export function FormatTab() {
             const brackets =
               (form.getFieldValue("brackets") as Bracket[] | undefined) ?? [];
 
+
             const rounds = getRoundsFromBrackets(brackets);
+
+            console.log("brackets =================================", brackets)
 
             const groupMap = new Map<string, TournamentRound[]>();
 

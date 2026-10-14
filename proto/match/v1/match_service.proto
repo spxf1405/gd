@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package match.v1;
+
+option go_package = "backend/internal/gen/match/v1;matchpb";
+
+import "match/v1/match.proto";
+import "google/protobuf/empty.proto";
+
+message AddMatchesRequest {
+  repeated match.v1.Match matches = 1;
+}
+
+message AddMatchesResponse {
+  google.protobuf.Empty empty = 1;
+}
+
+service MatchService {
+  rpc AddMatches(AddMatchesRequest) returns (AddMatchesResponse);
+}

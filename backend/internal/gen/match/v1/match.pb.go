@@ -37,7 +37,7 @@ type Match struct {
 	Data          *MatchData             `protobuf:"bytes,11,opt,name=data,proto3" json:"data,omitempty"`
 	Position      *Position              `protobuf:"bytes,12,opt,name=position,proto3" json:"position,omitempty"`
 	RoundId       string                 `protobuf:"bytes,13,opt,name=round_id,json=roundId,proto3" json:"round_id,omitempty"`
-	Participants  []*v1.Participant      `protobuf:"bytes,14,rep,name=participants,proto3" json:"participants,omitempty"`
+	Participants  []*v1.MatchParticipant `protobuf:"bytes,14,rep,name=participants,proto3" json:"participants,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -163,7 +163,7 @@ func (x *Match) GetRoundId() string {
 	return ""
 }
 
-func (x *Match) GetParticipants() []*v1.Participant {
+func (x *Match) GetParticipants() []*v1.MatchParticipant {
 	if x != nil {
 		return x.Participants
 	}
@@ -270,7 +270,7 @@ var File_match_v1_match_proto protoreflect.FileDescriptor
 
 const file_match_v1_match_proto_rawDesc = "" +
 	"\n" +
-	"\x14match/v1/match.proto\x12\bmatch.v1\x1a participant/v1/participant.proto\"\xd0\x03\n" +
+	"\x14match/v1/match.proto\x12\bmatch.v1\x1a participant/v1/participant.proto\"\xd5\x03\n" +
 	"\x05Match\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12#\n" +
 	"\rdisplay_order\x18\x02 \x01(\x05R\fdisplayOrder\x12\x1f\n" +
@@ -287,8 +287,8 @@ const file_match_v1_match_proto_rawDesc = "" +
 	" \x01(\bR\tisSkipped\x12'\n" +
 	"\x04data\x18\v \x01(\v2\x13.match.v1.MatchDataR\x04data\x12.\n" +
 	"\bposition\x18\f \x01(\v2\x12.match.v1.PositionR\bposition\x12\x19\n" +
-	"\bround_id\x18\r \x01(\tR\aroundId\x12?\n" +
-	"\fparticipants\x18\x0e \x03(\v2\x1b.participant.v1.ParticipantR\fparticipants\"!\n" +
+	"\bround_id\x18\r \x01(\tR\aroundId\x12D\n" +
+	"\fparticipants\x18\x0e \x03(\v2 .participant.v1.MatchParticipantR\fparticipants\"!\n" +
 	"\tMatchData\x12\x14\n" +
 	"\x05label\x18\x01 \x01(\tR\x05label\"&\n" +
 	"\bPosition\x12\f\n" +
@@ -309,15 +309,15 @@ func file_match_v1_match_proto_rawDescGZIP() []byte {
 
 var file_match_v1_match_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_match_v1_match_proto_goTypes = []any{
-	(*Match)(nil),          // 0: match.v1.Match
-	(*MatchData)(nil),      // 1: match.v1.MatchData
-	(*Position)(nil),       // 2: match.v1.Position
-	(*v1.Participant)(nil), // 3: participant.v1.Participant
+	(*Match)(nil),               // 0: match.v1.Match
+	(*MatchData)(nil),           // 1: match.v1.MatchData
+	(*Position)(nil),            // 2: match.v1.Position
+	(*v1.MatchParticipant)(nil), // 3: participant.v1.MatchParticipant
 }
 var file_match_v1_match_proto_depIdxs = []int32{
 	1, // 0: match.v1.Match.data:type_name -> match.v1.MatchData
 	2, // 1: match.v1.Match.position:type_name -> match.v1.Position
-	3, // 2: match.v1.Match.participants:type_name -> participant.v1.Participant
+	3, // 2: match.v1.Match.participants:type_name -> participant.v1.MatchParticipant
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

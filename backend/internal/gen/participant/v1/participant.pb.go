@@ -21,31 +21,34 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Participant struct {
+type MatchParticipant struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	DisplayName   string                 `protobuf:"bytes,2,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
 	MatchId       string                 `protobuf:"bytes,3,opt,name=match_id,json=matchId,proto3" json:"match_id,omitempty"`
 	Slot          int32                  `protobuf:"varint,4,opt,name=slot,proto3" json:"slot,omitempty"`
 	Score         int32                  `protobuf:"varint,5,opt,name=score,proto3" json:"score,omitempty"`
+	Nationality   string                 `protobuf:"bytes,6,opt,name=nationality,proto3" json:"nationality,omitempty"`
+	IsWinner      bool                   `protobuf:"varint,7,opt,name=is_winner,json=isWinner,proto3" json:"is_winner,omitempty"`
+	PlayerId      string                 `protobuf:"bytes,8,opt,name=player_id,json=playerId,proto3" json:"player_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *Participant) Reset() {
-	*x = Participant{}
+func (x *MatchParticipant) Reset() {
+	*x = MatchParticipant{}
 	mi := &file_participant_v1_participant_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *Participant) String() string {
+func (x *MatchParticipant) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Participant) ProtoMessage() {}
+func (*MatchParticipant) ProtoMessage() {}
 
-func (x *Participant) ProtoReflect() protoreflect.Message {
+func (x *MatchParticipant) ProtoReflect() protoreflect.Message {
 	mi := &file_participant_v1_participant_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,44 +60,65 @@ func (x *Participant) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Participant.ProtoReflect.Descriptor instead.
-func (*Participant) Descriptor() ([]byte, []int) {
+// Deprecated: Use MatchParticipant.ProtoReflect.Descriptor instead.
+func (*MatchParticipant) Descriptor() ([]byte, []int) {
 	return file_participant_v1_participant_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Participant) GetId() string {
+func (x *MatchParticipant) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *Participant) GetDisplayName() string {
+func (x *MatchParticipant) GetDisplayName() string {
 	if x != nil {
 		return x.DisplayName
 	}
 	return ""
 }
 
-func (x *Participant) GetMatchId() string {
+func (x *MatchParticipant) GetMatchId() string {
 	if x != nil {
 		return x.MatchId
 	}
 	return ""
 }
 
-func (x *Participant) GetSlot() int32 {
+func (x *MatchParticipant) GetSlot() int32 {
 	if x != nil {
 		return x.Slot
 	}
 	return 0
 }
 
-func (x *Participant) GetScore() int32 {
+func (x *MatchParticipant) GetScore() int32 {
 	if x != nil {
 		return x.Score
 	}
 	return 0
+}
+
+func (x *MatchParticipant) GetNationality() string {
+	if x != nil {
+		return x.Nationality
+	}
+	return ""
+}
+
+func (x *MatchParticipant) GetIsWinner() bool {
+	if x != nil {
+		return x.IsWinner
+	}
+	return false
+}
+
+func (x *MatchParticipant) GetPlayerId() string {
+	if x != nil {
+		return x.PlayerId
+	}
+	return ""
 }
 
 type TournamentParticipant struct {
@@ -177,13 +201,16 @@ var File_participant_v1_participant_proto protoreflect.FileDescriptor
 
 const file_participant_v1_participant_proto_rawDesc = "" +
 	"\n" +
-	" participant/v1/participant.proto\x12\x0eparticipant.v1\"\x85\x01\n" +
-	"\vParticipant\x12\x0e\n" +
+	" participant/v1/participant.proto\x12\x0eparticipant.v1\"\xe6\x01\n" +
+	"\x10MatchParticipant\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12\x19\n" +
 	"\bmatch_id\x18\x03 \x01(\tR\amatchId\x12\x12\n" +
 	"\x04slot\x18\x04 \x01(\x05R\x04slot\x12\x14\n" +
-	"\x05score\x18\x05 \x01(\x05R\x05score\"\xa3\x01\n" +
+	"\x05score\x18\x05 \x01(\x05R\x05score\x12 \n" +
+	"\vnationality\x18\x06 \x01(\tR\vnationality\x12\x1b\n" +
+	"\tis_winner\x18\a \x01(\bR\bisWinner\x12\x1b\n" +
+	"\tplayer_id\x18\b \x01(\tR\bplayerId\"\xa3\x01\n" +
 	"\x15TournamentParticipant\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tplayer_id\x18\x02 \x01(\tR\bplayerId\x12!\n" +
@@ -205,7 +232,7 @@ func file_participant_v1_participant_proto_rawDescGZIP() []byte {
 
 var file_participant_v1_participant_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_participant_v1_participant_proto_goTypes = []any{
-	(*Participant)(nil),           // 0: participant.v1.Participant
+	(*MatchParticipant)(nil),      // 0: participant.v1.MatchParticipant
 	(*TournamentParticipant)(nil), // 1: participant.v1.TournamentParticipant
 }
 var file_participant_v1_participant_proto_depIdxs = []int32{

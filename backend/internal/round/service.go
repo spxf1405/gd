@@ -26,6 +26,7 @@ func (s *RoundService) GetRoundsByBracketIDs(ctx context.Context, bracketIDs []s
 	return rounds, nil
 }
 
+// TODO: Consider to delete
 func (s *RoundService) ReplaceRounds(ctx context.Context, bracketIDs []string, rounds []*roundpb.Round) error {
 	err := s.repo.ReplaceRounds(ctx, bracketIDs, rounds)
 

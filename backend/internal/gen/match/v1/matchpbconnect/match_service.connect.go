@@ -33,18 +33,13 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// MatchServiceGetMatchByIDProcedure is the fully-qualified name of the MatchService's GetMatchByID
-	// RPC.
-	MatchServiceGetMatchByIDProcedure = "/match.v1.MatchService/GetMatchByID"
-	// MatchServiceGenerateMatchesProcedure is the fully-qualified name of the MatchService's
-	// GenerateMatches RPC.
-	MatchServiceGenerateMatchesProcedure = "/match.v1.MatchService/GenerateMatches"
+	// MatchServiceAddMatchesProcedure is the fully-qualified name of the MatchService's AddMatches RPC.
+	MatchServiceAddMatchesProcedure = "/match.v1.MatchService/AddMatches"
 )
 
 // MatchServiceClient is a client for the match.v1.MatchService service.
 type MatchServiceClient interface {
-	GetMatchByID(context.Context, *connect.Request[v1.GetMatchByIDRequest]) (*connect.Response[v1.GetMatchByIDResponse], error)
-	GenerateMatches(context.Context, *connect.Request[v1.GenerateMatchesRequest]) (*connect.Response[v1.GenerateMatchesResponse], error)
+	AddMatches(context.Context, *connect.Request[v1.AddMatchesRequest]) (*connect.Response[v1.AddMatchesResponse], error)
 }
 
 // NewMatchServiceClient constructs a client for the match.v1.MatchService service. By default, it
@@ -58,16 +53,10 @@ func NewMatchServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 	baseURL = strings.TrimRight(baseURL, "/")
 	matchServiceMethods := v1.File_match_v1_match_service_proto.Services().ByName("MatchService").Methods()
 	return &matchServiceClient{
-		getMatchByID: connect.NewClient[v1.GetMatchByIDRequest, v1.GetMatchByIDResponse](
+		addMatches: connect.NewClient[v1.AddMatchesRequest, v1.AddMatchesResponse](
 			httpClient,
-			baseURL+MatchServiceGetMatchByIDProcedure,
-			connect.WithSchema(matchServiceMethods.ByName("GetMatchByID")),
-			connect.WithClientOptions(opts...),
-		),
-		generateMatches: connect.NewClient[v1.GenerateMatchesRequest, v1.GenerateMatchesResponse](
-			httpClient,
-			baseURL+MatchServiceGenerateMatchesProcedure,
-			connect.WithSchema(matchServiceMethods.ByName("GenerateMatches")),
+			baseURL+MatchServiceAddMatchesProcedure,
+			connect.WithSchema(matchServiceMethods.ByName("AddMatches")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -75,24 +64,17 @@ func NewMatchServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 
 // matchServiceClient implements MatchServiceClient.
 type matchServiceClient struct {
-	getMatchByID    *connect.Client[v1.GetMatchByIDRequest, v1.GetMatchByIDResponse]
-	generateMatches *connect.Client[v1.GenerateMatchesRequest, v1.GenerateMatchesResponse]
+	addMatches *connect.Client[v1.AddMatchesRequest, v1.AddMatchesResponse]
 }
 
-// GetMatchByID calls match.v1.MatchService.GetMatchByID.
-func (c *matchServiceClient) GetMatchByID(ctx context.Context, req *connect.Request[v1.GetMatchByIDRequest]) (*connect.Response[v1.GetMatchByIDResponse], error) {
-	return c.getMatchByID.CallUnary(ctx, req)
-}
-
-// GenerateMatches calls match.v1.MatchService.GenerateMatches.
-func (c *matchServiceClient) GenerateMatches(ctx context.Context, req *connect.Request[v1.GenerateMatchesRequest]) (*connect.Response[v1.GenerateMatchesResponse], error) {
-	return c.generateMatches.CallUnary(ctx, req)
+// AddMatches calls match.v1.MatchService.AddMatches.
+func (c *matchServiceClient) AddMatches(ctx context.Context, req *connect.Request[v1.AddMatchesRequest]) (*connect.Response[v1.AddMatchesResponse], error) {
+	return c.addMatches.CallUnary(ctx, req)
 }
 
 // MatchServiceHandler is an implementation of the match.v1.MatchService service.
 type MatchServiceHandler interface {
-	GetMatchByID(context.Context, *connect.Request[v1.GetMatchByIDRequest]) (*connect.Response[v1.GetMatchByIDResponse], error)
-	GenerateMatches(context.Context, *connect.Request[v1.GenerateMatchesRequest]) (*connect.Response[v1.GenerateMatchesResponse], error)
+	AddMatches(context.Context, *connect.Request[v1.AddMatchesRequest]) (*connect.Response[v1.AddMatchesResponse], error)
 }
 
 // NewMatchServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -102,24 +84,16 @@ type MatchServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewMatchServiceHandler(svc MatchServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	matchServiceMethods := v1.File_match_v1_match_service_proto.Services().ByName("MatchService").Methods()
-	matchServiceGetMatchByIDHandler := connect.NewUnaryHandler(
-		MatchServiceGetMatchByIDProcedure,
-		svc.GetMatchByID,
-		connect.WithSchema(matchServiceMethods.ByName("GetMatchByID")),
-		connect.WithHandlerOptions(opts...),
-	)
-	matchServiceGenerateMatchesHandler := connect.NewUnaryHandler(
-		MatchServiceGenerateMatchesProcedure,
-		svc.GenerateMatches,
-		connect.WithSchema(matchServiceMethods.ByName("GenerateMatches")),
+	matchServiceAddMatchesHandler := connect.NewUnaryHandler(
+		MatchServiceAddMatchesProcedure,
+		svc.AddMatches,
+		connect.WithSchema(matchServiceMethods.ByName("AddMatches")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/match.v1.MatchService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case MatchServiceGetMatchByIDProcedure:
-			matchServiceGetMatchByIDHandler.ServeHTTP(w, r)
-		case MatchServiceGenerateMatchesProcedure:
-			matchServiceGenerateMatchesHandler.ServeHTTP(w, r)
+		case MatchServiceAddMatchesProcedure:
+			matchServiceAddMatchesHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -129,10 +103,6 @@ func NewMatchServiceHandler(svc MatchServiceHandler, opts ...connect.HandlerOpti
 // UnimplementedMatchServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedMatchServiceHandler struct{}
 
-func (UnimplementedMatchServiceHandler) GetMatchByID(context.Context, *connect.Request[v1.GetMatchByIDRequest]) (*connect.Response[v1.GetMatchByIDResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("match.v1.MatchService.GetMatchByID is not implemented"))
-}
-
-func (UnimplementedMatchServiceHandler) GenerateMatches(context.Context, *connect.Request[v1.GenerateMatchesRequest]) (*connect.Response[v1.GenerateMatchesResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("match.v1.MatchService.GenerateMatches is not implemented"))
+func (UnimplementedMatchServiceHandler) AddMatches(context.Context, *connect.Request[v1.AddMatchesRequest]) (*connect.Response[v1.AddMatchesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("match.v1.MatchService.AddMatches is not implemented"))
 }

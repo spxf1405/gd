@@ -1,11 +1,17 @@
+import { createLBFlow } from "@/features/flow/helper/loser";
+import { createLBParticipantFlow } from "@/features/flow/helper/loser1";
+import {
+  getParticipantsInfo,
+  getPlayersInfo,
+} from "@/features/flow/helper/player";
+import { createWbFlow as createWBFlow } from "@/features/flow/helper/winner";
+import { createWbFlowParticipant, type BracketMatch } from "@/features/flow/helper/winner1";
+import type { TournamentParticipant } from "@gd/proto/participant/v1/participant_pb";
+import type { Round } from "@gd/proto/round/v1/round_pb";
+import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
+import type { Edge, Node } from "@xyflow/react";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import type { Edge, Node } from "@xyflow/react";
-import { getPlayersInfo } from "@/features/flow/helper/player";
-import { createWbFlow as createWBFlow } from "@/features/flow/helper/winner";
-import { createLBFlow } from "@/features/flow/helper/loser";
-import type { Tournament } from "@gd/proto/tournament/v1/tournament_pb";
-import type { Round } from "@gd/proto/round/v1/round_pb";
 
 export type WinnerBracketInfo = {
   players: string[];
@@ -19,12 +25,26 @@ export type WinnerBracketInfo = {
   };
 };
 
+export type WinnerParticipantBracketInfo = {
+  participants: TournamentParticipant[];
+  participantsForCreateMatch: TournamentParticipant[];
+  participantCount: number;
+  totalBracketSlots: number;
+  roundCount: number;
+  rounds: Round[],
+  flow?: {
+    nodes: Node[];
+    edges: Edge[];
+  };
+};
+
 type TourInfo = {
   players: string[];
   playerCount: number;
   currentRound: string;
   switchToSingleEliminationRound: string;
   centerX: number;
+  matches: BracketMatch[],
   brackets: {
     winner: WinnerBracketInfo;
     loser: {
@@ -52,6 +72,15 @@ type TourState = {
 
   initId: (id: string) => void;
   reset: () => void;
+
+
+  initTourInfo2: ({
+    participantsRaw,
+    tournament,
+  }: {
+    participantsRaw: TournamentParticipant[];
+    tournament: Tournament;
+  }) => void;
 };
 
 const initTourInfoState: Omit<
@@ -63,9 +92,12 @@ const initTourInfoState: Omit<
   | "updateTournamentRound"
   | "updateTournamentRounds"
   | "initId"
+  | "initTourInfo2"
 > = {
   id: "",
+  
   tourInfo: {
+    matches: [],
     players: [],
     playerCount: 0,
     currentRound: "",
@@ -161,7 +193,7 @@ export const useTournamentStore = create<TourState>()(
           wbTotalBracketSlots,
           lbTotalRounds,
         });
-
+        
         state.tourInfo.players = players;
         state.tourInfo.playerCount = playerCount;
         state.tourInfo.centerX = centerX;
@@ -186,6 +218,82 @@ export const useTournamentStore = create<TourState>()(
           },
         };
       }),
+    initTourInfo2: ({
+      participantsRaw,
+      tournament,
+    }: {
+      participantsRaw: TournamentParticipant[];
+      tournament: Tournament;
+    }) =>
+      set((state) => {
+        const wbRounds = tournament.brackets
+          .filter((bracket) => bracket.side === "winner")
+          .flatMap((bracket) => bracket.rounds);
+
+        const wbRoundCount = wbRounds.length
+
+        const bracketInfo = getParticipantsInfo({
+          participants: participantsRaw,
+        });
+
+        const {
+          participants,
+          participantsCount,
+          wbParticipants,
+          wbParticipantsForCreateMatch,
+          wbParticipantCount,
+          wbTotalBracketSlots,
+          lbTotalRounds,
+        } = bracketInfo;
+
+        console.log("wbParticipants", wbParticipants)
+
+        const {
+          nodes: wbNodes,
+          edges: wbEdges,
+          matches,
+          centerX,
+        } = createWbFlowParticipant({
+          participants: wbParticipants,
+          participantsForCreateMatch: wbParticipantsForCreateMatch,
+          participantCount: wbParticipantCount,
+          totalBracketSlots: wbTotalBracketSlots,
+          roundCount: wbRoundCount,
+          rounds: wbRounds
+        });
+
+        const { nodes: lbNodes, edges: lbEdges } = createLBParticipantFlow({
+          wbParticipants: wbParticipants,
+          wbTotalBracketSlots,
+          lbRoundCount: lbTotalRounds,
+        });
+
+        state.tourInfo.matches = matches
+        state.tourInfo.players = participants;
+        state.tourInfo.playerCount = participantsCount;
+        state.tourInfo.centerX = centerX;
+        state.tourInfo.brackets = {
+          winner: {
+            participants: wbParticipants,
+            wbParticipantsForCreateMatch,
+            playerCount: wbParticipantCount,
+            totalBracketSlots: wbTotalBracketSlots,
+            totalRounds: wbRoundCount,
+            flow: {
+              nodes: wbNodes,
+              edges: wbEdges,
+            },
+          },
+          loser: {
+            totalRounds: lbTotalRounds,
+            flow: {
+              nodes: lbNodes,
+              edges: lbEdges,
+            },
+          },
+        };
+      }),
+
     updateCurrentRound: (round: string) => {
       set((state) => {
         state.tourInfo.currentRound = round;

@@ -48,7 +48,6 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParticipantsByTournamentID } from "./players/hooks";
 import { COLORS } from "./settings/consts/color";
-import { useTournament } from "@/hook/tournament";
 
 interface Player {
   id: string;
@@ -253,7 +252,7 @@ const SearchConditions = () => {
   );
 };
 
-export const Players = () => {
+export const Participants = () => {
   const queryClient = useQueryClient();
   const { id } = useTournamentStore();
 
@@ -374,7 +373,7 @@ export const Players = () => {
           boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
         }}
       >
-        Xem danh sách người chơi
+        Xem danh sách người chơi ({participants.length})
       </QButton>
 
       <Modal

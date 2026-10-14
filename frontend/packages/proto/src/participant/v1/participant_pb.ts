@@ -10,12 +10,12 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file participant/v1/participant.proto.
  */
 export const file_participant_v1_participant: GenFile = /*@__PURE__*/
-  fileDesc("CiBwYXJ0aWNpcGFudC92MS9wYXJ0aWNpcGFudC5wcm90bxIOcGFydGljaXBhbnQudjEiXgoLUGFydGljaXBhbnQSCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEhAKCG1hdGNoX2lkGAMgASgJEgwKBHNsb3QYBCABKAUSDQoFc2NvcmUYBSABKAUicgoVVG91cm5hbWVudFBhcnRpY2lwYW50EgoKAmlkGAEgASgJEhEKCXBsYXllcl9pZBgCIAEoCRIUCgxkaXNwbGF5X25hbWUYAyABKAkSEwoLbmF0aW9uYWxpdHkYBCABKAkSDwoHcmFua2luZxgFIAEoCUIzWjFiYWNrZW5kL2ludGVybmFsL2dlbi9wYXJ0aWNpcGFudC92MTtwYXJ0aWNpcGFudHBiYgZwcm90bzM");
+  fileDesc("CiBwYXJ0aWNpcGFudC92MS9wYXJ0aWNpcGFudC5wcm90bxIOcGFydGljaXBhbnQudjEingEKEE1hdGNoUGFydGljaXBhbnQSCgoCaWQYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEhAKCG1hdGNoX2lkGAMgASgJEgwKBHNsb3QYBCABKAUSDQoFc2NvcmUYBSABKAUSEwoLbmF0aW9uYWxpdHkYBiABKAkSEQoJaXNfd2lubmVyGAcgASgIEhEKCXBsYXllcl9pZBgIIAEoCSJyChVUb3VybmFtZW50UGFydGljaXBhbnQSCgoCaWQYASABKAkSEQoJcGxheWVyX2lkGAIgASgJEhQKDGRpc3BsYXlfbmFtZRgDIAEoCRITCgtuYXRpb25hbGl0eRgEIAEoCRIPCgdyYW5raW5nGAUgASgJQjNaMWJhY2tlbmQvaW50ZXJuYWwvZ2VuL3BhcnRpY2lwYW50L3YxO3BhcnRpY2lwYW50cGJiBnByb3RvMw");
 
 /**
- * @generated from message participant.v1.Participant
+ * @generated from message participant.v1.MatchParticipant
  */
-export type Participant = Message<"participant.v1.Participant"> & {
+export type MatchParticipant = Message<"participant.v1.MatchParticipant"> & {
   /**
    * @generated from field: string id = 1;
    */
@@ -40,13 +40,28 @@ export type Participant = Message<"participant.v1.Participant"> & {
    * @generated from field: int32 score = 5;
    */
   score: number;
+
+  /**
+   * @generated from field: string nationality = 6;
+   */
+  nationality: string;
+
+  /**
+   * @generated from field: bool is_winner = 7;
+   */
+  isWinner: boolean;
+
+  /**
+   * @generated from field: string player_id = 8;
+   */
+  playerId: string;
 };
 
 /**
- * Describes the message participant.v1.Participant.
- * Use `create(ParticipantSchema)` to create a new message.
+ * Describes the message participant.v1.MatchParticipant.
+ * Use `create(MatchParticipantSchema)` to create a new message.
  */
-export const ParticipantSchema: GenMessage<Participant> = /*@__PURE__*/
+export const MatchParticipantSchema: GenMessage<MatchParticipant> = /*@__PURE__*/
   messageDesc(file_participant_v1_participant, 0);
 
 /**

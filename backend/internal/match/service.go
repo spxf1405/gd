@@ -22,3 +22,13 @@ func (s *Service) GetMatchesByRoundIDs(ctx context.Context, roundIds []string) (
 
 	return matches, nil
 }
+
+func (s *Service) AddMatches(ctx context.Context, matches []*matchpb.Match) error {
+	err := s.repo.AddMatches(ctx, matches)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -5,6 +5,7 @@ import (
 	"backend/internal/auth"
 	"backend/internal/firebase"
 	"backend/internal/logger"
+	"backend/internal/match"
 	"backend/internal/participant"
 	"backend/internal/round"
 	"backend/internal/tournament"
@@ -119,6 +120,7 @@ func main() {
 	infra := app.NewInfra(ctx)
 
 	tournament.Mount(r, infra)
+	match.Mount(r, infra)
 	participant.Mount(r, infra)
 	round.Mount(r, infra)
 	auth.Mount(r, infra)

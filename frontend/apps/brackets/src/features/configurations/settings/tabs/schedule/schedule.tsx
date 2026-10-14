@@ -11,7 +11,7 @@ export const ScheduleTab = () => {
   const { t } = useTranslation();
 
   const { id } = useTournamentStore();
-  const tournament = useTournament(id);
+  const { data: tournament } = useTournament(id);
 
   const createdAt = dayjs(tournament?.createdAt);
   // const startDate = dayjs(tournament?.startDate);

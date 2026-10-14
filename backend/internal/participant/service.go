@@ -16,7 +16,7 @@ func NewService(repo *ParticipantRepository) *Service {
 	return &Service{repo: repo}
 }
 
-func (s *Service) GetParticipantsByMatchIDs(ctx context.Context, matchIds []string) ([]*participantpb.Participant, error) {
+func (s *Service) GetParticipantsByMatchIDs(ctx context.Context, matchIds []string) ([]*participantpb.MatchParticipant, error) {
 	participants, err := s.repo.GetParticipantsByMatchIDs(ctx, matchIds)
 
 	if err != nil {

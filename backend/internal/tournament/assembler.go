@@ -63,6 +63,9 @@ func (s *AssembleService) AssembleTournament(ctx context.Context, tournamentID s
 
 	matches, err := s.matchSvc.GetMatchesByRoundIDs(ctx, roundIDs)
 
+	logger.Dump("==========================")
+	logger.Dump(matches)
+
 	if err != nil {
 		logger.Error("Failed to get matches",
 			zap.Error(err),
@@ -82,7 +85,7 @@ func (s *AssembleService) AssembleTournament(ctx context.Context, tournamentID s
 		return nil, err
 	}
 
-	participantPerMatchID := make(map[string][]*participantpb.Participant, len(matchIDs))
+	participantPerMatchID := make(map[string][]*participantpb.MatchParticipant, len(matchIDs))
 	for _, p := range participants {
 		participantPerMatchID[p.MatchId] = append(participantPerMatchID[p.MatchId], p)
 	}

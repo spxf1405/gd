@@ -29,6 +29,7 @@ import { FinanceTab, PlayersTab, ScheduleTab, BasicTab } from "./tabs/tabs";
 import { useTournament } from "@/hook/tournament";
 import { useTournamentStore } from "@/store/match";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToggle } from "usehooks-ts";
 
 const TAB_CONFIG = (t: (key: string) => string) => [
   {
@@ -207,13 +208,25 @@ const SidebarTab = ({ tab }: { tab: any }) => {
   );
 };
 
-export const Setting = () => {
+type TabValue = "basic" | "format" | "finance" | "players" | "schedule";
+
+export const SettingModalContent = ({
+  defaultActiveTab,
+  open,
+  toggleOpen,
+  onSuccesNextAction,
+}: {
+  open: boolean;
+  toggleOpen: () => void;
+  defaultActiveTab: TabValue;
+  onSuccesNextAction?: () => void;
+}) => {
   const { t } = useTranslation();
 
   const { id } = useTournamentStore();
-  const tournament = useTournament(id);
+  const { data: tournament } = useTournament(id);
 
-  const [open, setOpen] = useState(false);
+  // const [open, handleCloseDialog] = useState(false);
 
   const [form] = Form.useForm<Tournament>();
 
@@ -240,12 +253,8 @@ export const Setting = () => {
 
       return await TournamentClient.updateTournament(request);
     },
-    onMutate: () => {
-      setOpen(true);
-    },
     onSuccess: (data) => {
       console.log("data", data);
-      void queryClient.invalidateQueries({ queryKey: ["tournaments"] });
 
       notification.success({
         message: <div className="font-bold">Thành công</div>,
@@ -259,12 +268,19 @@ export const Setting = () => {
           },
         },
       });
+
+      if (onSuccesNextAction) {
+        // this function should fire in parallel with the form
+        onSuccesNextAction();
+      }
+
+      void queryClient.invalidateQueries({ queryKey: ["tournaments"] });
     },
     onError: (err) => {
       console.log("err", err);
     },
     onSettled: () => {
-      setOpen(false);
+      toggleOpen();
     },
   });
 
@@ -273,8 +289,6 @@ export const Setting = () => {
 
     await updateTournamentMutation.mutateAsync(formData);
   };
-
-  type TabValue = "basic" | "format" | "finance" | "players" | "schedule";
 
   const tabs = TAB_CONFIG(t);
 
@@ -301,7 +315,7 @@ export const Setting = () => {
       focus: true,
     });
   };
-  const [tabActive, setTabActive] = useState<TabValue>("basic");
+  const [tabActive, setTabActive] = useState<TabValue>(defaultActiveTab);
 
   useEffect(() => {
     if (!tournament) return;
@@ -310,9 +324,192 @@ export const Setting = () => {
   }, [tournament, form]);
 
   return (
+    <Modal
+      open={open}
+      onCancel={() => toggleOpen()}
+      footer={null}
+      closable={false}
+      centered
+      destroyOnHidden
+      width="72vw"
+      styles={{
+        container: {
+          padding: 0,
+        },
+      }}
+    >
+      <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-b border-white/[0.06] bg-white/[0.015]">
+        <div className="flex items-center gap-3.5">
+          <div className="flex items-center gap-1.5">
+            {["bg-red-500", "bg-amber-500", "bg-emerald-500"].map((c) => (
+              <div key={c} className={`w-3 h-3 rounded-full ${c}`} />
+            ))}
+          </div>
+
+          <Separator.Root
+            orientation="vertical"
+            className="w-px h-5 bg-white/[0.08]"
+          />
+
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-emerald-500/30 to-indigo-500/20 border border-emerald-500/30">
+              <Trophy size={17} className="text-emerald-500" />
+            </div>
+            <div>
+              <h4 className="text-[14px] font-bold text-white m-0 tracking-[-0.01em]">
+                {t("settings.title")}
+              </h4>
+              <p className="text-[11px] mt-0.5 mb-0 text-[#9aa4b4]">
+                {t("settings.description")}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <QTooltip title={t("settings.close")}>
+          <Button
+            type="text"
+            onClick={() => toggleOpen()}
+            icon={<X size={13} />}
+            style={{
+              width: 28,
+              height: 28,
+              padding: 0,
+              border: 0,
+              borderRadius: 8,
+              background: "rgba(255,255,255,0.05)",
+              color: "#8a95a8",
+            }}
+            className="
+              transition-all duration-150
+              hover:bg-[rgba(239,68,68,0.15)]
+              hover:text-[#ef4444]
+            "
+          />
+        </QTooltip>
+      </div>
+
+      <Form
+        form={form}
+        layout="vertical"
+        validateTrigger="onSubmit"
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+      >
+        <Tabs.Root
+          value={tabActive}
+          className="flex flex-1 overflow-hidden"
+          onValueChange={(val) => setTabActive(val)}
+        >
+          <div className="flex-shrink-0 flex flex-col overflow-y-auto w-[330px] border-r border-white/[0.06] bg-black/[0.15] px-4 py-6">
+            <p className="text-[9px] font-bold tracking-[0.2em] uppercase pl-1 mb-2.5 text-[#8a95a8]">
+              {t("settings.navigation")}
+            </p>
+            <Tabs.List className="flex flex-col gap-1.5">
+              {tabs.map((tab) => (
+                <SidebarTab key={tab.value} tab={tab} />
+              ))}
+            </Tabs.List>
+            <div className="mt-auto pt-4">
+              <Separator.Root className="h-px mb-3.5 bg-white/[0.05]" />
+              <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-emerald-500/[0.06] border border-emerald-500/[0.12]">
+                <div className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-emerald-500 shadow-[0_0_8px] shadow-emerald-500" />
+                <div>
+                  <p className="text-[10px] font-semibold m-0 text-emerald-500">
+                    {t("settings.systemStatus.label")}
+                  </p>
+                  <p className="text-[9px] mt-px mb-0 text-[#7ab090]">
+                    {t("settings.systemStatus.uptime")}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="sys-scroll flex-1 overflow-y-auto bg-[#13151f]">
+            <Tabs.Content
+              value="basic"
+              forceMount
+              className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
+            >
+              <BasicTab />
+            </Tabs.Content>
+            <Tabs.Content
+              value="format"
+              forceMount
+              className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
+            >
+              <FormatTab />
+            </Tabs.Content>
+            <Tabs.Content
+              value="players"
+              forceMount
+              className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
+            >
+              <PlayersTab />
+            </Tabs.Content>
+            <Tabs.Content
+              value="schedule"
+              forceMount
+              className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
+            >
+              <ScheduleTab />
+            </Tabs.Content>
+            <Tabs.Content
+              value="finance"
+              forceMount
+              className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
+            >
+              <FinanceTab />
+            </Tabs.Content>
+          </div>
+        </Tabs.Root>
+
+        <div className="flex-shrink-0 flex items-center justify-between px-6 py-3.5 border-t border-white/[0.06] bg-black/[0.2]">
+          <p className="text-[10px] tracking-[0.06em] m-0 text-[#8a95a8]">
+            {t("settings.lastSaved")}
+          </p>
+          <div className="flex gap-2.5">
+            <QTooltip title={t("settings.cancelTooltip")}>
+              <Button
+                onClick={() => toggleOpen()}
+                size="medium"
+                icon={<XIcon size={16} />}
+                className="!py-5 !font-bold"
+              >
+                {t("settings.cancel")}
+              </Button>
+            </QTooltip>
+
+            <QTooltip title={t("settings.saveTooltip")}>
+              <QButton
+                type="primary"
+                htmlType="submit"
+                size="medium"
+                icon={<Save size={16} />}
+                className="!py-5 !font-bold"
+              >
+                {t("settings.save")}
+              </QButton>
+            </QTooltip>
+          </div>
+        </div>
+      </Form>
+    </Modal>
+  );
+};
+
+export const Setting = ({
+  open,
+  toggleOpen,
+}: {
+  open: boolean;
+  toggleOpen: () => void;
+}) => {
+  return (
     <>
       <QButton
-        onClick={() => setOpen(true)}
+        onClick={() => toggleOpen()}
         icon={<Settings size={16} style={{ color: COLORS.green }} />}
         size="large"
         style={{
@@ -333,187 +530,47 @@ export const Setting = () => {
         Cài đặt giải đấu
       </QButton>
 
-      <Modal
+      <SettingModalContent
         open={open}
-        onCancel={() => setOpen(false)}
-        footer={null}
-        closable={false}
-        centered
-        width="72vw"
-        styles={{
-          container: {
-            padding: 0,
-          },
-        }}
-      >
-        <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-b border-white/[0.06] bg-white/[0.015]">
-          <div className="flex items-center gap-3.5">
-            <div className="flex items-center gap-1.5">
-              {["bg-red-500", "bg-amber-500", "bg-emerald-500"].map((c) => (
-                <div key={c} className={`w-3 h-3 rounded-full ${c}`} />
-              ))}
-            </div>
-
-            <Separator.Root
-              orientation="vertical"
-              className="w-px h-5 bg-white/[0.08]"
-            />
-
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-emerald-500/30 to-indigo-500/20 border border-emerald-500/30">
-                <Trophy size={17} className="text-emerald-500" />
-              </div>
-              <div>
-                <h4 className="text-[14px] font-bold text-white m-0 tracking-[-0.01em]">
-                  {t("settings.title")}
-                </h4>
-                <p className="text-[11px] mt-0.5 mb-0 text-[#9aa4b4]">
-                  {t("settings.description")}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <QTooltip title={t("settings.close")}>
-            <Button
-              type="text"
-              onClick={() => setOpen(false)}
-              icon={<X size={13} />}
-              style={{
-                width: 28,
-                height: 28,
-                padding: 0,
-                border: 0,
-                borderRadius: 8,
-                background: "rgba(255,255,255,0.05)",
-                color: "#8a95a8",
-              }}
-              className="
-              transition-all duration-150
-              hover:bg-[rgba(239,68,68,0.15)]
-              hover:text-[#ef4444]
-            "
-            />
-          </QTooltip>
-        </div>
-
-        <Form
-          form={form}
-          layout="vertical"
-          validateTrigger="onSubmit"
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-        >
-          <Tabs.Root
-            value={tabActive}
-            className="flex flex-1 overflow-hidden"
-            onValueChange={(val) => setTabActive(val)}
-          >
-            <div className="flex-shrink-0 flex flex-col overflow-y-auto w-[330px] border-r border-white/[0.06] bg-black/[0.15] px-4 py-6">
-              <p className="text-[9px] font-bold tracking-[0.2em] uppercase pl-1 mb-2.5 text-[#8a95a8]">
-                {t("settings.navigation")}
-              </p>
-              <Tabs.List className="flex flex-col gap-1.5">
-                {tabs.map((tab) => (
-                  <SidebarTab key={tab.value} tab={tab} />
-                ))}
-              </Tabs.List>
-              <div className="mt-auto pt-4">
-                <Separator.Root className="h-px mb-3.5 bg-white/[0.05]" />
-                <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-emerald-500/[0.06] border border-emerald-500/[0.12]">
-                  <div className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-emerald-500 shadow-[0_0_8px] shadow-emerald-500" />
-                  <div>
-                    <p className="text-[10px] font-semibold m-0 text-emerald-500">
-                      {t("settings.systemStatus.label")}
-                    </p>
-                    <p className="text-[9px] mt-px mb-0 text-[#7ab090]">
-                      {t("settings.systemStatus.uptime")}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="sys-scroll flex-1 overflow-y-auto bg-[#13151f]">
-              <Tabs.Content
-                value="basic"
-                forceMount
-                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
-              >
-                <BasicTab />
-              </Tabs.Content>
-              <Tabs.Content
-                value="format"
-                forceMount
-                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
-              >
-                <FormatTab />
-              </Tabs.Content>
-              <Tabs.Content
-                value="players"
-                forceMount
-                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
-              >
-                <PlayersTab />
-              </Tabs.Content>
-              <Tabs.Content
-                value="schedule"
-                forceMount
-                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
-              >
-                <ScheduleTab />
-              </Tabs.Content>
-              <Tabs.Content
-                value="finance"
-                forceMount
-                className="outline-none p-8 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-left-1 duration-200 data-[state=inactive]:hidden"
-              >
-                <FinanceTab />
-              </Tabs.Content>
-            </div>
-          </Tabs.Root>
-
-          <div className="flex-shrink-0 flex items-center justify-between px-6 py-3.5 border-t border-white/[0.06] bg-black/[0.2]">
-            <p className="text-[10px] tracking-[0.06em] m-0 text-[#8a95a8]">
-              {t("settings.lastSaved")}
-            </p>
-            <div className="flex gap-2.5">
-              <QTooltip title={t("settings.cancelTooltip")}>
-                <Button
-                  onClick={() => setOpen(false)}
-                  size="medium"
-                  icon={<XIcon size={16} />}
-                  className="!py-5 !font-bold"
-                >
-                  {t("settings.cancel")}
-                </Button>
-              </QTooltip>
-
-              <QTooltip title={t("settings.saveTooltip")}>
-                <QButton
-                  type="primary"
-                  htmlType="submit"
-                  // onClick={handleSave}
-                  size="medium"
-                  icon={<Save size={16} />}
-                  className="!py-5 !font-bold"
-                >
-                  {t("settings.save")}
-                </QButton>
-              </QTooltip>
-            </div>
-          </div>
-        </Form>
-      </Modal>
+        toggleOpen={toggleOpen}
+        defaultActiveTab="basic"
+      />
     </>
   );
 };
 
 export const SettingWrapper = () => {
+  const [open, toggleOpen] = useToggle();
+
+  // if we dont wrap like this, we can't style the notification. Should return to Alert to reduce the complexity
   return (
     <AntdThemeConfig>
       <App>
-        <Setting />
+        <Setting open={open} toggleOpen={toggleOpen} />
+      </App>
+    </AntdThemeConfig>
+  );
+};
+
+export const SettingWrapper1 = ({
+  open,
+  toggleOpen,
+  onSuccesNextAction
+}: {
+  open: boolean;
+  toggleOpen: () => void;
+  onSuccesNextAction: () => void
+}) => {
+  // if we dont wrap like this, we can't style the notification. Should return to Alert to reduce the complexity
+  return (
+    <AntdThemeConfig>
+      <App>
+        <SettingModalContent
+          open={open}
+          toggleOpen={toggleOpen}
+          defaultActiveTab="format"
+          onSuccesNextAction={onSuccesNextAction}
+        />
       </App>
     </AntdThemeConfig>
   );

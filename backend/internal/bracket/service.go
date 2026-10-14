@@ -14,11 +14,15 @@ func NewService(repo *BracketRepository) *Service {
 }
 
 func (s *Service) GetBracketsByTournamentID(ctx context.Context, tournamentId string) ([]*bracketpb.Bracket, error) {
-	brackets, err := s.repo.getBracketsByTournamentID(ctx, tournamentId)
+	brackets, err := s.repo.GetBracketsByTournamentID(ctx, tournamentId)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return brackets, nil
+}
+
+func (s *Service) CreateBracketsByTournamentID(ctx context.Context, tournamentID string) error {
+	return s.repo.CreateBracketsByTournamentID(ctx, tournamentID)
 }

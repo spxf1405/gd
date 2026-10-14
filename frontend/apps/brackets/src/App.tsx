@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { AntdThemeConfig } from "./components/ui/antd-config";
 import { BracketFlow } from "./features/configurations/bracket-flow";
-import { Players } from "./features/configurations/players-list";
+import { Participants } from "./features/configurations/players-list";
 import { SettingWrapper } from "./features/configurations/settings/settings";
 import { TournamentStatusControl } from "./features/configurations/start-button";
 import { LanguageSwitcher } from "./features/lang/lang";
@@ -13,8 +13,8 @@ import { useTournament } from "./hook/tournament";
 
 import "@xyflow/react/dist/style.css";
 import "./App.css";
+import { FirstMatchRoundSettingWrapper } from "./features/configurations/first-round-matches/first-round-matches";
 import { useTournamentStore } from "./store/match";
-import { FirstMatchRoundSetting } from "./features/configurations/first-round-matches/first-round-matches";
 
 const queryClient = new QueryClient();
 const bus = new EventBus();
@@ -44,12 +44,12 @@ function App() {
         <div className="flex gap-2">
           <TournamentStatusControl />
           <AntdThemeConfig>
-            <Players />
+            <Participants />
           </AntdThemeConfig>
         </div>
 
         <div className="p-2 flex gap-2">
-          <FirstMatchRoundSetting />
+          <FirstMatchRoundSettingWrapper />
           <SettingWrapper />
           <LanguageSwitcher />
         </div>

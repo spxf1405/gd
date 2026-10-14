@@ -8,7 +8,10 @@ import {
   TournamentErrorCode,
   TournamentErrorSchema,
 } from "@gd/proto/tournament/v1/tournament_error_pb";
-import { TournamentStatus } from "@gd/proto/tournament/v1/tournament_pb";
+import {
+  TournamentStatus,
+  type Tournament,
+} from "@gd/proto/tournament/v1/tournament_pb";
 import { ChangeTournamentStatusRequestSchema } from "@gd/proto/tournament/v1/tournament_service_pb";
 
 import { useTournament } from "@/hook/tournament";
@@ -28,13 +31,12 @@ import {
 } from "lucide-react";
 
 // TODO: Khi bắt đầu giải đấu và hủy, cần có modal để thông báo cho người dùng
-
 type UpdateTournamentStatusParams = {
   status: TournamentStatus;
   id: string;
 };
 
-const useUpdateTournamentStatus = ({
+export const useUpdateTournamentStatusMutation = ({
   onSuccess,
   onError,
 }: {
@@ -55,15 +57,8 @@ const useUpdateTournamentStatus = ({
   });
 };
 
-const TOURNAMENT_ERROR_MESSAGES: Partial<Record<TournamentErrorCode, string>> =
-  {
-    [TournamentErrorCode.NAME_REQUIRED]: "Bạn chưa nhập tên giải đấu!",
-    [TournamentErrorCode.VENUE_REQUIRED]: "Bạn chưa chọn địa điểm thi đấu!",
-    [TournamentErrorCode.ROUNDS_REQUIRED]:
-      "Bạn chưa cài đặt các vòng của giải đấu!",
-  };
-
 type StatusButtonProps = {
+  loading: boolean;
   status: TournamentStatus;
   children: React.ReactNode;
   onClick: () => void;
@@ -121,7 +116,15 @@ const STATUS_CONFIG = {
   },
 };
 
-const StatusButton = ({ status, children, onClick }: StatusButtonProps) => {
+import { Loader2 } from "lucide-react";
+import { TOURNAMENT_ERROR_MESSAGES } from "../consts";
+
+const StatusButton = ({
+  loading,
+  status,
+  children,
+  onClick,
+}: StatusButtonProps) => {
   const config = STATUS_CONFIG[status];
 
   if (!config) return null;
@@ -132,7 +135,7 @@ const StatusButton = ({ status, children, onClick }: StatusButtonProps) => {
   return (
     <QButton
       size="large"
-      disabled={isCancelled}
+      disabled={isCancelled || loading}
       onClick={onClick}
       style={{
         height: "44px",
@@ -144,9 +147,7 @@ const StatusButton = ({ status, children, onClick }: StatusButtonProps) => {
         fontWeight: 600,
         fontSize: "13px",
         letterSpacing: "0.03em",
-
         color: isCancelled ? "#A0A6B5" : "#FFFFFF",
-
         background: isCancelled ? "#1F232E" : "#242936",
         border: `1px solid ${
           isCancelled
@@ -154,7 +155,7 @@ const StatusButton = ({ status, children, onClick }: StatusButtonProps) => {
             : "rgba(255, 255, 255, 0.12)"
         }`,
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.12)",
-        cursor: isCancelled ? "not-allowed" : "pointer",
+        cursor: isCancelled || loading ? "not-allowed" : "pointer",
         opacity: isCancelled ? 0.85 : 1,
         transition: "all 0.2s ease-in-out",
       }}
@@ -174,12 +175,22 @@ const StatusButton = ({ status, children, onClick }: StatusButtonProps) => {
           flexShrink: 0,
         }}
       >
-        <Icon
-          size={15}
-          style={{
-            color: config.color,
-          }}
-        />
+        {loading ? (
+          <Loader2
+            size={15}
+            style={{
+              color: config.color,
+              animation: "spin 1s linear infinite",
+            }}
+          />
+        ) : (
+          <Icon
+            size={15}
+            style={{
+              color: config.color,
+            }}
+          />
+        )}
       </div>
 
       <span>{children}</span>
@@ -190,21 +201,59 @@ const StatusButton = ({ status, children, onClick }: StatusButtonProps) => {
 type TournamentStatusActionProps = {
   status: TournamentStatus;
   nextLabel: string;
-  isLoadingButton?: boolean;
+};
+
+const useTournamentInfo = ({ tournament }: { tournament?: Tournament }) => {
+  if (!tournament) {
+    return {
+      matches: [],
+      rounds: [],
+      brackets: [],
+    };
+  }
+
+  const { brackets } = tournament;
+
+  const rounds =
+    tournament.brackets?.flatMap((bracket) => bracket.rounds ?? []) ?? [];
+
+  const matches =
+    rounds?.flatMap((round) => {
+      if (!round.matches) return [];
+
+      return round.matches.map((match) => ({
+        ...match,
+        orderIndex: round.orderIndex,
+        roundCount: rounds.length,
+      }));
+    }) ?? [];
+
+  return { matches, rounds, brackets };
 };
 
 const TournamentStatusAction = ({
   status,
   nextLabel,
-  isLoadingButton,
 }: TournamentStatusActionProps) => {
   const queryClient = useQueryClient();
   const { notification } = App.useApp();
 
   const { id } = useTournamentStore();
-  const tournament = useTournament(id);
+  const { data: tournament, isLoading } = useTournament(id);
 
   const onChangeStatusSuccess = () => {
+    notification.success({
+      message: <div className="font-bold">Thành công!</div>,
+      description: "Cập nhật trạng thái thành công!",
+      placement: "top",
+      duration: 3,
+      style: { width: "fit-content" },
+      styles: {
+        wrapper: {
+          fontFamily: "IBM Plex Sans, Google Sans",
+        },
+      },
+    });
     void queryClient.invalidateQueries({ queryKey: ["tournament"] });
   };
 
@@ -220,7 +269,7 @@ const TournamentStatusAction = ({
       message: <div className="font-bold">Thất bại!</div>,
       description,
       placement: "top",
-      duration: 3000,
+      duration: 3,
       style: { width: "fit-content" },
       styles: {
         wrapper: {
@@ -230,76 +279,87 @@ const TournamentStatusAction = ({
     });
   };
 
-  const mutation = useUpdateTournamentStatus({
+  const mutation = useUpdateTournamentStatusMutation({
     onError: onChangeStatusError,
     onSuccess: onChangeStatusSuccess,
   });
 
+  const { matches } = useTournamentInfo({ tournament });
+
+  const validate = () => {
+    if (tournament?.status === TournamentStatus.REGISTRATION_CLOSED) {
+      // if (tournament.participants.length <= 2) {
+      //   notification.error({
+      //     message: (
+      //       <div className="text-[15px] font-semibold">
+      //         Chưa thể bắt đầu giải đấu
+      //       </div>
+      //     ),
+      //     description: (
+      //       <div className="space-y-2 text-[14px] leading-5">
+      //         Quá ít người chơi, cần từ <span className="font-semibold">3</span> người trở lên để tạo một giải đấu
+      //       </div>
+      //     ),
+      //     placement: "top",
+      //     duration: 3,
+      //     style: { width: "fit-content", minWidth: 400 },
+      //     styles: {
+      //       wrapper: {
+      //         fontFamily: "IBM Plex Sans, Google Sans",
+      //       },
+      //     },
+      //   });
+      //   return
+      // }
+
+      if (!matches.length) {
+        notification.error({
+          message: (
+            <div className="text-[15px] font-semibold">
+              Chưa thể bắt đầu giải đấu
+            </div>
+          ),
+          description: (
+            <div className="space-y-2 text-[14px] leading-5">
+              Chưa có trận đấu nào sẵn sàng. Vui lòng Ghép cặp thi đấu!
+            </div>
+          ),
+          placement: "top",
+          duration: 3,
+          style: { width: "fit-content", minWidth: 400 },
+          styles: {
+            wrapper: {
+              fontFamily: "IBM Plex Sans, Google Sans",
+            },
+          },
+        });
+
+        return;
+      }
+    }
+
+    return true;
+  };
+
   const onClick = () => {
     if (!tournament) return;
 
-    mutation.mutate({
-      status: status,
-      id: tournament.id,
-    });
+    const isValid = validate();
+
+    if (isValid) {
+      mutation.mutate({
+        id: tournament.id,
+        status: status,
+      });
+    }
   };
 
-  if (isLoadingButton) {
-    return (
-      <QButton
-        size="large"
-        disabled={true}
-        onClick={onClick}
-        style={{
-          height: "44px",
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "12px",
-          padding: "0 18px 0 12px",
-          borderRadius: "10px",
-          fontWeight: 600,
-          fontSize: "13px",
-          letterSpacing: "0.03em",
-
-          color: "#A0A6B5",
-
-          background: "#1F232E",
-          border: `1px solid rgba(255, 255, 255, 0.08)`,
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.12)",
-          cursor: "not-allowed",
-          opacity: 0.85,
-          transition: "all 0.2s ease-in-out",
-        }}
-      >
-        <div
-          style={{
-            width: "28px",
-            height: "28px",
-            borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "rgba(0, 0, 0, 0.2)",
-            border: `1px solid rgba(255, 255, 255, 0.1)`,
-            flexShrink: 0,
-          }}
-          className="animate-spin"
-        >
-          <Loader
-            size={15}
-            style={{
-              color: "#fff",
-            }}
-          />
-        </div>
-
-        <span>Loading</span>
-      </QButton>
-    );
-  }
-
   return (
-    <StatusButton status={status} onClick={onClick}>
+    <StatusButton
+      loading={mutation.isPending || isLoading}
+      status={status}
+      onClick={onClick}
+    >
       {nextLabel}
     </StatusButton>
   );
@@ -307,14 +367,13 @@ const TournamentStatusAction = ({
 
 export const TournamentStatusControl = () => {
   const { id } = useTournamentStore();
-  const tournament = useTournament(id);
+  const { data: tournament } = useTournament(id);
 
   const content = useMemo(() => {
     if (!tournament)
       return (
         <TournamentStatusAction
           status={TournamentStatus.UNSPECIFIED}
-          isLoadingButton={true}
           nextLabel=""
         />
       );
@@ -370,5 +429,9 @@ export const TournamentStatusControl = () => {
     }
   }, [tournament?.status]);
 
-  return <AntdThemeConfig>{content}</AntdThemeConfig>;
+  return (
+    <AntdThemeConfig>
+      <App>{content}</App>
+    </AntdThemeConfig>
+  );
 };

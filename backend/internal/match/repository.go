@@ -3,6 +3,7 @@ package match
 import (
 	"backend/internal/db"
 	matchpb "backend/internal/gen/match/v1"
+	"backend/internal/logger"
 	"backend/internal/repository"
 	"context"
 	"database/sql"
@@ -10,6 +11,7 @@ import (
 	"log"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 )
 
 type MatchRepository struct {
@@ -59,6 +61,7 @@ func (r *MatchRepository) GetMatchesByRoundIDs(ctx context.Context, roundIds []s
 			&positionX,
 			&positionY,
 		)
+
 		if err != nil {
 			return nil, err
 		}
@@ -75,4 +78,55 @@ func (r *MatchRepository) GetMatchesByRoundIDs(ctx context.Context, roundIds []s
 	}
 
 	return matches, nil
+}
+
+func (r *MatchRepository) AddMatches(ctx context.Context, matches []*matchpb.Match) error {
+	for _, match := range matches {
+		match.Id = uuid.NewString()
+	}
+
+	logger.Dump(matches)
+
+	tx, err := r.DB.Pool.Begin(ctx)
+
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+
+	batch := &pgx.Batch{}
+
+	insertMatchesQuery := `INSERT INTO gd_matches (id, round_id, display_order, match_index, round, side, is_auto_win, is_skipped, position_x, position_y) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`
+	insertMatchParticipantsQuery := `INSERT INTO gd_match_participants (participant_id, match_id, slot, score, is_winner) values ($1, $2, $3, $4, $5)`
+
+	for _, match := range matches {
+		batch.Queue(insertMatchesQuery, match.Id, match.RoundId, match.DisplayOrder, match.MatchIndex, match.Round, match.Side, match.IsAutoWin, match.IsSkipped, match.Position.X, match.Position.Y)
+		for _, p := range match.Participants {
+			if p.Id != "" {
+				logger.Dump(p.PlayerId)
+				batch.Queue(insertMatchParticipantsQuery, p.Id, match.Id, p.Slot, p.Score, p.IsWinner)
+			}
+		}
+	}
+
+	br := tx.SendBatch(ctx, batch)
+
+	for i := 0; i < batch.Len(); i++ {
+		if _, err := br.Exec(); err != nil {
+			fmt.Printf("batch query %d failed: %v\n", i, err)
+			br.Close()
+			return err
+		}
+
+		fmt.Printf("batch query %d OK\n", i)
+	}
+
+	if err := br.Close(); err != nil {
+		return err
+	}
+	if err := tx.Commit(ctx); err != nil {
+		return err
+	}
+
+	return nil
 }

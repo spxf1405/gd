@@ -6,11 +6,8 @@ import {
   ROUND_WIDTH,
 } from "./consts";
 
-export const FinalMatchEdge = ({
-  sourceX,
-  sourceY,
-  data,
-}: EdgeProps) => {
+// Đường nối vào trận Chung Kết - dùng gold để nổi bật
+export const FinalMatchEdge = ({ sourceX, sourceY, data }: EdgeProps) => {
   const midY = sourceY + (NODE_HEIGHT + NODE_VERTICAL_SPACING) / 2;
   const offsetX = ROUND_WIDTH - NODE_WIDTH;
 
@@ -19,17 +16,32 @@ export const FinalMatchEdge = ({
     : `M ${sourceX} ${midY} L ${sourceX - offsetX} ${midY}`;
 
   return (
-    <path
-      d={path}
-      stroke="#a855f7"
-      strokeWidth={2}
-      fill="none"
-      strokeDasharray="6 4"
-      className="animated-dash"
-    />
+    <g>
+      {/* Glow mờ phía dưới */}
+      <path
+        d={path}
+        stroke="#fbbf24"
+        strokeWidth={4}
+        fill="none"
+        opacity={0.25}
+        strokeLinecap="round"
+        className="blur-[2px]"
+      />
+      {/* Đường nét đứt chính - amber/gold */}
+      <path
+        d={path}
+        stroke="#fcd34d"
+        strokeWidth={2}
+        fill="none"
+        strokeDasharray="6 4"
+        strokeLinecap="round"
+        className="animated-dash drop-shadow-[0_0_10px_rgba(251,191,36,0.7)]"
+      />
+    </g>
   );
 };
 
+// Đường nối bracket thông thường - blue, đồng bộ với viền CustomNode
 export const BracketEdge = (info: EdgeProps) => {
   const { sourceX, sourceY, targetX, targetY, source } = info;
 
@@ -48,13 +60,30 @@ export const BracketEdge = (info: EdgeProps) => {
   `;
 
   return (
-    <path
-      d={path}
-      stroke="#a855f7"
-      strokeWidth={2}
-      fill="none"
-      strokeDasharray="6 4"
-      className="animated-dash"
-    />
+    <g>
+      {/* 1. Lớp Aura/Glow mờ phía dưới tạo hiệu ứng Neon */}
+      <path
+        d={path}
+        stroke="#3b82f6"
+        strokeWidth={4}
+        fill="none"
+        opacity={0.25}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="blur-[2px]"
+      />
+
+      {/* 2. Đường nét đứt chính màu Blue sáng có animation */}
+      <path
+        d={path}
+        stroke="#60a5fa"
+        strokeWidth={1.5}
+        fill="none"
+        strokeDasharray="6 4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="animated-dash drop-shadow-[0_0_8px_rgba(59,130,246,0.7)]"
+      />
+    </g>
   );
 };
