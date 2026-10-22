@@ -169,13 +169,17 @@ export const FirstMatchRoundSetting = () => {
     return usedParticipants;
   }, [createdMatches]);
 
-  const realBye = participants.filter(e1 => !usedPlayers.map(e => e.id).includes(e1.id))
-  console.log("realBye", realBye)
+  const realBye = participants.filter(
+    (e1) => !usedPlayers.map((e) => e.id).includes(e1.id),
+  );
+  console.log("realBye", realBye);
 
   // Kiểm tra VĐV đang nhập có bị trùng không
   const isPlayerAUsed = usedPlayers.find((p) => p.id === playerA?.id);
   const isPlayerBUsed = usedPlayers.find((p) => p.id === playerB?.id);
   const isSamePlayer = playerA && playerB && playerA.id === playerB?.id;
+
+  console.log("---------------------  ", isPlayerAUsed, isPlayerBUsed, isSamePlayer)
 
   // 1. MỤC TẠO TỰ ĐỘNG TOÀN BỘ 100% (Xóa cũ, tự động ghép lại từ đầu)
   const handleGenerateAllAuto = () => {
@@ -759,9 +763,19 @@ export const FirstMatchRoundSetting = () => {
                             size="large"
                             className="w-full"
                             placeholder="Nhập tên cơ thủ A..."
-                            options={PLAYERS_DATA}
+                            options={participants.map((e) => {
+                              return {
+                                ...e,
+                                value: e.displayName,
+                                label: e.displayName,
+                              };
+                            })}
                             value={playerA}
-                            onChange={setPlayerA}
+                            onChange={(_, option) => {
+                              setPlayerA(
+                                participants.find((e) => e.id === option.id),
+                              );
+                            }}
                             status={isPlayerAUsed ? "error" : ""}
                           />
                           {isPlayerAUsed && (
@@ -779,12 +793,20 @@ export const FirstMatchRoundSetting = () => {
                             size="large"
                             className="w-full"
                             placeholder="Nhập tên cơ thủ B..."
-                            options={PLAYERS_DATA}
-                            value={playerB}
-                            onChange={setPlayerB}
-                            status={
-                              isPlayerBUsed || isSamePlayer ? "error" : ""
-                            }
+                            options={participants.map((e) => {
+                              return {
+                                ...e,
+                                value: e.displayName,
+                                label: e.displayName,
+                              };
+                            })}
+                            value={playerB?.displayName}
+                            onChange={(_, option) => {
+                              setPlayerB(
+                                participants.find((e) => e.id === option.id),
+                              );
+                            }}
+                            status={isPlayerBUsed ? "error" : ""}
                           />
                           {isPlayerBUsed && (
                             <span className="text-[11px] text-rose-500 mt-1 block">
@@ -805,8 +827,8 @@ export const FirstMatchRoundSetting = () => {
                           disabled={
                             !playerA ||
                             !playerB ||
-                            isPlayerAUsed ||
-                            isPlayerBUsed ||
+                            !!isPlayerAUsed ||
+                            !!isPlayerBUsed ||
                             isSamePlayer
                           }
                           icon={<Plus size={16} />}
