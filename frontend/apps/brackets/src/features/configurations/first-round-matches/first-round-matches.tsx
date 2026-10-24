@@ -34,7 +34,7 @@ import { useTournamentStore } from "@/store/match";
 import { ConnectError } from "@connectrpc/connect";
 import type { TournamentParticipant } from "@gd/proto/participant/v1/participant_pb";
 import { TournamentErrorSchema } from "@gd/proto/tournament/v1/tournament_error_pb";
-import { TournamentStatus } from "@gd/proto/tournament/v1/tournament_pb";
+import { TournamentStatus, type Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToggle } from "usehooks-ts";
 import { TOURNAMENT_ERROR_MESSAGES } from "../consts";
@@ -243,21 +243,33 @@ export const FirstMatchRoundSetting = () => {
     };
 
     setCreatedMatches([newMatch, ...createdMatches]);
-    setPlayerA(playerA);
-    setPlayerB(playerB);
+    setPlayerA(undefined);
+    setPlayerB(undefined);
   };
 
   // 4. CHỨC NĂNG EXPORT FILE TXT DANH SÁCH VĐV
   const handleExportTxt = () => {
+
     // Xuất danh sách VĐV chưa xếp trận (hoặc toàn bộ nếu chưa ai xếp)
     const availablePlayers = participants.filter(
       (p) => !usedPlayers.find((usedP) => usedP.id === p.id),
     );
 
+    const duplicatedUser = participants.reduce((acc: TournamentParticipant[], curr) => {
+      if (participants.filter((p) => p.displayName === curr.displayName).length > 1) {
+        acc.push(curr);
+      }
+      return acc;
+    }, []);
+
+    if (duplicatedUser.length > 0) {
+      message.error("Danh sách VĐV có tên trùng lặp, hãy tạo trận đấu trước cho các cơ thủ này hoặc chúng tôi sẽ đính kèm id của cơ thủ!");
+      return
+    }
+
     const playersToExport =
-      availablePlayers.length > 0
-        ? availablePlayers
-        : PLAYERS_DATA.map((p) => p.value);
+      (availablePlayers.length > 0) ? availablePlayers.map((p) => p.displayName)
+        : participants.map((p) => p.displayName);
 
     const content = playersToExport.join("\n");
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
@@ -455,11 +467,6 @@ export const FirstMatchRoundSetting = () => {
       const expectedRoundsCount = getTotalRounds(participants.length);
       const actualRoundsCount = winnerRounds?.length ?? 0;
 
-      console.log(
-        "expectedRoundsCount !== actualRoundsCount",
-        expectedRoundsCount,
-        actualRoundsCount,
-      );
       const isOutSync = expectedRoundsCount !== actualRoundsCount;
 
       if (isOutSync) {
@@ -770,7 +777,7 @@ export const FirstMatchRoundSetting = () => {
                                 label: e.displayName,
                               };
                             })}
-                            value={playerA}
+                            value={playerA?.displayName}
                             onChange={(_, option) => {
                               setPlayerA(
                                 participants.find((e) => e.id === option.id),
@@ -952,6 +959,8 @@ export const FirstMatchRoundSetting = () => {
                           Import kết quả (.txt)
                         </QButton>
                       </div>
+
+
                     </div>
                   ),
                 },
