@@ -4,6 +4,7 @@ import {
   Drawer,
   Input,
   Popconfirm,
+  Popover,
   Progress,
   Table,
   Tabs,
@@ -21,6 +22,7 @@ import {
   Sparkles,
   Swords,
   Trash2,
+  TriangleAlert,
   Upload,
   Users,
 } from "lucide-react";
@@ -247,29 +249,39 @@ export const FirstMatchRoundSetting = () => {
     setPlayerB(undefined);
   };
 
-  // 4. CHỨC NĂNG EXPORT FILE TXT DANH SÁCH VĐV
-  const handleExportTxt = () => {
+  const duplicatedUser = useMemo(() => {
+    const availablePlayers = participants.filter(
+      (p) => !usedPlayers.find((usedP) => usedP.id === p.id),
+    );
 
+    return availablePlayers.reduce((acc: TournamentParticipant[], curr) => {
+      if (availablePlayers.filter((p) => p.displayName === curr.displayName).length > 1) {
+        acc.push(curr);
+      }
+      return acc;
+    }, []);
+  }, [participants]);
+
+  const handleExportTxtClick = () => {
+    // Xuất danh sách VĐV chưa xếp trận (hoặc toàn bộ nếu chưa ai xếp)
+    if (duplicatedUser.length > 0) {
+      setOpenDuplicatedWarning(true)
+      return
+    }
+
+    handleExportTxt({ haveDuplicated: false });
+  }
+
+  const [openDuplicatedWarning, setOpenDuplicatedWarning] = useState(false);
+
+  // 4. CHỨC NĂNG EXPORT FILE TXT DANH SÁCH VĐV
+  const handleExportTxt = ({ haveDuplicated }: { haveDuplicated: boolean }) => {
     // Xuất danh sách VĐV chưa xếp trận (hoặc toàn bộ nếu chưa ai xếp)
     const availablePlayers = participants.filter(
       (p) => !usedPlayers.find((usedP) => usedP.id === p.id),
     );
 
-    const duplicatedUser = participants.reduce((acc: TournamentParticipant[], curr) => {
-      if (participants.filter((p) => p.displayName === curr.displayName).length > 1) {
-        acc.push(curr);
-      }
-      return acc;
-    }, []);
-
-    if (duplicatedUser.length > 0) {
-      message.error("Danh sách VĐV có tên trùng lặp, hãy tạo trận đấu trước cho các cơ thủ này hoặc chúng tôi sẽ đính kèm id của cơ thủ!");
-      return
-    }
-
-    const playersToExport =
-      (availablePlayers.length > 0) ? availablePlayers.map((p) => p.displayName)
-        : participants.map((p) => p.displayName);
+    const playersToExport = availablePlayers.map((p) => !haveDuplicated ? p.displayName : `${p.displayName} (${p.id.substring(p.id.length - 4, p.id.length)})`)
 
     const content = playersToExport.join("\n");
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
@@ -300,8 +312,6 @@ export const FirstMatchRoundSetting = () => {
         .map((line) => line.trim())
         .filter((line) => line.length > 0);
 
-      console.log("lines", lines);
-
       if (lines.length < 2) {
         message.error("File text cần có ít nhất 2 VĐV để ghép trận!");
         return;
@@ -310,13 +320,27 @@ export const FirstMatchRoundSetting = () => {
       const newMatches: MatchItem[] = [];
       let currentMatchNo = createdMatches.length + 1;
 
+      const availablePlayers = participants.filter(
+        (p) => !usedPlayers.find((usedP) => usedP.id === p.id),
+      );
+
       // Ghép cứ 2 dòng liên tiếp thành 1 trận
       for (let i = 0; i < lines.length - 1; i += 2) {
+        const playerA = availablePlayers.find((p) => p.displayName === lines[i]);
+        const playerB = availablePlayers.find((p) => p.displayName === lines[i + 1]);
+
+        if (!playerA || !playerB) {
+          message.error("Không tìm thấy cơ thủ trong danh sách đăng ký: " + (playerA ? lines[i + 1] : lines[i]));
+          return
+        }
+
         newMatches.push({
           id: `file-import-${Date.now()}-${i}`,
           matchNo: currentMatchNo++,
-          playerA: lines[i],
-          playerB: lines[i + 1],
+          playerA: playerA.displayName,
+          playerB: playerB.displayName,
+          A: playerA,
+          B: playerB,
         });
       }
 
@@ -811,7 +835,7 @@ export const FirstMatchRoundSetting = () => {
                             onChange={(_, option) => {
                               setPlayerB(
                                 participants.find((e) => e.id === option.id),
-                              );
+                              )
                             }}
                             status={isPlayerBUsed ? "error" : ""}
                           />
@@ -893,30 +917,82 @@ export const FirstMatchRoundSetting = () => {
 
                       {/* Nút Export & Import */}
                       <div className="grid grid-cols-2 gap-3">
-                        <QButton
-                          onClick={handleExportTxt}
-                          size="large"
-                          icon={
-                            <Download size={16} className="text-blue-400" />
+                        <Popover
+                          open={openDuplicatedWarning}
+                          placement="topRight"
+                          onOpenChange={setOpenDuplicatedWarning}
+                          trigger="click"
+                          content={
+                            <div className=" p-2">
+                              {/* Phần Header: Icon + Tiêu đề cùng 1 hàng */}
+                              <div className="flex items-start gap-3">
+                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-500/15 text-amber-400 ring-1 ring-amber-500/30">
+                                  <TriangleAlert size={16} />
+                                </div>
+
+                                <div className="flex-1 space-y-1">
+                                  {/* Tiêu đề nằm cùng hàng với icon */}
+                                  <h4 className="text-sm font-semibold tracking-tight text-slate-100 leading-8 m-0 flex items-center">
+                                    Phát hiện cơ thủ trùng tên
+                                  </h4>
+
+                                  {/* Mô tả nằm ở bên dưới */}
+                                  <p className="text-xs leading-relaxed text-slate-400">
+                                    Có cơ thủ trùng tên trong danh sách chưa có trận đấu. <br />
+                                    Hệ thống sẽ tự động bổ sung UUID để phân biệt.
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* Khu vực nút bấm */}
+                              <div className="flex items-center justify-end gap-2 pt-4">
+                                <QButton
+                                  className="h-8 px-3 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border-none"
+                                  onClick={() => setOpenDuplicatedWarning(false)}
+                                >
+                                  Hủy bỏ
+                                </QButton>
+
+                                <QButton
+                                  type="primary"
+                                  className="h-8 px-3 text-xs bg-purple-600 hover:bg-purple-500 text-white font-medium shadow-sm shadow-purple-950/50"
+                                  onClick={() => {
+                                    setOpenDuplicatedWarning(false);
+                                    handleExportTxt({ haveDuplicated: true });
+                                  }}
+                                >
+                                  Tiếp tục
+                                </QButton>
+                              </div>
+                            </div>
                           }
-                          className="group transition-all duration-200 hover:!border-emerald-400/60 hover:!bg-emerald-400/[0.06] hover:!text-emerald-400 hover:shadow-[0_4px_20px_rgba(16,185,129,0.15)]"
-                          style={{
-                            height: "auto",
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: 10,
-                            padding: "10px 20px",
-                            borderRadius: 12,
-                            fontWeight: 700,
-                            fontSize: 13,
-                            color: "#ffffff",
-                            border: "1px solid rgba(255, 255, 255, 0.12)",
-                            background: "rgba(255, 255, 255, 0.03)",
-                            boxShadow: "0 4px 16px rgba(0, 0, 0, 0.25)",
-                          }}
                         >
-                          Export danh sách VĐV (.txt)
-                        </QButton>
+
+                          <QButton
+                            onClick={handleExportTxtClick}
+                            size="large"
+                            icon={
+                              <Download size={16} className="text-blue-400" />
+                            }
+                            className="group transition-all duration-200 hover:!border-emerald-400/60 hover:!bg-emerald-400/[0.06] hover:!text-emerald-400 hover:shadow-[0_4px_20px_rgba(16,185,129,0.15)]"
+                            style={{
+                              height: "auto",
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 10,
+                              padding: "10px 20px",
+                              borderRadius: 12,
+                              fontWeight: 700,
+                              fontSize: 13,
+                              color: "#ffffff",
+                              border: "1px solid rgba(255, 255, 255, 0.12)",
+                              background: "rgba(255, 255, 255, 0.03)",
+                              boxShadow: "0 4px 16px rgba(0, 0, 0, 0.25)",
+                            }}
+                          >
+                            Export danh sách VĐV (.txt)
+                          </QButton>
+                        </Popover>
 
                         {/* Input file ẩn bên ngoài */}
                         <input
@@ -973,7 +1049,7 @@ export const FirstMatchRoundSetting = () => {
           {/* 3. BẢNG HIỂN THỊ DANH SÁCH TRẬN */}
           <div className="flex flex-col gap-3 pt-2">
             <div className="flex items-center justify-between">
-              <h4 className="text-sm font-semibold text-slate-200 m-0">
+              <h4 className="text-sm font-semibold text-slate-200 m-0">imp
                 Danh sách trận ({createdMatches.length})
               </h4>
 
@@ -1036,7 +1112,7 @@ export const FirstMatchRoundSetting = () => {
             />
           </div>
         </div>
-      </Drawer>
+      </Drawer >
     </>
   );
 };
