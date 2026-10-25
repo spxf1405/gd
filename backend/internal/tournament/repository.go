@@ -376,7 +376,8 @@ func (r *TournamentRepository) getTournamentByID(ctx context.Context, id string)
 						json_build_object(
 							'id', participant.id,
 							'display_name', player.name,
-							'player_id', player.id
+							'player_id', player.id,
+							'nationality', player.nationality
 						)
 					)
 					FROM gd_participants participant
