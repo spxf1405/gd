@@ -5,7 +5,6 @@ import {
   Drawer,
   Input,
   Popconfirm,
-  Popover,
   Progress,
   Select,
   Table,
@@ -24,7 +23,6 @@ import {
   Sparkles,
   Swords,
   Trash2,
-  TriangleAlert,
   Upload,
   Users,
   X,
@@ -34,15 +32,17 @@ import { ChangeEvent, useMemo, useRef, useState } from "react";
 import { AntdThemeConfig } from "@/components/ui/antd-config";
 import { QButton } from "@/components/ui/button";
 import { QSelect } from "@/components/ui/select";
+import type { BracketMatch } from "@/features/flow/helper/winner1";
+import { createMatchesFromParticipants } from "@/helper/create-match";
+import { MatchClient } from "@/helper/service-client";
 import { useTournament } from "@/hook/tournament";
 import { useTournamentStore } from "@/store/match";
+import { create } from "@bufbuild/protobuf";
 import { ConnectError } from "@connectrpc/connect";
+import { MatchSchema, type Match } from "@gd/proto/match/v1/match_pb";
 import type { TournamentParticipant } from "@gd/proto/participant/v1/participant_pb";
 import { TournamentErrorSchema } from "@gd/proto/tournament/v1/tournament_error_pb";
-import {
-  TournamentStatus,
-  type Tournament,
-} from "@gd/proto/tournament/v1/tournament_pb";
+import { TournamentStatus } from "@gd/proto/tournament/v1/tournament_pb";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToggle } from "usehooks-ts";
 import { TOURNAMENT_ERROR_MESSAGES } from "../consts";
@@ -50,11 +50,6 @@ import { useUpdateTournamentStatusMutation } from "../hooks/mutations/tournament
 import { useTournamentInfo } from "../hooks/tournament";
 import { COLORS } from "../settings/consts/color";
 import { SettingWrapper1 } from "../settings/settings";
-import { create } from "@bufbuild/protobuf";
-import { MatchSchema, type Match } from "@gd/proto/match/v1/match_pb";
-import type { BracketMatch } from "@/features/flow/helper/winner1";
-import { createMatchesFromParticipants } from "@/helper/create-match";
-import { MatchClient } from "@/helper/service-client";
 
 const getLast4IDChar = (id: string) => {
   return id.substring(id.length - 4, id.length);
@@ -64,9 +59,13 @@ const getTPName = ({
   participant,
   duplicatedNameParticipants,
 }: {
-  participant: TournamentParticipant;
+  participant?: TournamentParticipant;
   duplicatedNameParticipants: TournamentParticipant[];
 }) => {
+  if (!participant) {
+    return "";
+  }
+
   return duplicatedNameParticipants.some(
     (duplicted) => duplicted.displayName === participant.displayName,
   )
@@ -101,8 +100,6 @@ export const FirstMatchRoundSetting = () => {
   const TOTAL_PLAYERS = participants.length;
   const TOTAL_MATCHES_NEEDED = Math.floor(TOTAL_PLAYERS / 2);
 
-  const byeNumber = TOTAL_PLAYERS % 2 === 0 ? 0 : 1;
-
   const [playerA, setPlayerA] = useState<TournamentParticipant>();
   const [playerB, setPlayerB] = useState<TournamentParticipant>();
   const [byePlayer, setByePlayer] = useState<TournamentParticipant>();
@@ -114,9 +111,9 @@ export const FirstMatchRoundSetting = () => {
 
   const usedPlayers = useMemo(() => {
     const usedParticipants: TournamentParticipant[] = [];
-    createdMatches.forEach((m) => {
-      usedParticipants.push(m.A);
-      usedParticipants.push(m.B);
+    createdMatches.forEach((match) => {
+      usedParticipants.push(match.A);
+      usedParticipants.push(match.B);
     });
     return usedParticipants;
   }, [createdMatches]);
@@ -125,7 +122,15 @@ export const FirstMatchRoundSetting = () => {
     (e1) => !usedPlayers.map((e) => e.id).includes(e1.id),
   );
 
-  console.log("byePlayer", byePlayer);
+  const closeDrawer = () => {
+    setOpenDrawer(false);
+
+    setPlayerA(undefined);
+    setPlayerB(undefined);
+    setByePlayer(undefined);
+    setSearchText("");
+    setCreatedMatches([]);
+  };
 
   const availablePlayers = useMemo(() => {
     return participants
@@ -487,19 +492,9 @@ export const FirstMatchRoundSetting = () => {
     const rqMatches: Match[] = [];
 
     for (const match of matches) {
-      // if (!match?.round?.id) {
-      //   continue;
-      // }
-
       if (match?.isAutoWin) {
         continue;
       }
-
-      // const matchParticipant1 = match.participants[0];
-      // const matchParticipant2 = match.participants[1];
-
-      // console.log("players1", matchParticipant1);
-      // console.log("players2", matchParticipant2);
 
       const foo = create(MatchSchema, {
         round: match.roundIndex,
@@ -519,10 +514,6 @@ export const FirstMatchRoundSetting = () => {
     }
 
     console.log("rqMatches", rqMatches);
-
-    // await MatchClient.addMatches({
-    //   matches: rqMatches,
-    // });
   };
 
   const addMatches1 = async (matches: BracketMatch[]) => {
@@ -562,7 +553,10 @@ export const FirstMatchRoundSetting = () => {
       .flatMap((e) => [e.A, e.B])
       .concat(byePlayer ? byePlayer : realBye);
 
-    console.log("list", list);
+    if (createdMatches.length < Math.floor(participants.length / 2)) {
+      message.info("Vui lòng tạo đầy đủ số trận của vòng đầu tiên!")
+      return;
+    }
 
     const { matches, nodes } = createMatchesFromParticipants({
       participantsRaw: list,
@@ -618,10 +612,13 @@ export const FirstMatchRoundSetting = () => {
             </span>
           </div>
         }
+        destroyOnHidden
         placement="right"
         size={900}
         open={openDrawer}
-        onClose={() => setOpenDrawer(false)}
+        onClose={() => {
+          closeDrawer();
+        }}
         extra={
           <QButton
             onClick={confirmCreateMatch}
@@ -705,6 +702,7 @@ export const FirstMatchRoundSetting = () => {
                         </div>
                         <Popconfirm
                           title="Tự động bốc thăm lại?"
+                          placement="topRight"
                           description="Hành động này sẽ ghi đè lại toàn bộ các trận đã tạo trước đó."
                           onConfirm={handleGenerateAllAuto}
                           okText="Đồng ý"
@@ -769,6 +767,9 @@ export const FirstMatchRoundSetting = () => {
                                           );
 
                                         setByePlayer(selectedPlayer);
+                                        setPlayerA(undefined);
+                                        setPlayerB(undefined);
+                                        setCreatedMatches([]);
                                       }}
                                       showSearch={{
                                         optionFilterProp: "label",
@@ -873,7 +874,10 @@ export const FirstMatchRoundSetting = () => {
                             options={participants.map((e) => {
                               return {
                                 ...e,
-                                value: e.displayName,
+                                value: getTPName({
+                                  participant: e,
+                                  duplicatedNameParticipants,
+                                }),
                                 label: (
                                   <div className="flex items-center gap-2">
                                     <img
@@ -882,12 +886,20 @@ export const FirstMatchRoundSetting = () => {
                                       alt={e.nationality}
                                       className="h-4 w-6 rounded-sm object-cover"
                                     />
-                                    <span>{e.displayName}</span>
+                                    <span>
+                                      {getTPName({
+                                        participant: e,
+                                        duplicatedNameParticipants,
+                                      })}
+                                    </span>
                                   </div>
                                 ),
                               };
                             })}
-                            value={playerA?.displayName}
+                            value={getTPName({
+                              participant: playerA,
+                              duplicatedNameParticipants,
+                            })}
                             onChange={(_, option) => {
                               setPlayerA(
                                 participants.find((e) => e.id === option.id),
@@ -913,7 +925,10 @@ export const FirstMatchRoundSetting = () => {
                             options={participants.map((e) => {
                               return {
                                 ...e,
-                                value: e.displayName,
+                                value: getTPName({
+                                  participant: e,
+                                  duplicatedNameParticipants,
+                                }),
                                 label: (
                                   <div className="flex items-center gap-2">
                                     <img
@@ -921,12 +936,20 @@ export const FirstMatchRoundSetting = () => {
                                       alt={e.nationality}
                                       className="h-4 w-6 rounded-sm object-cover"
                                     />
-                                    <span>{e.displayName}</span>
+                                    <span>
+                                      {getTPName({
+                                        participant: e,
+                                        duplicatedNameParticipants,
+                                      })}
+                                    </span>
                                   </div>
                                 ),
                               };
                             })}
-                            value={playerB?.displayName}
+                            value={getTPName({
+                              participant: playerB,
+                              duplicatedNameParticipants,
+                            })}
                             onChange={(_, option) => {
                               setPlayerB(
                                 participants.find((e) => e.id === option.id),
@@ -1082,6 +1105,10 @@ export const FirstMatchRoundSetting = () => {
                   ),
                 },
               ]}
+              onChange={(e) => {
+                console.log("e", e);
+                setCreatedMatches([]);
+              }}
             />
           </div>
 
