@@ -72,54 +72,8 @@ function BracketFlow() {
     };
   }, [tourInfo]);
 
-  console.log("tournament", tournament)
-
   const { nodes } = useFlow({ tournament });
-
-  console.log("nodes", nodes)
-
-  const addMatches = async () => {
-    const rqMatches: Match[] = [];
-
-    for (const match of matches) {
-      // if (!match?.round?.id) {
-      //   continue;
-      // }
-
-      if (match?.isAutoWin) {
-        continue;
-      }
-
-      // const matchParticipant1 = match.participants[0];
-      // const matchParticipant2 = match.participants[1];
-
-      // console.log("players1", matchParticipant1);
-      // console.log("players2", matchParticipant2);
-
-      const foo = create(MatchSchema, {
-        round: match.roundIndex,
-        roundId: match.round.id,
-        matchIndex: match.matchIndex,
-        side: match.side,
-        isAutoWin: match.isAutoWin,
-        isSkipped: match.isSkipped,
-        participants: [match.participants[0], match.participants[1]],
-        position: {
-          x: match.position.x,
-          y: match.position.y,
-        },
-      });
-
-      rqMatches.push(foo);
-    }
-
-    console.log("rqMatches", rqMatches);
-
-    await MatchClient.addMatches({
-      matches: rqMatches,
-    });
-  };
-
+  
   useEffect(() => {
     if (participants.length && tournament?.brackets) {
       initTourInfo2({ participantsRaw: participants, tournament });
@@ -140,8 +94,6 @@ function BracketFlow() {
 
   return (
     <div style={{ width: width, height: height - 120 }}>
-      <Button onClick={addMatches}>Add 123</Button>
-
       <ReactFlow
         colorMode="dark"
         nodeTypes={nodeTypes}

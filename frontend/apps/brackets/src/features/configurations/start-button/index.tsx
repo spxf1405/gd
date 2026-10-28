@@ -286,32 +286,11 @@ const TournamentStatusAction = ({
 
   const { matches } = useTournamentInfo({ tournament });
 
-  const validate = () => {
-    if (tournament?.status === TournamentStatus.REGISTRATION_CLOSED) {
-      // if (tournament.participants.length <= 2) {
-      //   notification.error({
-      //     message: (
-      //       <div className="text-[15px] font-semibold">
-      //         Chưa thể bắt đầu giải đấu
-      //       </div>
-      //     ),
-      //     description: (
-      //       <div className="space-y-2 text-[14px] leading-5">
-      //         Quá ít người chơi, cần từ <span className="font-semibold">3</span> người trở lên để tạo một giải đấu
-      //       </div>
-      //     ),
-      //     placement: "top",
-      //     duration: 3,
-      //     style: { width: "fit-content", minWidth: 400 },
-      //     styles: {
-      //       wrapper: {
-      //         fontFamily: "IBM Plex Sans, Google Sans",
-      //       },
-      //     },
-      //   });
-      //   return
-      // }
+  console.log("matches", matches);
+  console.log("Status", status);
 
+  const validate = () => {
+    if (status === TournamentStatus.RUNNING) {
       if (!matches.length) {
         notification.error({
           message: (
@@ -336,7 +315,39 @@ const TournamentStatusAction = ({
 
         return;
       }
+      alert(matches.filter(m => m.orderIndex === 0).length)
+      if (matches.filter(m => m.orderIndex === 1).length  !== Math.floor(tournament.participants?.length / 2)) {
+        notification.error({
+          message: (
+            <div className="text-[15px] font-semibold">
+              Chưa thể bắt đầu giải đấu
+            </div>
+          ),
+          description: (
+            <div className="space-y-2 text-[14px] leading-5">
+              Số trận đấu chưa đúng so với số vận động viên tham gia.
+              <br />
+              Số trận đấu đủ:{" "}
+              <b>{Math.floor(tournament.participants?.length / 2)}</b> - Số trận
+              đã tạo: <b>{matches.length}</b> <br />
+
+              Nếu bạn đã tạo các trận đấu trước đó, vui lòng ghép cặp thi đấu lại!
+            </div>
+          ),
+          placement: "top",
+          duration: 10,
+          style: { width: "fit-content", minWidth: 400 },
+          styles: {
+            wrapper: {
+              fontFamily: "IBM Plex Sans, Google Sans",
+            },
+          },
+        });
+        return;
+      }
     }
+
+    return
 
     return true;
   };

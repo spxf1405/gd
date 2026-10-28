@@ -10,6 +10,7 @@ import {
   Table,
   Tabs,
   Tag,
+  Tooltip,
   message,
 } from "antd";
 import {
@@ -93,9 +94,9 @@ export const FirstMatchRoundSetting = () => {
 
   const { data: tournament } = useTournament(id);
 
-  const { brackets, participants } = useTournamentInfo({ tournament });
+  console.log("tournament", tournament);
 
-  console.log("tournament ======================", tournament);
+  const { brackets, participants } = useTournamentInfo({ tournament });
 
   const TOTAL_PLAYERS = participants.length;
   const TOTAL_MATCHES_NEEDED = Math.floor(TOTAL_PLAYERS / 2);
@@ -106,6 +107,9 @@ export const FirstMatchRoundSetting = () => {
 
   const [searchText, setSearchText] = useState("");
   const [createdMatches, setCreatedMatches] = useState<MatchItem[]>([]);
+  const [tabActiveKey, setTabActiveKey] = useState<
+    "auto_all" | "hybrid" | "file"
+  >("auto_all");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -136,7 +140,7 @@ export const FirstMatchRoundSetting = () => {
     return participants
       .filter((p) => p.id !== byePlayer?.id)
       .filter((p) => !usedPlayers.find((usedP) => usedP.id === p.id));
-  }, [participants, usedPlayers]);
+  }, [participants, usedPlayers, byePlayer]);
 
   const isPlayerAUsed = usedPlayers.find((p) => p.id === playerA?.id);
   const isPlayerBUsed = usedPlayers.find((p) => p.id === playerB?.id);
@@ -156,8 +160,6 @@ export const FirstMatchRoundSetting = () => {
 
   const handleGenerateAllAuto = () => {
     const shuffled = [...participants].sort(() => Math.random() - 0.5);
-
-    console.log("shuffled", shuffled);
     const newMatches: MatchItem[] = [];
 
     for (let i = 0; i < shuffled.length - 1; i += 2) {
@@ -182,6 +184,8 @@ export const FirstMatchRoundSetting = () => {
   };
 
   const handleAutoGenerateRemaining = () => {
+    setPlayerA(undefined);
+    setPlayerB(undefined);
     if (availablePlayers.length < 2) return;
 
     const shuffled = [...availablePlayers].sort(() => Math.random() - 0.5);
@@ -512,8 +516,6 @@ export const FirstMatchRoundSetting = () => {
 
       rqMatches.push(foo);
     }
-
-    console.log("rqMatches", rqMatches);
   };
 
   const addMatches1 = async (matches: BracketMatch[]) => {
@@ -538,14 +540,14 @@ export const FirstMatchRoundSetting = () => {
         },
       });
 
+      console.log("foo", foo);
+
       rqMatches.push(foo);
     }
 
-    console.log("rqMatches", rqMatches);
-
-    await MatchClient.addMatches({
-      matches: rqMatches,
-    });
+    // await MatchClient.addMatches({
+    //   matches: rqMatches,
+    // });
   };
 
   const confirmCreateMatch = () => {
@@ -554,7 +556,7 @@ export const FirstMatchRoundSetting = () => {
       .concat(byePlayer ? byePlayer : realBye);
 
     if (createdMatches.length < Math.floor(participants.length / 2)) {
-      message.info("Vui lòng tạo đầy đủ số trận của vòng đầu tiên!")
+      message.info("Vui lòng tạo đầy đủ số trận của vòng đầu tiên!");
       return;
     }
 
@@ -562,9 +564,6 @@ export const FirstMatchRoundSetting = () => {
       participantsRaw: list,
       tournament: tournament,
     });
-
-    console.log("nodes", nodes);
-    console.log("matches", matches);
 
     addMatches1(matches);
   };
@@ -608,7 +607,7 @@ export const FirstMatchRoundSetting = () => {
               <span className="font-semibold text-emerald-400">
                 {TOTAL_PLAYERS}
               </span>{" "}
-              Cơ thủ )
+              Cơ thủ / {Math.floor(TOTAL_PLAYERS / 2)} Trận)
             </span>
           </div>
         }
@@ -620,29 +619,41 @@ export const FirstMatchRoundSetting = () => {
           closeDrawer();
         }}
         extra={
-          <QButton
-            onClick={confirmCreateMatch}
-            size="large"
-            icon={<Users size={16} className="!text-white stroke-[2.5]" />}
-            style={{
-              height: "auto",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "10px 20px",
-              borderRadius: 12,
-              fontWeight: 700,
-              fontSize: 13,
-              color: "white",
-              border: "1px solid #6ee7b7",
-              background: "linear-gradient(135deg, #10b981, #059669)",
-              boxShadow: "0 4px 20px rgba(16, 185, 129, 0.4)",
-              cursor: "pointer",
-              transition: "all 0.2s ease-in-out",
-            }}
+          <Tooltip
+            title={
+              createdMatches.length < TOTAL_MATCHES_NEEDED
+                ? "Vui lòng tạo đủ số trận cần thiết để tiếp tục."
+                : null
+            }
           >
-            Xác nhận ({createdMatches.length}/{TOTAL_MATCHES_NEEDED} Trận)
-          </QButton>
+            <span>
+              <QButton
+                type="primary"
+                size="large"
+                icon={<Users size={16} />}
+                disabled={createdMatches.length < TOTAL_MATCHES_NEEDED}
+                onClick={confirmCreateMatch}
+                // style={{
+                //   height: "auto",F
+                //   display: "inline-flex",
+                //   alignItems: "center",
+                //   gap: 10,
+                //   padding: "10px 20px",
+                //   borderRadius: 12,
+                //   fontWeight: 700,
+                //   fontSize: 13,
+                //   color: "white",
+                //   border: "1px solid #6ee7b7",
+                //   background: "linear-gradient(135deg, #10b981, #059669)",
+                //   boxShadow: "0 4px 20px rgba(16, 185, 129, 0.4)",
+                //   cursor: "pointer",
+                //   transition: "all 0.2s ease-in-out",
+                // }}
+              >
+                Xác nhận ({createdMatches.length}/{TOTAL_MATCHES_NEEDED} trận)
+              </QButton>
+            </span>
+          </Tooltip>
         }
       >
         <div className="flex flex-col gap-5">
@@ -666,7 +677,21 @@ export const FirstMatchRoundSetting = () => {
           {/* 2. KHU VỰC PHÂN CHIA TẠO TRẬN (TỰ ĐỘNG vs PHỐI HỢP vs FILE TEXT) */}
           <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/40">
             <Tabs
-              defaultActiveKey="auto_all"
+              activeKey={tabActiveKey}
+              onChange={(e) => {
+                if (
+                  (tabActiveKey === "auto_all" && e !== "auto_all") ||
+                  (tabActiveKey !== "auto_all" && e === "auto_all")
+                ) {
+                  setCreatedMatches([]);
+
+                  setPlayerA(undefined);
+                  setPlayerB(undefined);
+                  setByePlayer(undefined);
+                  setSearchText("");
+                }
+                setTabActiveKey(e as "auto_all" | "hybrid" | "file");
+              }}
               items={[
                 {
                   key: "auto_all",
@@ -738,7 +763,7 @@ export const FirstMatchRoundSetting = () => {
                   ),
                   children: (
                     <div className="flex flex-col gap-3 pt-2">
-                      {TOTAL_PLAYERS % 2 == 0 && (
+                      {TOTAL_PLAYERS % 2 !== 0 && (
                         <div>
                           <div className="italic mb-2">
                             (*) Vì số cơ thủ lẻ, 1 cơ thủ sẽ được miễn vòng đấu
@@ -756,16 +781,15 @@ export const FirstMatchRoundSetting = () => {
                                     <Select
                                       maxCount={1}
                                       size="large"
-                                      mode="multiple"
                                       className="w-full"
-                                      value={byePlayer}
-                                      placeholder="Nhập tên cơ thủ được miễn..."
-                                      onChange={(value) => {
+                                      value={byePlayer?.id}
+                                      placeholder="Nhập tên cơ thủ được miễn, bỏ trống sẽ miễn tự động !"
+                                      onChange={(_, option) => {
                                         const selectedPlayer =
                                           participants.find(
-                                            (p) => p.id === value,
+                                            (p) => p.id === option?.id,
                                           );
-
+                                        
                                         setByePlayer(selectedPlayer);
                                         setPlayerA(undefined);
                                         setPlayerB(undefined);
@@ -781,7 +805,7 @@ export const FirstMatchRoundSetting = () => {
                                       }}
                                       options={participants.map((e) => ({
                                         ...e,
-                                        value: e.displayName,
+                                        value: e.id,
                                         label: e.id,
                                         nationality: e.nationality,
                                       }))}
@@ -799,27 +823,12 @@ export const FirstMatchRoundSetting = () => {
                                           </div>
                                         );
                                       }}
-                                      // Custom giao diện khi đã chọn xong hiển thị trên ô input (dùng chung logic với option)
-                                      tagRender={(props) => {
-                                        const {
-                                          value,
-                                          label,
-                                          closable,
-                                          onClose,
-                                        } = props;
-
+                                      labelRender={({ value, label }) => {
                                         const item = participants.find(
-                                          (p) => p.displayName === value,
+                                          (p) => p.id === value,
                                         );
-
                                         return (
-                                          <span
-                                            className="my-1 mr-1.5 inline-flex h-7 max-w-full items-center gap-1.5 rounded-md border border-[#343849] bg-[#1c1f2b] px-2 text-sm text-gray-200 transition-colors hover:border-[#4b5065] hover:bg-[#252938]"
-                                            onMouseDown={(e) => {
-                                              e.preventDefault();
-                                              e.stopPropagation();
-                                            }}
-                                          >
+                                          <span className="inline-flex h-7 max-w-full items-center gap-1.5 rounded-md bg-[#1c1f2b] px-2 text-sm text-gray-200">
                                             {item && (
                                               <img
                                                 src={`https://flagcdn.com/w40/${item.nationality.toLowerCase()}.png`}
@@ -827,21 +836,9 @@ export const FirstMatchRoundSetting = () => {
                                                 className="h-3.5 w-5 shrink-0 rounded-[2px] border border-white/10 object-cover"
                                               />
                                             )}
-
-                                            <span className="min-w-0 truncate font-medium">
-                                              {item?.displayName ??
-                                                label ??
-                                                value}
+                                            <span className="truncate font-medium">
+                                              {item?.displayName ?? label}
                                             </span>
-
-                                            {closable && (
-                                              <span
-                                                className="ml-0.5 inline-flex shrink-0 cursor-pointer items-center justify-center rounded-sm text-gray-500 transition-colors hover:text-red-400"
-                                                onClick={onClose}
-                                              >
-                                                <X size={12} />
-                                              </span>
-                                            )}
                                           </span>
                                         );
                                       }}
@@ -856,114 +853,184 @@ export const FirstMatchRoundSetting = () => {
 
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-xs font-semibold text-slate-400 mb-1">
+                          <label className="mb-1 block text-xs font-semibold text-slate-400">
                             Cơ thủ A
                           </label>
-                          <AutoComplete
+
+                          <Select
                             size="large"
                             className="w-full"
                             placeholder="Nhập tên cơ thủ A..."
                             showSearch={{
-                              filterOption: (input, option) => {
-                                return (option?.displayName ?? "")
+                              optionFilterProp: "label",
+                              filterOption: (input, option) =>
+                                (option?.label ?? "")
                                   .toString()
                                   .toLowerCase()
-                                  .includes(input.toLowerCase());
-                              },
+                                  .includes(input.toLowerCase()),
                             }}
-                            options={participants.map((e) => {
-                              return {
-                                ...e,
-                                value: getTPName({
-                                  participant: e,
-                                  duplicatedNameParticipants,
-                                }),
-                                label: (
-                                  <div className="flex items-center gap-2">
-                                    <img
-                                      //TODO: https://www.npmjs.com/package/country-flag-icons
-                                      src={`https://flagcdn.com/w40/${e.nationality.toLowerCase()}.png`}
-                                      alt={e.nationality}
-                                      className="h-4 w-6 rounded-sm object-cover"
-                                    />
-                                    <span>
-                                      {getTPName({
-                                        participant: e,
-                                        duplicatedNameParticipants,
-                                      })}
-                                    </span>
-                                  </div>
-                                ),
-                              };
-                            })}
-                            value={getTPName({
-                              participant: playerA,
-                              duplicatedNameParticipants,
-                            })}
-                            onChange={(_, option) => {
+                            value={playerA?.id}
+                            options={availablePlayers.map((p) => ({
+                              value: p.id,
+                              label: getTPName({
+                                participant: p,
+                                duplicatedNameParticipants,
+                              }),
+                              nationality: p.nationality,
+                            }))}
+                            onChange={(value) => {
                               setPlayerA(
-                                participants.find((e) => e.id === option.id),
+                                participants.find((p) => p.id === value),
                               );
                             }}
-                            status={isPlayerAUsed ? "error" : ""}
+                            optionRender={(option) => {
+                              const item = participants.find(
+                                (p) => p.id === option.value,
+                              );
+
+                              if (!item) return option.label;
+
+                              return (
+                                <div className="flex items-center gap-2">
+                                  <img
+                                    src={`https://flagcdn.com/w40/${item.nationality.toLowerCase()}.png`}
+                                    alt={item.nationality}
+                                    className="h-4 w-6 shrink-0 rounded-sm object-cover"
+                                  />
+                                  <span>
+                                    {getTPName({
+                                      participant: item,
+                                      duplicatedNameParticipants,
+                                    })}
+                                  </span>
+                                </div>
+                              );
+                            }}
+                            labelRender={({ value, label }) => {
+                              const item = participants.find(
+                                (p) => p.id === value,
+                              );
+
+                              if (!item) return label;
+
+                              return (
+                                <span className="inline-flex items-center gap-2">
+                                  <img
+                                    src={`https://flagcdn.com/w40/${item.nationality.toLowerCase()}.png`}
+                                    alt={item.nationality}
+                                    className="h-4 w-6 shrink-0 rounded-sm object-cover"
+                                  />
+                                  <span>
+                                    {getTPName({
+                                      participant: item,
+                                      duplicatedNameParticipants,
+                                    })}
+                                  </span>
+                                </span>
+                              );
+                            }}
+                            status={isPlayerAUsed ? "error" : undefined}
                           />
+
                           {isPlayerAUsed && (
-                            <span className="text-[11px] text-rose-500 mt-1 block">
+                            <span className="mt-1 block text-[11px] text-rose-500">
                               Cơ thủ này đã có trận!
                             </span>
                           )}
                         </div>
 
                         <div>
-                          <label className="block text-xs font-semibold text-slate-400 mb-1">
+                          <label className="mb-1 block text-xs font-semibold text-slate-400">
                             Cơ thủ B
                           </label>
-                          <AutoComplete
+
+                          <Select
                             size="large"
                             className="w-full"
                             placeholder="Nhập tên cơ thủ B..."
-                            options={participants.map((e) => {
-                              return {
-                                ...e,
-                                value: getTPName({
-                                  participant: e,
-                                  duplicatedNameParticipants,
-                                }),
-                                label: (
-                                  <div className="flex items-center gap-2">
-                                    <img
-                                      src={`https://flagcdn.com/w40/${e.nationality.toLowerCase()}.png`}
-                                      alt={e.nationality}
-                                      className="h-4 w-6 rounded-sm object-cover"
-                                    />
-                                    <span>
-                                      {getTPName({
-                                        participant: e,
-                                        duplicatedNameParticipants,
-                                      })}
-                                    </span>
-                                  </div>
-                                ),
-                              };
-                            })}
-                            value={getTPName({
-                              participant: playerB,
-                              duplicatedNameParticipants,
-                            })}
-                            onChange={(_, option) => {
+                            showSearch={{
+                              optionFilterProp: "label",
+                              filterOption: (input, option) =>
+                                (option?.label ?? "")
+                                  .toString()
+                                  .toLowerCase()
+                                  .includes(input.toLowerCase()),
+                            }}
+                            value={playerB?.id}
+                            options={availablePlayers.map((p) => ({
+                              value: p.id,
+                              label: getTPName({
+                                participant: p,
+                                duplicatedNameParticipants,
+                              }),
+                              nationality: p.nationality,
+                            }))}
+                            onChange={(value) => {
                               setPlayerB(
-                                participants.find((e) => e.id === option.id),
+                                participants.find((p) => p.id === value),
                               );
                             }}
-                            status={isPlayerBUsed ? "error" : ""}
+                            optionRender={(option) => {
+                              const item = participants.find(
+                                (p) => p.id === option.value,
+                              );
+
+                              if (!item) return option.label;
+
+                              return (
+                                <div className="flex items-center gap-2">
+                                  <img
+                                    src={`https://flagcdn.com/w40/${item.nationality.toLowerCase()}.png`}
+                                    alt={item.nationality}
+                                    className="h-4 w-6 shrink-0 rounded-sm object-cover"
+                                  />
+                                  <span>
+                                    {getTPName({
+                                      participant: item,
+                                      duplicatedNameParticipants,
+                                    })}
+                                  </span>
+                                </div>
+                              );
+                            }}
+                            labelRender={({ value, label }) => {
+                              const item = participants.find(
+                                (p) => p.id === value,
+                              );
+
+                              if (!item) return label;
+
+                              return (
+                                <span className="inline-flex items-center gap-2">
+                                  <img
+                                    src={`https://flagcdn.com/w40/${item.nationality.toLowerCase()}.png`}
+                                    alt={item.nationality}
+                                    className="h-4 w-6 shrink-0 rounded-sm object-cover"
+                                  />
+                                  <span>
+                                    {getTPName({
+                                      participant: item,
+                                      duplicatedNameParticipants,
+                                    })}
+                                  </span>
+                                </span>
+                              );
+                            }}
+                            status={
+                              isPlayerBUsed || isSamePlayer
+                                ? "error"
+                                : undefined
+                            }
                           />
+
                           {isPlayerBUsed && (
-                            <span className="text-[11px] text-rose-500 mt-1 block">
+                            <span className="mt-1 block text-[11px] text-rose-500">
                               Cơ thủ này đã có trận!
                             </span>
                           )}
+
                           {isSamePlayer && (
-                            <span className="text-[11px] text-rose-500 mt-1 block">
+                            <span className="mt-1 block text-[11px] text-rose-500">
                               Không thể chọn trùng người!
                             </span>
                           )}
@@ -1105,10 +1172,6 @@ export const FirstMatchRoundSetting = () => {
                   ),
                 },
               ]}
-              onChange={(e) => {
-                console.log("e", e);
-                setCreatedMatches([]);
-              }}
             />
           </div>
 
