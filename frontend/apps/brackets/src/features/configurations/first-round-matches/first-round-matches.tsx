@@ -17,6 +17,7 @@ import {
   Bot,
   Download,
   FileText,
+  Info,
   LandPlot,
   Plus,
   RotateCcw,
@@ -339,43 +340,101 @@ export const FirstMatchRoundSetting = () => {
     );
   }, [createdMatches, searchText]);
 
+  const getFirstRoundInfo = () => {
+    const playerCount = participants.length;
+
+    if (playerCount <= 0) return null;
+
+    const bracketSize = 2 ** Math.ceil(Math.log2(playerCount));
+
+    if (playerCount === bracketSize) return null;
+
+    const x = 2 * playerCount - bracketSize;
+    const y = x / 2;
+
+    return { x, y };
+  };
+
+  const firstRoundInfo = getFirstRoundInfo();
+  const priorityMatchCount = firstRoundInfo?.y ?? 0;
+
   const columns = [
     {
       title: "Trận",
       dataIndex: "matchNo",
       key: "matchNo",
-      width: 80,
-      render: (num: number) => <Tag>#{num}</Tag>,
+      width: 100,
+      render: (num: number) => {
+        const isPriority = num <= priorityMatchCount;
+
+        return (
+          <div className="flex items-center gap-1.5">
+            <Tag color={isPriority ? "gold" : "default"}>#{num}</Tag>
+
+            {isPriority && (
+              <Tooltip title="Trận ưu tiên: dành cho nhóm cơ thủ cần thi đấu ngay từ vòng đầu tiên.">
+                <span className="flex cursor-help items-center">
+                  <Info size={14} className="text-amber-400" />
+                </span>
+              </Tooltip>
+            )}
+          </div>
+        );
+      },
     },
     {
       title: "Cơ thủ A",
       dataIndex: "playerA",
       key: "playerA",
-      render: (text: string) => (
-        <span className="font-semibold text-blue-400">{text}</span>
+      render: (text: string, record: MatchItem) => (
+        <span
+          className={
+            record.matchNo <= priorityMatchCount
+              ? "font-semibold text-amber-300"
+              : "font-semibold text-blue-400"
+          }
+        >
+          {text}
+        </span>
       ),
     },
     {
       title: "VS",
       key: "vs",
       width: 50,
-      render: () => (
-        <span className="text-[10px] font-black text-amber-500">VS</span>
+      render: (_: unknown, record: MatchItem) => (
+        <span
+          className={`text-[10px] font-black ${
+            record.matchNo <= priorityMatchCount
+              ? "text-amber-400"
+              : "text-amber-500"
+          }`}
+        >
+          VS
+        </span>
       ),
     },
     {
       title: "Cơ thủ B",
       dataIndex: "playerB",
       key: "playerB",
-      render: (text: string) => (
-        <span className="font-semibold text-rose-400">{text}</span>
+      render: (text: string, record: MatchItem) => (
+        <span
+          className={
+            record.matchNo <= priorityMatchCount
+              ? "font-semibold text-amber-300"
+              : "font-semibold text-rose-400"
+          }
+        >
+          {text}
+        </span>
       ),
     },
     {
       title: "",
       key: "action",
       width: 50,
-      render: (_: any, record: MatchItem) => (
+      render: (_: unknown, record: MatchItem) => (
         <QButton
           type="text"
           danger
@@ -568,6 +627,22 @@ export const FirstMatchRoundSetting = () => {
     addMatches1(matches);
   };
 
+  const renderFirstRoundInfo = () => {
+    if (!firstRoundInfo) return null;
+
+    const { x, y } = firstRoundInfo;
+
+    return (
+      <p className="text-xs leading-relaxed text-slate-400">
+        Vì số người chơi không phải lũy thừa của 2, sẽ có{" "}
+        <span className="font-semibold text-amber-400">{x} người chơi</span> cần
+        thi đấu ngay từ vòng đầu tiên. Những người chơi này sẽ được phân bổ vào{" "}
+        <span className="font-semibold text-amber-400">{y} trận đầu tiên</span>{" "}
+        mà bạn tạo bên dưới.
+      </p>
+    );
+  };
+
   return (
     <>
       <QButton
@@ -658,13 +733,14 @@ export const FirstMatchRoundSetting = () => {
       >
         <div className="flex flex-col gap-5">
           {/* 1. ĐẾM TIẾN ĐỘ */}
-          <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 flex flex-col gap-2">
+          <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 flex flex-col gap-3">
             <div className="flex justify-between items-center text-xs font-semibold">
               <span className="text-slate-300">Đã ghép cặp:</span>
               <span className="text-amber-400 font-bold text-sm">
                 {createdMatches.length} / {TOTAL_MATCHES_NEEDED} Trận
               </span>
             </div>
+
             <Progress
               percent={Math.round(
                 (createdMatches.length / TOTAL_MATCHES_NEEDED) * 100,
@@ -672,8 +748,18 @@ export const FirstMatchRoundSetting = () => {
               strokeColor={{ "0%": "#f59e0b", "100%": "#10b981" }}
               showInfo={false}
             />
-          </div>
 
+            <div className="flex gap-2.5 rounded-lg border border-blue-500/20 bg-blue-500/5 p-3">
+              <Info size={16} className="mt-0.5 shrink-0 text-blue-400" />
+
+              <div className="flex flex-col gap-1">
+                <span className="text-xs font-semibold text-blue-300">
+                  Lưu ý về phân bổ trận đấu
+                </span>
+                {renderFirstRoundInfo()}
+              </div>
+            </div>
+          </div>
           {/* 2. KHU VỰC PHÂN CHIA TẠO TRẬN (TỰ ĐỘNG vs PHỐI HỢP vs FILE TEXT) */}
           <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/40">
             <Tabs
@@ -766,8 +852,8 @@ export const FirstMatchRoundSetting = () => {
                       {TOTAL_PLAYERS % 2 !== 0 && (
                         <div>
                           <div className="italic mb-2">
-                            (*) Vì số cơ thủ lẻ, 1 cơ thủ sẽ được miễn vòng đấu
-                            đầu tiên, vui lòng chọn cơ thủ được miễn
+                            (*) Vì số cơ thủ lẻ, 1 cơ thủ sẽ được miễn bốc thăm
+                            ghép cặp, vui lòng chọn cơ thủ được miễn
                           </div>
 
                           <Collapse
@@ -789,7 +875,7 @@ export const FirstMatchRoundSetting = () => {
                                           participants.find(
                                             (p) => p.id === option?.id,
                                           );
-                                        
+
                                         setByePlayer(selectedPlayer);
                                         setPlayerA(undefined);
                                         setPlayerB(undefined);
@@ -1174,9 +1260,7 @@ export const FirstMatchRoundSetting = () => {
               ]}
             />
           </div>
-
           {/* TODO: Tính năng setup quyền đặc cách, nơi các game thủ có thể được miễn đến một vòng nhất đinh */}
-
           {/* 3. BẢNG HIỂN THỊ DANH SÁCH TRẬN */}
           <div className="flex flex-col gap-3 pt-2">
             <div className="flex items-center justify-between">
@@ -1234,7 +1318,7 @@ export const FirstMatchRoundSetting = () => {
               size="small"
               pagination={{
                 size: "middle",
-                pageSize: 10,
+                pageSize: 20,
                 showSizeChanger: true,
                 pageSizeOptions: ["10", "25", "50"],
                 showTotal: (total) => `Tổng ${total} trận`,

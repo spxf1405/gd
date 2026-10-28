@@ -315,7 +315,6 @@ const TournamentStatusAction = ({
 
         return;
       }
-      alert(matches.filter(m => m.orderIndex === 0).length)
       if (matches.filter(m => m.orderIndex === 1).length  !== Math.floor(tournament.participants?.length / 2)) {
         notification.error({
           message: (
