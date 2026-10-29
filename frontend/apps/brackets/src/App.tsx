@@ -40,15 +40,16 @@ function App() {
 
   return (
     <div className="bg-black w-full h-full">
-      <div className="flex justify-between items-center px-2">
+      <div className="flex justify-between items-center p-2">
         <div className="flex gap-2">
           <TournamentStatusControl />
+          
+        </div>
+
+        <div className="flex gap-2">
           <AntdThemeConfig>
             <Participants />
           </AntdThemeConfig>
-        </div>
-
-        <div className="p-2 flex gap-2">
           <FirstMatchRoundSettingWrapper />
           <SettingWrapper />
           <LanguageSwitcher />

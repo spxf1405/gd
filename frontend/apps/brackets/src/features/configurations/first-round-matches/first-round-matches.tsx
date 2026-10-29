@@ -269,6 +269,13 @@ export const FirstMatchRoundSetting = () => {
         return;
       }
 
+      if (lines.length !== participants.length) {
+        message.error(
+          "Danh sách bạn vừa import không khớp với số lượng người chơi đã đăng ký!",
+        );
+        return;
+      }
+
       const newMatches: MatchItem[] = [];
       let currentMatchNo = createdMatches.length + 1;
 
@@ -357,6 +364,7 @@ export const FirstMatchRoundSetting = () => {
 
   const firstRoundInfo = getFirstRoundInfo();
   const priorityMatchCount = firstRoundInfo?.y ?? 0;
+  const priorityParticipantCount = firstRoundInfo?.x ?? 0;
 
   const columns = [
     {
@@ -549,36 +557,10 @@ export const FirstMatchRoundSetting = () => {
     return null;
   }
 
-  const { matches } = tourInfo;
-
-  const addMatches = async () => {
+  const addMatches = async (matches: BracketMatch[]) => {
     const rqMatches: Match[] = [];
 
-    for (const match of matches) {
-      if (match?.isAutoWin) {
-        continue;
-      }
-
-      const foo = create(MatchSchema, {
-        round: match.roundIndex,
-        roundId: match.round.id,
-        matchIndex: match.matchIndex,
-        side: match.side,
-        isAutoWin: match.isAutoWin,
-        isSkipped: match.isSkipped,
-        participants: [match.participants[0], match.participants[1]],
-        position: {
-          x: match.position.x,
-          y: match.position.y,
-        },
-      });
-
-      rqMatches.push(foo);
-    }
-  };
-
-  const addMatches1 = async (matches: BracketMatch[]) => {
-    const rqMatches: Match[] = [];
+    console.log("matches", matches)
 
     for (const match of matches) {
       if (match?.isAutoWin) {
@@ -604,15 +586,19 @@ export const FirstMatchRoundSetting = () => {
       rqMatches.push(foo);
     }
 
-    // await MatchClient.addMatches({
-    //   matches: rqMatches,
-    // });
+    await MatchClient.addMatches({
+      matches: rqMatches,
+    });
   };
 
   const confirmCreateMatch = () => {
-    const list = createdMatches
-      .flatMap((e) => [e.A, e.B])
-      .concat(byePlayer ? byePlayer : realBye);
+    const bye = byePlayer ?? realBye[0];
+
+    const list = createdMatches.flatMap((e) => [e.A, e.B]);
+
+    if (bye) {
+      list.splice(priorityParticipantCount - 1, 0, bye);
+    }
 
     if (createdMatches.length < Math.floor(participants.length / 2)) {
       message.info("Vui lòng tạo đầy đủ số trận của vòng đầu tiên!");
@@ -624,7 +610,7 @@ export const FirstMatchRoundSetting = () => {
       tournament: tournament,
     });
 
-    addMatches1(matches);
+    addMatches(matches);
   };
 
   const renderFirstRoundInfo = () => {
@@ -635,8 +621,8 @@ export const FirstMatchRoundSetting = () => {
     return (
       <p className="text-xs leading-relaxed text-slate-400">
         Vì số người chơi không phải lũy thừa của 2, sẽ có{" "}
-        <span className="font-semibold text-amber-400">{x} người chơi</span> cần
-        thi đấu ngay từ vòng đầu tiên. Những người chơi này sẽ được phân bổ vào{" "}
+        <span className="font-semibold text-amber-400">{x} người chơi</span> bắt
+        đầu ở vòng phân nhánh. Những người chơi này sẽ được phân bổ vào{" "}
         <span className="font-semibold text-amber-400">{y} trận đầu tiên</span>{" "}
         mà bạn tạo bên dưới.
       </p>
@@ -858,7 +844,7 @@ export const FirstMatchRoundSetting = () => {
                                 label: "Chọn cơ thủ được miễn",
                                 children: (
                                   <div className="flex flex-col gap-2 mt-2">
-                                    <Select
+                                    <QSelect
                                       maxCount={1}
                                       size="large"
                                       className="w-full"
@@ -937,7 +923,7 @@ export const FirstMatchRoundSetting = () => {
                             Cơ thủ A
                           </label>
 
-                          <Select
+                          <QSelect
                             size="large"
                             className="w-full"
                             placeholder="Nhập tên cơ thủ A..."
@@ -1024,7 +1010,7 @@ export const FirstMatchRoundSetting = () => {
                             Cơ thủ B
                           </label>
 
-                          <Select
+                          <QSelect
                             size="large"
                             className="w-full"
                             placeholder="Nhập tên cơ thủ B..."

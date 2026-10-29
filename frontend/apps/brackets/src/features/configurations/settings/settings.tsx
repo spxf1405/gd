@@ -5,7 +5,10 @@ import { QButton } from "@/components/ui/button";
 import { QTooltip } from "@/components/ui/toottip";
 import { TournamentClient } from "@/helper/service-client";
 import { create } from "@bufbuild/protobuf";
-import { TournamentStatus, type Tournament } from "@gd/proto/tournament/v1/tournament_pb";
+import {
+  TournamentStatus,
+  type Tournament,
+} from "@gd/proto/tournament/v1/tournament_pb";
 import { UpdateTournamentRequestSchema } from "@gd/proto/tournament/v1/tournament_service_pb";
 import { App, Button, Form, Modal, type FormProps } from "antd";
 import {
@@ -153,16 +156,16 @@ const SidebarTab = ({ tab }: { tab: any }) => {
 
   const disabledTab = useMemo(() => {
     if (tournament?.status === TournamentStatus.RUNNING) {
-      return "format"
+      return "format";
     }
-    return ""
+    return "";
   }, [tournament]);
 
   return (
     <Tabs.Trigger
       value={tab.value}
       disabled={tab.value === disabledTab}
-      className="group relative w-full text-left outline-none cursor-pointer p-0 bg-transparent border-0"
+      className="group relative w-full text-left outline-none cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 p-0 bg-transparent border-0 transition-opacity"
     >
       {/* Active left bar */}
       <div
@@ -551,6 +554,14 @@ export const Setting = ({
 
 export const SettingWrapper = () => {
   const [open, toggleOpen] = useToggle();
+
+  const { id } = useTournamentStore()
+
+  const { data: tournament } = useTournament(id)
+  
+  if (tournament?.status === TournamentStatus.CANCELLED) {
+    return
+  }
 
   // if we dont wrap like this, we can't style the notification. Should return to Alert to reduce the complexity
   return (
