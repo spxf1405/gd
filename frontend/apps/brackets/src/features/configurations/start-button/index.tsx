@@ -223,7 +223,7 @@ const useTournamentInfo = ({ tournament }: { tournament?: Tournament }) => {
 
       return round.matches.map((match) => ({
         ...match,
-        orderIndex: round.orderIndex,
+        round: round.orderIndex,
         roundCount: rounds.length,
       }));
     }) ?? [];
@@ -286,9 +286,6 @@ const TournamentStatusAction = ({
 
   const { matches } = useTournamentInfo({ tournament });
 
-  console.log("matches", matches);
-  console.log("Status", status);
-
   const validate = () => {
     if (status === TournamentStatus.RUNNING) {
       if (!matches.length) {
@@ -315,7 +312,16 @@ const TournamentStatusAction = ({
 
         return;
       }
-      if (matches.filter(m => m.orderIndex === 1).length  !== Math.floor(tournament.participants?.length / 2)) {
+
+      const validMixMatches = matches.filter(
+        (m) => (m.round === 0 || m.round === 1) && m.participants.length === 2,
+      ).length;
+
+      const validMatchesNeeded = Math.floor(
+        (tournament?.participants?.length ?? 0) / 2,
+      );
+
+      if (validMixMatches !== validMatchesNeeded) {
         notification.error({
           message: (
             <div className="text-[15px] font-semibold">
@@ -327,10 +333,10 @@ const TournamentStatusAction = ({
               Số trận đấu chưa đúng so với số vận động viên tham gia.
               <br />
               Số trận đấu đủ:{" "}
-              <b>{Math.floor(tournament.participants?.length / 2)}</b> - Số trận
-              đã tạo: <b>{matches.length}</b> <br />
-
-              Nếu bạn đã tạo các trận đấu trước đó, vui lòng ghép cặp thi đấu lại!
+              <b>{validMixMatches}</b> -
+              Số trận đã tạo: <b>{validMatchesNeeded}</b> <br />
+              Nếu bạn đã tạo các trận đấu trước đó hoặc thêm đăng kí mới, vui
+              lòng ghép cặp thi đấu lại!
             </div>
           ),
           placement: "top",
@@ -346,7 +352,6 @@ const TournamentStatusAction = ({
       }
     }
 
-    return
 
     return true;
   };

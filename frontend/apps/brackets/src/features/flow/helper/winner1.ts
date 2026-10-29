@@ -80,9 +80,6 @@ export const createMatch = (data: {
   const tournamentParticipant1 = wbParticipants.shift();
   const tournamentParticipant2 = wbParticipants.shift();
 
-  console.log("tournamentParticipant1", tournamentParticipant1)
-  console.log("tournamentParticipant2", tournamentParticipant2)
-
   const isAutoWin =
     roundIndex === 1 && isTournamentParticipantBye(tournamentParticipant2);
 
@@ -154,8 +151,6 @@ export function createWbFlowParticipant(
       );
     }
   }
-
-  console.log("matches123 ==================", matches);
 
   for (let r = 1; r <= roundCount; r++) {
     const roundMatches = matches.filter((n) => n.roundIndex === r);

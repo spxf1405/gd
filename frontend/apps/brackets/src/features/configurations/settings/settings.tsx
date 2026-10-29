@@ -5,7 +5,7 @@ import { QButton } from "@/components/ui/button";
 import { QTooltip } from "@/components/ui/toottip";
 import { TournamentClient } from "@/helper/service-client";
 import { create } from "@bufbuild/protobuf";
-import { type Tournament } from "@gd/proto/tournament/v1/tournament_pb";
+import { TournamentStatus, type Tournament } from "@gd/proto/tournament/v1/tournament_pb";
 import { UpdateTournamentRequestSchema } from "@gd/proto/tournament/v1/tournament_service_pb";
 import { App, Button, Form, Modal, type FormProps } from "antd";
 import {
@@ -21,7 +21,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { Separator, Tabs } from "radix-ui";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { COLORS } from "./consts/color";
 import { FormatTab } from "./tabs/format/format";
@@ -148,9 +148,20 @@ const SidebarTab = ({ tab }: { tab: any }) => {
   const Icon = tab.icon;
   const c = ACCENT_CLASSES[tab.accent as AccentColor];
 
+  const { id } = useTournamentStore();
+  const { data: tournament } = useTournament(id);
+
+  const disabledTab = useMemo(() => {
+    if (tournament?.status === TournamentStatus.RUNNING) {
+      return "format"
+    }
+    return ""
+  }, [tournament]);
+
   return (
     <Tabs.Trigger
       value={tab.value}
+      disabled={tab.value === disabledTab}
       className="group relative w-full text-left outline-none cursor-pointer p-0 bg-transparent border-0"
     >
       {/* Active left bar */}
@@ -295,7 +306,6 @@ export const SettingModalContent = ({
   const onFinishFailed: FormProps<Tournament>["onFinishFailed"] = async (
     errorInfo,
   ) => {
-    console.log("data", errorInfo);
     const firstError = errorInfo.errorFields[0];
     const field = firstError.name[0];
 
@@ -555,11 +565,11 @@ export const SettingWrapper = () => {
 export const SettingWrapper1 = ({
   open,
   toggleOpen,
-  onSuccesNextAction
+  onSuccesNextAction,
 }: {
   open: boolean;
   toggleOpen: () => void;
-  onSuccesNextAction: () => void
+  onSuccesNextAction: () => void;
 }) => {
   // if we dont wrap like this, we can't style the notification. Should return to Alert to reduce the complexity
   return (

@@ -372,7 +372,7 @@ export const FirstMatchRoundSetting = () => {
             <Tag color={isPriority ? "gold" : "default"}>#{num}</Tag>
 
             {isPriority && (
-              <Tooltip title="Trận ưu tiên: dành cho nhóm cơ thủ cần thi đấu ngay từ vòng đầu tiên.">
+              <Tooltip title="Trận vòng phân nhánh (các cơ thủ đi tiếp từ những trận này sẽ chơi nhiều hơn 1 trận so với đối thủ cùng vòng đó).">
                 <span className="flex cursor-help items-center">
                   <Info size={14} className="text-amber-400" />
                 </span>
@@ -765,17 +765,11 @@ export const FirstMatchRoundSetting = () => {
             <Tabs
               activeKey={tabActiveKey}
               onChange={(e) => {
-                if (
-                  (tabActiveKey === "auto_all" && e !== "auto_all") ||
-                  (tabActiveKey !== "auto_all" && e === "auto_all")
-                ) {
-                  setCreatedMatches([]);
-
-                  setPlayerA(undefined);
-                  setPlayerB(undefined);
-                  setByePlayer(undefined);
-                  setSearchText("");
-                }
+                setCreatedMatches([]);
+                setPlayerA(undefined);
+                setPlayerB(undefined);
+                setByePlayer(undefined);
+                setSearchText("");
                 setTabActiveKey(e as "auto_all" | "hybrid" | "file");
               }}
               items={[
