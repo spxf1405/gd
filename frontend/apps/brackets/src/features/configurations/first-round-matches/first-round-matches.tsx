@@ -19,6 +19,7 @@ import {
   FileText,
   Info,
   LandPlot,
+  LoaderCircle,
   Plus,
   RotateCcw,
   Search,
@@ -45,7 +46,7 @@ import { MatchSchema, type Match } from "@gd/proto/match/v1/match_pb";
 import type { TournamentParticipant } from "@gd/proto/participant/v1/participant_pb";
 import { TournamentErrorSchema } from "@gd/proto/tournament/v1/tournament_error_pb";
 import { TournamentStatus } from "@gd/proto/tournament/v1/tournament_pb";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToggle } from "usehooks-ts";
 import { TOURNAMENT_ERROR_MESSAGES } from "../consts";
 import { useUpdateTournamentStatusMutation } from "../hooks/mutations/tournament";
@@ -85,8 +86,18 @@ interface MatchItem {
   B: TournamentParticipant;
 }
 
+const useAddMatches = ({ onSuccess }: { onSuccess: () => void }) => {
+  return useMutation({
+    mutationFn: (rqMatches: Match[]) =>
+      MatchClient.addMatches({
+        matches: rqMatches,
+      }),
+    onSuccess,
+  });
+};
+
 export const FirstMatchRoundSetting = () => {
-  const { id, tourInfo } = useTournamentStore();
+  const { id } = useTournamentStore();
 
   const [openDrawer, setOpenDrawer] = useState(false);
 
@@ -329,11 +340,34 @@ export const FirstMatchRoundSetting = () => {
   };
 
   const handleDeleteMatch = (id: string) => {
-    const updated = createdMatches
-      .filter((m) => m.id !== id)
-      .map((m, idx) => ({ ...m, matchNo: createdMatches.length - idx }));
+    const filtered = createdMatches.filter((m) => m.id !== id);
+
+    const updated = filtered.map((m, idx) => ({
+      ...m,
+      matchNo: filtered.length - idx,
+    }));
+
     setCreatedMatches(updated);
   };
+
+  const { mutateAsync: addMatches, isPending } = useAddMatches({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tournament", id] });
+      notification.success({
+        message: <div className="font-bold">Thành công!</div>,
+        description: "Tạo danh sách trận đấu thành công!",
+        placement: "top",
+        duration: 3,
+        style: { width: "fit-content" },
+        styles: {
+          wrapper: {
+            fontFamily: "IBM Plex Sans, Google Sans",
+          },
+        },
+      });
+      closeDrawer();
+    },
+  });
 
   // Lọc danh sách trận theo từ khóa tìm kiếm
   const filteredMatches = useMemo(() => {
@@ -557,10 +591,8 @@ export const FirstMatchRoundSetting = () => {
     return null;
   }
 
-  const addMatches = async (matches: BracketMatch[]) => {
+  const createRequestAddMatches = (matches: BracketMatch[]) => {
     const rqMatches: Match[] = [];
-
-    console.log("matches", matches)
 
     for (const match of matches) {
       if (match?.isAutoWin) {
@@ -586,12 +618,10 @@ export const FirstMatchRoundSetting = () => {
       rqMatches.push(foo);
     }
 
-    await MatchClient.addMatches({
-      matches: rqMatches,
-    });
+    return rqMatches;
   };
 
-  const confirmCreateMatch = () => {
+  const confirmCreateMatch = async () => {
     const bye = byePlayer ?? realBye[0];
 
     const list = createdMatches.flatMap((e) => [e.A, e.B]);
@@ -605,12 +635,14 @@ export const FirstMatchRoundSetting = () => {
       return;
     }
 
-    const { matches, nodes } = createMatchesFromParticipants({
+    const { matches } = createMatchesFromParticipants({
       participantsRaw: list,
       tournament: tournament,
     });
 
-    addMatches(matches);
+    const rq = createRequestAddMatches(matches);
+
+    await addMatches(rq);
   };
 
   const renderFirstRoundInfo = () => {
@@ -622,7 +654,9 @@ export const FirstMatchRoundSetting = () => {
       <p className="text-xs leading-relaxed text-slate-400">
         Vì số người chơi không phải lũy thừa của 2, sẽ có{" "}
         <span className="font-semibold text-amber-400">{x} người chơi</span> bắt
-        đầu ở vòng phân nhánh. Những người chơi này sẽ được phân bổ vào{" "}
+        đầu sớm hơn{" "}
+        <span className="font-semibold text-amber-400">1 vòng </span> ở vòng
+        phân nhánh. Những người chơi này sẽ được phân bổ vào{" "}
         <span className="font-semibold text-amber-400">{y} trận đầu tiên</span>{" "}
         mà bạn tạo bên dưới.
       </p>
@@ -691,8 +725,16 @@ export const FirstMatchRoundSetting = () => {
               <QButton
                 type="primary"
                 size="large"
-                icon={<Users size={16} />}
-                disabled={createdMatches.length < TOTAL_MATCHES_NEEDED}
+                icon={
+                  isPending ? (
+                    <LoaderCircle size={16} className="animate-spin" />
+                  ) : (
+                    <Users size={16} />
+                  )
+                }
+                disabled={
+                  createdMatches.length < TOTAL_MATCHES_NEEDED || isPending
+                }
                 onClick={confirmCreateMatch}
                 // style={{
                 //   height: "auto",F

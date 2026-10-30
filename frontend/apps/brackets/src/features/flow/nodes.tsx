@@ -95,19 +95,13 @@ export const CustomNode = (node) => {
                 Icon: Sword,
                 color: "text-cyan-400",
                 hoverColor: "group-hover:text-cyan-300",
-                label: "Thắng luôn",
-              },
-              {
-                Icon: Shield,
-                color: "text-blue-400",
-                hoverColor: "group-hover:text-blue-300",
-                label: "Thua luôn",
+                label: "Chiến thắng",
               },
               {
                 Icon: Heart,
                 color: "text-red-400",
                 hoverColor: "group-hover:text-red-300",
-                label: "Chấp",
+                label: "Tỉ lệ chấp",
               },
               {
                 Icon: Image,
@@ -142,6 +136,33 @@ export const CustomNode = (node) => {
             ))}
 
             <ContextMenu.Separator className="h-[1px] bg-gray-700 my-2 mx-1" />
+
+            <ContextMenu.Sub>
+              <ContextMenu.SubTrigger className="group flex gap-3 items-center p-2 rounded-lg cursor-pointer transition-colors hover:bg-white/10 outline-none data-[state=open]:bg-white/10">
+                <Settings className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-transform group-hover:rotate-45" />
+                <span className="text-sm font-medium text-gray-200 group-hover:text-white">
+                  Chụp ảnh
+                </span>
+                <span className="ml-auto text-gray-500 text-[10px]">▶</span>
+              </ContextMenu.SubTrigger>
+
+              <ContextMenu.Portal>
+                <ContextMenu.SubContent className="bg-gray-900 p-2 rounded-xl border border-gray-700/50 shadow-xl min-w-[180px]">
+                  <ContextMenu.Item>
+                    Trận đấu này
+                  </ContextMenu.Item>
+                  <ContextMenu.Item>
+                    Cùng trận đấu kề trước
+                  </ContextMenu.Item>
+                  <ContextMenu.Item>
+                    Cùng trận đấu kề sau
+                  </ContextMenu.Item>
+                  <ContextMenu.Item>
+                    Cùng vòng đấu này
+                  </ContextMenu.Item>
+                </ContextMenu.SubContent>
+              </ContextMenu.Portal>
+            </ContextMenu.Sub>
 
             <ContextMenu.Sub>
               <ContextMenu.SubTrigger className="group flex gap-3 items-center p-2 rounded-lg cursor-pointer transition-colors hover:bg-white/10 outline-none data-[state=open]:bg-white/10">

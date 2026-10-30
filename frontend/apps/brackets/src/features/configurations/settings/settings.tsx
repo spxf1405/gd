@@ -423,20 +423,7 @@ export const SettingModalContent = ({
                 <SidebarTab key={tab.value} tab={tab} />
               ))}
             </Tabs.List>
-            <div className="mt-auto pt-4">
-              <Separator.Root className="h-px mb-3.5 bg-white/[0.05]" />
-              <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-emerald-500/[0.06] border border-emerald-500/[0.12]">
-                <div className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-emerald-500 shadow-[0_0_8px] shadow-emerald-500" />
-                <div>
-                  <p className="text-[10px] font-semibold m-0 text-emerald-500">
-                    {t("settings.systemStatus.label")}
-                  </p>
-                  <p className="text-[9px] mt-px mb-0 text-[#7ab090]">
-                    {t("settings.systemStatus.uptime")}
-                  </p>
-                </div>
-              </div>
-            </div>
+           
           </div>
 
           <div className="sys-scroll flex-1 overflow-y-auto bg-[#13151f]">

@@ -332,9 +332,9 @@ const TournamentStatusAction = ({
             <div className="space-y-2 text-[14px] leading-5">
               Số trận đấu chưa đúng so với số vận động viên tham gia.
               <br />
-              Số trận đấu đủ:{" "}
+              Số trận đã tạo:{" "}
               <b>{validMixMatches}</b> -
-              Số trận đã tạo: <b>{validMatchesNeeded}</b> <br />
+              Số trận cần: <b>{validMatchesNeeded}</b> <br />
               Nếu bạn đã tạo các trận đấu trước đó hoặc thêm đăng kí mới, vui
               lòng ghép cặp thi đấu lại!
             </div>
