@@ -7,7 +7,9 @@ import { useTournamentStore } from "@/store/match";
 import {
   Background,
   Controls,
+  getNodesBounds,
   MiniMap,
+  PanOnScrollMode,
   ReactFlow,
   useReactFlow,
 } from "@xyflow/react";
@@ -16,6 +18,31 @@ import { BracketEdge, FinalMatchEdge } from "../flow/edge";
 import { CustomNode, FinalNode, FinalOfFinalNode } from "../flow/nodes";
 import { useParticipantsByTournamentID } from "./players/hooks";
 import { useFlow } from "./use-bracket";
+
+import { type Node } from "@xyflow/react";
+import { useRef } from "react";
+
+const ZOOM = 0.8;
+const MARGIN = 24;
+
+function InitialViewport({ nodes }: { nodes: Node[] }) {
+  const { setViewport } = useReactFlow();
+
+  const hasSet = useRef(false);
+
+  useEffect(() => {
+    const target = nodes[0];
+    if (hasSet.current || !target) return;
+    setViewport({
+      x: -target.position.x * ZOOM + MARGIN,
+      y: -target.position.y * ZOOM + MARGIN,
+      zoom: ZOOM,
+    });
+    hasSet.current = true;
+  }, [nodes, setViewport]);
+
+  return null;
+}
 
 const edgeTypes = {
   bracket: BracketEdge,
@@ -45,7 +72,7 @@ function BracketFlow() {
 
   const { currentRound, matches } = tourInfo;
 
-  const { nodes: nodes1, edges } = useMemo(() => {
+  const { edges } = useMemo(() => {
     const {
       brackets: {
         winner: { flow: wbFlow = { nodes: [], edges: [] } } = {},
@@ -69,7 +96,26 @@ function BracketFlow() {
   }, [tourInfo]);
 
   const { nodes } = useFlow({ tournament });
-  
+
+  console.log("nodes", nodes);
+
+  const PADDING = 1000;
+
+  const translateExtent = useMemo<[[number, number], [number, number]]>(() => {
+    if (!nodes.length)
+      return [
+        [-Infinity, -Infinity],
+        [Infinity, Infinity],
+      ];
+
+    const { x, y, width, height } = getNodesBounds(nodes);
+
+    return [
+      [x - PADDING, y - PADDING],
+      [x + width + PADDING, y + height + PADDING],
+    ];
+  }, [nodes]);
+
   useEffect(() => {
     if (participants.length && tournament?.brackets) {
       initTourInfo2({ participantsRaw: participants, tournament });
@@ -96,16 +142,28 @@ function BracketFlow() {
         nodes={nodes}
         edges={edges}
         edgeTypes={edgeTypes}
-        zoomOnScroll={true}
-        zoomOnPinch={true}
-        zoomOnDoubleClick={true}
+        translateExtent={translateExtent}
+        panOnScroll
+        panOnDrag
+        panOnScrollMode={PanOnScrollMode.Free}
+        zoomOnScroll={false}
+        zoomOnPinch
+        zoomActivationKeyCode="Alt"
         nodesDraggable={false}
         minZoom={0.1}
         edgesReconnectable={true}
         onlyRenderVisibleElements={true}
+        // panOnScroll
+        // fitView
+        // fitViewOptions={{
+        //   padding: 0.1,
+        //   minZoom: 0.1,
+        //   maxZoom: 1,
+        // }}
       >
+        <InitialViewport nodes={nodes} />
         <MiniMap />
-        <Controls />
+        <Controls showZoom showFitView position="bottom-left" />
         <Background gap={12} size={1} />
       </ReactFlow>
     </div>

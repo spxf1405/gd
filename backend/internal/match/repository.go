@@ -36,7 +36,7 @@ func (r *MatchRepository) GetMatchesByRoundIDs(ctx context.Context, roundIds []s
 	}
 
 	query := `
-		SELECT id, round_id, position_x, position_y FROM gd_matches WHERE round_id = ANY($1)
+		SELECT id, round_id, position_x, position_y, match_index FROM gd_matches WHERE round_id = ANY($1)
 	`
 
 	log.Println()
@@ -53,22 +53,25 @@ func (r *MatchRepository) GetMatchesByRoundIDs(ctx context.Context, roundIds []s
 	for rows.Next() {
 		match := &matchpb.Match{}
 
-		var positionX, positionY sql.NullInt32
+		var positionX, positionY, matchIndex sql.NullInt32
 
 		err := rows.Scan(
 			&match.Id,
 			&match.RoundId,
 			&positionX,
 			&positionY,
+			&matchIndex,
 		)
 
 		if err != nil {
 			return nil, err
 		}
 
-		if !positionX.Valid || !positionY.Valid {
+		if !positionX.Valid || !positionY.Valid || !matchIndex.Valid {
 			return nil, fmt.Errorf("position is NULL: match_id=%s", match.Id)
 		}
+
+		match.MatchIndex = matchIndex.Int32
 
 		match.Position = &matchpb.Position{
 			X: positionX.Int32,

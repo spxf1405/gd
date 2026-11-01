@@ -105,9 +105,7 @@ export const FirstMatchRoundSetting = () => {
   const { notification } = App.useApp();
 
   const { data: tournament } = useTournament(id);
-
-  console.log("tournament", tournament);
-
+  
   const { brackets, participants } = useTournamentInfo({ tournament });
 
   const TOTAL_PLAYERS = participants.length;

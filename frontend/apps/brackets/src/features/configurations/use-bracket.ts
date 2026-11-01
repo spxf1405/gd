@@ -26,14 +26,13 @@ export const useFlow = ({ tournament }: { tournament?: Tournament }) => {
         }));
       }) ?? [];
 
-    console.log("winner1.ts => matches =======", matches);
 
     if (!matches || matches.length === 0) return [];
 
     return matches.flatMap((match) => {
-      const isFinal = match.round === match.roundCount;
+      // const isFinal = match.round === match.roundCount;
 
-      const nodeType = isFinal ? "final" : "custom";
+      const nodeType = "custom";
       const baseX = match.position?.x ?? 0;
       const baseY = match.position?.y ?? 0;
 

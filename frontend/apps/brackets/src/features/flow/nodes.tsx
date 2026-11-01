@@ -20,6 +20,71 @@ import { FINAL_OF_FINAL_NODE_WIDTH, NODE_HEIGHT, NODE_WIDTH } from "./consts";
 import { useParticipantsByTournamentID } from "../configurations/players/hooks";
 import { useTournamentInfo } from "../configurations/hooks/tournament";
 import { useTournamentStore } from "@/store/match";
+import { useTournament } from "@/hook/tournament";
+import { useEffect, useMemo } from "react";
+
+interface WinnersBracketMatchParams {
+  /** Total number of participants (>= 2) */
+  totalPlayers: number;
+  /** Round index in the winners bracket, starting at 0 */
+  roundIndex: number;
+  /** Position of the match within the round, starting at 0 */
+  matchIndexInRound: number;
+}
+
+/**
+ * Returns the sequential match number (starting at 1) in the winners bracket,
+ * skipping bye (phantom) matches.
+ */
+export function getWinnersBracketMatchNumber({
+  totalPlayers,
+  roundIndex,
+  matchIndexInRound,
+}: WinnersBracketMatchParams): number {
+  if (!Number.isInteger(totalPlayers) || totalPlayers < 2) {
+    throw new Error("totalPlayers must be an integer >= 2");
+  }
+
+  // Smallest power of 2 >= totalPlayers
+  const bracketSize = 2 ** Math.ceil(Math.log2(totalPlayers));
+  const totalRounds = Math.log2(bracketSize);
+
+  if (
+    !Number.isInteger(roundIndex) ||
+    roundIndex < 0 ||
+    roundIndex > totalRounds - 1
+  ) {
+    throw new Error(`roundIndex must be between 0 and ${totalRounds - 1}`);
+  }
+
+  const isFirstRound = roundIndex === 0;
+
+  // Real (non-bye) matches in the first round
+  const realMatchesInFirstRound = totalPlayers - bracketSize / 2;
+
+  // First round has realMatchesInFirstRound matches,
+  // later rounds have bracketSize / 2^(roundIndex + 1)
+  const matchesInThisRound = isFirstRound
+    ? realMatchesInFirstRound
+    : bracketSize / 2 ** (roundIndex + 1);
+
+  if (
+    !Number.isInteger(matchIndexInRound) ||
+    matchIndexInRound < 0 ||
+    matchIndexInRound > matchesInThisRound - 1
+  ) {
+    throw new Error(
+      `matchIndexInRound must be between 0 and ${matchesInThisRound - 1}`,
+    );
+  }
+
+  if (isFirstRound) return matchIndexInRound + 1;
+
+  // Real matches played before this round
+  const matchesBeforeThisRound = totalPlayers - bracketSize / 2 ** roundIndex;
+
+  return matchesBeforeThisRound + matchIndexInRound + 1;
+}
 
 export const CustomNode = (node) => {
   const { id } = useTournamentStore();
@@ -31,20 +96,26 @@ export const CustomNode = (node) => {
   const participants = data?.tournamentParticipants ?? [];
   const { data: nodeData } = node;
 
-  console.log("match", nodeData.match);
+  console.log("node.data.match", node.data.match);
+  console.log("nodeData.match.orderIndex", nodeData.match.orderIndex);
+  console.log("nodeData.match.matchIndex", nodeData.match.matchIndex);
 
-  const matchNo =
-    Math.floor(participants?.length / 2) -
-    Math.floor(participants?.length / 2 ** nodeData.match.orderIndex) +
-    nodeData.match.matchIndex +
-    1;
+  const matchNo = useMemo(() => {
+    if (!participants.length) {
+      return;
+    }
 
-  console.log("1", Math.floor(participants?.length / 2))
-  console.log("2", Math.floor((participants?.length / 2) ** nodeData.match.orderIndex) )
-  console.log("3", nodeData.match.matchIndex)
+    return getWinnersBracketMatchNumber({
+      totalPlayers: participants.length,
+      roundIndex: nodeData.match.orderIndex,
+      matchIndexInRound: nodeData.match.matchIndex,
+    });
+  }, [participants]);
+
+  console.log("matchNo", matchNo);
 
   if (nodeData.match.isAutoWin) {
-    return null;
+    return <></>;
   }
 
   return (
@@ -67,8 +138,7 @@ export const CustomNode = (node) => {
                 </div>
                 {/* Match Order */}
                 <div className="font-mono font-black text-slate-300 text-sm group-hover:text-sky-300 transition-colors drop-shadow-[0_0_6px_rgba(59,130,246,0.5)]">
-                  {/* #{nodeData.match?.displayOrder ?? ""} */}
-                  #{matchNo}
+                  {/* #{nodeData.match?.displayOrder ?? ""} */}#{matchNo}
                 </div>
 
                 <>
