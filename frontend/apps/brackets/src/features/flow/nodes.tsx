@@ -1,21 +1,49 @@
 import { Handle, Position } from "@xyflow/react";
 import {
+  ArrowRightLeft,
+  Camera,
   Check,
+  ChevronRight,
+  Download,
+  GitBranch,
   Heart,
-  Image,
-  Lightbulb,
+  ImageDown,
+  Network,
   Settings,
-  Shield,
   Sword,
+  Swords,
+  UserRound,
   Volume2,
 } from "lucide-react";
 import { ContextMenu, Popover } from "radix-ui";
 import { FINAL_OF_FINAL_NODE_WIDTH, NODE_HEIGHT, NODE_WIDTH } from "./consts";
+import { useParticipantsByTournamentID } from "../configurations/players/hooks";
+import { useTournamentInfo } from "../configurations/hooks/tournament";
+import { useTournamentStore } from "@/store/match";
 
 export const CustomNode = (node) => {
-  const { data } = node;
+  const { id } = useTournamentStore();
 
-  if (data.match.isAutoWin) {
+  const { data } = useParticipantsByTournamentID({
+    tournamentId: id,
+  });
+
+  const participants = data?.tournamentParticipants ?? [];
+  const { data: nodeData } = node;
+
+  console.log("match", nodeData.match);
+
+  const matchNo =
+    Math.floor(participants?.length / 2) -
+    Math.floor(participants?.length / 2 ** nodeData.match.orderIndex) +
+    nodeData.match.matchIndex +
+    1;
+
+  console.log("1", Math.floor(participants?.length / 2))
+  console.log("2", Math.floor((participants?.length / 2) ** nodeData.match.orderIndex) )
+  console.log("3", nodeData.match.matchIndex)
+
+  if (nodeData.match.isAutoWin) {
     return null;
   }
 
@@ -39,14 +67,15 @@ export const CustomNode = (node) => {
                 </div>
                 {/* Match Order */}
                 <div className="font-mono font-black text-slate-300 text-sm group-hover:text-sky-300 transition-colors drop-shadow-[0_0_6px_rgba(59,130,246,0.5)]">
-                  #{data.match?.displayOrder ?? ""}
+                  {/* #{nodeData.match?.displayOrder ?? ""} */}
+                  #{matchNo}
                 </div>
 
                 <>
                   {/* Flag */}
                   <div className="relative shrink-0 overflow-hidden rounded-[3px] border border-blue-500/40 shadow-[0_0_8px_rgba(59,130,246,0.2)]">
                     <img
-                      src={`https://flagcdn.com/w80/${data.label?.nationality?.toLowerCase() ?? "vn"}.png`}
+                      src={`https://flagcdn.com/w80/${nodeData.label?.nationality?.toLowerCase() ?? "vn"}.png`}
                       className="w-8 h-5 object-cover"
                     />
                   </div>
@@ -54,7 +83,7 @@ export const CustomNode = (node) => {
                   {/* Player Info */}
                   <div className="flex-1 overflow-hidden">
                     <div className="text-white font-black text-sm tracking-wide truncate group-hover:text-sky-200 transition-colors drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-                      {(data.label?.displayName as string) ?? ""}
+                      {(nodeData.label?.displayName as string) ?? ""}
                     </div>
                     <div className="text-sky-400/80 text-[10px] font-bold uppercase tracking-wider">
                       Professional Player
@@ -70,7 +99,9 @@ export const CustomNode = (node) => {
                 <Handle
                   type="source"
                   position={
-                    data.match.side === "left" ? Position.Right : Position.Left
+                    nodeData.match.side === "left"
+                      ? Position.Right
+                      : Position.Left
                   }
                   id="l"
                   className="!w-2.5 !h-2.5 !bg-blue-400 !border-2 !border-slate-950 shadow-[0_0_8px_rgba(96,165,250,0.8)]"
@@ -78,7 +109,9 @@ export const CustomNode = (node) => {
                 <Handle
                   type="target"
                   position={
-                    data.match.side === "left" ? Position.Left : Position.Right
+                    nodeData.match.side === "left"
+                      ? Position.Left
+                      : Position.Right
                   }
                   id="r"
                   className="!w-2.5 !h-2.5 !bg-blue-400 !border-2 !border-slate-950 shadow-[0_0_8px_rgba(96,165,250,0.8)]"
@@ -103,24 +136,6 @@ export const CustomNode = (node) => {
                 hoverColor: "group-hover:text-red-300",
                 label: "Tỉ lệ chấp",
               },
-              {
-                Icon: Image,
-                color: "text-orange-400",
-                hoverColor: "group-hover:text-orange-300",
-                label: "Xuất ảnh trận đấu",
-              },
-              {
-                Icon: Lightbulb,
-                color: "text-blue-400",
-                hoverColor: "group-hover:text-blue-300",
-                label: "Xem hành trình cơ thủ",
-              },
-              {
-                Icon: Heart,
-                color: "text-red-400",
-                hoverColor: "group-hover:text-red-300",
-                label: "Xem các trận đấu cùng vòng",
-              },
             ].map((item, idx) => (
               <ContextMenu.Item
                 key={idx}
@@ -139,26 +154,108 @@ export const CustomNode = (node) => {
 
             <ContextMenu.Sub>
               <ContextMenu.SubTrigger className="group flex gap-3 items-center p-2 rounded-lg cursor-pointer transition-colors hover:bg-white/10 outline-none data-[state=open]:bg-white/10">
-                <Settings className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-transform group-hover:rotate-45" />
+                <Camera className="w-4 h-4 text-purple-400 group-hover:text-purple-300 transition-colors" />
+
                 <span className="text-sm font-medium text-gray-200 group-hover:text-white">
                   Chụp ảnh
                 </span>
-                <span className="ml-auto text-gray-500 text-[10px]">▶</span>
+
+                <ChevronRight className="ml-auto w-3.5 h-3.5 text-gray-500" />
               </ContextMenu.SubTrigger>
 
               <ContextMenu.Portal>
-                <ContextMenu.SubContent className="bg-gray-900 p-2 rounded-xl border border-gray-700/50 shadow-xl min-w-[180px]">
-                  <ContextMenu.Item>
-                    Trận đấu này
+                <ContextMenu.SubContent
+                  sideOffset={8}
+                  className="bg-gray-900 p-2 rounded-xl border border-gray-700/50 shadow-xl min-w-[250px] z-50"
+                >
+                  {/* MATCH SCOPE */}
+                  <ContextMenu.Label className="px-2 py-1.5 text-[10px] uppercase tracking-wider font-bold text-gray-500">
+                    Phạm vi chụp
+                  </ContextMenu.Label>
+
+                  <ContextMenu.Item className="group flex gap-3 items-center p-2 rounded-lg cursor-pointer outline-none hover:bg-purple-500/10 focus:bg-purple-500/10 transition-colors">
+                    <UserRound className="w-4 h-4 text-purple-400" />
+
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-sm text-gray-200">
+                        Hành trình cơ thủ
+                      </span>
+                      <span className="text-[10px] text-gray-500">
+                        Tất cả trận đấu của cơ thủ
+                      </span>
+                    </div>
                   </ContextMenu.Item>
-                  <ContextMenu.Item>
-                    Cùng trận đấu kề trước
+
+                  <ContextMenu.Item className="group flex gap-3 items-center p-2 rounded-lg cursor-pointer outline-none hover:bg-purple-500/10 focus:bg-purple-500/10 transition-colors">
+                    <Swords className="w-4 h-4 text-purple-400" />
+
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-sm text-gray-200">
+                        Trận đấu này
+                      </span>
+                      <span className="text-[10px] text-gray-500">
+                        Chỉ hiển thị trận đang chọn
+                      </span>
+                    </div>
                   </ContextMenu.Item>
-                  <ContextMenu.Item>
-                    Cùng trận đấu kề sau
+
+                  <ContextMenu.Separator className="h-px bg-gray-700/70 my-2 mx-1" />
+
+                  {/* BRACKET SCOPE */}
+                  <ContextMenu.Label className="px-2 py-1.5 text-[10px] uppercase tracking-wider font-bold text-gray-500">
+                    Kèm thông tin nhánh đấu
+                  </ContextMenu.Label>
+
+                  <ContextMenu.Item className="group flex gap-3 items-center p-2 rounded-lg cursor-pointer outline-none hover:bg-blue-500/10 focus:bg-blue-500/10 transition-colors">
+                    <GitBranch className="w-4 h-4 text-blue-400" />
+
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-sm text-gray-200">
+                        Trận đấu và nhánh đấu
+                      </span>
+                      <span className="text-[10px] text-gray-500">
+                        Hiển thị các nhánh liên quan
+                      </span>
+                    </div>
                   </ContextMenu.Item>
-                  <ContextMenu.Item>
-                    Cùng vòng đấu này
+
+                  <ContextMenu.Item className="group flex gap-3 items-center p-2 rounded-lg cursor-pointer outline-none hover:bg-blue-500/10 focus:bg-blue-500/10 transition-colors">
+                    <ArrowRightLeft className="w-4 h-4 text-blue-400" />
+
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-sm text-gray-200">
+                        Kèm trận đấu kế tiếp
+                      </span>
+                      <span className="text-[10px] text-gray-500">
+                        Hiển thị cả trận tiếp theo
+                      </span>
+                    </div>
+                  </ContextMenu.Item>
+
+                  <ContextMenu.Item className="group flex gap-3 items-center p-2 rounded-lg cursor-pointer outline-none hover:bg-blue-500/10 focus:bg-blue-500/10 transition-colors">
+                    <Network className="w-4 h-4 text-blue-400" />
+
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-sm text-gray-200">
+                        Toàn bộ vòng đấu
+                      </span>
+                      <span className="text-[10px] text-gray-500">
+                        Tất cả trận đấu trong vòng này
+                      </span>
+                    </div>
+                  </ContextMenu.Item>
+
+                  <ContextMenu.Separator className="h-px bg-gray-700/70 my-2 mx-1" />
+
+                  {/* ACTION */}
+                  <ContextMenu.Item className="group flex gap-3 items-center p-2 rounded-lg cursor-pointer outline-none hover:bg-emerald-500/10 focus:bg-emerald-500/10 transition-colors">
+                    <ImageDown className="w-4 h-4 text-emerald-400" />
+
+                    <span className="text-sm font-medium text-emerald-400">
+                      Chụp và tải ảnh
+                    </span>
+
+                    <Download className="ml-auto w-3.5 h-3.5 text-emerald-500/60" />
                   </ContextMenu.Item>
                 </ContextMenu.SubContent>
               </ContextMenu.Portal>

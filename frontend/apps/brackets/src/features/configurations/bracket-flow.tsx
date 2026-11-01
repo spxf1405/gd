@@ -4,8 +4,6 @@ import { EventBus } from "@/helper/event-bus";
 import { useTournament } from "@/hook/tournament";
 import { useDimensionStore } from "@/store/dismension";
 import { useTournamentStore } from "@/store/match";
-import { create } from "@bufbuild/protobuf";
-import { MatchSchema, type Match } from "@gd/proto/match/v1/match_pb";
 import {
   Background,
   Controls,
@@ -14,11 +12,9 @@ import {
   useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { Button } from "antd";
 import { BracketEdge, FinalMatchEdge } from "../flow/edge";
 import { CustomNode, FinalNode, FinalOfFinalNode } from "../flow/nodes";
 import { useParticipantsByTournamentID } from "./players/hooks";
-import { MatchClient } from "@/helper/service-client";
 import { useFlow } from "./use-bracket";
 
 const edgeTypes = {
