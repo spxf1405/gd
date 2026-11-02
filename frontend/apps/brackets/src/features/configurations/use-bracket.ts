@@ -72,6 +72,8 @@ export const useFlow = ({ tournament }: { tournament?: Tournament }) => {
       ];
     });
 
+    console.log("finalMatches ====", finalMatches)
+
     return finalMatches;
   }, [tournament]);
 

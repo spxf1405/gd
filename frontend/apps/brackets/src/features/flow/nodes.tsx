@@ -18,75 +18,50 @@ import {
 import { ContextMenu, Popover } from "radix-ui";
 import { FINAL_OF_FINAL_NODE_WIDTH, NODE_HEIGHT, NODE_WIDTH } from "./consts";
 import { useParticipantsByTournamentID } from "../configurations/players/hooks";
-import { useTournamentInfo } from "../configurations/hooks/tournament";
 import { useTournamentStore } from "@/store/match";
-import { useTournament } from "@/hook/tournament";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
-interface WinnersBracketMatchParams {
-  /** Total number of participants (>= 2) */
-  totalPlayers: number;
-  /** Round index in the winners bracket, starting at 0 */
-  roundIndex: number;
-  /** Position of the match within the round, starting at 0 */
-  matchIndexInRound: number;
-}
+export function getPreviousMatchesCompact(
+  matchNo: number,
+  totalPlayers: number,
+) {
+  const powerOfTwo = Math.pow(2, Math.ceil(Math.log2(totalPlayers)));
+  const round1Matches = totalPlayers - powerOfTwo / 2;
 
-/**
- * Returns the sequential match number (starting at 1) in the winners bracket,
- * skipping bye (phantom) matches.
- */
-export function getWinnersBracketMatchNumber({
-  totalPlayers,
-  roundIndex,
-  matchIndexInRound,
-}: WinnersBracketMatchParams): number {
-  if (!Number.isInteger(totalPlayers) || totalPlayers < 2) {
-    throw new Error("totalPlayers must be an integer >= 2");
+  // Nếu là trận thuộc Vòng 1 -> Không có trận nguồn
+  if (matchNo <= round1Matches) {
+    return { slot1: null, slot2: null };
   }
 
-  // Smallest power of 2 >= totalPlayers
-  const bracketSize = 2 ** Math.ceil(Math.log2(totalPlayers));
-  const totalRounds = Math.log2(bracketSize);
+  let prevOffset = 0;
+  let currentOffset = round1Matches;
+  let matchesInRound = powerOfTwo / 4;
 
-  if (
-    !Number.isInteger(roundIndex) ||
-    roundIndex < 0 ||
-    roundIndex > totalRounds - 1
-  ) {
-    throw new Error(`roundIndex must be between 0 and ${totalRounds - 1}`);
+  // Tìm offset của vòng chứa matchNo
+  while (matchNo > currentOffset + matchesInRound) {
+    prevOffset = currentOffset;
+    currentOffset += matchesInRound;
+    matchesInRound /= 2;
   }
 
-  const isFirstRound = roundIndex === 0;
+  // k là chỉ số thứ tự của trận đấu trong vòng hiện tại (1-indexed)
+  const k = matchNo - currentOffset;
 
-  // Real (non-bye) matches in the first round
-  const realMatchesInFirstRound = totalPlayers - bracketSize / 2;
+  const slot1 = 2 * k - 1 + prevOffset;
+  const slot2 = 2 * k + prevOffset;
 
-  // First round has realMatchesInFirstRound matches,
-  // later rounds have bracketSize / 2^(roundIndex + 1)
-  const matchesInThisRound = isFirstRound
-    ? realMatchesInFirstRound
-    : bracketSize / 2 ** (roundIndex + 1);
+  // Kiểm tra nếu slot vượt quá số trận của vòng trước (nghĩa là suất Bye đi thẳng)
+  const prevRoundMatchesCount = currentOffset - prevOffset;
 
-  if (
-    !Number.isInteger(matchIndexInRound) ||
-    matchIndexInRound < 0 ||
-    matchIndexInRound > matchesInThisRound - 1
-  ) {
-    throw new Error(
-      `matchIndexInRound must be between 0 and ${matchesInThisRound - 1}`,
-    );
-  }
-
-  if (isFirstRound) return matchIndexInRound + 1;
-
-  // Real matches played before this round
-  const matchesBeforeThisRound = totalPlayers - bracketSize / 2 ** roundIndex;
-
-  return matchesBeforeThisRound + matchIndexInRound + 1;
+  return {
+    slot1: slot1 <= currentOffset ? slot1 : null,
+    slot2: slot2 <= currentOffset ? slot2 : null,
+  };
 }
 
 export const CustomNode = (node) => {
+  const { data: nodeData } = node;
+
   const { id } = useTournamentStore();
 
   const { data } = useParticipantsByTournamentID({
@@ -94,19 +69,29 @@ export const CustomNode = (node) => {
   });
 
   const participants = data?.tournamentParticipants ?? [];
-  const { data: nodeData } = node;
 
-  const matchNo = useMemo(() => {
-    if (!participants.length) {
-      return;
+  const { slot1, slot2 } = useMemo(() => {
+    if (!nodeData.match.displayOrder || !participants.length) {
+      return {
+        slot1: 0,
+        slot2: 0,
+      };
     }
+    return getPreviousMatchesCompact(
+      nodeData.match.displayOrder,
+      participants.length,
+    );
+  }, [node, participants]);
 
-    return getWinnersBracketMatchNumber({
-      totalPlayers: participants.length,
-      roundIndex: nodeData.match.orderIndex,
-      matchIndexInRound: nodeData.match.matchIndex,
-    });
-  }, [participants]);
+  console.log("nodeData.label?.slot", nodeData.label?.slot)
+
+  const name = nodeData.label?.displayName
+    ? nodeData.label?.displayName
+    : nodeData.label?.slot === 0
+      ? slot1
+      : slot2;
+
+  console.log("nodeData", nodeData);
 
   if (nodeData.match.isAutoWin) {
     return <></>;
@@ -132,7 +117,8 @@ export const CustomNode = (node) => {
                 </div>
                 {/* Match Order */}
                 <div className="font-mono font-black text-slate-300 text-sm group-hover:text-sky-300 transition-colors drop-shadow-[0_0_6px_rgba(59,130,246,0.5)]">
-                  {/* #{nodeData.match?.displayOrder ?? ""} */}#{matchNo}
+                  {/* #{nodeData.match?.displayOrder ?? ""} */}#
+                  {nodeData.match.displayOrder}
                 </div>
 
                 <>
@@ -147,11 +133,11 @@ export const CustomNode = (node) => {
                   {/* Player Info */}
                   <div className="flex-1 overflow-hidden">
                     <div className="text-white font-black text-sm tracking-wide truncate group-hover:text-sky-200 transition-colors drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-                      {(nodeData.label?.displayName as string) ?? ""}
+                      {name ?? ""}
                     </div>
-                    <div className="text-sky-400/80 text-[10px] font-bold uppercase tracking-wider">
+                    {/* <div className="text-sky-400/80 text-[10px] font-bold uppercase tracking-wider">
                       Professional Player
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* Score Badge */}

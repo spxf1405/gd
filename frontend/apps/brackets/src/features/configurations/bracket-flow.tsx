@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { EventBus } from "@/helper/event-bus";
 import { useTournament } from "@/hook/tournament";
@@ -6,12 +6,14 @@ import { useDimensionStore } from "@/store/dismension";
 import { useTournamentStore } from "@/store/match";
 import {
   Background,
+  ControlButton,
   Controls,
   getNodesBounds,
   MiniMap,
   PanOnScrollMode,
   ReactFlow,
   useReactFlow,
+  useStoreApi,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { BracketEdge, FinalMatchEdge } from "../flow/edge";
@@ -21,6 +23,7 @@ import { useFlow } from "./use-bracket";
 
 import { type Node } from "@xyflow/react";
 import { useRef } from "react";
+import { Lock, LockOpen } from "lucide-react";
 
 const ZOOM = 0.8;
 const MARGIN = 24;
@@ -64,6 +67,8 @@ function BracketFlow() {
 
   const { data: tournament } = useTournament(id);
 
+  console.log("tournament", tournament);
+
   const { data } = useParticipantsByTournamentID({ tournamentId: id });
 
   const participants = data?.tournamentParticipants ?? [];
@@ -97,7 +102,7 @@ function BracketFlow() {
 
   const { nodes } = useFlow({ tournament });
 
-  console.log("nodes", nodes);
+  console.log("nodes", nodes)
 
   const PADDING = 1000;
 
@@ -116,6 +121,9 @@ function BracketFlow() {
     ];
   }, [nodes]);
 
+  //TODO: isAdmin && running tournament
+  const canUnlock = true;
+
   useEffect(() => {
     if (participants.length && tournament?.brackets) {
       initTourInfo2({ participantsRaw: participants, tournament });
@@ -133,6 +141,22 @@ function BracketFlow() {
       reactFlowInstance.fitView({ duration: 400 });
     }
   }, [reactFlowInstance, matches, currentRound]);
+
+  const store = useStoreApi();
+
+  const lock = () =>
+    store.setState({
+      nodesDraggable: false,
+      nodesConnectable: false,
+      elementsSelectable: false,
+    });
+
+  // Điều kiện mất đi (hoặc đang false lúc mount) thì khóa ngay
+  useEffect(() => {
+    if (!canUnlock) lock();
+  }, [canUnlock]);
+
+  console.log("nodes", nodes);
 
   return (
     <div style={{ width: width, height: height - 120 }}>
@@ -163,7 +187,14 @@ function BracketFlow() {
       >
         <InitialViewport nodes={nodes} />
         <MiniMap />
-        <Controls showZoom showFitView position="bottom-left" />
+        <Controls
+          showZoom
+          showFitView
+          position="bottom-left"
+          onInteractiveChange={(interactive) => {
+            if (interactive && !canUnlock) lock(); // chưa đủ điều kiện -> ép lại
+          }}
+        />
         <Background gap={12} size={1} />
       </ReactFlow>
     </div>
