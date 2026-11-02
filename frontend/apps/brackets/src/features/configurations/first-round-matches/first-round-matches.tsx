@@ -604,6 +604,7 @@ export const FirstMatchRoundSetting = () => {
         side: match.side,
         isAutoWin: match.isAutoWin,
         isSkipped: match.isSkipped,
+        displayOrder: match.displayOrder ?? 0,
         participants: [match.participants[0], match.participants[1]],
         position: {
           x: match.position.x,
@@ -637,6 +638,9 @@ export const FirstMatchRoundSetting = () => {
       participantsRaw: list,
       tournament: tournament,
     });
+
+    console.log("matches", matches);
+
 
     const rq = createRequestAddMatches(matches);
 

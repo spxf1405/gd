@@ -118,6 +118,31 @@ export const createMatch = (data: {
   };
 };
 
+function assignMatchNumbers(matches: BracketMatch[]) {
+  let matchNo = 1;
+
+  const sortedMatches = [...matches].sort((a, b) => {
+    if (a.roundIndex !== b.roundIndex) {
+      return a.roundIndex - b.roundIndex;
+    }
+
+    return a.matchIndex - b.matchIndex;
+  });
+
+  for (const match of sortedMatches) {
+    if (match.isSkipped || match.isAutoWin) continue;
+
+    // if (
+    //   match.roundIndex === 1 &&
+    //   !isRealParticipantMatch(match.participants)
+    // ) {
+    //   continue;
+    // }
+
+    match.displayOrder = matchNo++;
+  }
+}
+
 export function createWbFlowParticipant(
   winnerBracketInfo: WinnerParticipantBracketInfo,
 ) {
@@ -151,6 +176,8 @@ export function createWbFlowParticipant(
       );
     }
   }
+
+  // assignMatchNumbers(matches);
 
   for (let r = 1; r <= roundCount; r++) {
     const roundMatches = matches.filter((n) => n.roundIndex === r);
@@ -248,18 +275,16 @@ export function createWbFlowParticipant(
     return a.matchIndex - b.matchIndex;
   });
 
+  
+
   for (const node of sortedMatches) {
     if (node.isSkipped) continue;
     if (node.isAutoWin) continue;
 
-    if (node.roundIndex === 1) {
-      if (isRealParticipantMatch(node.participants)) {
-        node.displayOrder = realMatchCounter++;
-      }
-    } else {
-      node.displayOrder = realMatchCounter++;
-    }
+    node.displayOrder = realMatchCounter++;
   }
+
+  console.log("sortedMatches", sortedMatches);
 
   // ======================================================
   // ================== POSITION SECTION ==================

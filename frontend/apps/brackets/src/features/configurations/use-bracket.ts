@@ -26,10 +26,9 @@ export const useFlow = ({ tournament }: { tournament?: Tournament }) => {
         }));
       }) ?? [];
 
-
     if (!matches || matches.length === 0) return [];
 
-    return matches.flatMap((match) => {
+    const finalMatches = matches.flatMap((match) => {
       // const isFinal = match.round === match.roundCount;
 
       const nodeType = "custom";
@@ -72,9 +71,9 @@ export const useFlow = ({ tournament }: { tournament?: Tournament }) => {
         },
       ];
     });
-  }, [tournament]);
 
-  console.log("nodes =================", nodes);
+    return finalMatches;
+  }, [tournament]);
 
   return { nodes };
 };

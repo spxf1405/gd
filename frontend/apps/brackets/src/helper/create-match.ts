@@ -27,8 +27,6 @@ export const createMatchesFromParticipants = ({
     wbTotalBracketSlots,
   } = bracketInfo;
 
-  console.log("wbParticipants", wbParticipants);
-
   const { matches, nodes } = createWbFlowParticipant({
     participants: wbParticipants,
     participantsForCreateMatch: wbParticipantsForCreateMatch,

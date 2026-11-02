@@ -96,10 +96,6 @@ export const CustomNode = (node) => {
   const participants = data?.tournamentParticipants ?? [];
   const { data: nodeData } = node;
 
-  console.log("node.data.match", node.data.match);
-  console.log("nodeData.match.orderIndex", nodeData.match.orderIndex);
-  console.log("nodeData.match.matchIndex", nodeData.match.matchIndex);
-
   const matchNo = useMemo(() => {
     if (!participants.length) {
       return;
@@ -111,8 +107,6 @@ export const CustomNode = (node) => {
       matchIndexInRound: nodeData.match.matchIndex,
     });
   }, [participants]);
-
-  console.log("matchNo", matchNo);
 
   if (nodeData.match.isAutoWin) {
     return <></>;
