@@ -46,10 +46,12 @@ export const useFlow = ({ tournament }: { tournament?: Tournament }) => {
           type: nodeType,
           data: {
             match,
+            isFirstSlot: true,
             label: slot0,
           },
           position: {
             x: baseX,
+            isFirstSlot: false,
             y: baseY + FINAL_OF_FINAL_NODE_HEIGHT,
           },
         },

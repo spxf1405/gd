@@ -50,9 +50,6 @@ export function getPreviousMatchesCompact(
   const slot1 = 2 * k - 1 + prevOffset;
   const slot2 = 2 * k + prevOffset;
 
-  // Kiểm tra nếu slot vượt quá số trận của vòng trước (nghĩa là suất Bye đi thẳng)
-  const prevRoundMatchesCount = currentOffset - prevOffset;
-
   return {
     slot1: slot1 <= currentOffset ? slot1 : null,
     slot2: slot2 <= currentOffset ? slot2 : null,
@@ -83,13 +80,13 @@ export const CustomNode = (node) => {
     );
   }, [node, participants]);
 
-  console.log("nodeData.label?.slot", nodeData.label?.slot)
+  console.log("nodeData.label?.slot", nodeData.label?.slot);
 
   const name = nodeData.label?.displayName
-    ? nodeData.label?.displayName
-    : nodeData.label?.slot === 0
-      ? slot1
-      : slot2;
+    ? nodeData.label.displayName
+    : nodeData.isFirstSlot
+      ? `Win trận ${slot1}`
+      : `Win trận  ${slot2}`;
 
   console.log("nodeData", nodeData);
 
@@ -116,9 +113,10 @@ export const CustomNode = (node) => {
                   <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,1)]"></span>
                 </div>
                 {/* Match Order */}
-                <div className="font-mono font-black text-slate-300 text-sm group-hover:text-sky-300 transition-colors drop-shadow-[0_0_6px_rgba(59,130,246,0.5)]">
-                  {/* #{nodeData.match?.displayOrder ?? ""} */}#
-                  {nodeData.match.displayOrder}
+                <div className="flex items-center px-2 py-0.5 rounded-md bg-slate-900/90 border border-blue-500/30 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] group-hover:border-sky-400/50 transition-colors">
+                  <span className="font-mono font-bold text-[11px] text-sky-400 tracking-wider">
+                    M{nodeData.match.displayOrder}
+                  </span>
                 </div>
 
                 <>
@@ -142,7 +140,7 @@ export const CustomNode = (node) => {
 
                   {/* Score Badge */}
                   <div className="flex items-center justify-center min-w-[38px] h-8 rounded-lg bg-blue-500 text-white font-black border border-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.6)] group-hover:shadow-[0_0_20px_rgba(96,165,250,0.9)] transition-all">
-                    <div className="font-mono text-lg  tracking-tight">12</div>
+                    <div className="font-mono text-lg  tracking-tight">-</div>
                   </div>
                 </>
 
@@ -467,7 +465,6 @@ export const FinalNode = (node) => {
       >
         <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-inherit" />
         <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-inherit" />
-
         {/* Số thứ tự */}
         <div className="relative z-10 ml-2">
           <div
@@ -477,7 +474,7 @@ export const FinalNode = (node) => {
             {/* {data.match?.displayOrder} */}
           </div>
         </div>
-
+        Ỏ
         <div className="flex flex-1 items-center px-4 gap-4">
           {/* Flag */}
           <div className="relative group">
