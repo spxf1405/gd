@@ -100,7 +100,7 @@ export const CustomNode = (node) => {
         <ContextMenu.Trigger asChild>
           <Popover.Trigger asChild>
             <div
-              className="relative flex items-center justify-between gap-3 p-3 bg-slate-950/95 rounded-xl p-[1px] backdrop-blur-md transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] group z-10"
+              className="relative flex items-center justify-between gap-3 p-3 bg-slate-950/95 rounded-xl p-[1px] backdrop-blur-md transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] group z-10"
               style={{ width: NODE_WIDTH, height: NODE_HEIGHT }}
             >
               {/* Viền Gradient - blue để đồng bộ với Edge */}
@@ -111,11 +111,11 @@ export const CustomNode = (node) => {
                 {/* Status dot - riêng emerald cho "live" */}
                 <div className="absolute top-2 right-2 flex items-center space-x-1">
                   <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,1)]"></span>
-                </div>
+                </div> 
                 {/* Match Order */}
                 <div className="flex items-center px-2 py-0.5 rounded-md bg-slate-900/90 border border-blue-500/30 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] group-hover:border-sky-400/50 transition-colors">
                   <span className="font-mono font-bold text-[11px] text-sky-400 tracking-wider">
-                    M{nodeData.match.displayOrder}
+                    M{nodeData.match.displayOrder} 
                   </span>
                 </div>
 
