@@ -136,3 +136,27 @@ func (r *MatchRepository) AddMatches(ctx context.Context, matches []*matchpb.Mat
 
 	return nil
 }
+
+func (r *MatchRepository) setWinner(ctx context.Context, matchId string, winnerParticipantId string) error {
+	tx, err := r.DB.Pool.Begin(ctx)
+
+	if err != nil {
+		logger.Error("cant create tx")
+		return err
+	}
+
+	defer tx.Rollback(ctx)
+
+	selectMatchQuerry := `SELECT id FROM gd_matches WHERE id = $1 FOR UPDATE`
+
+	var match *matchpb.Match
+
+	err = tx.QueryRow(ctx, selectMatchQuerry, matchId).Scan(&match.Id)
+
+	if err != nil {
+		logger.Debug("there is no match!")
+		return err
+	}
+
+	return nil
+}
