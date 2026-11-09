@@ -100,71 +100,79 @@ export const CustomNode = (node) => {
         <ContextMenu.Trigger asChild>
           <Popover.Trigger asChild>
             <div
-              className="relative flex items-center justify-between gap-3 p-3 bg-slate-950/95 rounded-xl p-[1px] backdrop-blur-md transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] group z-10"
+              className="relative bg-gradient-to-b from-[#162032] via-[#0f172a] to-[#0a0f1d] rounded-2xl p-[1px] shadow-[0_10px_35px_-5px_rgba(0,0,0,0.9),0_0_25px_rgba(14,165,233,0.25)] group transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_15px_45px_-5px_rgba(0,0,0,0.95),0_0_35px_rgba(14,165,233,0.45)] z-10 select-none"
               style={{ width: NODE_WIDTH, height: NODE_HEIGHT }}
             >
-              {/* Viền Gradient - blue để đồng bộ với Edge */}
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-sky-400 via-blue-600/40 to-slate-900 group-hover:from-sky-300 group-hover:via-blue-500 group-hover:to-blue-700 transition-all duration-500 pointer-events-none opacity-80 group-hover:opacity-100" />
+              {/* Lớp viền Gradient bo tròn bao bên ngoài giúp node tách nền cực rõ */}
+              <div className="absolute inset-0 rounded-2xl border border-sky-400/30 group-hover:border-sky-400/70 transition-colors pointer-events-none" />
 
-              {/* Lớp Nền Phía Trong */}
-              <div className="relative flex items-center justify-between gap-3 w-full h-full p-2.5 rounded-xl bg-slate-950/90 overflow-hidden shadow-[inset_0_0_15px_rgba(0,0,0,0.8)]">
-                {/* Status dot - riêng emerald cho "live" */}
-                <div className="absolute top-2 right-2 flex items-center space-x-1">
-                  <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,1)]"></span>
-                </div> 
-                {/* Match Order */}
-                <div className="flex items-center px-2 py-0.5 rounded-md bg-slate-900/90 border border-blue-500/30 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] group-hover:border-sky-400/50 transition-colors">
-                  <span className="font-mono font-bold text-[11px] text-sky-400 tracking-wider">
-                    M{nodeData.match.displayOrder} 
-                  </span>
-                </div>
+              {/* Highlight ánh sáng mỏng ở mép trên (Top Inner Gloss) */}
+              <div className="absolute inset-x-4 top-0 h-[1px] bg-gradient-to-r from-transparent via-sky-300/40 to-transparent pointer-events-none" />
 
-                <>
-                  {/* Flag */}
-                  <div className="relative shrink-0 overflow-hidden rounded-[3px] border border-blue-500/40 shadow-[0_0_8px_rgba(59,130,246,0.2)]">
+              {/* Top Badge Bo Tròn Mềm Mại */}
+              <div className="absolute -top-3.5 right-4 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#070b14] border border-sky-400/40 text-[10px] shadow-[0_4px_12px_rgba(0,0,0,0.8)] backdrop-blur-md">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]"></span>
+                </span>
+                <span className="font-extrabold tracking-wider text-emerald-400 uppercase">
+                  LIVE
+                </span>
+                <span className="text-slate-600 font-bold">•</span>
+                <span className="font-mono font-bold text-sky-300">
+                  M{nodeData.match.displayOrder}
+                </span>
+              </div>
+
+              {/* Main Content Row */}
+              <div className="relative w-full h-full flex items-center justify-between px-4 rounded-2xl bg-[#0d1424]/80 backdrop-blur-sm overflow-hidden">
+                {/* Vạch điểm nhấn bo mềm góc trái */}
+                <div className="absolute left-0 top-2 bottom-2 w-[4px] bg-gradient-to-b from-sky-400 to-blue-600 rounded-r-full shadow-[0_0_10px_rgba(56,189,248,0.8)]" />
+
+                {/* Left: Flag + Name */}
+                <div className="flex items-center gap-3.5 min-w-0 pl-1.5">
+                  <div className="shrink-0 w-8 h-5.5 rounded-md overflow-hidden border border-white/20 shadow-md">
                     <img
                       src={`https://flagcdn.com/w80/${nodeData.label?.nationality?.toLowerCase() ?? "vn"}.png`}
-                      className="w-8 h-5 object-cover"
+                      alt="Flag"
+                      className="w-full h-full object-cover"
                     />
                   </div>
 
-                  {/* Player Info */}
-                  <div className="flex-1 overflow-hidden">
-                    <div className="text-white font-black text-sm tracking-wide truncate group-hover:text-sky-200 transition-colors drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-                      {name ?? ""}
-                    </div>
-                    {/* <div className="text-sky-400/80 text-[10px] font-bold uppercase tracking-wider">
-                      Professional Player
-                    </div> */}
+                  <div className="truncate text-sm font-bold text-slate-100 tracking-wide group-hover:text-white transition-colors">
+                    {name ?? ""}
                   </div>
+                </div>
 
-                  {/* Score Badge */}
-                  <div className="flex items-center justify-center min-w-[38px] h-8 rounded-lg bg-blue-500 text-white font-black border border-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.6)] group-hover:shadow-[0_0_20px_rgba(96,165,250,0.9)] transition-all">
-                    <div className="font-mono text-lg  tracking-tight">-</div>
-                  </div>
-                </>
-
-                <Handle
-                  type="source"
-                  position={
-                    nodeData.match.side === "left"
-                      ? Position.Right
-                      : Position.Left
-                  }
-                  id="l"
-                  className="!w-2.5 !h-2.5 !bg-blue-400 !border-2 !border-slate-950 shadow-[0_0_8px_rgba(96,165,250,0.8)]"
-                />
-                <Handle
-                  type="target"
-                  position={
-                    nodeData.match.side === "left"
-                      ? Position.Left
-                      : Position.Right
-                  }
-                  id="r"
-                  className="!w-2.5 !h-2.5 !bg-blue-400 !border-2 !border-slate-950 shadow-[0_0_8px_rgba(96,165,250,0.8)]"
-                />
+                {/* Right: Score Box Bo Tròn Mềm Mại */}
+                <div className="min-w-[42px] h-9 px-2 rounded-xl bg-gradient-to-b from-sky-400 to-blue-600 flex items-center justify-center border border-sky-200/50 shadow-[0_4px_12px_rgba(14,165,233,0.4)] group-hover:shadow-[0_4px_18px_rgba(14,165,233,0.7)] shrink-0 transition-all">
+                  <span className="font-mono text-lg font-black text-white leading-none">
+                    -
+                  </span>
+                </div>
               </div>
+
+              {/* React Flow Handles */}
+              <Handle
+                type="source"
+                position={
+                  nodeData.match.side === "left"
+                    ? Position.Right
+                    : Position.Left
+                }
+                id="l"
+                className="!w-3.5 !h-3.5 !bg-sky-400 !border-2 !border-[#070b14] shadow-[0_0_10px_rgba(56,189,248,0.9)] !z-30"
+              />
+              <Handle
+                type="target"
+                position={
+                  nodeData.match.side === "left"
+                    ? Position.Left
+                    : Position.Right
+                }
+                id="r"
+                className="!w-3.5 !h-3.5 !bg-sky-400 !border-2 !border-[#070b14] shadow-[0_0_10px_rgba(56,189,248,0.9)] !z-30"
+              />
             </div>
           </Popover.Trigger>
         </ContextMenu.Trigger>

@@ -1,11 +1,12 @@
 import { useTournamentStore } from "@/store/match";
 import { ContextMenu, Popover } from "radix-ui";
 import {
-    Camera, ChevronRight,
-    Heart,
-    Sword,
-    Swords,
-    UserRound
+  Camera,
+  ChevronRight,
+  Heart,
+  Sword,
+  Swords,
+  UserRound,
 } from "lucide-react";
 import { useMemo } from "react";
 import { Handle, Position } from "@xyflow/react";
@@ -53,24 +54,22 @@ export const CustomNode = ({ data: nodeData }) => {
         <ContextMenu.Trigger asChild>
           <Popover.Trigger asChild>
             <div
-              className="relative rounded-xl p-[1px] bg-gradient-to-br from-sky-400 via-blue-600/40 to-slate-900 hover:from-sky-300 hover:via-blue-500 hover:to-blue-700 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_25px_rgba(59,130,246,0.35)] group z-10 cursor-pointer"
+              className="relative rounded-xl p-[2px] bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:shadow-[0_0_30px_rgba(6,182,212,0.7)] transition-all duration-300 hover:scale-[1.02] group z-10 cursor-pointer"
               style={{ width: NODE_WIDTH, height: NODE_HEIGHT }}
             >
-              {/* Lớp Nền Phía Trong */}
-              <div className="relative flex items-center justify-between gap-3 w-full h-full px-3 py-2 rounded-xl bg-slate-950/95 overflow-hidden shadow-[inset_0_0_15px_rgba(0,0,0,0.8)] backdrop-blur-md">
-                
-                {/* Status dot (Live indicator) */}
+              <div className="relative flex items-center justify-between gap-3 w-full h-full px-3 py-2 rounded-[10px] bg-slate-900/90 overflow-hidden backdrop-blur-xl border border-cyan-500/30">
+                {/* Status dot */}
                 <div className="absolute top-2 right-2 flex items-center">
-                  <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+                  <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,1)]" />
                 </div>
 
                 {/* Match Order */}
-                <div className="font-mono font-black text-slate-400 text-sm group-hover:text-sky-300 transition-colors">
+                <div className="font-mono font-bold text-cyan-300 text-sm">
                   #{nodeData?.match?.displayOrder}
                 </div>
 
                 {/* Flag */}
-                <div className="relative shrink-0 overflow-hidden rounded-[4px] border border-blue-500/30 shadow-sm">
+                <div className="relative shrink-0 overflow-hidden rounded-[4px] border border-cyan-400/50 shadow-md">
                   <img
                     src={`https://flagcdn.com/w80/${nationality}.png`}
                     alt="flag"
@@ -80,28 +79,36 @@ export const CustomNode = ({ data: nodeData }) => {
 
                 {/* Player Info */}
                 <div className="flex-1 overflow-hidden">
-                  <div className="text-white font-bold text-sm tracking-wide truncate group-hover:text-sky-200 transition-colors">
+                  <div className="text-white font-extrabold text-sm tracking-wide truncate">
                     {playerName}
                   </div>
                 </div>
 
                 {/* Score Badge */}
-                <div className="flex items-center justify-center min-w-[36px] h-7 rounded-lg bg-blue-600/90 text-white font-black border border-blue-400/50 shadow-[0_0_10px_rgba(59,130,246,0.5)]">
+                <div className="flex items-center justify-center min-w-[36px] h-7 rounded-lg bg-cyan-500 text-slate-950 font-black shadow-[0_0_12px_rgba(6,182,212,0.8)]">
                   <span className="font-mono text-sm tracking-tight">12</span>
                 </div>
 
                 {/* Handles */}
                 <Handle
                   type="source"
-                  position={nodeData?.match?.side === "left" ? Position.Right : Position.Left}
+                  position={
+                    nodeData?.match?.side === "left"
+                      ? Position.Right
+                      : Position.Left
+                  }
                   id="l"
-                  className="!w-2.5 !h-2.5 !bg-blue-400 !border-2 !border-slate-950 shadow-[0_0_6px_rgba(96,165,250,0.8)]"
+                  className="!w-3 !h-3 !bg-cyan-400 !border-2 !border-slate-900 shadow-[0_0_8px_rgba(6,182,212,1)]"
                 />
                 <Handle
                   type="target"
-                  position={nodeData?.match?.side === "left" ? Position.Left : Position.Right}
+                  position={
+                    nodeData?.match?.side === "left"
+                      ? Position.Left
+                      : Position.Right
+                  }
                   id="r"
-                  className="!w-2.5 !h-2.5 !bg-blue-400 !border-2 !border-slate-950 shadow-[0_0_6px_rgba(96,165,250,0.8)]"
+                  className="!w-3 !h-3 !bg-cyan-400 !border-2 !border-slate-900 shadow-[0_0_8px_rgba(6,182,212,1)]"
                 />
               </div>
             </div>
@@ -120,7 +127,9 @@ export const CustomNode = ({ data: nodeData }) => {
                 key={idx}
                 className="group flex gap-3 items-center p-2 rounded-lg cursor-pointer transition-colors hover:bg-white/10 outline-none"
               >
-                <item.Icon className={`w-4 h-4 ${item.color} transition-transform group-hover:scale-110`} />
+                <item.Icon
+                  className={`w-4 h-4 ${item.color} transition-transform group-hover:scale-110`}
+                />
                 <span className="text-sm font-medium text-gray-200 group-hover:text-white">
                   {item.label}
                 </span>
@@ -133,33 +142,45 @@ export const CustomNode = ({ data: nodeData }) => {
             <ContextMenu.Sub>
               <ContextMenu.SubTrigger className="group flex gap-3 items-center p-2 rounded-lg cursor-pointer transition-colors hover:bg-white/10 outline-none data-[state=open]:bg-white/10">
                 <Camera className="w-4 h-4 text-purple-400" />
-                <span className="text-sm font-medium text-gray-200 group-hover:text-white">Chụp ảnh</span>
+                <span className="text-sm font-medium text-gray-200 group-hover:text-white">
+                  Chụp ảnh
+                </span>
                 <ChevronRight className="ml-auto w-3.5 h-3.5 text-gray-500" />
               </ContextMenu.SubTrigger>
 
               <ContextMenu.Portal>
-                <ContextMenu.SubContent sideOffset={8} className="bg-slate-900/95 backdrop-blur-xl p-2 rounded-xl border border-slate-700/50 shadow-xl min-w-[240px] z-50">
+                <ContextMenu.SubContent
+                  sideOffset={8}
+                  className="bg-slate-900/95 backdrop-blur-xl p-2 rounded-xl border border-slate-700/50 shadow-xl min-w-[240px] z-50"
+                >
                   <ContextMenu.Label className="px-2 py-1 text-[10px] uppercase tracking-wider font-bold text-slate-500">
                     Phạm vi chụp
                   </ContextMenu.Label>
                   <ContextMenu.Item className="flex gap-3 items-center p-2 rounded-lg cursor-pointer outline-none hover:bg-purple-500/10 transition-colors">
                     <UserRound className="w-4 h-4 text-purple-400" />
                     <div className="flex flex-col">
-                      <span className="text-sm text-gray-200">Hành trình cơ thủ</span>
-                      <span className="text-[10px] text-slate-500">Tất cả trận đấu của cơ thủ</span>
+                      <span className="text-sm text-gray-200">
+                        Hành trình cơ thủ
+                      </span>
+                      <span className="text-[10px] text-slate-500">
+                        Tất cả trận đấu của cơ thủ
+                      </span>
                     </div>
                   </ContextMenu.Item>
                   <ContextMenu.Item className="flex gap-3 items-center p-2 rounded-lg cursor-pointer outline-none hover:bg-purple-500/10 transition-colors">
                     <Swords className="w-4 h-4 text-purple-400" />
                     <div className="flex flex-col">
-                      <span className="text-sm text-gray-200">Trận đấu này</span>
-                      <span className="text-[10px] text-slate-500">Chỉ hiển thị trận đang chọn</span>
+                      <span className="text-sm text-gray-200">
+                        Trận đấu này
+                      </span>
+                      <span className="text-[10px] text-slate-500">
+                        Chỉ hiển thị trận đang chọn
+                      </span>
                     </div>
                   </ContextMenu.Item>
                 </ContextMenu.SubContent>
               </ContextMenu.Portal>
             </ContextMenu.Sub>
-
           </ContextMenu.Content>
         </ContextMenu.Portal>
       </ContextMenu.Root>
@@ -180,13 +201,23 @@ export const CustomNode = ({ data: nodeData }) => {
             <h2 className="text-slate-400 text-xs font-semibold uppercase tracking-wider">
               Billiard Championship 2026 - Quarter Finals
             </h2>
-            <p className="text-slate-500 text-[11px] mt-1">Race to 9 • Best of 17</p>
+            <p className="text-slate-500 text-[11px] mt-1">
+              Race to 9 • Best of 17
+            </p>
 
             <div className="grid grid-cols-3 gap-4 items-center mt-4">
               <div className="text-center">
-                <img src="https://flagcdn.com/w80/vn.png" alt="VN" className="w-14 h-14 rounded-full mx-auto mb-2 border-2 border-blue-500 object-cover" />
-                <h3 className="text-white font-semibold text-sm">Nguyễn Văn A</h3>
-                <span className="inline-block bg-emerald-500/10 text-emerald-400 text-[10px] font-semibold px-2 py-0.5 rounded mt-1">WINNER</span>
+                <img
+                  src="https://flagcdn.com/w80/vn.png"
+                  alt="VN"
+                  className="w-14 h-14 rounded-full mx-auto mb-2 border-2 border-blue-500 object-cover"
+                />
+                <h3 className="text-white font-semibold text-sm">
+                  Nguyễn Văn A
+                </h3>
+                <span className="inline-block bg-emerald-500/10 text-emerald-400 text-[10px] font-semibold px-2 py-0.5 rounded mt-1">
+                  WINNER
+                </span>
               </div>
               <div className="bg-slate-800/80 rounded-lg py-3 px-2">
                 <div className="flex items-center justify-center gap-3 text-3xl font-bold">
@@ -194,18 +225,30 @@ export const CustomNode = ({ data: nodeData }) => {
                   <span className="text-slate-600 font-normal">-</span>
                   <span className="text-slate-500">7</span>
                 </div>
-                <span className="text-[10px] text-slate-500 mt-1 block">Final Score</span>
+                <span className="text-[10px] text-slate-500 mt-1 block">
+                  Final Score
+                </span>
               </div>
               <div className="text-center">
-                <img src="https://flagcdn.com/w80/us.png" alt="US" className="w-14 h-14 rounded-full mx-auto mb-2 border-2 border-slate-700 object-cover" />
-                <h3 className="text-slate-300 font-semibold text-sm">John Smith</h3>
-                <span className="text-slate-500 text-[10px] block mt-1">Seed #3</span>
+                <img
+                  src="https://flagcdn.com/w80/us.png"
+                  alt="US"
+                  className="w-14 h-14 rounded-full mx-auto mb-2 border-2 border-slate-700 object-cover"
+                />
+                <h3 className="text-slate-300 font-semibold text-sm">
+                  John Smith
+                </h3>
+                <span className="text-slate-500 text-[10px] block mt-1">
+                  Seed #3
+                </span>
               </div>
             </div>
           </div>
 
           <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
-            <span className="text-slate-500">Table 3 • Referee: Trần Văn B</span>
+            <span className="text-slate-500">
+              Table 3 • Referee: Trần Văn B
+            </span>
             <button className="text-blue-400 hover:text-blue-300 font-semibold transition-colors">
               Chi tiết →
             </button>
