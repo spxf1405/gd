@@ -90,6 +90,8 @@ export const CustomNode = (node) => {
 
   console.log("nodeData", nodeData);
 
+  const nationality = nodeData?.label?.nationality?.toLowerCase() ?? "vn";
+
   if (nodeData.match.isAutoWin) {
     return <></>;
   }
@@ -99,81 +101,147 @@ export const CustomNode = (node) => {
       <ContextMenu.Root>
         <ContextMenu.Trigger asChild>
           <Popover.Trigger asChild>
-            <div
-              className="relative bg-gradient-to-b from-[#162032] via-[#0f172a] to-[#0a0f1d] rounded-2xl p-[1px] shadow-[0_10px_35px_-5px_rgba(0,0,0,0.9),0_0_25px_rgba(14,165,233,0.25)] group transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_15px_45px_-5px_rgba(0,0,0,0.95),0_0_35px_rgba(14,165,233,0.45)] z-10 select-none"
-              style={{ width: NODE_WIDTH, height: NODE_HEIGHT }}
-            >
-              {/* Lớp viền Gradient bo tròn bao bên ngoài giúp node tách nền cực rõ */}
-              <div className="absolute inset-0 rounded-2xl border border-sky-400/30 group-hover:border-sky-400/70 transition-colors pointer-events-none" />
+           
+<div
+  className="
+    group relative z-10 cursor-pointer
+    overflow-hidden rounded-2xl
+    border border-[#354762]
+    bg-[#131C2B]
+    shadow-[0_4px_12px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.06)]
+    transition-all duration-300
+    hover:border-[#4B8AB5]
+    hover:bg-[#19263A]
+    hover:shadow-[0_5px_18px_rgba(0,0,0,0.35),0_0_14px_rgba(56,189,248,0.10)]
+  "
+  style={{ width: NODE_WIDTH, height: NODE_HEIGHT }}
+>
+  {/* Background decoration */}
+  <div className="
+    pointer-events-none absolute -right-10 -top-10
+    h-28 w-28 rounded-full
+    bg-sky-400/[0.07] blur-2xl
+    transition-all duration-300
+    group-hover:bg-sky-400/[0.13]
+  " />
 
-              {/* Highlight ánh sáng mỏng ở mép trên (Top Inner Gloss) */}
-              <div className="absolute inset-x-4 top-0 h-[1px] bg-gradient-to-r from-transparent via-sky-300/40 to-transparent pointer-events-none" />
+  {/* Top highlight */}
+  <div className="
+    pointer-events-none absolute inset-x-5 top-0
+    h-px bg-gradient-to-r
+    from-transparent via-slate-400/30 to-transparent
+  " />
 
-              {/* Top Badge Bo Tròn Mềm Mại */}
-              <div className="absolute -top-3.5 right-4 z-20 flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#070b14] border border-sky-400/40 text-[10px] shadow-[0_4px_12px_rgba(0,0,0,0.8)] backdrop-blur-md">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]"></span>
-                </span>
-                <span className="font-extrabold tracking-wider text-emerald-400 uppercase">
-                  LIVE
-                </span>
-                <span className="text-slate-600 font-bold">•</span>
-                <span className="font-mono font-bold text-sky-300">
-                  M{nodeData.match.displayOrder}
-                </span>
-              </div>
+  {/* Left accent */}
+  <div className="
+    absolute left-0 top-1/4 bottom-1/4
+    w-[3px] rounded-r-full
+    bg-gradient-to-b from-sky-300/50 via-sky-400 to-blue-500/40
+    shadow-[0_0_8px_rgba(56,189,248,0.25)]
+  " />
 
-              {/* Main Content Row */}
-              <div className="relative w-full h-full flex items-center justify-between px-4 rounded-2xl bg-[#0d1424]/80 backdrop-blur-sm overflow-hidden">
-                {/* Vạch điểm nhấn bo mềm góc trái */}
-                <div className="absolute left-0 top-2 bottom-2 w-[4px] bg-gradient-to-b from-sky-400 to-blue-600 rounded-r-full shadow-[0_0_10px_rgba(56,189,248,0.8)]" />
+  <div className="relative flex h-full items-center gap-3 px-3.5">
 
-                {/* Left: Flag + Name */}
-                <div className="flex items-center gap-3.5 min-w-0 pl-1.5">
-                  <div className="shrink-0 w-8 h-5.5 rounded-md overflow-hidden border border-white/20 shadow-md">
-                    <img
-                      src={`https://flagcdn.com/w80/${nodeData.label?.nationality?.toLowerCase() ?? "vn"}.png`}
-                      alt="Flag"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
+    {/* Match number */}
+    <div className="
+      flex shrink-0 items-center justify-center
+      rounded-lg border border-slate-600/40
+      bg-slate-800/80 px-2 py-1
+      font-mono text-base font-bold
+      text-slate-300
+      shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]
+    ">
+      #{nodeData?.match?.displayOrder}
+    </div>
 
-                  <div className="truncate text-sm font-bold text-slate-100 tracking-wide group-hover:text-white transition-colors">
-                    {name ?? ""}
-                  </div>
-                </div>
+    {/* Flag */}
+    <div className="
+      shrink-0 overflow-hidden rounded-md
+      border border-white/15
+      shadow-[0_2px_5px_rgba(0,0,0,0.3)]
+    ">
+      <img
+        src={`https://flagcdn.com/w80/${nationality}.png`}
+        alt="flag"
+        className="h-6 w-8 object-cover"
+      />
+    </div>
 
-                {/* Right: Score Box Bo Tròn Mềm Mại */}
-                <div className="min-w-[42px] h-9 px-2 rounded-xl bg-gradient-to-b from-sky-400 to-blue-600 flex items-center justify-center border border-sky-200/50 shadow-[0_4px_12px_rgba(14,165,233,0.4)] group-hover:shadow-[0_4px_18px_rgba(14,165,233,0.7)] shrink-0 transition-all">
-                  <span className="font-mono text-lg font-black text-white leading-none">
-                    -
-                  </span>
-                </div>
-              </div>
+    {/* Player */}
+    <div className="min-w-0 flex-1">
+      <div className="
+        truncate text-lg font-medium
+        tracking-wide text-slate-100
+        transition-colors duration-200
+        group-hover:text-white
+      ">
+        {name}
+      </div>
+    </div>
 
-              {/* React Flow Handles */}
-              <Handle
-                type="source"
-                position={
-                  nodeData.match.side === "left"
-                    ? Position.Right
-                    : Position.Left
-                }
-                id="l"
-                className="!w-3.5 !h-3.5 !bg-sky-400 !border-2 !border-[#070b14] shadow-[0_0_10px_rgba(56,189,248,0.9)] !z-30"
-              />
-              <Handle
-                type="target"
-                position={
-                  nodeData.match.side === "left"
-                    ? Position.Left
-                    : Position.Right
-                }
-                id="r"
-                className="!w-3.5 !h-3.5 !bg-sky-400 !border-2 !border-[#070b14] shadow-[0_0_10px_rgba(56,189,248,0.9)] !z-30"
-              />
-            </div>
+   
+{/* Score */}
+<div className="
+  relative flex h-10 min-w-[42px] shrink-0
+  items-center justify-center
+  rounded-xl
+  border border-white/20
+  bg-white/10
+  px-2.5
+  shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_4px_12px_rgba(0,0,0,0.4)]
+  backdrop-blur-md
+  transition-all duration-300
+  group-hover:border-white/40
+  group-hover:bg-white/15
+  group-hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_16px_rgba(0,0,0,0.5)]
+">
+  <span className="
+    text-lg font-black
+    tabular-nums text-white
+    drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]
+  ">
+    12
+  </span>
+</div>
+  
+  </div>
+
+  {/* React Flow Handles */}
+  {/* <Handle
+    type="source"
+    position={
+      nodeData?.match?.side === "left"
+        ? Position.Right
+        : Position.Left
+    }
+    id="l"
+    className="
+      !h-2.5 !w-2.5
+      !rounded-full
+      !border-2 !border-[#131C2B]
+      !bg-sky-400
+      !shadow-[0_0_0_2px_rgba(56,189,248,0.16)]
+    "
+  />
+
+  <Handle
+    type="target"
+    position={
+      nodeData?.match?.side === "left"
+        ? Position.Left
+        : Position.Right
+    }
+    id="r"
+    className="
+      !h-2.5 !w-2.5
+      !rounded-full
+      !border-2 !border-[#131C2B]
+      !bg-sky-400
+      !shadow-[0_0_0_2px_rgba(56,189,248,0.16)]
+    "
+  /> */}
+</div>
+
           </Popover.Trigger>
         </ContextMenu.Trigger>
         <ContextMenu.Portal>
@@ -392,7 +460,7 @@ export const CustomNode = (node) => {
                     <img
                       src="https://flagcdn.com/w80/vn.png"
                       alt="VN"
-                      className="w-16 h-16 rounded-full mx-auto mb-2 border-2 border-blue-500"
+                      className="w-20 h-20 rounded-full mx-auto mb-2 border-2 border-blue-500"
                     />
                     <h3 className="text-white font-semibold">Nguyễn Văn A</h3>
                     <p className="text-gray-500 text-xs">Seed #1</p>

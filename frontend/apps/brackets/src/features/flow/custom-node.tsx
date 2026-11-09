@@ -39,7 +39,7 @@ export const CustomNode = ({ data: nodeData }) => {
   const playerName = nodeData?.label?.displayName
     ? nodeData.label.displayName
     : nodeData?.isFirstSlot
-      ? `Win trận ${slot1}`
+      ? `Win trận 1 ${slot1}`
       : `Win trận ${slot2}`;
 
   if (nodeData?.match?.isAutoWin) {
@@ -54,63 +54,152 @@ export const CustomNode = ({ data: nodeData }) => {
         <ContextMenu.Trigger asChild>
           <Popover.Trigger asChild>
             <div
-              className="relative rounded-xl p-[2px] bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:shadow-[0_0_30px_rgba(6,182,212,0.7)] transition-all duration-300 hover:scale-[1.02] group z-10 cursor-pointer"
+              className="
+    group relative z-10 cursor-pointer
+    overflow-hidden
+    rounded-2xl
+    border border-slate-600/70
+    bg-[#151C2B]
+    shadow-[0_3px_12px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.035)]
+    transition-all duration-200 ease-out
+    hover:border-sky-400/60
+    hover:bg-[#192438]
+    hover:shadow-[0_5px_18px_rgba(0,0,0,0.35),0_0_12px_rgba(56,189,248,0.07)]
+  "
               style={{ width: NODE_WIDTH, height: NODE_HEIGHT }}
             >
-              <div className="relative flex items-center justify-between gap-3 w-full h-full px-3 py-2 rounded-[10px] bg-slate-900/90 overflow-hidden backdrop-blur-xl border border-cyan-500/30">
-                {/* Status dot */}
-                <div className="absolute top-2 right-2 flex items-center">
-                  <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,1)]" />
-                </div>
+              {/* Soft left accent */}
+              <div
+                className="
+    absolute left-0 top-3 bottom-3
+    w-[3px] rounded-full
+    bg-sky-500/70
+    transition-all duration-200
+    group-hover:bg-sky-400
+  "
+              />
 
-                {/* Match Order */}
-                <div className="font-mono font-bold text-cyan-300 text-sm">
+              <div className="relative flex h-full items-center gap-3 px-3.5 py-2">
+                {/* Match Number */}
+                <div
+                  className="
+      flex shrink-0 items-center justify-center
+      rounded-lg border border-slate-700/70
+      bg-slate-800/70 px-2 py-1
+      font-mono text-xs font-semibold
+      text-slate-400
+    "
+                >
                   #{nodeData?.match?.displayOrder}
                 </div>
 
                 {/* Flag */}
-                <div className="relative shrink-0 overflow-hidden rounded-[4px] border border-cyan-400/50 shadow-md">
+                <div
+                  className="
+      shrink-0 overflow-hidden
+      rounded-md
+      border border-white/10
+      shadow-sm
+    "
+                >
                   <img
                     src={`https://flagcdn.com/w80/${nationality}.png`}
                     alt="flag"
-                    className="w-7 h-4 object-cover"
+                    className="h-4 w-7 object-cover"
                   />
                 </div>
 
-                {/* Player Info */}
-                <div className="flex-1 overflow-hidden">
-                  <div className="text-white font-extrabold text-sm tracking-wide truncate">
-                    {playerName}
+                {/* Player */}
+                <div className="min-w-0 flex-1">
+                  <div
+                    className="
+        truncate text-[13px]
+        font-semibold tracking-wide
+        text-slate-100
+        group-hover:text-white
+        transition-colors
+      "
+                  >
+                    {playerName} 123
                   </div>
                 </div>
 
-                {/* Score Badge */}
-                <div className="flex items-center justify-center min-w-[36px] h-7 rounded-lg bg-cyan-500 text-slate-950 font-black shadow-[0_0_12px_rgba(6,182,212,0.8)]">
-                  <span className="font-mono text-sm tracking-tight">12</span>
+                {/* Live */}
+
+                <div
+                  className="
+        flex shrink-0 items-center gap-1.5
+        rounded-full
+        border border-emerald-500/20
+        bg-emerald-500/10
+        px-2 py-1
+      "
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                  <span
+                    className="
+          text-[9px] font-bold
+          tracking-wider text-emerald-400
+        "
+                  >
+                    LIVE
+                  </span>
                 </div>
 
-                {/* Handles */}
-                <Handle
-                  type="source"
-                  position={
-                    nodeData?.match?.side === "left"
-                      ? Position.Right
-                      : Position.Left
-                  }
-                  id="l"
-                  className="!w-3 !h-3 !bg-cyan-400 !border-2 !border-slate-900 shadow-[0_0_8px_rgba(6,182,212,1)]"
-                />
-                <Handle
-                  type="target"
-                  position={
-                    nodeData?.match?.side === "left"
-                      ? Position.Left
-                      : Position.Right
-                  }
-                  id="r"
-                  className="!w-3 !h-3 !bg-cyan-400 !border-2 !border-slate-900 shadow-[0_0_8px_rgba(6,182,212,1)]"
-                />
+                {/* Score */}
+                <div
+                  className="
+      flex h-8 min-w-[38px] shrink-0
+      items-center justify-center
+      rounded-xl
+      border border-sky-400/20
+      bg-sky-500/10
+      px-2
+      font-mono text-sm font-bold
+      tabular-nums text-sky-300
+      transition-all duration-200
+      group-hover:border-sky-400/40
+      group-hover:bg-sky-500/15
+    "
+                >
+                  {score}
+                </div>
               </div>
+
+              {/* Handles */}
+              <Handle
+                type="source"
+                position={
+                  nodeData?.match?.side === "left"
+                    ? Position.Right
+                    : Position.Left
+                }
+                id="l"
+                className="
+      !h-2.5 !w-2.5
+      !rounded-full
+      !border-2 !border-[#151C2B]
+      !bg-sky-400
+      !shadow-[0_0_0_2px_rgba(56,189,248,0.15)]
+    "
+              />
+
+              <Handle
+                type="target"
+                position={
+                  nodeData?.match?.side === "left"
+                    ? Position.Left
+                    : Position.Right
+                }
+                id="r"
+                className="
+      !h-2.5 !w-2.5
+      !rounded-full
+      !border-2 !border-[#151C2B]
+      !bg-sky-400
+      !shadow-[0_0_0_2px_rgba(56,189,248,0.15)]
+    "
+              />
             </div>
           </Popover.Trigger>
         </ContextMenu.Trigger>

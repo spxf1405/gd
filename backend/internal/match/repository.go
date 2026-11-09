@@ -3,10 +3,12 @@ package match
 import (
 	"backend/internal/db"
 	matchpb "backend/internal/gen/match/v1"
+	tournamentpb "backend/internal/gen/tournament/v1"
 	"backend/internal/logger"
 	"backend/internal/repository"
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 
@@ -147,14 +149,55 @@ func (r *MatchRepository) setWinner(ctx context.Context, matchId string, winnerP
 
 	defer tx.Rollback(ctx)
 
-	selectMatchQuerry := `SELECT id FROM gd_matches WHERE id = $1 FOR UPDATE`
+	selectMatchQuerry := `SELECT id, round_id FROM gd_matches WHERE id = $1 FOR UPDATE`
 
-	var match *matchpb.Match
+	match := &matchpb.Match{}
 
-	err = tx.QueryRow(ctx, selectMatchQuerry, matchId).Scan(&match.Id)
+	err = tx.QueryRow(ctx, selectMatchQuerry, matchId).Scan(&match.Id, &match.RoundId)
 
 	if err != nil {
 		logger.Debug("there is no match!")
+		return err
+	}
+
+	var selectTournamentQuery = `
+		SELECT
+			match.id,
+			tournament.status,
+		FROM
+			gd_matches match
+		JOIN
+			gd_match_participants match_participants 0N 
+		JOIN
+			gd_participants participant 0N 
+		JOIN
+			gd_rounds round ON match.round_id = round.id
+		JOIN
+			gd_brackets bracket ON round.bracket_id = bracket.id
+		JOIN
+			gd_tournaments tournament ON bracket.tournament_id = tournament.id	
+		WHERE
+			match.id = $1
+		FOR UPDATE OF match;
+		`
+
+	tournament := &tournamentpb.Tournament{}
+
+	err = tx.QueryRow(ctx, selectTournamentQuery, match.Id).Scan(&tournament.Status)
+
+	if err != nil {
+		logger.Error("tournament doesn't exist")
+		return err
+	}
+
+	if tournament.Status != tournamentpb.TournamentStatus_TOURNAMENT_STATUS_RUNNING {
+		var eMsg = "tournament aren't running"
+		logger.Error(eMsg)
+		return errors.New(eMsg)
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		logger.Error("can't commit transaction")
 		return err
 	}
 
