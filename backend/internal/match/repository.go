@@ -14,6 +14,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"go.uber.org/zap"
 )
 
 type MatchRepository struct {
@@ -139,7 +140,7 @@ func (r *MatchRepository) AddMatches(ctx context.Context, matches []*matchpb.Mat
 	return nil
 }
 
-func (r *MatchRepository) setWinner(ctx context.Context, matchId string, winnerParticipantId string) error {
+func (r *MatchRepository) setWinner(ctx context.Context, matchId string, winnerParticipantId string, player1Score int, player2Score int) error {
 	tx, err := r.DB.Pool.Begin(ctx)
 
 	if err != nil {
@@ -151,7 +152,6 @@ func (r *MatchRepository) setWinner(ctx context.Context, matchId string, winnerP
 
 	var selectTournamentQuery = `
 		SELECT
-			m.id,
 			tournament.status,
 			round.raceTo,
 			COALESCE(
@@ -186,22 +186,46 @@ func (r *MatchRepository) setWinner(ctx context.Context, matchId string, winnerP
 		FOR UPDATE OF m;
 	`
 
-	match := &matchpb.Match{}
+	var tournamentStatus, roundRaceTo sql.NullInt32
 
-	tournament := &tournamentpb.Tournament{}
+	type Participant struct {
+		participant_id string
+	}
 
-	err = tx.QueryRow(ctx, selectTournamentQuery, matchId).Scan(&tournament.Status)
+	var participants []
+
+	err = tx.QueryRow(ctx, selectTournamentQuery, matchId).Scan(&tournamentStatus, &roundRaceTo, &participants)
 
 	if err != nil {
-		logger.Error("tournament doesn't exist")
+		logger.Error("error", zap.Error(err))
 		return err
 	}
 
-	if tournament.Status != tournamentpb.TournamentStatus_TOURNAMENT_STATUS_RUNNING {
+	if !tournamentStatus.Valid || tournamentStatus.Int32 != int32(tournamentpb.TournamentStatus_TOURNAMENT_STATUS_RUNNING) {
 		var eMsg = "tournament aren't running"
 		logger.Error(eMsg)
 		return errors.New(eMsg)
 	}
+
+	if !roundRaceTo.Valid {
+		var eMsg = "raceTo weren't detected"
+		logger.Error(eMsg)
+		return errors.New(eMsg)
+	}
+
+	raceTo := int(roundRaceTo.Int32)
+
+	if player1Score < 0 || player2Score < 0 ||
+		player1Score > raceTo || player2Score > raceTo ||
+		(player1Score == raceTo && player2Score == raceTo) {
+		return errors.New("invalid match score")
+	}
+
+	for p := range participants {
+
+	}
+	
+
 
 	if err := tx.Commit(ctx); err != nil {
 		logger.Error("can't commit transaction")
