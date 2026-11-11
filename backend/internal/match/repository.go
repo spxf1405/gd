@@ -8,6 +8,7 @@ import (
 	"backend/internal/repository"
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -160,8 +161,8 @@ func (r *MatchRepository) setWinner(ctx context.Context, matchId string, winnerP
 						json_build_object(
 							'participant_id', participant.id,
 							'participant_name', player.name,
-							'slot': match_participant.slot,
-							'score': match_participant.score
+							'slot', match_participant.slot,
+							'score', match_participant.score
 						)
 					)
 					FROM gd_match_participants match_participant
@@ -189,16 +190,46 @@ func (r *MatchRepository) setWinner(ctx context.Context, matchId string, winnerP
 	var tournamentStatus, roundRaceTo sql.NullInt32
 
 	type Participant struct {
-		participant_id string
+		ParticipantID   string `json:"participant_id"`
+		ParticipantName string `json:"participant_name"`
+		Slot            int    `json:"slot"`
+		Score           int    `json:"score"`
 	}
 
-	var participants []
+	var participants []Participant
+	var participantsRaw []byte
 
-	err = tx.QueryRow(ctx, selectTournamentQuery, matchId).Scan(&tournamentStatus, &roundRaceTo, &participants)
+	err = tx.QueryRow(ctx, selectTournamentQuery, matchId).Scan(&tournamentStatus, &roundRaceTo, &participantsRaw)
 
 	if err != nil {
 		logger.Error("error", zap.Error(err))
 		return err
+	}
+
+	err = json.Unmarshal(participantsRaw, &participants)
+	if err != nil {
+		logger.Error("participants are not correct")
+		return err
+	}
+
+	if len(participants) != 2 {
+		var eMsg = "participants are not correct"
+		logger.Error(eMsg)
+		return errors.New(eMsg)
+	}
+
+	isWinnerIdExist := false
+	for _, participant := range participants {
+		if participant.ParticipantID == winnerParticipantId {
+			isWinnerIdExist = true
+			break
+		}
+	}
+
+	if !isWinnerIdExist {
+		var eMsg = "winner doesn't exist"
+		logger.Error(eMsg)
+		return errors.New(eMsg)
 	}
 
 	if !tournamentStatus.Valid || tournamentStatus.Int32 != int32(tournamentpb.TournamentStatus_TOURNAMENT_STATUS_RUNNING) {
@@ -220,12 +251,6 @@ func (r *MatchRepository) setWinner(ctx context.Context, matchId string, winnerP
 		(player1Score == raceTo && player2Score == raceTo) {
 		return errors.New("invalid match score")
 	}
-
-	for p := range participants {
-
-	}
-	
-
 
 	if err := tx.Commit(ctx); err != nil {
 		logger.Error("can't commit transaction")
