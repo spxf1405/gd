@@ -162,18 +162,21 @@ func (r *MatchRepository) setWinner(ctx context.Context, matchId string, winnerP
 							'participant_id', participant.id,
 							'participant_name', player.name,
 							'slot', match_participant.slot,
-							'score', match_participant.score
+							'score', match_participant.score,
+							'isWinner', match_participant.isWinner
 						)
 					)
-					FROM gd_match_participants match_participant
+					FROM 
+						gd_match_participants match_participant
 					JOIN gd_participants participant
 						ON participant.id = match_participant.participant_id
 					JOIN gd_players player
 						ON player.id = participant.player_id
-					WHERE match_participant.match_id = m.id
+					WHERE
+						match_participant.match_id = m.id
 				),
 				'[]'::json
-			) AS participants
+			) AS participants,
 		FROM
 			gd_matches m
 		JOIN
@@ -194,6 +197,7 @@ func (r *MatchRepository) setWinner(ctx context.Context, matchId string, winnerP
 		ParticipantName string `json:"participant_name"`
 		Slot            int    `json:"slot"`
 		Score           int    `json:"score"`
+		IsWinner		bool   `json:"isWinner"`
 	}
 
 	var participants []Participant
@@ -219,10 +223,13 @@ func (r *MatchRepository) setWinner(ctx context.Context, matchId string, winnerP
 	}
 
 	isWinnerIdExist := false
+	isExistingWinner := false
+
 	for _, participant := range participants {
+		if (participant.is)
 		if participant.ParticipantID == winnerParticipantId {
 			isWinnerIdExist = true
-			break
+			
 		}
 	}
 
